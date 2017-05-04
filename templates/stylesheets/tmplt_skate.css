@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans|Oswald');
+
+body       { font-family: 'Noto Sans', sans-serif; margin:0; font-size:14px; background-color:#ddd; }
+input      { padding:4px; font-size:14px; font-weight:bold; }
+textarea   { padding:4px; font-family:arial; font-size:14px; }
+a          { color:blue; }
+
+/** Structure **/
+.wrapper     { max-width:1200px; margin:0 auto; }
+
+.header      { color:#777; height:50vw; max-height:600px; }
+.header h1   { background-color:rgba(50,50,50,0.6); padding:10px; margin-top:0px; text-align:center; }
+.header h1 a { color:#fff; text-decoration:none; }
+
+.posts       { box-sizing:border-box; }
+.post        { background-color:#fff; margin:20px 15px 40px 15px; position:relative; }
+.post-title  { margin:0px; background-color:#eeeeee; padding:10px 8px; }
+.post-title a { font-family: 'Oswald', sans-serif; text-transform:uppercase; color:#222; text-decoration:none; }
+.post-title a:hover { text-decoration:underline; }
+.posts img   { max-width:100%; }
+.posts .tag  { background-color:#ddd; border:1px solid #bbb; border-radius:3px;
+    display:inline-block; font-size:80%; margin-bottom:4px; margin-right:4px;
+    padding:2px 4px; color:#333; text-decoration:none; }
+.posts .tag:hover { background-color:#eee; }
+.post-date { background-color:#222; color:#eee; padding:8px; margin:0px; }
+.post-content, .post-footer { padding:8px; }
+.post-footer { padding-bottom:0px; text-transform:uppercase; }
+.post-footer p { display:inline-block; margin-right:16px; }
+.social-icons { position:absolute; bottom:12px; right:12px; }
+
+.rightcolumn { box-sizing:border-box; vertical-align:top; padding-top:20px; margin:15px; }
+.actions a   { display:block; }
+
+.widget { background-color:#fff; padding-bottom:10px; margin:40px 0px; }
+.widget h3 { font-family: 'Oswald', sans-serif; background-color:#222; text-transform:uppercase; color:#eee; padding:8px; margin:0px; }
+.widget h3:empty { padding:0px; }
+#widget_profile p { padding-right:8px; padding-left:8px; }
+.footer      { padding:40px 0; font-size:0.8em; text-align:center; clear:both; }
+
+/* Desktop */
+@media (min-width: 800px)
+{
+    .posts { display:inline-block; width:65%; padding-right:20px; }
+    .post { margin:20px 0px 40px 0px; }
+    .rightcolumn { display:inline-block; width:35%; padding-left:20px; margin:0; }
+}
+
+/** General Element Styling **/
+.action_button       { background-color:#333; color:#ddd; text-decoration:none; padding:7px 10px;
+                       display:inline-block; border-radius:4px; margin:4px 0 2px 0; font-size:0.8em; }
+.action_button:hover { background-color:#111; color:#fff; }
+.date { background-color:#eee; padding:10px; font-size:0.8em; }

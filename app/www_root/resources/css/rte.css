@@ -1,0 +1,45 @@
+.rteImage {
+	padding:1px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.rteImageRaised, .rteImage:hover {
+	border: 1px outset;
+	padding:0;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.rteImageLowered, .rteImage:active {
+	border: 1px inset;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.rteVertSep {
+	margin: 0 4px 0 4px;
+}
+
+.rteBack {
+	background: url('../images/light_grad_01.png') #fff;
+	border: 1px outset;
+	letter-spacing: 0;
+	padding: 5px;
+}
+
+.rteBack tbody tr td, .rteBack tr td {
+	padding: 0; 
+}
+
+.rteDiv {
+	display: block;
+	position: relative;
+}
+
+/* Only applies to forms with id/name parameter as "message"! */
+#message, #content {
+	background-color:#ddd;
+	border:2px solid #aaa;
+    border-top:0;
+}

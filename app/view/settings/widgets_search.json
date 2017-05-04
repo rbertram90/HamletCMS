@@ -1,0 +1,14 @@
+{
+	"title": "Widget Settings - Search",
+	"onsubmitaction": "saveWidgetSettings('search', this); return false;",
+	"submitbuttonlabel": "Update",
+	"fields":
+	[
+		{
+			"type": "text",
+			"name": "widgetfld_search_name",
+			"label": "Widget Title",
+            "current": "[!data.name]"
+		}
+	]
+}

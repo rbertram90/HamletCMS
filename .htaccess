@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+	RewriteCond %{REQUEST_FILENAME} !-f
+    ErrorDocument 403 /accessdenied
+    ErrorDocument 404 /notfound
+    RewriteRule    ^$ app/www_root/    [L]
+    RewriteRule    (.*) app/www_root/$1 [L]
+</IfModule>

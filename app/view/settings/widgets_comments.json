@@ -1,0 +1,26 @@
+{
+	"title": "Widget Settings - Comments",
+	"icon": "comment.png",
+	"submitbuttonlabel": "Update",
+	"fields":
+	[
+		{
+			"type": "text",
+			"name": "widgetfld_comments_name",
+			"label": "Widget Title",
+            "current": "[!data.name]"
+		},
+        {
+			"type": "text",
+			"name": "widgetfld_comments_numbertoshow",
+			"label": "Number to Show",
+            "current": "[!data.numbertoshow]"
+        },
+        {
+			"type": "text",
+			"name": "widgetfld_comments_maxlength",
+			"label": "Maximum characters to show per message",
+            "current": "[!data.maxlength]"
+        }
+	]
+}

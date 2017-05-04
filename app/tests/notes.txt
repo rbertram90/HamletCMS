@@ -1,0 +1,28 @@
+Unit testing using PHPunit
+===================================================================
+
+Important things to note when creating tests:
+===================================================================
+
+    * The class must inherit from 'PHPUnit_Framework_TestCase'
+    
+    * Each test must be prefixed with 'test'
+    
+    * There are issues with using $GLOBALS and PDO objects
+      - these can be easily fixed using the following at the
+        top of the test
+        
+        /**
+        * @backupGlobals disabled
+        * @backupStaticAttributes disabled
+        */
+
+
+How to Run Tests from CMD
+===================================================================
+
+    * Open up a new command prompt window
+    
+    * Navigate to a suitable folder
+    
+    * Type 'phpunit tests.php'

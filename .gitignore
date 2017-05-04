@@ -1,3 +1,15 @@
+# =========================
+# Ignore Blog CMS Data
+# =========================
+
+/docs
+/app/vendor
+/app/www_root/blogdata
+/app/www_root/templates_c
+/app/config/config.json
+
+# =========================
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

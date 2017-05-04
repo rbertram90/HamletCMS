@@ -1,0 +1,9 @@
+{
+    "database":
+    {
+        "server": "localhost",
+        "name": "blog_cms",
+        "user": "root",
+        "password": ""
+    }
+}

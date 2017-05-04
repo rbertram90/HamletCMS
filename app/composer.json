@@ -1,0 +1,7 @@
+{
+  "require": {
+      "codeliner/array-reader" : "~1.0",
+      "smarty/smarty": "~3.1",
+      "michelf/php-markdown": "1.4.1"
+  }
+}

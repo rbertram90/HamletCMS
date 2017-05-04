@@ -1,0 +1,14 @@
+{
+	"title": "Widget Settings - Postlist",
+	"onsubmitaction": "saveWidgetSettings('postlist', this); return false;",
+	"submitbuttonlabel": "Update",
+	"fields":
+	[
+		{
+			"type": "text",
+			"name": "widgetfld_postlist_name",
+			"label": "Widget Title",
+            "current": "[!data.name]"
+		}
+	]
+}

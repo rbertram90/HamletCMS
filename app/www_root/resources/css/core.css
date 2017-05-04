@@ -1,0 +1,114 @@
+.right {
+	text-align:right;
+}
+
+/* Position an element in the bottom corner (15px padding) */
+.bottom15 {
+	position:absolute; right:15px; bottom:15px;
+}
+
+
+/* System Notifications */
+.error {
+	background-color:#D64952;
+	padding:6px;
+	border:1px solid #B3222C;
+    margin-bottom:15px;
+}
+.info, .warning {
+	background-color:#FCF19D;
+	padding:6px;
+	border:1px solid #EDE080;
+    margin-bottom:15px;
+    color:#000;
+}
+.success {
+	background-color:#9FE3C4;
+	padding:6px;
+	border:1px solid #32B379;
+    margin-bottom:15px;
+    color:#0A7846;
+}
+
+/* Pagination Control */
+.pagination {
+	background-image:url("../images/light_grad_01.png");
+	margin:40px 0;
+	border-radius:5px;
+}
+.pagination a:first-child:hover {
+	background-color:transparent;
+}
+.pagination a {
+	padding:5px 10px;
+	display:inline-block;
+	border-right:1px solid #ccc;
+	color:#000;
+    text-decoration:none;
+}
+.pagination a:hover {
+	text-decoration:none;
+	background-color:#aaa;
+}
+
+/* Default date */
+.date {
+    font-size:14px;
+    color:#aaa;
+}
+
+
+/* Alphabet selector */
+.alphabet-navigation {
+    border:1px solid #ccc;
+    background-color:#eee;
+    margin-bottom:15px;
+}
+.alphabet-navigation a ,
+.alphabet-navigation span.nolinkletter {
+    border-right:1px solid #ccc;
+    display:inline-block;
+    padding:3px 0px;
+    width: 25px;
+    text-align:center;
+}
+
+.alphabet-navigation span.nolinkletter {
+    color:#ccc;
+}
+
+.post-display-one {
+    border:1px solid #ccc;
+    background-color:#eee;
+}
+.post-display-one h3 {
+    padding:10px;
+    margin:0;
+    background-color:#ddd;
+}
+.post-display-one .blog-link {
+    display:block;
+    padding:10px;
+    border-top:1px solid #ccc;
+}
+
+/* 2 Column layout */
+.cols2_1 {
+	width:47%;
+	display:inline-block;
+	margin-left:2%;
+	vertical-align:top;
+}
+
+.cols2_2 {
+	width:47%;
+	display:inline-block;
+	margin-right:2%;
+	vertical-align:top;
+}
+
+/* Seperator */
+.col_sep {
+	width:2%;
+	display:inline-block;
+}

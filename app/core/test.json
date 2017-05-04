@@ -1,0 +1,27 @@
+{
+	"title": "Add a Blog",
+	"icon": "add_doc.png",
+	"action": "/projects/blog_cms/submitnewblog",
+	"submitbuttonlabel": "Create",
+	"fields":
+	[
+		{
+			"type": "text",
+			"name": "fld_blogname",
+			"label": "Blog Name",
+			"options":
+			{
+				"validation":
+				{
+					"json": "{fieldlength:6}",
+					"message": "Please enter a name for your new blog, this must be at least 6 characters!"
+				}
+			}
+		},
+		{
+			"type": "memo",
+			"name": "fld_blogdesc",
+			"label": "Description"
+		}
+	]
+}

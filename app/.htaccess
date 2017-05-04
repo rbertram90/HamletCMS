@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule    ^$    www_root/    [L]
+    RewriteRule    (.*) www_root/$1    [L]
+</IfModule>

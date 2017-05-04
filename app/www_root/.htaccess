@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^$ index.php [redirect]
+    RewriteRule ^([a-zA-Z_]+)/?([a-zA-Z0-9_\+\-/]*)$ index.php?p=$1&query=$2 [L,QSA]
+</IfModule>

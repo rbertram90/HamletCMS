@@ -1,0 +1,25 @@
+.docs h4 {
+    margin-top:20px;
+    font-family: monospace;
+    font-weight:normal;
+    font-size: 18px;
+    background-color: #ddd;
+    padding:8px 8px 6px 8px;
+    border-bottom:1px solid #eee;
+}
+
+.docs p {
+    margin-left: 16px;
+    font-size: 14px;
+}
+
+.type {
+    color:forestgreen;
+}
+
+.docs > h3 {
+    font-weight:normal;
+    background-color:#fff;
+    padding:5px;
+    border-bottom:1px solid #ddd;
+}

@@ -1,0 +1,237 @@
+body {
+	font-family:sans-serif;
+	margin:0;
+}
+
+a {
+	color:#165CA1;
+	text-decoration:none;
+}
+a:hover {
+	text-decoration:underline;
+}
+
+tr{
+	background-color:#eee;
+	padding:8px;
+}
+th {
+	background-color:#fff;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    margin-top:0;
+}
+h2 {
+    font-size:130%;
+}
+h4 {
+    margin-bottom:6px;
+    margin-top:0;
+}
+
+p {
+    margin-top:0;
+    margin-bottom:4px;
+}
+
+#wrapper {
+	width:90%;
+	min-width:900px;
+	border:solid #ccc;
+	border-width:0 1px;
+	margin:0 auto;
+	background-color:#f6f6f6;
+	box-shadow: 0px 0px 30px #ccc;
+    max-width:1200px;
+}
+
+#header {
+	padding:26px 10px 10px 10px;
+	color:#777;
+	background-color:#ddd;
+	border-bottom:10px solid #eee;
+	background-image:url('../images/header_background2.png');
+	background-position:right;
+	background-repeat:no-repeat;
+}
+
+#sidebar {
+	width:18%;
+	float:left;
+}
+	#sidebar ul {
+		margin:0;
+		padding:0;
+		list-style:none;
+	}
+	#sidebar li {
+		border-bottom:1px solid #ccc;
+	}
+	#sidebar li a {
+		display:block;
+		padding:8px 10px;
+		text-decoration:none;
+        border-right: 1px solid #ccc;
+		background-image:url('../images/gradient_1.png');
+	}
+	#sidebar li a:hover {
+		background-color:#eee;
+		background-image:url('../images/gradient_2.png');
+		background-position:10px;
+	}
+	#sidebar li a.current {
+		background-color:#fff;
+        border-right-color: #fff;
+		background-image:none;
+		color:#000;
+	}
+	#sidebar li.nolink {
+		padding:8px 4px;
+		font-weight:bold;
+        background-color: #ddd;
+	}
+
+#content {
+	padding:20px;
+	background-color:#fff;
+	margin-left:18%;
+    min-height: 360px;
+}
+
+#footer {
+	padding:40px 0;
+	font-size:0.8em;
+	text-align:center;
+	clear:both;
+	background-color:#ddd;
+	border-top:10px solid #eee;
+}
+
+.action_button {
+    background-color: #006dcc;
+    background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+    background-repeat: repeat-x;
+    color: #ffffff;
+    border-radius: 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.8em;
+    line-height: 20px;
+    margin:4px 0 2px 0;
+    padding: 4px 8px;
+}
+.action_button:hover {
+    background-position: 0 -15px;
+    color: #ffffff;
+    background-color: #0044cc;
+    text-decoration: none;
+    transition: background-position 0.1s linear 0s;
+}
+
+.btn_red {
+    background-color: #da4f49;
+    background-image: linear-gradient(to bottom, #ee5f5b, #bd362f);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn_red:hover {
+	background-color: #bd362f;
+}
+
+.btn_green {
+	background-color:#64CD78;
+}
+.btn_green:hover {
+	background-color:#64CD78;
+}
+
+.settings-icon {
+	margin-right:20px;
+	zheight:60px;
+	display:inline-block;
+}
+.settings-title {
+	display:inline-block;
+	vertical-align:top;
+	margin-top:15px;
+	margin-bottom:40px;
+}
+.settings-title .subtitle {
+	font-size:20px;
+}
+
+.action_select {
+	padding:6px;
+	color:#555;
+	background-color:#eee;
+    padding-bottom:0;
+}
+.action_select:hover, .action_select:focus {
+	color:#000;
+	background-color:#fff;
+}
+.action_select option {
+	padding:4px;
+}
+
+.summary_table {
+    margin-bottom:30px;
+}
+.summary_table tr:hover {
+	background-image:url('../images/gradient_2.png');
+	background-position:10px;
+}
+.summary_table tr {
+	background-image:url('../images/gradient_1.png');
+}
+
+.date {
+	font-size:80%;
+}
+
+
+/* Crumbtrail */
+.crumbtrail {
+	border-left:3px solid #f8f8f8;
+    margin-bottom:15px;
+}	
+.crumbtrail a {
+	display:inline-block;
+	background-image:url("../images/crumbtrail-mid.png");
+	background-position:right;
+	padding:6px 30px 6px 10px;
+}
+.crumbtrail a:last-child {
+	background-image:url("../images/crumbtrail-end.png");
+	color:#000;
+}
+
+/* Explore */
+.explore-menu a {
+	background-color: #e8e8e8;
+	padding: 4px 10px;
+	display: inline-block;
+	margin: 2px 5px 16px 0;
+	border:1px solid #ccc;
+	border-radius:6px;
+}
+.explore-menu a:hover {
+	text-decoration:none;
+	background-color:#aaa;
+	color:#fff;
+	border-color:#666;
+}
+
+/* Homepage Recent Posts */
+.recent-post {
+	background-color:#f6f6f6;
+	padding:8px;
+	border-bottom:2px solid #eee;
+}
+.recent-post p {
+	margin-bottom:4px;
+}
