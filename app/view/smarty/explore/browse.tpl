@@ -1,45 +1,62 @@
-{viewCrumbtrail(array(), 'Explore')}
-{viewPageHeader('Browse Blogs By Letter', 'plane.png')}
-
-<!--Explore Menu-->
-<nav class="explore-menu">
-	<a href="/explore/popular">Most Popular</a>
-	<a href="/explore/blogsbyletter">Browse By Letter</a>
-</nav>
-
-<div class="alphabet-navigation">
-    
-	{foreach from=$alphabet item=character}
-    
-        {if $counts[$character] > 0}
-            <a href="/explore/blogsbyletter/{$character}">{$character}</a>
-        {else}
-            <span class="nolinkletter">{$character}</span>
-        {/if}
-    
-	{/foreach}
-    
-</div>
-
-{if isset($blogs)}
-
-	<div class="post-display-one">
-        <h3>Blogs Beginning with {$letter}</h3>
-	
-	{if count($blogs) == 0}
-        
-        <p>No Blogs have been created beginning with letter {$letter}<p>
-        
-    {else}
-        
-        {foreach from=$blogs item=blog}
-            <div class='blog-link'>
-                <a href='/blogs/{$blog.id}'>{$blog.name}</a>
-            </div>
-        {/foreach}
-        
-	{/if}
-
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array(), 'Explore')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Browse Blogs By Letter', 'plane.png')}
+        </div>
     </div>
 
-{/if}
+    <!--Explore Menu-->
+    <div class="one column row">
+        <div class="column">
+            <div class="ui buttons">
+                <a href="/explore/popular" class="ui button">Most Popular</a>
+                <a href="/explore/blogsbyletter" class="ui button active">Browse By Letter</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="one column row">
+        <div class="column">
+            <div class="ui pagination menu">
+                {foreach from=$alphabet item=character}
+                    {if $counts[$character] > 0}
+                        <a href="/explore/blogsbyletter/{$character}" class="item">{$character}</a>
+                    {else}
+                        <a class="disabled item">{$character}</a>
+                    {/if}
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+    {if isset($blogs)}
+    <div class="one column row">
+        <div class="column">
+            <div class="ui segments">
+                <div class="ui segment">
+                    <h3>Blogs Beginning with {$letter}</h3>
+                </div>
+                
+                {if count($blogs) == 0}
+                    <div class="ui red segment">
+                        <p>No Blogs have been created beginning with letter {$letter}<p>
+                    </div>
+                {else}
+                    {foreach from=$blogs item=blog}
+                        <div class="ui segment">
+                            <a href='/blogs/{$blog.id}'>{$blog.name}</a>
+                        </div>
+                    {/foreach}
+                {/if}
+
+            </div>
+        </div>
+    </div>
+    {/if}
+    
+</div>
