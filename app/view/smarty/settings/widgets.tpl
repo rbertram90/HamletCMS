@@ -1,7 +1,17 @@
-{viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Widgets')}
-{viewPageHeader('Widgets', 'oven_gear.png', $blog['name'])}
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Widgets')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Widgets', 'oven_gear.png', $blog['name'])}
+        </div>
+    </div>
+</div>
 
-<p class="info">Drag and drop widgets to re-order and change where on the page they are displayed. Widgets can be added to each section using the 'Add' buttons.</p>
+<div class="ui secondary segment">Drag and drop widgets to re-order and change where on the page they are displayed. Widgets can be added to each section using the 'Add' buttons.</div>
 
 <form action="/config/{$blog.id}/widgets/submit" method="POST">
 
@@ -18,13 +28,13 @@
 					</div>
 				{/foreach}
 			</div>
-			<button onclick="showWidgets('{$section}widgetlist', '{$section}'); return false;">Add Widget</button>
+			<button class="ui button" onclick="showWidgets('{$section}widgetlist', '{$section}'); return false;">Add Widget</button>
 	</div>{/foreach}
 
-    <div class="push-right">
-        <input type="button" value="Cancel" name="goback" onclick="window.history.back()" />
-        <input type="submit" value="Update" name="fld_submit" />
-    </div>
+    
+    <input type="button" class="ui button right floated" value="Cancel" name="goback" onclick="window.history.back()" />
+    <input type="submit" class="ui button teal right floated" value="Update" name="fld_submit" />
+    
 
 </form>
 

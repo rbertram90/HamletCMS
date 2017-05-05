@@ -1,7 +1,18 @@
-{viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Template Gallery')}
-{viewPageHeader('Template Gallery', 'star_doc.png', $blog['name'])}
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Template Gallery')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Template Gallery', 'star_doc.png', $blog['name'])}
+        </div>
+    </div>
+</div>
 
-<p class="info"><strong>Notice</strong>: Applying a new Template will overwrite any changes you have made using the blog designer!</p>
+
+<div class="ui segment secondary"><strong>Notice</strong>: Applying a new Template will overwrite any changes you have made using the blog designer!</div>
 
 <style>
     .template_wrapper { border:1px solid #ddd; float:left; width:49%; padding:10px; border-radius:4px; box-sizing:border-box; background-color:#fff; margin-right:2%; margin-bottom:2%; }
@@ -16,7 +27,7 @@
 	<form action="/config/{$blog.id}/template/submit" method="post">
 		<input type="hidden" value="tmplt_default_blue" name="template_id" />
 		<div class="push-right">
-			<input type="submit" value="Apply to Blog" />
+			<input type="submit" class="ui button teal" value="Apply to Blog" />
 		</div>
 	</form>
 </div>
@@ -29,7 +40,7 @@
 	<form action="/config/{$blog.id}/template/submit" method="post">
 		<input type="hidden" value="tmplt_blue_rmenu" name="template_id" />
 		<div class="push-right">
-			<input type="submit" value="Apply to Blog" />
+			<input type="submit" class="ui button teal" value="Apply to Blog" />
 		</div>
 	</form>
 </div>
@@ -42,7 +53,7 @@
 	<form action="/config/{$blog.id}/template/submit" method="post">
 		<input type="hidden" value="tmplt_black_yellow" name="template_id" />
 		<div class="push-right">
-			<input type="submit" value="Apply to Blog" />
+			<input type="submit" class="ui button teal" value="Apply to Blog" />
 		</div>
 	</form>
 </div>
@@ -55,12 +66,9 @@
 	<form action="/config/{$blog.id}/template/submit" method="post">
 		<input type="hidden" value="tmplt_skate" name="template_id" />
 		<div class="push-right">
-			<input type="submit" value="Apply to Blog" />
+			<input type="submit" class="ui button teal" value="Apply to Blog" />
 		</div>
 	</form>
 </div>
 
-
-<div class="push-right" style="margin-top:30px;">
-    <input type="button" value="Cancel" name="goback" onclick="window.history.back()" />
-</div>
+    <input type="button" value="Cancel" class="ui button" name="goback" onclick="window.history.back()" />

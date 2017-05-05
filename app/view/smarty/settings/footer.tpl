@@ -1,65 +1,87 @@
-{viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Customise Footer')}
-{viewPageHeader('Customise Footer', 'footer.png', $blog['name'])}
-
-<form action="/config/{$blog.id}/footer/submit" method="post" id="frm_updatefooter">
-    
-    <label for="fld_numcolumns">Number of Columns</label>
-    <select name="fld_numcolumns" id="fld_numcolumns">
-        <option value="1">1</option>
-        <option value="2">2</option>
-    </select>
-    
-    <label for="fld_contentcol1">Content - Column 1</label>
-    <textarea name="fld_contentcol1" id="fld_contentcol1">{strip}
-        {if isset($blogconfig['content_col1'])}
-            {$blogconfig.content_col1}
-        {/if}
-    {/strip}</textarea>
-    
-    <div id="wrap_cc2">
-        <label for="fld_contentcol2">Content - Column 2</label>
-        <textarea name="fld_contentcol2" id="fld_contentcol2">{strip}
-            {if isset($blogconfig['content_col2'])}
-                {$blogconfig.content_col2}
-            {/if}
-        {/strip}</textarea>
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Customise Footer')}
+        </div>
     </div>
-    	
-    <label for="fld_backgroundimage">Background Image</label>
-    
-	<div id="current-profile-image" class="rtfeditor">
-	{if isset($blogconfig['background_image'])}
-		<img src="{$blogconfig.background_image}" style="max-height:100px; max-width:300px;" />
-	{/if}
-	</div>
-    
-<!--
-	<button type="button" title="Insert Image" onclick="rbrtf_addImage('<?=$arrayBlog['id']?>'); return false;">Select New Image</button>
--->
-        <button type="button" title="Insert Image" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog.id}&format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Customise Footer', 'footer.png', $blog['name'])}
 
-	<button type="button" onclick="removeImage();">Remove Image</button>
-	
-	<input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}" />
+            <form action="/config/{$blog.id}/footer/submit" method="post" id="frm_updatefooter" class="ui form">
 
-	Horizontal Position: <select name="fld_horizontalposition" id="fld_horizontalposition">
-		<option value="s">Stretch</option>
-		<option value="r">Repeat</option>
-		<option value="n">None</option>
-	</select>
-	
-	Vertical Position: <select name="fld_veritcalposition" id="fld_veritcalposition">
-		<option value="s">Stretch</option>
-		<option value="r">Repeat</option>
-		<option value="n">None</option>
-	</select>
-    	
-    <div class="push-right">
-        <input type="button" value="Cancel" name="goback" onclick="window.history.back()" />
-        <input type="submit" value="submit" name="Save" />
+                <div class="field">
+                    <label for="fld_numcolumns">Number of Columns</label>
+                    <select name="fld_numcolumns" id="fld_numcolumns">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </div>
+                
+                <div class="field">
+                    <label for="fld_contentcol1">Content - Column 1</label>
+                    <textarea name="fld_contentcol1" id="fld_contentcol1">{strip}
+                        {if isset($blogconfig['content_col1'])}
+                            {$blogconfig.content_col1}
+                        {/if}
+                    {/strip}</textarea>
+                </div>
+                
+                <div class="field">
+                    <div id="wrap_cc2">
+                        <label for="fld_contentcol2">Content - Column 2</label>
+                        <textarea name="fld_contentcol2" id="fld_contentcol2">{strip}
+                            {if isset($blogconfig['content_col2'])}
+                                {$blogconfig.content_col2}
+                            {/if}
+                        {/strip}</textarea>
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label for="fld_backgroundimage">Background Image</label>
+                    <div id="current-profile-image" class="rtfeditor">
+                    {if isset($blogconfig['background_image'])}
+                        <img src="{$blogconfig.background_image}" style="max-height:100px; max-width:300px;" />
+                    {/if}
+                    </div>
+                </div>
+
+            <!--
+                <button type="button" title="Insert Image" onclick="rbrtf_addImage('<?=$arrayBlog['id']?>'); return false;">Select New Image</button>
+            -->
+                <div class="field">
+                    <button type="button" class="ui button" title="Insert Image" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog.id}&format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+
+                    <button type="button" class="ui button" onclick="removeImage();">Remove Image</button>
+
+                    <input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}" />
+                </div>
+                    
+                <div class="field">
+                    <label for="fld_horizontalposition">Horizontal Position</label>
+                    <select name="fld_horizontalposition" id="fld_horizontalposition">
+                        <option value="s">Stretch</option>
+                        <option value="r">Repeat</option>
+                        <option value="n">None</option>
+                    </select>
+                </div>
+                
+                <div class="field">
+                    <label for="fld_horizontalposition">Vertical Position</label>
+                    <select name="fld_veritcalposition" id="fld_veritcalposition">
+                        <option value="s">Stretch</option>
+                        <option value="r">Repeat</option>
+                        <option value="n">None</option>
+                    </select>
+                </div>
+
+                <input type="button" class="ui button right floated" value="Cancel" name="goback" onclick="window.history.back()" />
+                <input type="submit" class="ui button teal right floated" value="Submit" name="Save" />
+            </form>
+        </div>
     </div>
-
-</form>
+</div>
 
 <script type="text/javascript">
     

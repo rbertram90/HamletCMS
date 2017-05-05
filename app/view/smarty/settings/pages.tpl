@@ -1,123 +1,134 @@
-{viewCrumbtrail(array("/overview/{$blog.id}", {$blog.name}, "/config/{$blog.id}", 'Settings'), 'Configure Pages')}
-{viewPageHeader('Configure Pages', 'pages_gear.png', {$blog.name})}
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array("/overview/{$blog.id}", {$blog.name}, "/config/{$blog.id}", 'Settings'), 'Configure Pages')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Configure Pages', 'pages_gear.png', {$blog.name})}
 
-<h3 style="margin-bottom:0;">Current Pages</h3>
-<p style="margin-bottom:10px;">Each post selected as a page will appear (in the order shown) as a link in your blog navigation menu.</p>
 
-{if count($pages) == 0}
-    
-    <p class='info'>No Pages Found</p>
-    
-{else}
-    
-    <table cellpadding="10" width="100%" style="margin-bottom:20px;">
-        {foreach from=$pages item=page}
-            <tr>
-            {if getType($page) == 'string'}
-                <td>{substr($page,2)}</td>
-                <td style="text-align:right;">
-                    <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page}" />
-                        <button type="submit">&#x25B2;</button>
-                    </form>
+            <h3 class="ui header">Current Pages</h3>
+            <div class="ui secondary segment">
+                Each post selected as a page will appear (in the order shown) as a link in your blog navigation menu.
+            </div>
 
-                    <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page}" />
-                        <button type="submit">&#x25BC;</button>
-                    </form>
+            {if count($pages) == 0}
 
-                    <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page}" />
-                        <button type="submit">Remove</button>
-                    </form>
-                </td>
+                <p class='info'>No Pages Found</p>
+
             {else}
-                <td>
-                    <a href="/blogs/{$blog.id}/posts/{$page.link}" target="_blank">{$page.title}</a>
-                </td>
-                <td style="text-align:right;">
 
-                    <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page.id}" />
-                        <button type="submit">&#x25B2;</button>
-                    </form>
-
-                    <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page.id}" />
-                        <button type="submit">&#x25BC;</button>
-                    </form>
-
-                    <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
-                        <input type="hidden" name="fld_postid" value="{$page.id}" />
-                        <button type="submit">Remove</button>
-                    </form>
-
-                </td>
-            {/if}
-            </tr>
-        {/foreach}
-    </table>
-
-{/if}
-
-
-<h3 style="margin-bottom:0;">Add Page</h3>
-<p style="margin-bottom:20px;">You can set blog posts or a tag as 'pages' which appear on the menu of your blog</p>
-
-
-<form action="/config/{$blog.id}/pages/add" method="POST">
-    
-    <label for="fld_pagetype">Page Type</label>
-    <select name="fld_pagetype" id="fld_pagetype">
-        <option value="p" selected>Post</option>
-        <option value="t">Tag</option>
-    </select>
-    
-    <div id="selectpost">
-        <label for="fld_postid">Post</label>
-        <select name="fld_postid" id="fld_postid">
-
-            {foreach from=$posts item=post}
-
-                {if in_array({$post.id}, $pagelist) == false}
-                    <option value="{$post.id}">{$post.title}</option>
-                {/if}
-
-            {/foreach}
-
-        </select>
-    </div>
-    <div id="selecttag" style="display:none;">
-        <label for="fld_tag">Tag</label>
-        <select name="fld_tag" id="fld_tag">
-
-            {foreach from=$tags item=tag}
-                {if in_array($tag, $taglist) == false}
-                    <option value="{$tag}">{$tag}</option>
-                {/if}
-            {/foreach}
-
-        </select>
-    </div>
-    <input type="submit" name="fld_submit" value="Add" />
-</form>
-
-<script>
-    $("#fld_pagetype").change(function() {
-        switch($(this).val()) {
-            case "t":
-                $("#selectpost").hide();
-                $("#selecttag").show();
-                break;
+                <div class="ui segments">
+                    {foreach from=$pages item=page}
+                        <div class="ui clearing segment">
+                        {if getType($page) == 'string'}
+                            {substr($page,2)}
                 
-            case "p":
-                $("#selecttag").hide();
-                $("#selectpost").show();
-                break;
-        }
-    });
-</script>
+                            <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page}" />
+                                <button class="ui button right floated" type="submit">Remove</button>
+                            </form>
+                            
+                            <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page}" />
+                                <button class="ui button right floated" type="submit">&#x25BC;</button>
+                            </form>
+                            
+                            <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page}" />
+                                <button class="ui button right floated" type="submit">&#x25B2;</button>
+                            </form>
 
-<div class="push-right">
-    <input type="button" value="Go Back" name="goback" onclick="window.history.back()" />
+                        {else}
+                            <a href="/blogs/{$blog.id}/posts/{$page.link}" target="_blank">{$page.title}</a>
+
+                            <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <button class="ui button right floated" type="submit">Remove</button>
+                            </form>
+                            
+                            <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <button class="ui button right floated" type="submit">&#x25BC;</button>
+                            </form>
+
+                            <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
+                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <button class="ui button right floated" type="submit">&#x25B2;</button>
+                            </form>
+                        {/if}
+                        </div>
+                    {/foreach}
+                </div>
+
+            {/if}
+
+
+            <h3 class="ui header">Add Page</h3>
+            <div class="ui secondary segment">
+                You can set blog posts or a tag as 'pages' which appear on the menu of your blog
+            </div>
+
+
+            <form action="/config/{$blog.id}/pages/add" method="POST" class="ui form">
+                <div id="selectpost" class="field">
+                    <label for="fld_pagetype">Page Type</label>
+                    <select name="fld_pagetype" id="fld_pagetype">
+                        <option value="p" selected>Post</option>
+                        <option value="t">Tag</option>
+                    </select>
+                </div>
+
+                <div id="selectpost" class="field">
+                    <label for="fld_postid">Post</label>
+                    <select name="fld_postid" id="fld_postid">
+
+                        {foreach from=$posts item=post}
+
+                            {if in_array({$post.id}, $pagelist) == false}
+                                <option value="{$post.id}">{$post.title}</option>
+                            {/if}
+
+                        {/foreach}
+
+                    </select>
+                </div>
+                <div id="selecttag" class="field" style="display:none;">
+                    <label for="fld_tag">Tag</label>
+                    <select name="fld_tag" id="fld_tag">
+
+                        {foreach from=$tags item=tag}
+                            {if in_array($tag, $taglist) == false}
+                                <option value="{$tag}">{$tag}</option>
+                            {/if}
+                        {/foreach}
+
+                    </select>
+                </div>
+                <input type="submit" name="fld_submit" class="ui button teal" value="Add" />
+            </form>
+
+            <script>
+                $("#fld_pagetype").change(function() {
+                    switch($(this).val()) {
+                        case "t":
+                            $("#selectpost").hide();
+                            $("#selecttag").show();
+                            break;
+
+                        case "p":
+                            $("#selecttag").hide();
+                            $("#selectpost").show();
+                            break;
+                    }
+                });
+            </script>
+
+            <input type="button" class="ui right floated button" value="Go Back" name="goback" onclick="window.history.back()" />
+            
+        </div>
+    </div>
+    
 </div>
