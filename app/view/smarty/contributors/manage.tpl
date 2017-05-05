@@ -1,10 +1,18 @@
-{viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
-{viewPageHeader('Contributors', 'friends.png', "{$blog['name']}")}
-
-<div></div>
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Contributors', 'friends.png', "{$blog['name']}")}
+        </div>
+    </div>
+</div>
 
 <style>
-    form {ldelim}display:inline;{rdelim}
+    form { display:inline; }
 </style>
 
 {foreach $contributors as $contributor}{strip}
