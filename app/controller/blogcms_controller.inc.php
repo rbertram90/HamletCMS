@@ -163,6 +163,30 @@ class BlogcmsController extends GenericController
             $this->view->render('explore/popular.tpl');
 
             break;
+                
+            
+            case 'category':
+                
+            $category = 'general';
+            
+            if(array_key_exists(1, $params)) $category = sanitize_string($params[1]);
+            
+            
+            // Set categories from config
+            $this->view->setVar('currentcategory', $category);
+                
+            // Set categories from config
+            $this->view->setVar('categories', $GLOBALS['config']['blogcategories']);
+            
+            // Get most favourited blogs
+            $this->view->setVar('blogs', $this->modelBlogs->getByCategory($category));
+
+            // Page Title
+            $this->view->setPageTitle('Explore Blogs by Category');
+            
+            // Output the view
+            $this->view->render('explore/category.tpl');
+            break;
         }
     }
     

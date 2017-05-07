@@ -89,6 +89,7 @@ class SettingsController extends GenericController
             // Name, Description etc.
             if($formsubmitted) return $this->action_updateBlogGeneral($blog); // todo: check
             $this->view->setPageTitle('General Settings - '.$blog['name']);
+            $this->view->setVar('categorylist', $GLOBALS['config']['blogcategories']);
             $this->view->render('settings/general.tpl');
             break;
 
@@ -308,7 +309,8 @@ class SettingsController extends GenericController
 		$update = $this->modelBlogs->updateBlog($blog['id'], array(
             'name' => $_POST['fld_blogname'],
             'description' => $_POST['fld_blogdesc'],
-            'visibility' => $_POST['fld_blogsecurity']
+            'visibility' => $_POST['fld_blogsecurity'],
+            'category' => $_POST['fld_category']
         ));
         
         // System Message

@@ -27,7 +27,8 @@ class ClsBlog extends rbwebdesigns\RBmodel
             'anon_search' => 'boolean',
             'visibility'  => 'string',
             'widgetJSON'  => 'string',
-            'pagelist'    => 'string'
+            'pagelist'    => 'string',
+            'category'    => 'string'
         );
     }
     
@@ -357,6 +358,16 @@ class ClsBlog extends rbwebdesigns\RBmodel
         $query_string.= 'FROM '.$this->tblfavourites.' AS fav LEFT JOIN '.$this->tblname.' AS blogs ON fav.blog_id = blogs.id WHERE blogs.visibility = "anon" ';
         $query_string.= 'GROUP BY fav.blog_id ORDER BY fav_count DESC LIMIT '.$page.','.$num;
         return $this->db->select_multi($query_string);
+    }
+    
+    
+    public function getByCategory($category, $num=10, $page=0) {
+        
+        $query = 'SELECT * ';
+        $query.= 'FROM '.$this->tblname.' WHERE category = "' . $category . '" ';
+        $query.= 'LIMIT '.$page.','.$num;
+        
+        return $this->db->select_multi($query);
     }
 }
 ?>

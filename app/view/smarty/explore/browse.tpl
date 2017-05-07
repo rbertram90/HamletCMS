@@ -16,6 +16,7 @@
             <div class="ui buttons">
                 <a href="/explore/popular" class="ui button">Most Popular</a>
                 <a href="/explore/blogsbyletter" class="ui button active">Browse By Letter</a>
+                <a href="/explore/category" class="ui button">Category</a>
             </div>
         </div>
     </div>

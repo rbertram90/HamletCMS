@@ -21,6 +21,17 @@
                 </div>
                 
                 <div class="field">
+                    <label for="fld_category">Category</label>
+                    <select id="fld_category" name="fld_category">
+                        {foreach from=$categorylist item=category}
+                            <option value="{$category}">{ucfirst($category)}</option>
+                        {/foreach}
+                    </select>
+                    <!--Set Default-->
+                    <script type="text/javascript">$("#fld_category").val("{$blog.category}");</script>
+                </div>
+                
+                <div class="field">
                     <label for="fld_blogsecurity">Who should be able to read your blog?</label>
                     <select id="fld_blogsecurity" name="fld_blogsecurity">
                         <option value="anon">Everyone</option>
