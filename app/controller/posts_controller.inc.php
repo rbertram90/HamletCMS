@@ -20,7 +20,7 @@ Example requests that will be handled here:
     
 **********************************************************************/
 
-class PostsController extends GenericBlogCMSController {
+class PostsController extends GenericController {
 
     // Class Variables
     private $modelBlogs;        // Blogs Model

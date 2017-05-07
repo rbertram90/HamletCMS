@@ -24,7 +24,7 @@ use rbwebdesigns;
   Router
 ****************************************************************/
 
-    $pagelist = json_decode(file_get_contents(SERVER_ROOT . '/app/config/sitemap.json'), true);
+    $pagelist = rbwebdesigns\JSONHelper::jsonToArray(SERVER_ROOT . '/app/config/routes.json');
     $router = new rbwebdesigns\Router($pagelist);
 
 

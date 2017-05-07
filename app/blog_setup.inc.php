@@ -27,7 +27,7 @@
     require_once SERVER_ROOT.'/app/vendor/autoload.php';
 	
     // Include blogs controller
-    require_once SERVER_ROOT.'/app/controller/blog_content_controller.inc.php';
+    require_once SERVER_ROOT.'/app/controller/blogcontent_controller.inc.php';
     
     
 /****************************************************************
@@ -35,17 +35,8 @@
 ****************************************************************/    
     
     // Connect to Users Database
-    $gClsUsers = new rbwebdesigns\Users($cms_db);
+    $modelUsers = new rbwebdesigns\Users($cms_db);
 	
-    // Check if we are logged in
-    if(!isset($_SESSION['userid'])) {
-        $gbLoggedIn = false;
-    }
-    else {
-        $gbLoggedIn = true;
-        $gobjUser = $gClsUsers->getUserById($_SESSION['userid']);
-    }
-
 
 /****************************************************************
   Stylesheet
@@ -119,14 +110,18 @@
     );
     
 	// Proccess Query String - note has probabily already been done at index level!
-    if(isset($queryParams)) {
+    if(isset($queryParams))
+    {
         $p = array_shift($queryParams); // get and remove the first element of array
-        
-    } else {
-        if(isset($_GET['query'])) {
+    }
+    else
+    {
+        if(isset($_GET['query']))
+        {
             $queryParams = strlen($_GET['query']) > 0 ? explode("/", $_GET['query']) : false;
-
-        } else {
+        }
+        else
+        {
             $queryParams = "";
         }
         
@@ -139,25 +134,35 @@
 	ob_start();
 
 	switch(strtolower($p)):
+
 		case "posts":
-			if(gettype($queryParams) !== "array") {
+
+			if(gettype($queryParams) !== "array")
+            {
 				$DATA = $page_controller->viewHome($DATA, $queryParams);
 				break;
 			}
 			
-			if(array_key_exists(1, $queryParams)) {
+			if(array_key_exists(1, $queryParams))
+            {
 				// Perform an action based on a post
 				$action = safeString($queryParams[1]);
-				switch($action):
-					case "addcomment":
+                
+				switch($action)
+                {
+                    case "addcomment":
 						// Add a comment to this post
 						$DATA = $page_controller->addComment($DATA, $queryParams);
 						break;
+                        
 					default:
 						// View the post
 						$DATA = $page_controller->viewPost($DATA, $queryParams);
-				endswitch;
-			} else {
+                        break;
+                }
+			}
+            else
+            {
 				// View Post
 				$DATA = $page_controller->viewPost($DATA, $queryParams);
 			}

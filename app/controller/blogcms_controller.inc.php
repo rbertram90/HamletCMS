@@ -31,7 +31,7 @@ use rbwebdesigns;
     
 **********************************************************************/
 
-class MainController extends GenericBlogCMSController
+class BlogcmsController extends GenericController
 {
     // Class Variables
     private $modelBlogs;        // Blogs Model
@@ -216,13 +216,10 @@ class MainController extends GenericBlogCMSController
             // Get comment-ers usernames
             foreach($latestcomments as $key => $comment)
             {
-                if($comment['name'] == "")
-                {
-                    $user = $this->modelUsers->getUserById($comment['user_id']);
-                    $username = $comment['user_id'] == $_SESSION['userid'] ? "You" : $user['username'];
-                    $latestcomments[$key]['userid'] = $comment['user_id'];
-                    $latestcomments[$key]['name'] = $username;
-                }
+                $user = $this->modelUsers->getUserById($comment['user_id']);
+                $username = $comment['user_id'] == $_SESSION['userid'] ? "You" : $user['username'];
+                $latestcomments[$key]['userid'] = $comment['user_id'];
+                $latestcomments[$key]['name'] = $username;
             }
             $this->view->setVar('comments', $latestcomments);
             
@@ -271,6 +268,10 @@ class MainController extends GenericBlogCMSController
             $commentID = safeNumber($params[2]);
             $this->deleteComment($commentID, $blog_id);
         }
+        elseif(array_key_exists(2, $params) && $params[1] == 'approve') {
+            $commentID = safeNumber($params[2]);
+            $this->approveComment($commentID, $blog_id);
+        }
         
         // View Current Comments
         $arrayComments = $this->modelComments->getCommentsByBlog($blog_id);
@@ -299,7 +300,7 @@ class MainController extends GenericBlogCMSController
         @param $commentID <int> Unique ID for the comment
         @param $blog_id <int> Unique ID for the blog
     **/
-    public function deleteComment($commentID, $blog_id)
+    protected function deleteComment($commentID, $blog_id)
     {
         // Delete from database
         $this->modelComments->delete($commentID);
@@ -308,7 +309,25 @@ class MainController extends GenericBlogCMSController
         setSystemMessage(ITEM_DELETED, 'Success');
         
         // Redirect back to comments page
-        redirect('/comments/'.$blog_id);
+        redirect('/comments/' . $blog_id);
+    }
+    
+    /**
+        approveComment
+        @description set approved=1 for a comment
+        @param $commentID <int> Unique ID for the comment
+        @param $blog_id <int> Unique ID for the blog
+    **/
+    protected function approveComment($commentID, $blog_id)
+    {
+        // Update database
+        $this->modelComments->approve($commentID);
+        
+        // Set the message to show on the next page
+        setSystemMessage('Comment approved', 'Success');
+        
+        // Redirect back to comments page
+        redirect('/comments/' . $blog_id);
     }
     
         

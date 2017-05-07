@@ -2,7 +2,7 @@
 namespace rbwebdesigns\blogcms;
 use rbwebdesigns;
 
-class FilesController extends GenericBlogCMSController
+class FilesController extends GenericController
 {
     
     private $modelBlogs;		// Blogs Model

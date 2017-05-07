@@ -1,7 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
-class AjaxController extends GenericBlogCMSController
+class AjaxController extends GenericController
 {
     private $db;
     protected $view;

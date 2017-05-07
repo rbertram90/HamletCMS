@@ -146,7 +146,7 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Get all the posts on a blog
+        Get all the posts on a blog - deprecate?
         <boolean> $drafts - include draft posts or just live ones
         <int> $pBlogID - ID number of the blog
     **/
@@ -171,7 +171,7 @@ class ClsPost extends rbwebdesigns\RBmodel {
     public function getPostsByBlog($pBlogID, $page=1, $num=10, $drafts=0, $future=0, $sort='') {
         $start = ($page-1) * $num;
         $tp = TBL_POSTS; $tc = TBL_COMMENTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
-        $sql = "SELECT $tp.*, (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT sum(userviews) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
+        $sql = "SELECT $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
         $sql.= "FROM $tp ";
         $sql.= "WHERE $tp.blog_id = '".$pBlogID."' ";
         if($drafts == 0) $sql.= "AND $tp.draft='0' ";

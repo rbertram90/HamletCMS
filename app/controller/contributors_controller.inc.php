@@ -8,7 +8,7 @@ namespace rbwebdesigns\blogcms;
     actionAdd(blogid)
 **/
 
-class ContributorController extends GenericBlogCMSController
+class ContributorsController extends GenericController
 {
     // Models
     protected $modelUsers;

@@ -1,7 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
-class AccountController extends GenericBlogCMSController
+class AccountController extends GenericController
 {
     protected $db;
     protected $mdlUsers;

@@ -2,7 +2,7 @@
 
 namespace rbwebdesigns\blogcms;
 
-class GenericBlogCMSController {
+class GenericController {
     
     protected $view;
     

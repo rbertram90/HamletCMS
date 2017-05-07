@@ -14,64 +14,51 @@
     </div>
 </div>
 
-<p class="info">Total Comments: {count($comments)}</p>
+<p class="info">Total Comments: <strong>{count($comments)}</strong></p>
 
-<style>
-    .comments-column {ldelim}
-        width:50%;
-        display:inline-block;
-        vertical-align:top;
-    {rdelim}
-</style>
-
-<div class="comments-column">
-{* Output First Column *}
-{foreach $comments as $comment}{strip}
-
-    {if $comment@iteration is even}
-
-        <div class="contributor-card" style="height:auto; width:98%;">
-            <img src="/resources/icons/64/cross.png" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/delete/{$comment.id}'{rdelim}" title="Remove Comment" style="height:20px; cursor:pointer; float:right;" />
-
-            <p style="color:#777;">{formatdate($comment.timestamp)}</p>
-            <p style="font-size:1.1em;">&#147;{$comment.message}&#148;<a href="/account/user/{$comment.user_id}" style="font-size:0.8em;"> - {$comment.user.username}</a></p>
-
-            <p style="font-size:0.75em;">On post <a href="/blogs/{$comment.blog_id}/posts/{$comment.link}">{$comment.title}</a></p>
-        </div>
-
-    {/if}
-
-{/strip}{foreachelse}
-    <p class="info">No comments have been made on your posts</p>
-
-{/foreach}
-    
-</div><div class="comments-column">
-
-{* Output Second Column *}
-{foreach $comments as $comment}{strip}
-    
-    {if $comment@iteration is odd}
-
-        <div class="contributor-card" style="height:auto; width:98%;">
-            <img src="/resources/icons/64/cross.png" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/delete/{$comment.id}'{rdelim}" title="Remove Comment" style="height:20px; cursor:pointer; float:right;" />
-
-            <p style="color:#777;">{formatdate($comment.timestamp)}</p>
-            <p style="font-size:1.1em;">&#147;{$comment.message}&#148;<a href="/account/user/{$comment.user_id}" style="font-size:0.8em;"> - {$comment.user.username}</a></p>
-
-            <p style="font-size:0.75em;">On post <a href="/blogs/{$comment.blog_id}/posts/{$comment.link}">{$comment.title}</a></p>
-        </div>
-
-    {/if}
-    
-{/strip}{/foreach}
-</div>
-
-
-<div class="push-right" style="margin-top:50px;">
-    <a href="/posts/{$blog.id}/new" class="action_button">New Post</a>
-    <a href="/posts/{$blog.id}" class="action_button">Current Posts</a>
-    <a href="/config/{$blog.id}" class="action_button">Manage Settings</a>
-    <a href="/contributors/{$blog.id}" class="action_button">Contributors</a>
-    <a href="/blogs/{$blog.id}" target="_blank" class="action_button btn_red">View Blog</a>
-</div>
+{if count($comments) == 0}
+    <div class="segment">No comments have been made on your posts</div>
+{else}
+    <table class="ui table">
+        <thead>
+            <tr>
+                <th>Comment Text</th>
+                <th>Date</th>
+                <th>User</th>
+                <th>Post</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+    {foreach $comments as $comment}{strip}
+        <tr>
+            <td>
+                {$comment.message}
+            </td>
+            <td>
+                {formatdate($comment.timestamp)}
+            </td>
+            <td>
+                <a href="/account/user/{$comment.user_id}">{$comment.user.username}</a>
+            </td>
+            <td>
+                <a href="/blogs/{$comment.blog_id}/posts/{$comment.link}">{$comment.title}</a>
+            </td>
+            <td class="single line">
+                {if $comment['approved'] == 1}
+                    <div class="ui label green"><i class="icon checkmark"></i> Approved</div>
+                {else}
+                    <div class="ui label yellow">Pending Approval</div>
+                {/if}
+            </td>
+            <td class="single line right aligned">
+                
+                {if $comment['approved'] == 0}
+                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/approve/{$comment.id}'{rdelim}" title="Approve Comment">Approve</button>
+                {/if}
+                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/delete/{$comment.id}'{rdelim}" title="Remove Comment">Delete</button>
+            </td>
+        </tr>
+    {/strip}{/foreach}
+    </table>
+{/if}

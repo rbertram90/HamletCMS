@@ -1,5 +1,10 @@
 <?php
 /**
+    NO LONGER USED!!!!! 
+    Now gets data via JSON format and formats using javascript for cleaner server side code
+**/
+
+/**
 	Formatting for tag list
 **/
 function printTags($psTagList, $pBlogID) {
@@ -37,7 +42,7 @@ function showAjaxPagination($pages, $pagenum) {
         $res .= '<a class="disabled item">&gt;</a>';
     }
     $res .= '</div>';
-
+    
     return $res;
 }
 

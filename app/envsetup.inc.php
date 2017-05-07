@@ -21,10 +21,6 @@
 /****************************************************************
   Database Constants
 ****************************************************************/
-
-    // Load config - will probabily move this out of app folder!    
-    $jsonhelper = new \rbwebdesigns\JSONhelper();
-    $config = $jsonhelper->jsonToArray(SERVER_ROOT . '/app/config/config.json');
     
     if(!array_key_exists('database', $config)) die("Setup error - no database config found");
     $databaseCredentials = $config['database'];
@@ -61,7 +57,7 @@
     require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
     
     // Generic controller class
-    require_once SERVER_ROOT.'/app/controller/generic_bcms_controller.inc.php';
+    require_once SERVER_ROOT.'/app/controller/generic_controller.inc.php';
     
     // Generic view
     require_once SERVER_ROOT.'/app/view/view.php';

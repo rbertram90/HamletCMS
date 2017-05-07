@@ -7,22 +7,22 @@
 
 // Show string as an error message
 function showError($str) {
-	return '<p class="error">'. $str .'</p>';
+	return '<div class="ui negative message">'. $str .'</div>';
 }
 
 // Show string as an information box
 function showInfo($str) {
-	return "<p class='info'>". $str ."</p>";
+	return '<div class="ui info message">'. $str .'</div>';
 }
 
 // Show a warning box
 function showWarning($str) {
-	return "<p class='warning'>". $str ."</p>";
+	return '<div class="ui warning message">' . $str . '</div>';
 }
 
 // Show a warning box
 function showSuccess($str) {
-	return "<p class='success'>". $str ."</p>";
+	return '<div class="ui positive message">' . $str . '</div>';
 }
 
 // Show a MySQL Related Specific Error

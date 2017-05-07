@@ -354,21 +354,28 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
 } // end loop
 
 
-// Comments
-function viewComments($pobjComments) {
+/**
+ * View Comments
+ * Prints out all comments passed in
+ * @param $comments array of comments
+ */
+function viewComments($comments) {
 
 	echo "<div class='comments'><h2>Comments</h2>";
-
-	if(count($pobjComments) == 0) {
+    
+	if(count($comments) == 0)
+    {
 		echo showInfo("No comments have been made on this post")."</div>";
-		return true;
+		return;
 	}
 	
-	foreach($pobjComments as $comment):
+	foreach($comments as $comment):
+    
 		// See if we can get a known user?
-		if($comment['user_id'] !== 0) {
-			$lobjUsers = $GLOBALS['gClsUsers'];
-			$user = $lobjUsers->getUserById($comment['user_id']);
+		if($comment['user_id'] !== 0)
+        {
+			$modelUers = $GLOBALS['models']['users'];
+			$user = $modelUers->getUserById($comment['user_id']);
 			$comment['name'] = $user['username'];
 			$comment['fullname'] = $user['name']." ".$user['surname'];
 		}
@@ -382,25 +389,30 @@ function viewComments($pobjComments) {
 }
 
 
-// HMTL for a making a comment on a blog post
-function commentForm($arrayBlog, $arrayPost) {
-
-	if(!$GLOBALS['gbLoggedIn']) {
+/**
+ * HTML form for a adding a comment to a blog post
+ * @param $blog array containing data about blog
+ * @param $post array containing data about post
+ */
+function commentForm($blog, $post)
+{
+	if(!USER_AUTHENTICATED)
+    {
 		echo showInfo("You need to be logged in to add comments");
-		return true;
+		return;
 	}
 ?>
-<div class="comment-form">
-	<form action="/blogs/<?=$arrayBlog['id']?>/posts/<?=$arrayPost['link']?>/addcomment" method="POST">
-		<label for="fld_comment">Comment</label>
-		<textarea name="fld_comment" style="height:60px;"></textarea>
-		
-		<div class="push-right">
-			<input type="submit" name="fld_submitcomment" value="Add Comment" />
-		</div>
-	</form>
-</div>
+    <div class="comment-form">
+        <form action="/blogs/<?=$blog['id']?>/posts/<?=$post['id']?>/addcomment" method="POST">
+            
+            <label for="fld_comment">Comment</label>
+            <textarea name="fld_comment"></textarea>
 
+            <div class="push-right">
+                <input type="submit" name="fld_submitcomment" value="Add Comment" />
+            </div>
+        </form>
+    </div>
 <?php
 }
 ?>

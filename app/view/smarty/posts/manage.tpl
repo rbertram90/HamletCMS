@@ -70,38 +70,186 @@
 </div>
     
 <script>
+    // E.g. 3:11, 22nd Aug 2015
+    function formatDate(date) {
+        var d = new Date(date);
+        
+        switch(d.getDate()) {
+            case 1,21,31:
+                var suffix = 'st';
+                break;
+            case 2,22:
+                var suffix = 'nd';
+                break;
+            case 3,23:
+                var suffix = 'rd';
+                break;
+            default:
+                var suffix = 'th';
+                break;
+        }
+        
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return d.getHours() + ':' + d.getMinutes() + ', ' + d.getDate() + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    
     var refreshData = function(pagenum) {
         var numtoshow = $("#numtoshow").val();
         var sortby = $("#sortby").val();
         var filterdrafts = $("#filterdrafts").is(':checked');
         var filterscheduled = $("#filterscheduled").is(':checked');
 
-        $.get("/ajax/get_posts",
+        $.get("/api/posts",
             {
-                b:{$blog.id},
-                s:pagenum,
-                n:numtoshow,
-                o:sortby,
-                fd:filterdrafts,
-                fs:filterscheduled
+                blogID:         {$blog.id},
+                start:          pagenum,
+                limit:          numtoshow,
+                sort:           sortby,
+                showdrafts:     filterdrafts,
+                showscheduled:  filterscheduled
 
             }, function(data) {
-                $("#posts_display").html(data);
+                // $("#posts_display").html(data);
+                
+                var start = pagenum * numtoshow - (numtoshow - 1);
+                var end   = pagenum * numtoshow;
+                var numpages = Math.ceil(data.postcount / numtoshow);
+                output = "<p>Showing " + start + " - " + end + " of " + data.postcount + "</p>";
+                
+                output += "<table class='ui table'><thead>";
+                output += "<tr><th>Title</th><th>Tag(s)</th><th>Author</th>";
+	
+                output += "<th>Visitors <a href='#' class='helptext' onclick='javascript:alert(\"This is the count of \'unique visitors\' for each post, not the number of times it has been viewed. So it will count 1 view even if someone refreshes the page multiple times\");'>[?]</a></th>";
+	
+                output += "<th>Views <a href='#' class='helptext' onclick='javascript:alert(\"This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable\");'>[?]</a></th>";
+	
+                output += "<th>Comments</th><th>Type</th><th>Word Count</th><th></th></tr></thead>";
+            
+                for(var i=0; i<numtoshow; i++) {
+                                        
+                    var post = data.posts[i];
+                    
+                    if(!post) break;
+                    
+                    var tagoutput = "";
+                    
+                    if(post.tags.length > 0) {
+                        var tags = post.tags.split(","); // todo: split out
+
+                        for(var k=0; k<tags.length; k++) {
+                            tag = tags[k].trim();
+                            tag = tag.replace("+", " ");
+                            tagoutput += "<div class='ui horizontal label'><a href='/blogs/" + data.blog.id + "/tags/" + tag + "'>" + tag + "</a></div>";
+                        }
+                    }
+                    else {
+                        tagoutput = "<i>None</i>";
+                    }
+                    
+                    output += "<tr><td>";
+                    output += " <a href='/blogs/" + data.blog.id + "/posts/" + post.link + "'>" + post.title + "</a>"
+                    
+                    if(new Date(post.timestamp) > new Date()) {
+                        // Scheduled
+                        output += " <i>Scheduled</i>";
+                    }
+                    
+                    if(post.draft == 1) {
+                        // Draft
+                        output += " <i>Draft</i>";
+                    }
+                    
+                    // todo: add scheduled and draft flags
+                    output += " <br><span class='date'>" + formatDate(post.timestamp) + "</span>";
+                    
+                    output += "</td><td>" + tagoutput;
+
+                    output += "</td><td>";
+                    output += " <a href='/account/user/" + post.author_id + "' class='user-link'>";
+                    output += "   <span data-userid='" + post.author_id + "'>" + post.username + "</span></a>";
+                    
+                    output += "</td><td>";
+                    output += " <div class='ui circular label'>" + post.uniqueviews + "</div>";
+
+                    output += "</td><td>";
+                    output += " <div class='ui circular label'>" + post.hits + "</div>";
+
+                    output += "</td><td>";
+                    output += " <div class='ui circular label'>" + post.numcomments + "</div>";
+
+                    output += "</td><td>";
+                    
+                    switch(post.type.toLowerCase()) {
+                        case 'video':
+                            typecolour = 'purple';
+                            break;
+                        case 'gallery':
+                            typecolour = 'orange';
+                            break;
+                        default:
+                            typecolour = '';
+                            break;
+                    }
+                    
+                    output += " <div class='ui label " + typecolour + "'>" + post.type + "</div>";
+                    
+                    output += "</td><td>" + post.wordcount;
+
+                    output += "</td><td width='100'>";
+                    output += " <div class='option-dropdown' style='width:100px;'>";
+                    output += "   <div class='default-option'>- Actions -</div>";
+                    output += "   <div class='hidden-options'>";
+                    output += "     <a href='/posts/" + data.blog.id + "/edit/" + post.id + "'>Edit</a>";
+                    output += "     <a href='/posts/" + data.blog.id + "/delete/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
+                    output += " </div></div>";
+
+                    output += " </td></tr>";
+                    
+                }
+            
+                output += '</table>';
+            
+                output += '<div class="ui pagination menu">';
+
+                // Don't show back link if current page is first page.
+                if (pagenum == 1) {
+                    output += '<a class="disabled item">&lt;</a>';
+                }
+                else {
+                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum-1) + '\'); return false;">&lt;</a>';
+                }
+                // loop through each page and give link to it.
+                for (var j=1; j<=numpages; j++) {
+                    if (pagenum == j) output += '<a class="active item">' + j + '</a>';
+                    else output += '<a href="#" class="item" onclick="refreshData(\'' + j + '\'); return false;">' + j + '</a>';
+                }
+                // If last page don't give next link.
+                if (pagenum < numpages) {
+                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum+1) + '\'); return false;">&gt;</a>';
+                }
+                else {
+                    output += '<a class="disabled item">&gt;</a>';
+                }
+            
+                output += '</div>';
+            
+                output += '<a href="/posts/' + data.blog.id + '/new" class="ui button teal right floated">New Post</a>';
+                
+                output += '<script>';
+                output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';
+                output += '  $(".user-link").mouseleave(function() {ldelim} hideUserProfile($(this)) {rdelim});';
+                output += '<\/script>';
+            
+                $("#posts_display").html(output);
             }
         );
     };
-    $("#numtoshow").change(function() {
-        refreshData(1); // change number that is shown - return to first page
-    });
-    $("#sortby").change(function() {
-        refreshData(1); // change sort & return to first page
-    });
-    $("#filterdrafts").change(function() {
-        refreshData(1);
-    });
-    $("#filterscheduled").change(function() {
-        refreshData(1);
-    });
+    
+    // change number that is shown - return to first page
+    $("#numtoshow").change(function()       { refreshData(1); });
+    $("#sortby").change(function()          { refreshData(1); });
+    $("#filterdrafts").change(function()    { refreshData(1); });
+    $("#filterscheduled").change(function() { refreshData(1); });
 
     // Init
     refreshData(1);

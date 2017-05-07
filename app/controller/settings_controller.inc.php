@@ -16,7 +16,7 @@ use rbwebdesigns;
 
 **********************************************************************/
 
-class SettingsController extends GenericBlogCMSController
+class SettingsController extends GenericController
 {
     // Class Variables
     private $modelBlogs;		// Blogs Model

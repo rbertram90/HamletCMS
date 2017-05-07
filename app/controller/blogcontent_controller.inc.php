@@ -520,7 +520,7 @@ class BlogContentController {
             if($arrayPost['allowcomments'] == 1) {
                 // View comment form
                 $lobjBlogID = $this->modelPosts->getPostByURL($queryParams[0], $this->blogID);
-                $arrayComments = $this->modelComments->getCommentsByPost($lobjBlogID['id']);
+                $arrayComments = $this->modelComments->getCommentsByPost($lobjBlogID['id'], false);
                 viewComments($arrayComments);
                 commentForm($this->blog, $arrayPost);
             }
@@ -536,26 +536,32 @@ class BlogContentController {
     }
     
     /************* Comments ******************/
+    
     public function addComment($DATA, $queryParams)
     {
+        // todo: Check that the user hasn't submitted more than 5 comments in last 30 seconds?
+        // Or if the last X comments were from the same user?
+        // to prevent comment spamming
+        
         // Check that the comment was accutally submitted?
         // Stops people just browsing to the /addcomment URL
-        $posturl = safeString($queryParams[0]);
+        $postID = sanitize_number($queryParams[0]);
         
-        // Validate
-        $valid = true; // Innocent until proven guilty!
-        if(!isset($_POST['fld_submitcomment'])) $valid = false;
+        // Validate comment
+        $formValid = true;
+        
+        if(!isset($_POST['fld_submitcomment'])) $formValid = false;
         
         if(!isset($_POST['fld_comment']) || strlen($_POST['fld_comment']) == 0)
         {
-            $valid = false;
-            setSystemMessage("Please enter your comment", "Error");
+            $formValid = false;
+            setSystemMessage("Please enter a comment", "Error");
         }
         
-        if($valid)
+        if($formValid)
         {
             // Get the post from DB
-            $post = $this->modelPosts->getPostByURL($posturl, $DATA['blog_key']);
+            $post = $this->modelPosts->getPostByID($postID, $DATA['blog_key']);
             
             // Check that post allows reader comments
             if($post['allowcomments'] == 0)
@@ -566,15 +572,16 @@ class BlogContentController {
             {
                 // Sanitize Comment
                 $content = sanitize_string($_POST['fld_comment']);
+                
                 // Submit to DB
                 $this->modelComments->addComment($content, $post['id'], $DATA['blog_key'], $_SESSION['userid']);
+                
                 // Show Success
-                setSystemMessage("Comment Added!", "Success");
+                setSystemMessage("Comment submitted - awaiting approval", "Success");
             }
         }
         
-        redirect("/blogs/".$DATA['blog_key']."/posts/".$posturl);
+        redirect("/blogs/{$DATA['blog_key']}/posts/{$post['link']}");
     }
-    
 }
 ?>

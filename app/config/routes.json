@@ -1,0 +1,102 @@
+{
+	"default":
+	{
+        "controller": "blogcms",
+		"function": "home",
+		"title": "Your Blogs"
+	},
+    "welcome":
+    {
+        "controller": "blogcms",
+		"function": "welcome",
+		"title": "Welcome to Blog CMS"
+    },
+    "overview":
+    {
+        "controller": "blogcms",
+		"function": "blogOverview"
+    },
+    "comments":
+    {
+        "controller": "blogcms",
+		"function": "manageComments"
+    },
+    "explore":
+    {
+        "controller": "blogcms",
+		"function": "explore"
+    },
+    "developer":
+    {
+        "controller": "blogcms",
+        "function": "viewDocs"
+    },
+	"newblog":
+	{
+        "controller": "blogcms",
+		"function": "createBlog",
+		"title": "Create A New Blog"
+	},
+	"submitnewblog":
+	{
+        "controller": "blogcms",
+		"function": "action_createBlog"
+	},
+    "logout":
+    {
+        "controller": "blogcms",
+        "function": "logout"
+    },
+	"accessdenied":
+	{
+        "controller": "blogcms",
+		"function": "accessDenied",
+		"title": "403 - Access Denied"
+	},
+    "notfound":
+    {
+        "controller": "blogcms",
+		"function": "notFound",
+		"title": "404 - Unable to find page"
+    },
+    "account":
+    {
+        "controller": "account",
+		"function": "route",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "files":
+    {
+        "controller": "files",
+		"function": "route",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "config":
+    {
+        "controller": "settings",
+		"function": "route",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "contributors":
+    {
+        "controller": "contributors",
+		"function": "route",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "posts":
+    {
+        "controller": "posts",
+		"function": "route",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "ajax":
+    {
+        "controller": "ajax",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    },
+    "api":
+    {
+        "controller": "api",
+        "_notes": "The individual routes for this section are handled in the controller code"
+    }
+}
