@@ -4,9 +4,39 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7ff2aeecb9ee9bab96e895f9b59fe688",
-    "content-hash": "c30c90c3c8adf83f03cbe79cd237ce2a",
+    "hash": "0bc974495bce014c71659a20ced14733",
+    "content-hash": "7eb2022898430c4ad42ccb5fb5bbd768",
     "packages": [
+        {
+            "name": "athens/csrf",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AthensFramework/csrf.git",
+                "reference": "a7b258ec1740968c013aabc9339b53f6c3a1751e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AthensFramework/csrf/zipball/a7b258ec1740968c013aabc9339b53f6c3a1751e",
+                "reference": "a7b258ec1740968c013aabc9339b53f6c3a1751e",
+                "shasum": ""
+            },
+            "require-dev": {
+                "athens/standard": "*",
+                "codeclimate/php-test-reporter": "dev-master",
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Simple CSRF protection",
+            "time": "2016-02-23 16:56:18"
+        },
         {
             "name": "codeliner/array-reader",
             "version": "v1.2.0",

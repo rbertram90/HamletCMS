@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 use Codeliner;
+use Athens\CSRF;
 
 /****************************************************************
   Blog CMS System Start Point
@@ -107,6 +108,8 @@ use Codeliner;
 //        $this->modelUsers = $GLOBALS['gClsUsers'];
 //        $this->modelSecurity = new rbwebdesigns\AppSecurity();
 
+    // Check form submissions for CSRF token
+    CSRF::init();
 
 /****************************************************************
   Setup View

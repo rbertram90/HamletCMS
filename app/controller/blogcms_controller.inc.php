@@ -385,20 +385,7 @@ class BlogcmsController extends GenericController
         View the new blog form
     **/
     public function createBlog($params)
-    {
-        // Generate Unique form key
-        $CSRFToken = $this->modelSecurity->generateSecureKey();
-        
-        // Store into the session
-        $_SESSION['secure_form_key'] = $CSRFToken;
-        // note: this doesn't work well!
-        // need a way to generate a new one for each form loaded - using this method
-        // we only store one key so the minute a second form is loaded the first is invalidated!
-        // Also the accessing of the session could be done in this seperate class
-        
-        // Set in view
-        $this->view->setVar('securekey', $CSRFToken);
-        
+    {        
         // Page Title
         $this->view->setPageTitle('Create New Blog');
         

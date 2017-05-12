@@ -85,13 +85,13 @@ class AppSecurity {
 		a form to prevent cross site scripting
 	**/
 	public function generateSecureKey() {
-		$random = $this->changeBase(mt_rand(1000,9999),43); // Generate four random numbers and convert to different bases
-		$random2 = $this->changeBase(mt_rand(1000,9999),61);
-		$random3 = $this->changeBase(mt_rand(1000,9999),52);
-		$random4 = $this->changeBase(mt_rand(1000,9999),37);
-		$random5 = $this->changeBase(mt_rand(1000,9999), mt_rand(16,60)); // and two in random bases for good measure
-		$random6 = $this->changeBase(mt_rand(1000,9999), mt_rand(16,60));
-		$now = $this->changeBase(time() - mt_rand(1000,9999), 17);
+		$random = $this->changeBase(mt_rand(1000, 9999), 43); // Generate four random numbers and convert to different bases
+		$random2 = $this->changeBase(mt_rand(1000, 9999), 61);
+		$random3 = $this->changeBase(mt_rand(1000, 9999), 52);
+		$random4 = $this->changeBase(mt_rand(1000, 9999), 37);
+		$random5 = $this->changeBase(mt_rand(1000, 9999), mt_rand(16, 60)); // and two in random bases for good measure
+		$random6 = $this->changeBase(mt_rand(1000, 9999), mt_rand(16, 60));
+		$now = $this->changeBase(time() - mt_rand(1000, 9999), 17);
 		$key = $random.$random5.$random2.$now.$random3.$random4.$random6; // Concatenate the four strings
 		return base64_encode($key); // Base64 encode it
 	}
