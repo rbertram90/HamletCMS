@@ -50,43 +50,46 @@ function openPreview() {ldelim}
     <div class="one column row">
         <div class="column">
             {viewPageHeader("{$submitLabel} Blog Post", 'add_doc.png', "{$blog['name']}")}
-        </div>
-    </div>
 
-    {if $mode=='edit' and array_key_exists('autosave', $post)}
-    <div class="one column row">
-        <div class="column">
+            {if $mode=='edit' and array_key_exists('autosave', $post)}
             <script>
-                function replaceContent()
-                {ldelim}
+                function replaceContent() {
                     $("#fld_posttitle").val($("#fld_autosave_title").val());
                     $("#fld_postcontent").val($("#fld_autosave_content").val());
                     $("#fld_tags").val($("#fld_autosave_tags").val());
                     $("#autosave_data").hide();
                     $("#autosave_exists_message").hide();
-                {rdelim}
+                 }
             </script>
 
-            <div id="autosave_data" style="display:none; background-color:#bbb; border:1px solid #aaa; padding:10px;">
-
-                <h2>Autosaved data</h2>
-
-                <label for="fld_autosave_title">title</label>
-                <input disabled type="text" id="fld_autosave_title" name="fld_autosave_title" value="{$post.autosave.title}" />
-
-                <label for="fld_autosave_content">Content</label>
-                <textarea disabled id="fld_autosave_content" name="fld_autosave_content">{$post.autosave.content}</textarea>
-
-                <label for="fld_autosave_tags">Tags</label>
-                <input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="{$post.autosave.tags}" />
-
+            <div id="autosave_exists_message" class="ui yellow segment clearing">
+                <p>You have an autosaved draft for this post, do you want to continue with this edit?
+                <a href="#" onclick="$('#autosave_data').toggle(); return false;" class="ui basic right floated teal button">Show Content</a>
+                <a href="#" onclick="$('#autosave_data').hide(); $('#autosave_exists_message').hide(); return false;" class="ui right floated teal button">No</a>
+                <a href="#" onclick="replaceContent(); return false;" class="ui right floated teal button">Yes</a></p>
             </div>
-
-            <p id="autosave_exists_message" class="info">An unsubmitted version exists, do you want to continue with this edit? <a href="#" onclick="$('#autosave_data').toggle(); return false;">hide / show content</a> <a href="#" onclick="replaceContent(); return false;">Use</a></p>
+            
+            <div id="autosave_data" class="ui segment" style="display:none;">
+                <div class="ui form">
+                    <h2 class="ui heading">Autosaved Post</h2>
+                    <div class="field">
+                        <label for="fld_autosave_title">Title</label>
+                        <input disabled class="" type="text" id="fld_autosave_title" name="fld_autosave_title" value="{$post.autosave.title}" />
+                    </div>
+                    <div class="field">
+                        <label for="fld_autosave_content">Content</label>
+                        <textarea disabled id="fld_autosave_content" name="fld_autosave_content">{$post.autosave.content}</textarea>
+                    </div>
+                    <div class="field">
+                        <label for="fld_autosave_tags">Tags</label>
+                        <input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="{$post.autosave.tags}" />
+                    </div>
+                </div>
+            </div>
+            {/if}
         </div>
     </div>
-    {/if}
-    
+
     <form action="{$formAction}" method="post" name="frm_createpost" id="frm_createpost" class="two column row ui form">
         
         <div class="ten wide column">
@@ -108,7 +111,7 @@ function openPreview() {ldelim}
                 <input type="text" name="fld_tags" id="fld_tags" placeholder="Enter as a Comma Seperated List" autocomplete="off" value="{$fieldTags}" />
             </div>
             
-            <div id="autosave_status"></div>
+            <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
             {if $mode == 'edit'}
               <input type="hidden" id="fld_postid" name="fld_postid" value="{$post.id}" />
@@ -118,7 +121,8 @@ function openPreview() {ldelim}
             
             <input type="hidden" name="fld_blogid" id="fld_blogid" value="{$blog.id}" />
             <input type="hidden" name="fld_posttype" id="fld_posttype" value="standard" />
-            <input type="button" value="Cancel" name="goback" onclick="window.history.back()" class="ui button right floated" />
+            
+            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = '/posts/{$blog.id}/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; {rdelim}" class="ui button right floated" />
             <input type="submit" name="fld_submitpost" value="{$submitLabel}" class="ui button teal right floated" />
         </div>
 
@@ -157,11 +161,10 @@ function openPreview() {ldelim}
     </form>
 
 
-<script type="text/javascript">		
-$(document).ready(function ()
-{ldelim}
-
-    var content_changed = false;
+<script type="text/javascript">
+var content_changed = false;
+    
+$(document).ready(function () {
 
     $(window).on('beforeunload', function()
     {ldelim}
@@ -170,54 +173,43 @@ $(document).ready(function ()
             return false;
         {rdelim}
     {rdelim});
-
+    
     // Auto save
     var runsave = function()
-    {ldelim}
-
+    {
         if(content_changed)
-        {ldelim}
-
+        {
             jQuery.post("/ajax/autosave",
-            {ldelim}
+            {
                 "fld_postid": $("#fld_postid").val(),
                 "fld_content": $("#fld_postcontent").val(),
                 "fld_title": $("#fld_posttitle").val(),
                 "fld_type": $("#fld_posttype").val(),
                 "fld_allowcomments": $("#fld_allowcomment").val(),
                 "fld_tags": $("#fld_tags").val(),
-                "fld_blogid": $("#fld_blogid").val()
+                "fld_blogid": $("#fld_blogid").val(),
+                "csrf_token": CSRFTOKEN
 
-            {rdelim}, function(data)
-            {ldelim}
+            }, function(data)
+            {
                 if(typeof data.newpostid != "null" && typeof data.newpostid != "undefined")
-                {ldelim}
+                {
                     $("#fld_postid").val(data.newpostid);
-                {rdelim}
+                }
                 $("#autosave_status").html(data.message);
+                $("#autosave_status").show();
 
-            {rdelim}, "json");
-
-            // content_changed = false;
-        {rdelim}
-    {rdelim}
+            }, "json");
+        }
+    }
 
     // Run on key down of content
-    $("#fld_postcontent").on("keyup", function()
-    {ldelim}
-        content_changed = true;
-    {rdelim});
-    $("#fld_title").on("keyup", function()
-    {ldelim}
-        content_changed = true;
-    {rdelim});
-    $("#fld_tags").on("keyup", function()
-    {ldelim}
-        content_changed = true;
-    {rdelim});
+    $("#fld_postcontent").on("keyup", function() { content_changed = true; });
+    $("#fld_title").on("keyup", function() { content_changed = true; });
+    $("#fld_tags").on("keyup", function() { content_changed = true; });
 
     // Saves every 10 seconds if something has changed
-    var save_interval = setInterval(runsave, 10000);
+    var save_interval = setInterval(runsave, 5000);
 
     // Function to submit form
     var submitForm = function () {ldelim}
@@ -269,6 +261,6 @@ $(document).ready(function ()
         $("#fld_allowcomment").val({$post.allowcomments});
     {/if}
 
-{rdelim});
+});
 </script>
 </div>

@@ -71,9 +71,8 @@
             {else}
                 <p class="info">Nothing has been posted on this blog, why not <a href="/posts/{$blog.id}/new">make a start</a>?</p>
             {/if}
-
-
             <a href='/posts/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
+            <a href='/posts/{$blog.id}/new' class='ui basic teal right floated button'>New Post &gt;</a>
         </div>
         <div class="column">
         <h3 class="ui header">Recent Comments</h3>

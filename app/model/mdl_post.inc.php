@@ -470,7 +470,7 @@ class ClsPost extends rbwebdesigns\RBmodel {
         @param <int> $postid - id number of the post to delete
         NOTE - this function should also delete comments associated with this post!
     **/
-    public function deletePost($blogid, $postid) {
+    public function xxdeletePost($blogid, $postid) {
     
         // Sanitize Variables
         $blogid = safeNumber($blogid);
@@ -482,6 +482,12 @@ class ClsPost extends rbwebdesigns\RBmodel {
         // Query DB
         $sql = 'DELETE FROM '.$this->tblname.' WHERE id="'.$postid.'"';
         $this->db->runQuery($sql);
+        
+        // Remove the autosave if exists
+        if($this->autosaveExists($postid))
+        {
+            $this->removeAutosave($postid);
+        }
         
         return true;
     }

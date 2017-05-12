@@ -49,14 +49,14 @@ class PostsController extends GenericController {
         @param    params    Miscellaneous inputs from the URL such as blog id
                             accessed in an array.
     */
-        
+    
     public function route($params)
     {
         // Create an easy reader for the params array
         $paramsReader = new Codeliner\ArrayReader\ArrayReader($params);
         
-        if(getType($params) == 'array' && array_key_exists(0, $params)):
-        
+        if(getType($params) == 'array' && array_key_exists(0, $params))
+        {
             // Find and open blog
             $blogid = sanitize_number($params[0]);
             $arrayblog = $this->modelBlogs->getBlogById($blogid);
@@ -88,7 +88,8 @@ class PostsController extends GenericController {
             $formsubmitted = (array_key_exists(2, $params) && $params[2] == 'submit'); // Submit
             if (!$formsubmitted) $formsubmitted = (array_key_exists(3, $params) && $params[3] == 'submit'); // Submit
             
-            switch($action):
+            switch($action)
+            {
                 case 'new':
                     if($formsubmitted) $this->action_createPost();
                     $posttype = $paramsReader->stringValue(2, '');        
@@ -107,18 +108,21 @@ class PostsController extends GenericController {
                 case 'preview':
                     $this->previewPost();
                     break;
+        
+                case 'cancelsave':
+                    $this->action_removeAutosave($arraypost);
+                    break;
                 
                 default:
                     $this->managePosts($arrayblog);
                     break;
-                    
-            endswitch;
-                        
-        else:
+            }
+        }
+        else
+        {
             // Must have at least one param -> blogid
             return $this->throwNotFound();
-        
-        endif;
+        }
     }
         
     /******************************************************************
@@ -308,6 +312,24 @@ class PostsController extends GenericController {
         redirect('/posts/'.$_POST['fld_blogid']);
     }
     
+    // Cancel action from new post screen
+    protected function action_removeAutosave($post)
+    {
+        // Check we have permission to perform action - if the user created the post or is blog admin
+        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $_SESSION['userid'], 'all') || $_SESSION['userid'] == $post['author_id'])) return $this->throwAccessDenied();
+        
+        // Delete from DB - isn't critical if fails
+        $this->modelPosts->removeAutosave($post['id']);
+        
+        // Check if the actual post record is an autosave
+        if($post['initialautosave'] == 1)
+        {
+            $this->modelPosts->delete(array('id' => $post['id']));
+        }
+        
+        // Redirect back to manage posts
+        redirect('/posts/' . $post['blog_id']);
+    }
     
     /**
         Edit an existing blog post
@@ -379,7 +401,7 @@ class PostsController extends GenericController {
         else setSystemMessage('Sorry, There has been an error deleting your post.', 'Error');
         
         // Redirect
-        redirect('/posts/'.$arraypost['blog_id']);
+        redirect('/posts/' . $arraypost['blog_id']);
     }
     
 }

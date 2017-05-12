@@ -22,14 +22,14 @@ if($updateDB === false) {
 } else if($updateDB > 0 && $updateDB !== sanitize_number($_POST['fld_postid'])) {
 	echo json_encode(array(
 		'status' => 'success',
-		'message' => 'Post last saved at '.date('Y-m-d H:i:s'),
+		'message' => 'Post autosaved at '.date('H:i'),
 		'newpostid' => $updateDB
 	));
 	
 } else {
 	echo json_encode(array(
 		'status' => 'success',
-		'message' => 'Post last saved at '.date('Y-m-d H:i:s')
+		'message' => 'Post autosaved at '.date('H:i')
 	));
 }
 ?>
