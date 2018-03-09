@@ -14,7 +14,7 @@ $pReturnElementID = isset($_GET['elemid']) ? sanitize_string($_GET['elemid']) : 
 // Append or replace
 $pReturnReplace = isset($_GET['replace']) ? sanitize_number($_GET['replace']) : 0;
 
-$path = SERVER_ROOT."/app/www_root/blogdata/$lsBlogID/images";
+$path = SERVER_ROOT."/app/public/blogdata/$lsBlogID/images";
 
 $lbShowExisiting = is_dir($path);
 

@@ -94,7 +94,7 @@ class View {
             else
             {
                 // File passed in doesn't exist
-                require SERVER_ROOT.'/app/www_root/404.php';
+                require SERVER_PUBLIC_PATH . '/404.php';
             }
             
             // Save current content

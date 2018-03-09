@@ -22,7 +22,7 @@ Back end is all vanilla PHP other than the views which are now mainly all using 
 The core part of the system was originally seperate under rbwebdesigns but has now been included as part of
 blog cms - still uses original namespace (need to change?)
 
-Blog data is stored both in MySQL database and within files defaulted to /app/www_root/blogdata
+Blog data is stored both in MySQL database and within files defaulted to /app/public/blogdata
  * default.php - one line file which includes the blog setup script
  * default.css - stylesheet from templates
  * images folder

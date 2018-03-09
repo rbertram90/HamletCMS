@@ -94,7 +94,7 @@
         
         <h4>SERVER_ROOT</h4>
         <p>Path to the main app folder</p>
-        <h4>SERVER_PATH_WWW_ROOT</h4>
+        <h4>SERVER_PUBLIC_PATH</h4>
         <h4>SERVER_PATH_TEMPLATES</h4>
         <h4>SERVER_PATH_BLOGS</h4>
         <h4>SERVER_AVATAR_FOLDER</h4>

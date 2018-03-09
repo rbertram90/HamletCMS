@@ -369,7 +369,7 @@ class SettingsController extends GenericController
 	**/
 	private function getBlogConfig($blogid)
     {
-		return jsonToArray(SERVER_PATH_WWW_ROOT.'/blogdata/'.$blogid.'/config.json');
+		return jsonToArray(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json');
 	}
 	
     
@@ -379,7 +379,7 @@ class SettingsController extends GenericController
 	private function saveBlogConfig($blogid, $arrBlogConfig)
     {
 		$json_string = json_encode($arrBlogConfig);
-		file_put_contents(SERVER_PATH_WWW_ROOT.'/blogdata/'.$blogid.'/config.json', $json_string);
+		file_put_contents(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json', $json_string);
 	}
 	
     
@@ -742,7 +742,7 @@ class SettingsController extends GenericController
 		// Check we have permission to perform action
 		if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'])) return $this->throwAccessDenied();
 		// Update default.css
-        if(is_dir(SERVER_PATH_WWW_ROOT.'/blogdata/'.$blog_id))
+        if(is_dir(SERVER_PUBLIC_PATH.'/blogdata/'.$blog_id))
         {
             file_put_contents(SERVER_PATH_BLOGS.'/'.$blog_id.'/default.css', $css_string);
             setSystemMessage(ITEM_UPDATED, "Success");

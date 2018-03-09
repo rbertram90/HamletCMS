@@ -21,16 +21,16 @@ use Athens\CSRF;
     /* Server side relative paths */
     
     // Path to www folder
-    define('SERVER_PATH_WWW_ROOT', SERVER_ROOT . '/app/www_root');
+    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');
     
     // Path to the blog templates folder
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');
     
     // Path to the blogs data
-    define('SERVER_PATH_BLOGS', SERVER_PATH_WWW_ROOT . '/blogdata');
+    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');
     
     // Path to the folder containing user avatars
-    define('SERVER_AVATAR_FOLDER', SERVER_PATH_WWW_ROOT . '/avatars');
+    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');
 
     define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');
 

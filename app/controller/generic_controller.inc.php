@@ -24,13 +24,13 @@ class GenericController {
     }
     
     public function notFound($params) {
-        // require_once SERVER_ROOT.'/app/www_root/404.php';
+        // require_once SERVER_ROOT.'/app/public/404.php';
         $this->view->setPageTitle('Page Not Found');
         $this->view->render('404.tpl');
     }
     
     public function accessDenied($params) {
-        // require_once SERVER_ROOT.'/app/www_root/403.php';
+        // require_once SERVER_ROOT.'/app/public/403.php';
         $this->view->setPageTitle('Access Denied');
         $this->view->render('403.tpl');
     }

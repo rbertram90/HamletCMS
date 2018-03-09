@@ -73,7 +73,7 @@
     Setup and Decide on actual page content
 ****************************************************************/
 
-    // Have now got key from www_root/index.php
+    // Have now got key from public/index.php
 
     // $blog_key = substr(dirname($_SERVER["PHP_SELF"]), -10);
 

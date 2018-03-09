@@ -4,8 +4,10 @@
 
 /docs
 /app/vendor
-/app/www_root/blogdata
-/app/www_root/templates_c
+/app/public/blogdata
+/app/public/templates_c
+/app/public/avatars
+
 /app/config/config.json
 
 # =========================

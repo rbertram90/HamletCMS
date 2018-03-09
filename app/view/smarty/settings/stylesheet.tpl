@@ -19,7 +19,7 @@
                     </div>
 
                     <textarea name="fld_css" id="fld_css" style="height:600px; font-family:monospace;">{strip}
-                        {file_get_contents("{$serverroot}/app/www_root/blogdata/{$blog['id']}/default.css")}
+                        {file_get_contents("{$serverroot}/app/public/blogdata/{$blog['id']}/default.css")}
                     {/strip}</textarea>
 
                 </div>

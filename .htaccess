@@ -3,6 +3,6 @@
 	RewriteCond %{REQUEST_FILENAME} !-f
     ErrorDocument 403 /accessdenied
     ErrorDocument 404 /notfound
-    RewriteRule    ^$ app/www_root/    [L]
-    RewriteRule    (.*) app/www_root/$1 [L]
+    RewriteRule    ^$ app/public/    [L]
+    RewriteRule    (.*) app/public/$1 [L]
 </IfModule>

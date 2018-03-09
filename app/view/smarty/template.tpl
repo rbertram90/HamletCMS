@@ -37,7 +37,6 @@
             
             <ul>
                 {* todo: apply 'current' class back in *}
-                <li><a href="/welcome"><img src='/resources/icons/64/globe.png'><span class='menuitemtext'>Welcome</span></a></li>
                 <li><a href="/"><img src='/resources/icons/64/book.png'><span class='menuitemtext'>My Blogs</span></a></li>
                 <li><a href="/explore"><img src='/resources/icons/64/plane.png'><span class='menuitemtext'>Explore Blogs</span></a></li>
 
