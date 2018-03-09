@@ -2,7 +2,7 @@
 	<a href="/" class="action_button">Dashboard</a>
 	<a href="/posts/<?=$DATA['blog_key']?>/new" class="action_button">Create New Post</a>
 	<a href="/posts/<?=$DATA['blog_key']?>" class="action_button">Manage Posts</a>
-<?php elseif($gbLoggedIn): ?>
+<?php elseif(USER_AUTHENTICATED): ?>
 	<a href="/" class="action_button">Dashboard</a>
 
 	<?php if($DATA['is_favourite']): ?>

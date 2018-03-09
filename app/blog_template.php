@@ -41,7 +41,9 @@
       endif;
 ?>
     <!-- Custom CSS -->
-    <style type="text/css" id="customcss"><?=$DATA['custom_css']?></style>
+    <style type="text/css" id="customcss">
+	<?php print $DATA['custom_css']; ?>
+	</style>
     
     <?=$DATA['page_headerbackground']?>
 	
@@ -52,7 +54,7 @@
 <body>
 <!--RBwebdesigns Branding-->
 <?php
-    include SERVER_ROOT.'/app/core/view/page-header.php';
+    include SERVER_ROOT.'/app/vendor/rbertram90/core/view/page-header.php';
 ?>
 
     <div class="wrapper">

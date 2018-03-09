@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0bc974495bce014c71659a20ced14733",
-    "content-hash": "7eb2022898430c4ad42ccb5fb5bbd768",
+    "hash": "724202be35a531cb899d018c7b73d67f",
+    "content-hash": "938adb3528ee51bdbd0b52717027e634",
     "packages": [
         {
             "name": "athens/csrf",
@@ -136,6 +136,17 @@
             "time": "2014-05-05 02:43:50"
         },
         {
+            "name": "rbertram90/core",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rbertram90/core",
+                "reference": "origin/master"
+            },
+            "type": "library",
+            "time": "2017-11-17 21:42:44"
+        },
+        {
             "name": "smarty/smarty",
             "version": "v3.1.31",
             "source": {
@@ -192,7 +203,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "rbertram90/core": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

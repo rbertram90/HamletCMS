@@ -25,7 +25,7 @@ class Postlist extends BlogCMSWidget {
         
         if(count($arrayPosts) != 0):
 
-            $lspostlist.= '<h3>Post Archive</h3>';
+            $lspostlist.= '<h3>Post Archive</h3><div class="widget-content">';
 
             // Default Year-Month timestamp
             $current_year = 999999;
@@ -72,7 +72,7 @@ class Postlist extends BlogCMSWidget {
 
             endforeach;
 
-            $lspostlist.= '</div></ul>';
+            $lspostlist.= '</div></ul></div>';
 
         endif;
 

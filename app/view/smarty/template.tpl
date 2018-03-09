@@ -25,7 +25,7 @@
 </head>
 <body>
     {* Include the rbwebdesigns global header *}
-    {include file="$serverroot/app/core/view/page_header.tpl"}
+    {include file="$serverroot/app/vendor/rbertram90/core/view/page_header.tpl"}
     
     <div id="wrapper">
         

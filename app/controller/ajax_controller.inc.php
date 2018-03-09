@@ -40,6 +40,10 @@ class AjaxController extends GenericController
 			case 'widget_settings':
 				require SERVER_ROOT.'/app/ajax/widget_settings.php';
 				break;
+            
+            case 'configure_widget':
+                require SERVER_ROOT.'/app/ajax/configure_widget.php';
+                break;
 			
 			case 'widget_list':
 				if(array_key_exists('element', $_GET))

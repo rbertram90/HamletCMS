@@ -1,0 +1,30 @@
+{
+    "name": "Post timeline",
+    "description": "Lists all posts by date, grouped by month/year",
+    "version": 1.0,
+    "defaults":
+    {
+        "heading": "Recent Posts",
+        "maxposts": 10
+    },
+    "form-configuration":
+    {
+        "onsubmitaction": "return submitConfigureWidgetForm(this);",
+        "addfooter": false,
+        "fields":
+        [
+            {
+                "type": "text",
+                "name": "widget[heading]",
+                "label": "Widget Heading",
+                "current": "[!data.heading]"
+            },
+            {
+                "type": "text",
+                "name": "widget[maxposts]",
+                "label": "Maximum number of posts to display",
+                "current": "[!data.maxposts]"
+            }
+        ]
+    }
+}

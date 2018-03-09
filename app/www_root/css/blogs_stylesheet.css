@@ -1,53 +1,24 @@
-/* @import url('../fonts/OpenSans-Regular.ttf'); */
-
-/*@font-face {
-    font-family: 'open sans';
-    src: url('../fonts/OpenSans-Regular.ttf');
-}*/
-
 body {
-    /* font-family:            'open sans', sans-serif; 
-    margin:                 0;
-    color:                  #333;
-    */
     min-width:              600px;
-    background-color:hsl(45, 20%, 97%);
+    background-color:     hsl(45, 20%, 97%);
 }
-/*
-a {
-    color:                 #165CA1;
-    text-decoration:       none;
-}
-a:hover {
-    text-decoration:       underline;
-}
-
-
-tr {
-    background-color:      hsl(45, 20%, 94%);
-    padding:               8px;
-}
-th {
-    background-color:      hsl(45, 20%, 97%);
-}
-*/
 
 h1,h2,h3,h4,h5,h6 {
-    margin-top:0;
+    margin-top:             0;
 }
 h2 {
-    font-size:130%;
-    padding-bottom:4px;
-    border-bottom:2px solid hsl(45, 20%, 90%);
+    font-size:              130%;
+    padding-bottom:         4px;
+    border-bottom:          2px solid hsl(45, 20%, 90%);
 }
 h4 {
-    margin-bottom:6px;
-    margin-top:0;
+    margin-bottom:          6px;
+    margin-top:             0;
 }
 
 p {
-    margin-top:0;
-    margin-bottom:4px;
+    margin-top:             0;
+    margin-bottom:          4px;
 }
 
 #wrapper {
@@ -176,11 +147,11 @@ p {
     padding: 4px 8px;
 }
 .action_button:hover {
-    background-position: 0 -15px;
-    color: #ffffff;
-    background-color: #0044cc;
-    text-decoration: none;
-    transition: background-position 0.1s linear 0s;
+    background-position:0 -15px;
+    color:#ffffff;
+    background-color:#0044cc;
+    text-decoration:none;
+    transition:background-position 0.1s linear 0s;
 }
 
 .btn_red {
@@ -538,4 +509,47 @@ p {
     height:60px;
     width:60px;
     margin-right:5px;
+}
+
+/* Manage widgets */
+.droparea {
+    border:2px dashed #cccccc;
+    border-radius:4px; padding:1%; margin:1%; min-height:240px;
+    overflow:auto;
+}
+
+.dropwrapper {
+    width:50%; display:inline-block; vertical-align:top;
+}
+
+#headerdropwrapper, #footerdropwrapper {
+    width:100%;
+}
+#headerwidgetlist, #footerwidgetlist {
+    min-height:140px;
+}
+
+.dropwrapper button {
+    float:right; margin-right:1%; margin-bottom:20px;
+}
+    
+#headerwidgetlist:before {
+    content:"Header"; font-weight:bold;
+}
+#footerwidgetlist:before {
+    content:"Footer"; font-weight:bold;
+}
+#leftpanelwidgetlist:before {
+    content:"Left Panel"; font-weight:bold;
+}
+#rightpanelwidgetlist:before {
+    content:"Right Panel"; font-weight:bold;
+}
+
+.draggablewidget {
+    background-color:#eee; border:1px solid #ddd; padding:4px;
+    margin-bottom:8px; cursor:move;
+}
+.draggablewidget a {
+    cursor:pointer;
 }

@@ -57,50 +57,6 @@ dragula([document.querySelector("#headerwidgetlist"),document.querySelector("#fo
 {rdelim});    
 </script>
 
-<style type="text/css">
-    .droparea {
-		border:2px dashed #cccccc;
-		border-radius:4px; padding:1%; margin:1%; min-height:240px;
-		overflow:auto;
-	}
-	
-	.dropwrapper {
-		width:50%; display:inline-block; vertical-align:top;
-	}
-	
-	#headerdropwrapper, #footerdropwrapper {
-		width:100%;
-	}
-	#headerwidgetlist, #footerwidgetlist {
-		min-height:140px;
-	}
-	
-	.dropwrapper button {
-		float:right; margin-right:1%; margin-bottom:20px;
-	}
-		
-	#headerwidgetlist:before {
-		content:"Header"; font-weight:bold;
-	}
-	#footerwidgetlist:before {
-		content:"Footer"; font-weight:bold;
-	}
-	#leftpanelwidgetlist:before {
-		content:"Left Panel"; font-weight:bold;
-	}
-	#rightpanelwidgetlist:before {
-		content:"Right Panel"; font-weight:bold;
-	}
-	
-    .draggablewidget {
-		background-color:#eee; border:1px solid #ddd; padding:4px;
-		margin-bottom:8px; cursor:move;
-	}
-	.draggablewidget a {
-		cursor:pointer;
-	}
-</style>
-
 <script>
 	/**
 		Show the 'add new widget' popup

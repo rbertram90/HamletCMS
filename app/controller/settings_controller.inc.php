@@ -181,7 +181,7 @@ class SettingsController extends GenericController
             break;
             
         
-            case "widgets":
+            case "xxwidgets":
 			
 			// Save the overall widget list
 			if($formsubmitted) return $this->action_saveWidgetLayout($blog);
@@ -223,6 +223,16 @@ class SettingsController extends GenericController
 			
             break;
             
+                
+            case "widgets":
+                // Save the overall widget list
+                if($formsubmitted) return $this->action_updateWidgets($blog);
+                
+                $this->view->setPageTitle('Customise Widgets - ' . $blog['name']);
+                $this->view->setVar('widgetconfig', $this->getWidgetConfig($blog['id']));
+                $this->view->setVar('installedwidgets', $this->getInstalledWidgets());
+                $this->view->render('settings/widgets3.tpl');
+                break;
 			
             case "header":
             // Change header content
@@ -753,17 +763,27 @@ class SettingsController extends GenericController
     {
 		$arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
 		
+        // Config
+        //  -> Layout
+        //     -> ColumnCount
+        //  -> Header
+        //  -> Footer
+        //  -> (Leftpanel)
+        //  -> (Rightpanel)
+        
 		$numcolumns = (array_key_exists('Layout', $arrayBlogConfig) && array_key_exists('ColumnCount', $arrayBlogConfig['Layout'])) ? $arrayBlogConfig['Layout']['ColumnCount'] : 2;
 		
 		if(!array_key_exists('header', $widgetconfig)) $widgetconfig['header'] = array();
 		if(!array_key_exists('footer', $widgetconfig)) $widgetconfig['footer'] = array();
         
-		switch($numcolumns) {
+		switch($numcolumns)
+        {
 			case 3:
 				// 2 Columns for widgets
 				if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();
 				if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
 				break;
+                
 			case 2:                
                 $postscolumnnumber = (array_key_exists('Layout', $arrayBlogConfig) && array_key_exists('PostsColumn', $arrayBlogConfig['Layout'])) ? $arrayBlogConfig['Layout']['PostsColumn'] : 1;
 				// 1 column for widgets
@@ -774,10 +794,122 @@ class SettingsController extends GenericController
 				    if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
                 }
 				break;
+                
 			case 1:
 				// Don't show any columns
 				break;
 		}
+    }
+    
+    
+    /**
+     * Create the settings.json file
+     * @param int blog ID
+     * @return array containing widget settings
+     */
+    public function getWidgetConfig($blogID)
+    {
+        $widgetSettingsFilePath = SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json';
+        
+        if(file_exists($widgetSettingsFilePath))
+        {
+            return rbwebdesigns\JSONhelper::jsonToArray($widgetSettingsFilePath);
+        }
+        
+        return $this->createWidgetSettingsFile($blogID);
+    }
+    
+    
+    /**
+     * Create the settings.json file
+     * @param int blog ID
+     * @return array containing default widget settings
+     */
+    public function createWidgetSettingsFile($blogID)
+    {
+        if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
+        {
+            $defaultWidgetConfig = array('Header' => []);
+            $templateConfig = rbwebdesigns\JSONhelper::jsonToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            
+            if(multiarray_key_exists($templateConfig, 'Layout.ColumnCount'))
+            {
+                switch($templateConfig['Layout']['ColumnCount'])
+                {
+                    case 3:
+                        $defaultWidgetConfig['RightPanel'] = [];
+                        $defaultWidgetConfig['LeftPanel'] = [];
+                        break;
+                        
+                    case 2:
+                        if(multiarray_key_exists($templateConfig, 'Layout.PostsColumn'))
+                        {
+                            if($templateConfig['Layout']['PostsColumn'] == 2) $defaultWidgetConfig['LeftPanel'] = [];
+                            else $defaultWidgetConfig['RightPanel'] = [];
+                        }
+                        break;
+                }
+            }
+            
+            $defaultWidgetConfig['Footer'] = [];
+            
+            fwrite($widgetConfigFile, rbwebdesigns\JSONhelper::arrayToJSON($defaultWidgetConfig));
+            fclose($widgetConfigFile);
+            return $defaultWidgetConfig;
+        }
+        
+        die('Error: Unable to create widget settings - check folder permissions');
+    }
+    
+    
+    public function getInstalledWidgets()
+    {        
+        $handle = opendir(SERVER_PATH_WIDGETS);
+        $folders = array();
+        
+        // May be wise to create a cache for this...
+        while($file = readdir($handle))
+        {
+            if(is_dir(SERVER_PATH_WIDGETS . '/' . $file) && $file != '.' && $file != '..')
+            {
+                $configPath = SERVER_PATH_WIDGETS . '/' . $file . '/config.json';
+                if(!file_exists($configPath)) continue;
+                $config = rbwebdesigns\JSONhelper::jsonToArray($configPath);
+                $folders[$file] = $config;
+                $folders[$file]['_settings_json'] = rbwebdesigns\JSONhelper::arrayToJSON($config['defaults']);
+            }
+        }
+        
+        return $folders;
+    }
+    
+    protected function action_updateWidgets($blog) {
+           
+        $configPath = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/widgets.json';
+        if(!file_exists($configPath)) die('Cannot find widget config file');
+        $config = rbwebdesigns\JSONhelper::jsonToArray($configPath);
+        
+        // Clear all existing widgets
+        foreach($config as $sectionName => $section) {
+            $config[$sectionName] = [];
+        }
+
+        foreach($_POST['widgets'] as $sectionName => $section)
+        {
+            foreach($section as $widgettype => $widgetconfig)
+            {
+                $config[$sectionName][$widgettype] = json_decode($widgetconfig, true);;
+            }
+        }
+        
+        // Save JSON back to config file
+        file_put_contents($configPath, rbwebdesigns\JSONhelper::arrayToJSON($config));
+        
+        // Say it worked
+        setSystemMessage(ITEM_UPDATED, "Success");
+        
+        // View the widgets page
+        redirect('/config/' . $blog['id'] . '/widgets');
     }
     
     

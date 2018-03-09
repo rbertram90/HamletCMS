@@ -1,4 +1,5 @@
-                                <?php
+<?php
+
 $const_blogcmsroot = CLIENT_ROOT_BLOGCMS;
 $initJSON = str_replace("&#34;", "\"", $blog['widgetJSON']);
 $arrayWidgetConfig = json_decode($initJSON, true);
@@ -59,7 +60,7 @@ $formJSON = '{
 		}
 	]
 }';
+
 echo $formhelper->generateFromJSON($formJSON, $arrayWidgetConfig['taglist']);
 
 ?>
-                            

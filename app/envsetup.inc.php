@@ -12,10 +12,10 @@
 ****************************************************************/
 
     // Language file
-    require_once SERVER_ROOT . '/app/core/lang/en.inc.php';
+    require_once SERVER_ROOT . '/app/vendor/rbertram90/core/lang/en.inc.php';
     
     // Helper function library
-    require_once SERVER_ROOT . '/app/core/core.php';
+    require_once SERVER_ROOT . '/app/vendor/rbertram90/core/core.php';
     
     
 /****************************************************************

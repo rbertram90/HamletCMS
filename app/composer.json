@@ -1,8 +1,23 @@
 {
+  "repositories": [
+    {
+        "type": "package",
+        "package": {
+          "name": "rbertram90/core",
+          "version": "dev-master",
+          "source": {
+            "url": "https://github.com/rbertram90/core",
+            "type": "git",
+            "reference": "origin/master"
+          }
+        }
+    }
+  ],
   "require": {
       "codeliner/array-reader" : "~1.0",
       "smarty/smarty": "~3.1",
       "michelf/php-markdown": "1.4.1",
-      "athens/csrf": "1.*"
+      "athens/csrf": "1.*",
+      "rbertram90/core": "dev-master"
   }
 }

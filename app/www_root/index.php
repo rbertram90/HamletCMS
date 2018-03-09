@@ -32,6 +32,8 @@ use Athens\CSRF;
     // Path to the folder containing user avatars
     define('SERVER_AVATAR_FOLDER', SERVER_PATH_WWW_ROOT . '/avatars');
 
+    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');
+
     // Include common setup script
     require_once SERVER_ROOT.'/app/setup.inc.php';
 

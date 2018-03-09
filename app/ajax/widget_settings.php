@@ -1,4 +1,6 @@
 <?php
+/* This is now old - uses configure_widget.php! */
+
 	// Get blog id
 	if(!isset($_POST['blogid']) || $_POST['blogid'] <= 0) die('Unable to continue - no blog id found');
 	$blogid = sanitize_number($_POST['blogid']);

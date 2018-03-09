@@ -219,6 +219,16 @@ class BlogContentController {
         return generateWidgets($arrayWidgets, $this->modelPosts, $this->modelBlogs, $this->modelComments, $this->blog, $this->modelUsers);
     }
     
+    public function generateWidgets2() {
+        $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
+        
+        if(!file_exists($widgetConfigPath)) return '';
+        
+        $widgetConfig = rbwebdesigns\JSONhelper::jsonToArray($widgetConfigPath);
+        
+        
+    }
+    
 
     /**
         Generate the HTML to be shown in the footer
