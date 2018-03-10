@@ -98,7 +98,7 @@ class ClsPost extends RBFactory
         // Search posts by title & tags
         $query_string = "SELECT * FROM {$this->tableName} ";
         $query_string.= "WHERE blog_id='{$blogid}' ";
-        $query_string.= "AND (title LIKE '%".sanitize_string($searchterm)."%' OR tags LIKE '%".sanitize_string($searchterm)."%') ";
+        $query_string.= "AND (title LIKE '%".Sanitize::string($searchterm)."%' OR tags LIKE '%".Sanitize::string($searchterm)."%') ";
         $query_string.= "AND draft=0 AND timestamp <= CURRENT_TIMESTAMP";
 
         $statement = $this->db->query($query_string);
@@ -298,7 +298,7 @@ class ClsPost extends RBFactory
     **/
     public function updatePost($postid, $newValues) {
         
-        $postid = sanitize_number($postid);
+        $postid = Sanitize::int($postid);
         
         // if(!array_key_exists('link', $newValues))
         // automattically create link
@@ -515,7 +515,7 @@ class ClsPost extends RBFactory
      * @param $postid - id for the post that is viewed
     **/
     public function getViewsByPost($postid) {
-        $postid = sanitize_number($postid);
+        $postid = Sanitize::int($postid);
         $sql = 'SELECT * FROM '.TBL_POST_VIEWS.' WHERE postid = "'.$postid.'"';
         $statement = $this->db->query($sql);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -555,15 +555,15 @@ class ClsPost extends RBFactory
     **/
     public function autosavePost() {
     
-        $postid = sanitize_number($_POST['fld_postid']);
+        $postid = Sanitize::int($_POST['fld_postid']);
         $postCheck = $this->db->countRows($this->tableName, array("id" => $postid));
         $postInserted = false;
         
-        $newContent = sanitize_string($_POST['fld_content']);
-        $newTitle = sanitize_string($_POST['fld_title']);
+        $newContent = Sanitize::string($_POST['fld_content']);
+        $newTitle = Sanitize::string($_POST['fld_title']);
         $newTags = $this->createSafeTagList($_POST['fld_tags']);
-        $newCommentFlag = sanitize_number($_POST['fld_allowcomments']);
-        $type = sanitize_string($_POST['fld_type']);
+        $newCommentFlag = Sanitize::int($_POST['fld_allowcomments']);
+        $type = Sanitize::string($_POST['fld_type']);
         
         $currentUser = BlogCMS::session()->currentUser;
 
@@ -576,8 +576,8 @@ class ClsPost extends RBFactory
                 'allowcomments'   => $newCommentFlag,
                 'draft'           => 1,
                 'type'            => $type,
-                'blog_id'         => sanitize_number($_POST['fld_blogid']),
-                'author_id'       => sanitize_number($currentUser),
+                'blog_id'         => Sanitize::int($_POST['fld_blogid']),
+                'author_id'       => Sanitize::int($currentUser),
                 'initialautosave' => 1,
                 'link'            => $this->createSafePostUrl($newTitle),
                 'timestamp'       => date('Y-m-d H:i:s')
@@ -632,21 +632,24 @@ class ClsPost extends RBFactory
         }
     }
     
-    public function removeAutosave($postid) {
-        $postid = sanitize_number($postid);
+    public function removeAutosave($postid)
+    {
+        $postid = Sanitize::int($postid);
         $this->db->deleteRow($this->tblautosave, array('post_id' => $postid));
         // if($deletesuccess === false)
     }
     
-    public function autosaveExists($postid) {
-        $postid = sanitize_number($postid);
+    public function autosaveExists($postid)
+    {
+        $postid = Sanitize::int($postid);
         $savecount = $this->db->countRows($this->tblautosave, array('post_id' => $postid));
         if($savecount == 1) return true;
         else return false;
     }
     
-    public function getAutosave($postid) {
-        $postid = sanitize_number($postid);
+    public function getAutosave($postid)
+    {
+        $postid = Sanitize::int($postid);
         return $this->db->selectSingleRow($this->tblautosave, '*', array('post_id' => $postid));
     }
 }

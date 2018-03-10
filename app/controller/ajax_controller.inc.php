@@ -1,6 +1,8 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\core\Sanitize;
+
 class AjaxController extends GenericController
 {
     private $db;
@@ -15,7 +17,7 @@ class AjaxController extends GenericController
     
     public function route($params)
     {
-        $method = ($params == false) ? null : sanitize_string($params[0]);
+        $method = ($params == false) ? null : Sanitize::string($params[0]);
         
         switch($method)
         {
@@ -46,13 +48,11 @@ class AjaxController extends GenericController
                 break;
             
             case 'widget_list':
-                if(array_key_exists('element', $_GET))
-                {
-                    $elem = sanitize_string($_GET['element']);
+                if(array_key_exists('element', $_GET)) {
+                    $elem = Sanitize::string($_GET['element']);
                     require SERVER_ROOT.'/app/ajax/get_widget_list.php';
                 }
-                else
-                {
+                else {
                     echo "No element selected";
                 }
                 break;
@@ -75,9 +75,8 @@ class AjaxController extends GenericController
                 
             case 'drop_image_upload':
                 
-                if(isset($_GET['blogid']))
-                {
-                    $BlogID = sanitize_string($_GET['blogid']);
+                if(isset($_GET['blogid'])) {
+                    $BlogID = Sanitize::string($_GET['blogid']);
                 }
                 else
                 {

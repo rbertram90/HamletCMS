@@ -7,6 +7,7 @@
 
 namespace rbwebdesigns\blogcms;
 use Codeliner;
+use rbwebdesigns\core\Sanitize;
 
 class BlogContentController {
 
@@ -153,7 +154,7 @@ class BlogContentController {
         
         // Perform Search
         if(isset($_GET['q'])) {
-            $search_string = sanitize_string($_GET['q']);
+            $search_string = Sanitize::string($_GET['q']);
             $search_results = $this->modelPosts->search($this->blogID, $search_string);
         }
         else $search_string = null;
@@ -559,7 +560,7 @@ class BlogContentController {
         
         // Check that the comment was accutally submitted?
         // Stops people just browsing to the /addcomment URL
-        $postID = sanitize_number($queryParams[0]);
+        $postID = Sanitize::int($queryParams[0]);
         
         // Validate comment
         $formValid = true;
@@ -587,7 +588,7 @@ class BlogContentController {
             else
             {
                 // Sanitize Comment
-                $content = sanitize_string($_POST['fld_comment']);
+                $content = Sanitize::string($_POST['fld_comment']);
                 
                 // Submit to DB
                 $this->modelComments->addComment($content, $post['id'], $DATA['blog_key'], $currentUser);

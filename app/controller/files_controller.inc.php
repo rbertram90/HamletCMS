@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 use rbwebdesigns;
+use rbwebdesigns\core\Sanitize;
 
 class FilesController extends GenericController
 {
@@ -17,7 +18,7 @@ class FilesController extends GenericController
     
     public function route($params)
     {
-        $blogid = sanitize_number($params[0]);
+        $blogid = Sanitize::int($params[0]);
         
         // Check Permissions
         if(!$this->modelBlogs->canWrite($blogid)) return $this->throwAccessDenied();
@@ -32,7 +33,7 @@ class FilesController extends GenericController
         
         if(array_key_exists(1, $params))
         {
-            switch(sanitize_string($params[1]))
+            switch(Sanitize::string($params[1]))
             {
                 case 'delete':
                     
@@ -43,7 +44,7 @@ class FilesController extends GenericController
                     $imagesDirectory = SERVER_PATH_BLOGS.'/'.$blogid.'/images';
                     
                     // Restore filetype
-                    $filename = str_replace('_', '.', sanitize_string($params[2]));
+                    $filename = str_replace('_', '.', Sanitize::string($params[2]));
                     
                     // Check the image exists
                     if(!file_exists($imagesDirectory.'/'.$filename)) $this->throwNotFound();

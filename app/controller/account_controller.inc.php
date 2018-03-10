@@ -1,6 +1,8 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\core\Sanitize;
+
 class AccountController extends GenericController
 {
     protected $db;
@@ -21,7 +23,7 @@ class AccountController extends GenericController
         switch($params[0])
         {
             case 'user':
-                if(isset($params[1])) $user = $GLOBALS['modelUsers']->getUserById(sanitize_number($params[1]));
+                if(isset($params[1])) $user = $GLOBALS['modelUsers']->getUserById(Sanitize::int($params[1]));
                 else return $this->throwNotFound();
                 
                 $this->view->setVar('user', $user);
@@ -60,19 +62,19 @@ class AccountController extends GenericController
     private function updateAccountDetails()
     {        
         $details = array(
-            "name" => sanitize_string($_POST['fld_firstname']),
-            "surname" => sanitize_string($_POST['fld_surname']),
-            "description" => sanitize_string($_POST['fld_description']),
-            "email" => sanitize_email($_POST['fld_email']),
-            "gender" => sanitize_string($_POST['fld_gender']),
-            "location" => sanitize_string($_POST['fld_location']),
-            "username" => sanitize_string($_POST['fld_username'])
+            "name" => Sanitize::string($_POST['fld_firstname']),
+            "surname" => Sanitize::string($_POST['fld_surname']),
+            "description" => Sanitize::string($_POST['fld_description']),
+            "email" => Sanitize::email($_POST['fld_email']),
+            "gender" => Sanitize::string($_POST['fld_gender']),
+            "location" => Sanitize::string($_POST['fld_location']),
+            "username" => Sanitize::string($_POST['fld_username'])
         );
         
         // Sanitize Date Input
-        $in_dob_day = sanitize_number($_POST['fld_dob_day']);
-        $in_dob_month = sanitize_number($_POST['fld_dob_month']);
-        $in_dob_year = sanitize_number($_POST['fld_dob_year']);
+        $in_dob_day = Sanitize::int($_POST['fld_dob_day']);
+        $in_dob_month = Sanitize::int($_POST['fld_dob_month']);
+        $in_dob_year = Sanitize::int($_POST['fld_dob_year']);
         
         // Check the date combination actually exists!
         if(checkdate($in_dob_month, $in_dob_day, $in_dob_year)) {
@@ -95,9 +97,9 @@ class AccountController extends GenericController
     {
         // Change Password
         $details = array(
-            "current_password" => sanitize_string($_POST['fld_current_password']),
-            "new_password" => sanitize_string($_POST['fld_new_password']),
-            "new_password_rpt" => sanitize_string($_POST['fld_new_password_rpt'])
+            "current_password" => Sanitize::string($_POST['fld_current_password']),
+            "new_password" => Sanitize::string($_POST['fld_new_password']),
+            "new_password_rpt" => Sanitize::string($_POST['fld_new_password_rpt'])
         );
         
         // Update DB

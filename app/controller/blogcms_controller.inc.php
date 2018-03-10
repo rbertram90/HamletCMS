@@ -117,7 +117,7 @@ class BlogcmsController extends GenericController
     {
         if(strlen($params[0]) == 0) $params[0] = 'blogsbyletter';
         
-        switch(sanitize_string($params[0]))
+        switch(Sanitize::string($params[0]))
         {
             case 'blogsbyletter':
                 $this->view->setVar('counts', $this->modelBlogs->countBlogsByLetter());
@@ -125,7 +125,7 @@ class BlogcmsController extends GenericController
 
                 if(array_key_exists(1, $params)) {
                     // Get Target Letter
-                    $currentletter = strlen($params[1]) == 1 ? sanitize_string($params[1]) : 'A';
+                    $currentletter = strlen($params[1]) == 1 ? Sanitize::string($params[1]) : 'A';
                     $this->view->setVar('letter', $currentletter);
                     $this->view->setVar('blogs', $this->modelBlogs->getBlogsByLetter($currentletter));
                 }
@@ -142,7 +142,7 @@ class BlogcmsController extends GenericController
                 
             case 'category':
                 $category = 'general';
-                if(array_key_exists(1, $params)) $category = sanitize_string($params[1]);
+                if(array_key_exists(1, $params)) $category = Sanitize::string($params[1]);
                 
                 $this->view->setVar('currentcategory', $category);
                 $this->view->setVar('categories', $GLOBALS['config']['blogcategories']);

@@ -136,7 +136,7 @@ class ClsBlog extends RBFactory
      */
     private function blogKeyExists($key)
     {
-        $query_string = 'SELECT count(*) as keycount FROM '.$this->tableName.' WHERE id='.sanitize_number($key);
+        $query_string = 'SELECT count(*) as keycount FROM '.$this->tableName.' WHERE id='.Sanitize::int($key);
         
         $result = $this->db->select_single($query_string);
         
@@ -199,7 +199,7 @@ class ClsBlog extends RBFactory
         else {
             // Just assigning an exisiting folder into the blog_cms
             // (not something that anyone other than dev would/need want to do)
-            $blog_key = sanitize_number($pkey);
+            $blog_key = Sanitize::int($pkey);
         }
         
         // Insert blog into DB
@@ -248,16 +248,16 @@ class ClsBlog extends RBFactory
             if(array_key_exists($fieldname, $paramNewValues)) {
                 switch($datatype):
                     case 'string':
-                        $updateFields[$fieldname] = sanitize_string($paramNewValues[$fieldname]);
+                        $updateFields[$fieldname] = Sanitize::string($paramNewValues[$fieldname]);
                         break;
                     case 'number':
-                        $updateFields[$fieldname] = sanitize_number($paramNewValues[$fieldname]);
+                        $updateFields[$fieldname] = Sanitize::int($paramNewValues[$fieldname]);
                         break;
                     case 'boolean':
                         $updateFields[$fieldname] = sanitize_boolean($paramNewValues[$fieldname]);
                         break;
                     default:
-                        $updateFields[$fieldname] = sanitize_string($paramNewValues[$fieldname]);
+                        $updateFields[$fieldname] = Sanitize::string($paramNewValues[$fieldname]);
                         break;
                 endswitch;
             }

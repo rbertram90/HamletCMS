@@ -70,7 +70,7 @@ class PostsController extends GenericController {
             
             // Find and open post (if needed)
             //$postid = $paramsReader->integerValue(2, false);
-            $postid = array_key_exists(2, $params) && is_numeric($params[2]) ? sanitize_number($params[2]) : false;
+            $postid = array_key_exists(2, $params) && is_numeric($params[2]) ? Sanitize::int($params[2]) : false;
             
             if($postid !== false)
             {
@@ -85,7 +85,7 @@ class PostsController extends GenericController {
                 }
             }
             
-            $action = array_key_exists(1, $params) ? sanitize_string($params[1]) : ''; // Action
+            $action = array_key_exists(1, $params) ? Sanitize::string($params[1]) : ''; // Action
             $formsubmitted = (array_key_exists(2, $params) && $params[2] == 'submit'); // Submit
             if (!$formsubmitted) $formsubmitted = (array_key_exists(3, $params) && $params[3] == 'submit'); // Submit
             
@@ -295,7 +295,7 @@ class PostsController extends GenericController {
         if(array_key_exists('fld_postid', $_POST))
         {
             // This should be the case as it should have been created when the autosave run
-            $postid = sanitize_number($_POST['fld_postid']);
+            $postid = Sanitize::int($_POST['fld_postid']);
             
             if($this->modelPosts->updatePost($postid, $newPost))
             {

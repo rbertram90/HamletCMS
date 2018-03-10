@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns;
+use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\JSONhelper;
 
 /**
  * Get data for posts in JSON format
@@ -23,20 +24,20 @@ use rbwebdesigns;
  */
 
 // Request Parameters
-$blogID = isset($_GET['blogID']) ? sanitize_number($_GET['blogID']) : die('Error: Required argument blogID not supplied');
+$blogID = isset($_GET['blogID']) ? Sanitize::int($_GET['blogID']) : die('Error: Required argument blogID not supplied');
 
-$start = isset($_GET['start']) ? sanitize_number($_GET['start']) : 1;
+$start = isset($_GET['start']) ? Sanitize::int($_GET['start']) : 1;
 
-$limit = isset($_GET['limit']) ? sanitize_number($_GET['limit']) : 10;
+$limit = isset($_GET['limit']) ? Sanitize::int($_GET['limit']) : 10;
 
-$sort = isset($_GET['sort']) ? sanitize_string($_GET['sort']) : 'name ASC';
+$sort = isset($_GET['sort']) ? Sanitize::string($_GET['sort']) : 'name ASC';
 
 // include drafts
-$showDrafts = isset($_GET['showdrafts']) ? sanitize_string($_GET['showdrafts']) : '1';    
+$showDrafts = isset($_GET['showdrafts']) ? Sanitize::string($_GET['showdrafts']) : '1';    
 $showDrafts = ($showDrafts == 'true') ? 1 : 0;
 
 // include scheduled posts
-$showScheduled = isset($_GET['showscheduled']) ? sanitize_string($_GET['showscheduled']) : '1';    
+$showScheduled = isset($_GET['showscheduled']) ? Sanitize::string($_GET['showscheduled']) : '1';    
 $showScheduled = ($showScheduled == 'true') ? 1 : 0;
 
 // Check blog exists
@@ -54,4 +55,4 @@ $result['posts'] = $modelPosts->getPostsByBlog($blogID, $start, $limit, $showDra
 header('Content-Type: application/json');
 
 // Output as JSON
-echo rbwebdesigns\JSONhelper::ArrayToJSON($result);
+echo JSONhelper::ArrayToJSON($result);

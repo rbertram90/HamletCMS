@@ -1,6 +1,8 @@
 <?php
 namespace rbwebdesigns\blogcms;
 use rbwebdesigns;
+use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\AppSecurity;
 
 /**********************************************************************
   class SettingsController
@@ -38,7 +40,7 @@ class SettingsController extends GenericController
         $this->modelPosts           = new ClsPost($cms_db);
         $this->modelComments        = new ClsComment($cms_db);
         $this->modelUsers           = $GLOBALS['modelUsers'];
-        $this->classSecurity        = new rbwebdesigns\AppSecurity();
+        $this->classSecurity        = new AppSecurity();
         $this->db = $cms_db;
         $this->view = $view;
     }
@@ -67,8 +69,8 @@ class SettingsController extends GenericController
     public function route($params)
     {
         // Deal with arguments!
-        $blog_id = key_exists(0, $params) ? safeNumber($params[0]) : '';
-        $page_name = key_exists(1, $params) ? sanitize_string($params[1]) : '';
+        $blog_id = key_exists(0, $params) ? Sanitize::int($params[0]) : '';
+        $page_name = key_exists(1, $params) ? Sanitize::string($params[1]) : '';
         
         $currentUser = BlogCMS::session()->currentUser;
 
@@ -475,7 +477,7 @@ class SettingsController extends GenericController
         switch($pageType)
         {
             case 'p':
-                $newpageID = sanitize_number($_POST['fld_postid']);
+                $newpageID = Sanitize::int($_POST['fld_postid']);
                 
                 // Check the post exists and belongs to this blog
                 $targetpost = $this->modelPosts->get(array('id','blog_id'), array('id' => $newpageID), '', '', false);
@@ -512,7 +514,7 @@ class SettingsController extends GenericController
         
         if(is_numeric($_POST['fld_postid']))
         {
-            $targetPostID = sanitize_number($_POST['fld_postid']);
+            $targetPostID = Sanitize::int($_POST['fld_postid']);
 
             // Check the post exists and belongs to this blog
             $targetpost = $this->modelPosts->get(array('id','blog_id'), array('id' => $targetPostID), '', '', false);
@@ -554,7 +556,7 @@ class SettingsController extends GenericController
         // which belongs to the blog!
         if(!isset($_POST['fld_postid'])) return false;
         
-        if(is_numeric($targetPostID)) $targetPostID = sanitize_number($_POST['fld_postid']);
+        if(is_numeric($targetPostID)) $targetPostID = Sanitize::int($_POST['fld_postid']);
         else $targetPostID = sanitize_string($_POST['fld_postid']);
         
         $pagelist = explode(',', $blog['pagelist']);
@@ -589,7 +591,7 @@ class SettingsController extends GenericController
         // which belongs to the blog!
         if(!isset($_POST['fld_postid'])) return false;
         
-        if(is_numeric($targetPostID)) $targetPostID = sanitize_number($_POST['fld_postid']);
+        if(is_numeric($targetPostID)) $targetPostID = Sanitize::int($_POST['fld_postid']);
         else $targetPostID = sanitize_string($_POST['fld_postid']);
         
         $pagelist = explode(',', $blog['pagelist']);
@@ -744,7 +746,7 @@ class SettingsController extends GenericController
     {
         // Sanitize Variables
         $css_string = strip_tags($_POST['fld_css']);
-        $blog_id = sanitize_number($params[0]);
+        $blog_id = Sanitize::int($params[0]);
         $currentUser = BlogCMS::session()->currentUser;
 
         // Check we have permission to perform action
@@ -784,8 +786,7 @@ class SettingsController extends GenericController
         if(!array_key_exists('header', $widgetconfig)) $widgetconfig['header'] = array();
         if(!array_key_exists('footer', $widgetconfig)) $widgetconfig['footer'] = array();
         
-        switch($numcolumns)
-        {
+        switch($numcolumns) {
             case 3:
                 // 2 Columns for widgets
                 if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();

@@ -1,6 +1,8 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\core\Sanitize;
+
 /**
     ContributorsController
     
@@ -38,7 +40,7 @@ class ContributorsController extends GenericController
     public function route($params)
     {
         // Handle Arguments
-        $blogid = sanitize_number($params[0]);
+        $blogid = Sanitize::int($params[0]);
         
         // Check we have permission to perform action
         if(!$this->modelContributors->isBlogContributor($blogid, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
