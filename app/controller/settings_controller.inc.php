@@ -70,8 +70,10 @@ class SettingsController extends GenericController
         $blog_id = key_exists(0, $params) ? safeNumber($params[0]) : '';
         $page_name = key_exists(1, $params) ? sanitize_string($params[1]) : '';
         
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser, 'all')) return $this->throwAccessDenied();
         
         // Get blog info
         $blog = $this->modelBlogs->getBlogById($blog_id);
@@ -389,8 +391,10 @@ class SettingsController extends GenericController
     **/
     public function updateBlogConfig($pintblogid, $parrayupdates)
     {
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Check we have permission to update config file
-        if(!$this->modelContributors->isBlogContributor($pintblogid, $_SESSION['userid'])) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($pintblogid, $currentUser)) return $this->throwAccessDenied();
         // Fetch config from JSON file
         $lobjSettings = $this->getBlogConfig($pintblogid);
         // Apply the changes
@@ -721,8 +725,10 @@ class SettingsController extends GenericController
         // Sanitize Variables
         $blog_key = safeNumber($params[0]);
         $template_id = safeString($_POST['template_id']);
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_key, $_SESSION['userid'])) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($blog_key, $currentUser)) return $this->throwAccessDenied();
         // Apply the new template
         $this->applyNewBlogTemplate($blog_key, $template_id);
         // Redirect Home
@@ -739,8 +745,10 @@ class SettingsController extends GenericController
         // Sanitize Variables
         $css_string = strip_tags($_POST['fld_css']);
         $blog_id = sanitize_number($params[0]);
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'])) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser)) return $this->throwAccessDenied();
         // Update default.css
         if(is_dir(SERVER_PUBLIC_PATH.'/blogdata/'.$blog_id))
         {

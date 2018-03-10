@@ -26,6 +26,8 @@ class BlogContentController {
     
     public function __construct($dbconn, $blog_key)
     {
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Create Models
         $this->modelBlogs        = new ClsBlog($dbconn);
         $this->modelContributors = new ClsContributors($dbconn);
@@ -39,7 +41,7 @@ class BlogContentController {
         $this->blogConfig    = null;
         $this->blogPostCount = null;
         
-        if($this->modelContributors->isBlogContributor($blog_key, $_SESSION['userid'], 'all')) {
+        if($this->modelContributors->isBlogContributor($blog_key, $currentUser, 'all')) {
             $this->userPermissionsLevel = 2;
         }
         elseif($this->userIsContributor()) {
@@ -91,8 +93,9 @@ class BlogContentController {
     **/
     public function userIsContributor()
     {
-        if(!isset($_SESSION['userid'])) return false;
-        return $this->modelContributors->isBlogContributor($this->blogID, $_SESSION['userid']);
+        $currentUser = BlogCMS::session()->currentUser;
+        if(!$currentUser) return false;
+        return $this->modelContributors->isBlogContributor($this->blogID, $currentUser);
     }
 
     
@@ -102,8 +105,9 @@ class BlogContentController {
     **/
     public function blogIsFavourite()
     {
-        if(!isset($_SESSION['userid'])) return false;
-        return $this->modelBlogs->isFavourite($_SESSION['userid'], $this->blogID);
+        $currentUser = BlogCMS::session()->currentUser;
+        if(!isset($currentUser)) return false;
+        return $this->modelBlogs->isFavourite($currentUser, $this->blogID);
     }
     
     
@@ -559,6 +563,8 @@ class BlogContentController {
         
         // Validate comment
         $formValid = true;
+
+        $currentUser = BlogCMS::session()->currentUser;
         
         if(!isset($_POST['fld_submitcomment'])) $formValid = false;
         
@@ -584,7 +590,7 @@ class BlogContentController {
                 $content = sanitize_string($_POST['fld_comment']);
                 
                 // Submit to DB
-                $this->modelComments->addComment($content, $post['id'], $DATA['blog_key'], $_SESSION['userid']);
+                $this->modelComments->addComment($content, $post['id'], $DATA['blog_key'], $currentUser);
                 
                 // Show Success
                 setSystemMessage("Comment submitted - awaiting approval", "Success");

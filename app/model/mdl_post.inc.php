@@ -1,16 +1,16 @@
 <?php
-/******************************************************************************
-  Models -> ClsPost
-  (All) Access to the posts database table is done through this class
-******************************************************************************/
-
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\model\RBFactory;
+use rbwebdesigns\core\Sanitize;
 
-class ClsPost extends RBFactory {
-
-    protected $db, $dbc, $tblname;
+/**
+ * /app/model/mdl_post.inc.php
+ * (All) Access to the posts database table is done through this class
+ */
+class ClsPost extends RBFactory
+{
+    protected $db, $dbc, $tableName;
 
     /**
      * Constructor
@@ -26,7 +26,7 @@ class ClsPost extends RBFactory {
         $this->dbc = $this->db->getConnection();
         
         // Set table names
-        $this->tblname = TBL_POSTS;
+        $this->tableName = TBL_POSTS;
         $this->tblviews = TBL_POST_VIEWS;
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->tblautosave = TBL_AUTOSAVES;
@@ -55,7 +55,7 @@ class ClsPost extends RBFactory {
      *  @param <int> $postid - ID number of the post
     **/
     public function getPostById($postid) {
-        return $this->db->selectSingleRow($this->tblname, '*', array('id' => $postid));
+        return $this->db->selectSingleRow($this->tableName, '*', array('id' => $postid));
     }
     
     /**
@@ -64,7 +64,7 @@ class ClsPost extends RBFactory {
      *  @blogID <int> BlogID Number to uniquely identify the post
     **/
     public function getPostByURL($lsLink, $blogID) {
-        return $this->db->selectSingleRow($this->tblname, '*', array(
+        return $this->db->selectSingleRow($this->tableName, '*', array(
             'link' => $lsLink,
             'blog_id' => $blogID
         ));
@@ -76,12 +76,12 @@ class ClsPost extends RBFactory {
     **/
     public function getLatestPost($blogid) {
         $arrayWhere = array('blog_id' => $blogid, 'timestamp' => '< CURRENT_TIMESTAMP', 'draft' => 0);
-        return $this->db->selectSingleRow($this->tblname, '*', $arrayWhere, 'timestamp DESC', '1');
+        return $this->db->selectSingleRow($this->tableName, '*', $arrayWhere, 'timestamp DESC', '1');
     }
     
     public function getNextPost($blogid, $currentPostTimestamp) {
         $arrayWhere = array('timestamp' => '>'.$currentPostTimestamp, 'blog_id' => $blogid, 'draft' => 0);
-        $result = $this->db->selectSingleRow($this->tblname, '*', $arrayWhere, 'timestamp ASC', '1');
+        $result = $this->db->selectSingleRow($this->tableName, '*', $arrayWhere, 'timestamp ASC', '1');
         
         // Only Return Result if the post is not scheduled
         // Note this could be done using SQL however the database class cannot handle duplicate keys...
@@ -90,18 +90,19 @@ class ClsPost extends RBFactory {
     
     public function getPreviousPost($blogid, $currentPostTimestamp) {
         $arrayWhere = array('blog_id' => $blogid, 'timestamp' => '<'.$currentPostTimestamp, 'draft' => 0);
-        return $this->db->selectSingleRow($this->tblname, '*', $arrayWhere, 'timestamp DESC', '1');
+        return $this->db->selectSingleRow($this->tableName, '*', $arrayWhere, 'timestamp DESC', '1');
     }
     
     public function search($blogid, $searchterm) {
         
         // Search posts by title & tags
-        $query_string = "SELECT * FROM {$this->tblname} ";
+        $query_string = "SELECT * FROM {$this->tableName} ";
         $query_string.= "WHERE blog_id='{$blogid}' ";
         $query_string.= "AND (title LIKE '%".sanitize_string($searchterm)."%' OR tags LIKE '%".sanitize_string($searchterm)."%') ";
         $query_string.= "AND draft=0 AND timestamp <= CURRENT_TIMESTAMP";
-        
-        return $this->db->select_multi($query_string);
+
+        $statement = $this->db->query($query_string);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -110,27 +111,28 @@ class ClsPost extends RBFactory {
      * @param <bool> $incDrafts - Include draft posts in this count
     **/
     public function countPostsOnBlog($blogid, $incDrafts = false, $incfutures = false) {
-        $query_string = 'SELECT count(*) as countvar FROM '.$this->tblname.' WHERE blog_id="'.$blogid.'"';
+        $query_string = 'SELECT count(*) as countvar FROM ' . $this->tableName . ' WHERE blog_id="'.$blogid.'"';
         if(!$incfutures) $query_string.= 'AND timestamp<="'.date('Y-m-d H:i:s').'"';
         if(!$incDrafts) $query_string.= " and draft=0";
-        $row = $this->db->select_single($query_string);
-        return $row['countvar'];
+        
+        $statement = $this->db->query($query_string);
+        return $statement->fetch(\PDO::FETCH_ASSOC)['countvar'];
     }
     
     // Get count of posts and the date of the last post for all contributors for a blog
-    public function countPostsByUser($blogid) {
-        
+    public function countPostsByUser($blogid)
+    {
         $query_string = "SELECT author_id, count(*) as post_count, ";
         $query_string.= "   (";
         $query_string.= "    SELECT timestamp ";
-        $query_string.= "    FROM {$this->tblname} as b ";
+        $query_string.= "    FROM {$this->tableName} as b ";
         $query_string.= "    WHERE blog_id='{$blogid}' ";
         $query_string.= "    AND author_id=a.author_id ";
         $query_string.= "    AND timestamp < CURRENT_TIMESTAMP ";
         $query_string.= "    ORDER BY timestamp DESC ";
         $query_string.= "    LIMIT 1";
         $query_string.= "   ) as last_post ";
-        $query_string.= "FROM {$this->tblname} as a ";
+        $query_string.= "FROM {$this->tableName} as a ";
         $query_string.= "WHERE blog_id='{$blogid}' ";
         $query_string.= "AND draft=0 ";
         $query_string.= "AND timestamp<='".date('Y-m-d H:i:s')."' ";
@@ -141,11 +143,14 @@ class ClsPost extends RBFactory {
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function countTotalPostViews($blogid) {
-        $qs = "SELECT sum(userviews) as totalViews FROM ".$this->tblviews." WHERE postid in (SELECT id FROM ".$this->tblname." WHERE blog_id='$blogid')";
-        $result = $this->db->select_single($qs);
+    public function countTotalPostViews($blogid)
+    {
+        $qs = "SELECT sum(userviews) as totalViews FROM ".$this->tblviews." WHERE postid in (SELECT id FROM ".$this->tableName." WHERE blog_id='$blogid')";
+        $statement = $this->db->query($qs);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
         if(strlen($result['totalViews']) == 0) $result['totalViews'] = 0;
-        return sanitize_number($result['totalViews']);
+        return Sanitize::int($result['totalViews']);
     }
     
     /**
@@ -153,7 +158,8 @@ class ClsPost extends RBFactory {
      * <boolean> $drafts - include draft posts or just live ones
      * <int> $pBlogID - ID number of the blog
     **/
-    public function getAllPostsOnBlog($pBlogID, $drafts=0, $future=0) {
+    public function getAllPostsOnBlog($pBlogID, $drafts=0, $future=0)
+    {
         $tp = TBL_POSTS; $tc = TBL_COMMENTS;
         $sql = "SELECT $tp.*, (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments ";
         $sql.= "FROM $tp ";
@@ -172,7 +178,8 @@ class ClsPost extends RBFactory {
      * @param <boolean> $drafts - include draft posts or just live ones
      * @param <int> $pBlogID - ID number of the blog
     **/
-    public function getPostsByBlog($pBlogID, $page=1, $num=10, $drafts=0, $future=0, $sort='') {
+    public function getPostsByBlog($pBlogID, $page=1, $num=10, $drafts=0, $future=0, $sort='')
+    {
         $start = ($page-1) * $num;
         $tp = TBL_POSTS; $tc = TBL_COMMENTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
         $sql = "SELECT $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
@@ -214,23 +221,23 @@ class ClsPost extends RBFactory {
     **/
     public function getRecentPosts($pBlog, $pDaysSincePostLimit=7) {
         
-        $query_string = 'SELECT '.$this->tblname.'.*, '.TBL_BLOGS.'.name as blog_name FROM '.$this->tblname.' LEFT JOIN '.TBL_BLOGS.' ON '.$this->tblname.'.blog_id = '.TBL_BLOGS.'.id WHERE '.$this->tblname.'.timestamp >= DATE_SUB(NOW(), INTERVAL '.$pDaysSincePostLimit.' DAY) AND timestamp<="'.date('Y-m-d H:i:s').'" AND '.$this->tblname.'.draft = 0';
+        $query_string = 'SELECT '.$this->tableName.'.*, '.TBL_BLOGS.'.name as blog_name FROM '.$this->tableName.' LEFT JOIN '.TBL_BLOGS.' ON '.$this->tableName.'.blog_id = '.TBL_BLOGS.'.id WHERE '.$this->tableName.'.timestamp >= DATE_SUB(NOW(), INTERVAL '.$pDaysSincePostLimit.' DAY) AND timestamp<="'.date('Y-m-d H:i:s').'" AND '.$this->tableName.'.draft = 0';
         
         if(gettype($pBlog) == "array") {
             if(count($pBlog) == 0) return false;
             foreach($pBlog as $key => $blog) {                
                 if($key == 0) $query_string.=  " AND (";
                 else $query_string.= " OR ";
-                $query_string.= $this->tblname.".blog_id='".$blog['blog_id']."'";
+                $query_string.= $this->tableName.".blog_id='".$blog['blog_id']."'";
             }
             $query_string.= ")";
             
         } else if(gettype($pBlog) == "integer") {
-            $query_string.= 'AND '.$this->tblname.'.blog_id="'.safeNumber($pBlog).'"';
+            $query_string.= 'AND '.$this->tableName.'.blog_id="'.safeNumber($pBlog).'"';
             
         } else return false;
         
-        $query_string.= " ORDER BY ".$this->tblname.".timestamp DESC LIMIT 30";
+        $query_string.= " ORDER BY ".$this->tableName.".timestamp DESC LIMIT 30";
         $statement = $this->db->query($query_string);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -256,8 +263,10 @@ class ClsPost extends RBFactory {
     **/
     public function createPost($newValues) {
         
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Make sure that the current user has the permission to post to this blog
-        if(!$this->isContributor($_SESSION['userid'], $newValues['blog_id'])) {
+        if(!$this->isContributor($currentUser, $newValues['blog_id'])) {
             die("User not authorised to post to this blog!");
             return;
         }
@@ -273,7 +282,7 @@ class ClsPost extends RBFactory {
         $newValues['timestamp'] = date("Y-m-d H:i:s");
         $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
-        $newValues['author_id'] = $_SESSION['userid'];
+        $newValues['author_id'] = $currentUser;
         
         return $this->insert($newValues);
     }
@@ -481,12 +490,14 @@ class ClsPost extends RBFactory {
         // Sanitize Variables
         $blogid = safeNumber($blogid);
         $postid = safeNumber($postid);
+
+        $currentUser = BlogCMS::session()->currentUser;
         
         // Make sure that the current user has the permission to post to this blog
-        if(!$this->isContributor($_SESSION['userid'], $blogid)) return false;
+        if(!$this->isContributor($currentUser, $blogid)) return false;
         
         // Query DB
-        $sql = 'DELETE FROM '.$this->tblname.' WHERE id="'.$postid.'"';
+        $sql = 'DELETE FROM '.$this->tableName.' WHERE id="'.$postid.'"';
         $this->db->runQuery($sql);
         
         // Remove the autosave if exists
@@ -545,7 +556,7 @@ class ClsPost extends RBFactory {
     public function autosavePost() {
     
         $postid = sanitize_number($_POST['fld_postid']);
-        $postCheck = $this->db->countRows($this->tblname, array("id" => $postid));
+        $postCheck = $this->db->countRows($this->tableName, array("id" => $postid));
         $postInserted = false;
         
         $newContent = sanitize_string($_POST['fld_content']);
@@ -554,9 +565,11 @@ class ClsPost extends RBFactory {
         $newCommentFlag = sanitize_number($_POST['fld_allowcomments']);
         $type = sanitize_string($_POST['fld_type']);
         
+        $currentUser = BlogCMS::session()->currentUser;
+
         if($postid <= 0 || $postCheck == 0) {
             // Post is not saved into the main table - create it as a draft
-            $this->db->insertRow($this->tblname, array(
+            $this->db->insertRow($this->tableName, array(
                 'content'         => $newContent,
                 'title'           => $newTitle,
                 'tags'            => $newTags,
@@ -564,7 +577,7 @@ class ClsPost extends RBFactory {
                 'draft'           => 1,
                 'type'            => $type,
                 'blog_id'         => sanitize_number($_POST['fld_blogid']),
-                'author_id'       => sanitize_number($_SESSION['userid']),
+                'author_id'       => sanitize_number($currentUser),
                 'initialautosave' => 1,
                 'link'            => $this->createSafePostUrl($newTitle),
                 'timestamp'       => date('Y-m-d H:i:s')
@@ -576,11 +589,11 @@ class ClsPost extends RBFactory {
             $postid = $this->db->getLastInsertID();
         }
         
-        $arrayPost = $this->db->selectSingleRow($this->tblname, 'initialautosave', array('id' => $postid));
+        $arrayPost = $this->db->selectSingleRow($this->tableName, 'initialautosave', array('id' => $postid));
         
         if($arrayPost['initialautosave'] == 1 && !$postInserted) {
             // Update the post
-            $update = $this->db->updateRow($this->tblname, array('id' => $postid), array(
+            $update = $this->db->updateRow($this->tableName, array('id' => $postid), array(
                 'content'         => $newContent,
                 'title'           => $newTitle,
                 'link'            => $this->createSafePostUrl($newTitle),

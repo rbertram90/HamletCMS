@@ -1,7 +1,8 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns;
-use Codeliner;
+use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\AppSecurity;
+use Codeliner\ArrayReader\ArrayReader;
 
 /**********************************************************************
 class PostsController
@@ -39,33 +40,33 @@ class PostsController extends GenericController {
         $this->modelPosts = new ClsPost($cms_db);
         $this->modelComments = new ClsComment($cms_db);
         $this->modelUsers = $GLOBALS['modelUsers'];
-        $this->modelSecurity = new rbwebdesigns\AppSecurity();
+        $this->modelSecurity = new AppSecurity();
         $this->view = $view;
-    }    
+    }
     
-    /*
-        function: route
-        
-        @param    params    Miscellaneous inputs from the URL such as blog id
-                            accessed in an array.
-    */
-    
+    /**
+     * function: route
+     * 
+     * @param array $params
+     *   Miscellaneous inputs from the URL such as blog id accessed in an array.
+     */
     public function route($params)
     {
         // Create an easy reader for the params array
-        $paramsReader = new Codeliner\ArrayReader\ArrayReader($params);
-        
+        $paramsReader = new ArrayReader($params);
+        $currentUser = BlogCMS::session()->currentUser;
+
         if(getType($params) == 'array' && array_key_exists(0, $params))
         {
             // Find and open blog
-            $blogid = sanitize_number($params[0]);
+            $blogid = Sanitize::int($params[0]);
             $arrayblog = $this->modelBlogs->getBlogById($blogid);
             
             // Check we found a blog
             if(getType($arrayblog) != 'array') return $this->throwNotFound();
             
             // Check that user can at least manage posts on this blog - this will be all contributors
-            if(!$this->modelContributors->isBlogContributor($arrayblog['id'], $_SESSION['userid'])) return $this->throwAccessDenied();
+            if(!$this->modelContributors->isBlogContributor($arrayblog['id'], $currentUser)) return $this->throwAccessDenied();
             
             // Find and open post (if needed)
             //$postid = $paramsReader->integerValue(2, false);
@@ -183,6 +184,8 @@ class PostsController extends GenericController {
     **/
     public function editPost($arrayblog, $arraypost)
     {
+        $currentUser = BlogCMS::session()->currentUser;
+
         if($arraypost['initialautosave'] == 1)
         {
             // get the most recent content from the actual autosave record
@@ -206,7 +209,7 @@ class PostsController extends GenericController {
         }
         
         // Check we have permission to perform action
-        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $_SESSION['userid'], 'all') || $_SESSION['userid'] == $arraypost['author_id'])) return $this->throwAccessDenied();
+        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
                 
         $this->view->setVar('post', $arraypost);
         $this->view->setVar('blog', $arrayblog);
@@ -315,8 +318,10 @@ class PostsController extends GenericController {
     // Cancel action from new post screen
     protected function action_removeAutosave($post)
     {
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Check we have permission to perform action - if the user created the post or is blog admin
-        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $_SESSION['userid'], 'all') || $_SESSION['userid'] == $post['author_id'])) return $this->throwAccessDenied();
+        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser, 'all') || $currentUser == $post['author_id'])) return $this->throwAccessDenied();
         
         // Delete from DB - isn't critical if fails
         $this->modelPosts->removeAutosave($post['id']);
@@ -336,8 +341,10 @@ class PostsController extends GenericController {
     **/
     public function action_editPost($arraypost)
     {
+        $currentUser = BlogCMS::session()->currentUser;
+
         // Re-check security with heightened permissions
-        if(!($this->modelContributors->isBlogContributor($_POST['fld_blogid'], $_SESSION['userid'], 'all') || $_SESSION['userid'] == $arraypost['author_id'])) return $this->throwAccessDenied();
+        if(!($this->modelContributors->isBlogContributor($_POST['fld_blogid'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
         
         // Check & Format date
         $posttime = strtotime($_POST['fld_postdate']);
@@ -389,9 +396,10 @@ class PostsController extends GenericController {
         Delete a blog post
     **/
     public function action_deletePost($arraypost) {
+        $currentUser = BlogCMS::session()->currentUser;
 
         // Check we have permission to perform action - if the user created the post or is blog admin
-        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $_SESSION['userid'], 'all') || $_SESSION['userid'] == $arraypost['author_id'])) return $this->throwAccessDenied();
+        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
         
         // Perform Database query (using generic delete)
         $delete = $this->modelPosts->delete(array('id' => $arraypost['id']));

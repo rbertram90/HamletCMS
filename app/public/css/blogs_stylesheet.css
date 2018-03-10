@@ -277,7 +277,6 @@ p {
 
 /* Homepage Recent Posts */
 .recent-post {
-    zbackground-color:#f6f6f6;
     padding:8px 8px 8px 0;
     border-top:2px solid #eee;
 }
@@ -368,9 +367,6 @@ p {
         vertical-align:top;
     }
 
-.comment-holder {
-    
-}
 .comment-info {
     font-size:0.8em;
     color:#888;

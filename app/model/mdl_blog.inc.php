@@ -10,14 +10,14 @@ use rbwebdesigns\core\model\RBFactory;
 
 class ClsBlog extends RBFactory
 {
-    protected $db, $tblname;
+    protected $db, $tableName;
     private $dbc, $tblbloguser, $dbfields;
 
     function __construct($dbconn)
     {
         $this->db = $dbconn;
         $this->dbc = $this->db->getConnection();
-        $this->tblname = TBL_BLOGS;
+        $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->fields = array(
@@ -40,7 +40,7 @@ class ClsBlog extends RBFactory
     **/
     public function getBlogById($blogid)
     {
-        return $this->db->selectSingleRow($this->tblname, array_keys($this->fields), array('id' => $blogid));
+        return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), array('id' => $blogid));
     }
     
     
@@ -51,7 +51,7 @@ class ClsBlog extends RBFactory
     **/
     public function getBlogsByUser($intUserid)
     {
-        return $this->db->selectMultipleRows($this->tblname, '*', array('user_id' => $intUserid));
+        return $this->db->selectMultipleRows($this->tableName, '*', array('user_id' => $intUserid));
     }
     
     
@@ -63,7 +63,7 @@ class ClsBlog extends RBFactory
     public function getBlogsByLetter($letter)
     {
         if(!ctype_alpha($letter)) $letter = "[^A-Za-z]"; // search all numbers at once
-        $qs = 'SELECT * FROM '.$this->tblname.' WHERE LEFT(name, 1) REGEXP "'.$letter.'" and visibility="anon"';
+        $qs = 'SELECT * FROM '.$this->tableName.' WHERE LEFT(name, 1) REGEXP "'.$letter.'" and visibility="anon"';
         return $this->db->select_multi($qs);
     }
     
@@ -79,7 +79,7 @@ class ClsBlog extends RBFactory
         $res = array('0' => 0);
         foreach(range('A', 'Z') as $letter) $res[$letter] = 0;
         
-        $sql = 'SELECT UCASE(LEFT(name, 1)) as letter, count(*) as count FROM '.$this->tblname.' Where visibility = "anon" Group By UCASE(LEFT(name, 1))';
+        $sql = 'SELECT UCASE(LEFT(name, 1)) as letter, count(*) as count FROM '.$this->tableName.' Where visibility = "anon" Group By UCASE(LEFT(name, 1))';
         
         $results = $this->db->select_multi($sql);
         
@@ -104,7 +104,7 @@ class ClsBlog extends RBFactory
      */
     public function countBlogsByUser($userid)
     {
-        $count = $this->db->selectSingleRow($this->tblname, 'count(*) as blogcount', array('user_id' => $userid));
+        $count = $this->db->selectSingleRow($this->tableName, 'count(*) as blogcount', array('user_id' => $userid));
         return $count['blogcount'];
     }
     
@@ -136,7 +136,7 @@ class ClsBlog extends RBFactory
      */
     private function blogKeyExists($key)
     {
-        $query_string = 'SELECT count(*) as keycount FROM '.$this->tblname.' WHERE id='.sanitize_number($key);
+        $query_string = 'SELECT count(*) as keycount FROM '.$this->tableName.' WHERE id='.sanitize_number($key);
         
         $result = $this->db->select_single($query_string);
         
@@ -262,7 +262,7 @@ class ClsBlog extends RBFactory
                 endswitch;
             }
         }
-        return $this->db->updateRow($this->tblname, array('id' => $blogid), $updateFields);
+        return $this->db->updateRow($this->tableName, array('id' => $blogid), $updateFields);
     }
     
     /**
@@ -273,7 +273,7 @@ class ClsBlog extends RBFactory
         if(!$this->canWrite($psBlogID)) die("You do not have permission to edit this blog");
         
         // Update Database
-        return $this->db->updateRow($this->tblname,
+        return $this->db->updateRow($this->tableName,
         array(
             'id' => Sanitize::string($psBlogID)
         ),
@@ -287,10 +287,12 @@ class ClsBlog extends RBFactory
      */
     public function canWrite($blogid) {
         // Only allow contributors to update the blog settings
-        // further 'custom restrictions' to be added        
+        // further 'custom restrictions' to be added
+        $currentUser = BlogCMS::session()->currentUser;
+
         $rowCount = $this->db->countRows($this->tblcontributors, array(
             'blog_id' => $blogid,
-            'user_id' => $_SESSION['userid']
+            'user_id' => $currentUser
         ));
         
         return $rowCount > 0;
@@ -341,7 +343,7 @@ class ClsBlog extends RBFactory
     public function getAllFavourites($pUserID)
     {
         $UserID = Sanitize::int($pUserID);
-        $query_string = "SELECT a.blog_id, b.* FROM ".$this->tblfavourites." AS a, ".$this->tblname." AS b ";
+        $query_string = "SELECT a.blog_id, b.* FROM ".$this->tblfavourites." AS a, ".$this->tableName." AS b ";
         $query_string.= "WHERE b.id = a.blog_id AND a.user_id = '$UserID'";
         $statement = $this->db->query($query_string);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -366,7 +368,7 @@ class ClsBlog extends RBFactory
     public function getTopFavourites($num=10, $page=0)
     {
         $query_string = 'SELECT fav.blog_id, count(DISTINCT fav.blog_id) as fav_count, blogs.* ';
-        $query_string.= 'FROM '.$this->tblfavourites.' AS fav LEFT JOIN '.$this->tblname.' AS blogs ON fav.blog_id = blogs.id WHERE blogs.visibility = "anon" ';
+        $query_string.= 'FROM '.$this->tblfavourites.' AS fav LEFT JOIN '.$this->tableName.' AS blogs ON fav.blog_id = blogs.id WHERE blogs.visibility = "anon" ';
         $query_string.= 'GROUP BY fav.blog_id ORDER BY fav_count DESC LIMIT '.$page.','.$num;
         $statement = $this->db->query($query_string);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -376,7 +378,7 @@ class ClsBlog extends RBFactory
     public function getByCategory($category, $num=10, $page=0)
     {
         $query = 'SELECT * ';
-        $query.= 'FROM '.$this->tblname.' WHERE category = "' . $category . '" ';
+        $query.= 'FROM '.$this->tableName.' WHERE category = "' . $category . '" ';
         $query.= 'LIMIT '.$page.','.$num;
         
         $statement = $this->db->query($query);

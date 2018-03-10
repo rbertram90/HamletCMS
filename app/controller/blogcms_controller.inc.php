@@ -185,9 +185,8 @@ class BlogcmsController extends GenericController
             $latestcomments = $this->modelComments->getCommentsByBlog($blog_id, 5);
             
             // Get comment-ers usernames
-            foreach($latestcomments as $key => $comment)
-            {
-                $user = $this->modelUsers->getUserById($comment['user_id']);
+            foreach($latestcomments as $key => $comment) {
+                $user = $this->modelUsers->getById($comment['user_id']);
                 $username = $comment['user_id'] == $currentUser ? "You" : $user['username'];
                 $latestcomments[$key]['userid'] = $comment['user_id'];
                 $latestcomments[$key]['name'] = $username;
@@ -325,7 +324,7 @@ class BlogcmsController extends GenericController
         }
         else {
             $newblogkey = $this->modelBlogs->createBlog($_POST['fld_blogname'], $_POST['fld_blogdesc']);
-            $this->modelContributors->addBlogContributor($_SESSION['userid'], 'a', $newblogkey);
+            $this->modelContributors->addBlogContributor($currentUser, 'a', $newblogkey);
             setSystemMessage(ITEM_CREATED, 'Success');
         }
         redirect('/');

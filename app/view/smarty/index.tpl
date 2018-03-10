@@ -26,7 +26,7 @@
                         <a href="/account/user/{$contributor.id}" class="user-link">
                         {* Remove whitespace after name *}
                         {strip}
-                            {if $contributor.id == $smarty.session.userid}
+                            {if $contributor.id == $smarty.session.user}
                                 <span data-userid="{$contributor.id}">You</span>
                             {else}
                                 <span data-userid="{$contributor.id}">{$contributor.username}</span>

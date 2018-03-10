@@ -26,7 +26,7 @@
 class BlogCMSModel {
 
     protected $db;
-    protected $tblname;
+    protected $tableName;
     protected $privilegeLevel;
 
     public function __construct($db) {
@@ -35,28 +35,28 @@ class BlogCMSModel {
     }
     
     public function getCount($arrayWhere) {
-        return $this->db->countRows($this->tblname, $arrayWhere);
+        return $this->db->countRows($this->tableName, $arrayWhere);
     }
     
     public function get($arrayWhat, $arrayWhere, $order='', $limit='', $multi=true) {
         if($multi) {
-            return $this->db->selectMultipleRows($this->tblname, $arrayWhat, $arrayWhere, $order='', $limit='');
+            return $this->db->selectMultipleRows($this->tableName, $arrayWhat, $arrayWhere, $order='', $limit='');
         } else {
-            return $this->db->selectSingleRow($this->tblname, $arrayWhat, $arrayWhere, $order='', $limit='');
+            return $this->db->selectSingleRow($this->tableName, $arrayWhat, $arrayWhere, $order='', $limit='');
         }
     }
     
     public function insert($arrayWhat) {
-        return $this->db->insertRow($this->tblname, $arrayWhat);
+        return $this->db->insertRow($this->tableName, $arrayWhat);
     }
     
     public function update($arrayWhere, $arrayWhat) {
-        return $this->db->updateRow($this->tblname, $arrayWhere, $arrayWhat);
+        return $this->db->updateRow($this->tableName, $arrayWhere, $arrayWhat);
     }
     
     public function delete($arrayWhere) {
         if($this->privilegeLevel = 2)
-        return $this->db->deleteRow($this->tblname, $arrayWhere);
+        return $this->db->deleteRow($this->tableName, $arrayWhere);
     }
     
     public function getUserPrivilegeLevel($blogid) {
