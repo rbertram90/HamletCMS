@@ -11,7 +11,7 @@ class Profile extends BlogCMSWidget {
     private $blog;
     
     public function __construct($settings, $blog, $modelBlog, $modelPosts, $modelComments, $modelContributors, $modelUsers)
-	{
+    {
         // Constructor
         $this->modelUsers = $modelUsers;
         $this->blog = $blog;
@@ -22,7 +22,7 @@ class Profile extends BlogCMSWidget {
         );
         
         $this->config = $settings;
-		$this->setupConfig();
+        $this->setupConfig();
     }
     
     public function generate() {

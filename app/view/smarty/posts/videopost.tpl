@@ -57,36 +57,36 @@ function openPreview() {ldelim}
 
 {if $mode=='edit' and array_key_exists('autosave', $post)}
 
-	<script>
-		function replaceContent()
+    <script>
+        function replaceContent()
         {ldelim}
-			$("#fld_posttitle").val($("#fld_autosave_title").val());
-			$("#fld_postcontent").val($("#fld_autosave_content").val());
-			$("#fld_tags").val($("#fld_autosave_tags").val());
-			$("#autosave_data").hide();
-			$("#autosave_exists_message").hide();
-		{rdelim}
-	</script>
+            $("#fld_posttitle").val($("#fld_autosave_title").val());
+            $("#fld_postcontent").val($("#fld_autosave_content").val());
+            $("#fld_tags").val($("#fld_autosave_tags").val());
+            $("#autosave_data").hide();
+            $("#autosave_exists_message").hide();
+        {rdelim}
+    </script>
 
-	<div id="autosave_data" style="display:none; background-color:#bbb; border:1px solid #aaa; padding:10px;">
+    <div id="autosave_data" style="display:none; background-color:#bbb; border:1px solid #aaa; padding:10px;">
         
-		<h2>Autosaved data</h2>
+        <h2>Autosaved data</h2>
         
-		<label for="fld_autosave_title">title</label>
-		<input disabled type="text" id="fld_autosave_title" name="fld_autosave_title" value="{$post.autosave.title}" />
-		
-		<label for="fld_autosave_content">Content</label>
-		<textarea disabled id="fld_autosave_content" name="fld_autosave_content">{$post.autosave.content}</textarea>
-		
-		<label for="fld_autosave_tags">Tags</label>
-		<input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="{$post.autosave.tags}" />
+        <label for="fld_autosave_title">title</label>
+        <input disabled type="text" id="fld_autosave_title" name="fld_autosave_title" value="{$post.autosave.title}" />
         
-	</div>
+        <label for="fld_autosave_content">Content</label>
+        <textarea disabled id="fld_autosave_content" name="fld_autosave_content">{$post.autosave.content}</textarea>
+        
+        <label for="fld_autosave_tags">Tags</label>
+        <input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="{$post.autosave.tags}" />
+        
+    </div>
 
-	<p id="autosave_exists_message" class="info">An unsubmitted version exists, do you want to continue with this edit? <a href="#" onclick="$('#autosave_data').toggle(); return false;">hide / show content</a> <a href="#" onclick="replaceContent(); return false;">Use</a></p>
+    <p id="autosave_exists_message" class="info">An unsubmitted version exists, do you want to continue with this edit? <a href="#" onclick="$('#autosave_data').toggle(); return false;">hide / show content</a> <a href="#" onclick="replaceContent(); return false;">Use</a></p>
 
 {/if}
-	
+    
 <form action="{$formAction}" method="post" name="frm_createpost" id="frm_createpost">
 
     <div class="editpost-centre" style="width:70%; display:inline-block; vertical-align:top;">
@@ -174,7 +174,7 @@ function openPreview() {ldelim}
 </form>
 
 
-<script type="text/javascript">		
+<script type="text/javascript">        
 $(document).ready(function ()
 {ldelim}
 

@@ -36,11 +36,11 @@ function viewSinglePost($arrayPost, $arrayPostSettings, $prevPost="", $nextPost=
     }
     ?>
 
-	<h1 class="post-title"><?=$arrayPost['title']?></h1>
+    <h1 class="post-title"><?=$arrayPost['title']?></h1>
 
     <!-- Note we won't always want to use wiki language! need to either ask user or 
     programmatically determine if the post uses wiki -->
-	<div class="post-content"><?php
+    <div class="post-content"><?php
         
         if($arrayPost['type'] == 'video') {
             switch($arrayPost['videosource']) {
@@ -89,7 +89,7 @@ function viewSinglePost($arrayPost, $arrayPostSettings, $prevPost="", $nextPost=
         ?>
         
         <!-- Post Tags -->
-		<?php if(strlen($arrayPost['tags']) > 0 && $showtags != '0'): ?>
+        <?php if(strlen($arrayPost['tags']) > 0 && $showtags != '0'): ?>
             <p class="post-tags">Tags: <?=showTags($arrayPost['blog_id'], $arrayPost['tags'])?></p>
         <?php endif; ?>
         
@@ -124,15 +124,15 @@ function viewSinglePost($arrayPost, $arrayPostSettings, $prevPost="", $nextPost=
 
 
 function getNumPostsToView($pobjPostSettings) {
-	// Set number of posts to get
-	$postsperpage = 5;
-	
-	if(is_array($pobjPostSettings)) {
-		if(array_key_exists('posts', $pobjPostSettings)) {
-			if(array_key_exists('postsperpage', $pobjPostSettings['posts'])) $postsperpage = $pobjPostSettings['posts']['postsperpage'];
-		}
-	}
-	return $postsperpage;
+    // Set number of posts to get
+    $postsperpage = 5;
+    
+    if(is_array($pobjPostSettings)) {
+        if(array_key_exists('posts', $pobjPostSettings)) {
+            if(array_key_exists('postsperpage', $pobjPostSettings['posts'])) $postsperpage = $pobjPostSettings['posts']['postsperpage'];
+        }
+    }
+    return $postsperpage;
 }
 
 
@@ -234,7 +234,7 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
     $shownumcomments = array_key_exists('shownumcomments', $postSettings)   ? $postSettings['shownumcomments']   : 1;
     $showsocialicons = array_key_exists('showsocialicons', $postSettings)   ? $postSettings['showsocialicons']   : 1;
     $summarylength   = array_key_exists('postsummarylength', $postSettings) ? $postSettings['postsummarylength'] : 150;
-    	
+        
     // We are shorten URLs on blogs on external domains using htaccess
     // and a specific link path - this has been an afterthought so could
     // be thought about at a higher level?
@@ -250,7 +250,7 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
     
     // Loop through posts
     foreach($arrayPosts as $lobjPost):
-	    
+        
         $trimmedContent = Markdown::defaultTransform($lobjPost['content']);
     
         if($lobjPost['type'] == 'video')
@@ -300,9 +300,9 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
         <!-- Post Date -->
         <?php echo showTimeDate($lobjPost['timestamp'], $postSettings, 'title'); ?>
         
-	    <h3 class="post-title"><a href="<?=$blogdir?>/posts/<?=$lobjPost['link']?>"><?=$lobjPost['title']?></a></h3>
+        <h3 class="post-title"><a href="<?=$blogdir?>/posts/<?=$lobjPost['link']?>"><?=$lobjPost['title']?></a></h3>
         
-	    <div class="post-content"><?=$postSummary?></div>
+        <div class="post-content"><?=$postSummary?></div>
         
         <div class="post-footer">
             <!-- Post Date -->
@@ -361,28 +361,28 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
  */
 function viewComments($comments) {
 
-	echo "<div class='comments'><h2>Comments</h2>";
+    echo "<div class='comments'><h2>Comments</h2>";
     
-	if(count($comments) == 0)
+    if(count($comments) == 0)
     {
-		echo showInfo("No comments have been made on this post")."</div>";
-		return;
-	}
-	
-	foreach($comments as $comment):
+        echo showInfo("No comments have been made on this post")."</div>";
+        return;
+    }
     
-		// See if we can get a known user?
-		if($comment['user_id'] !== 0)
+    foreach($comments as $comment):
+    
+        // See if we can get a known user?
+        if($comment['user_id'] !== 0)
         {
-			$modelUers = $GLOBALS['models']['users'];
-			$user = $modelUers->getUserById($comment['user_id']);
-			$comment['name'] = $user['username'];
-			$comment['fullname'] = $user['name']." ".$user['surname'];
-		}
+            $modelUers = $GLOBALS['models']['users'];
+            $user = $modelUers->getUserById($comment['user_id']);
+            $comment['name'] = $user['username'];
+            $comment['fullname'] = $user['name']." ".$user['surname'];
+        }
 ?>
-		<p><b><?=$comment['name']?> (<?=$comment['fullname']?>)</b></p>
-		<p><i>&quot;<?=$comment['message']?>&quot;</i></p>
-		
+        <p><b><?=$comment['name']?> (<?=$comment['fullname']?>)</b></p>
+        <p><i>&quot;<?=$comment['message']?>&quot;</i></p>
+        
 <?php endforeach;
     
     echo "</div>";
@@ -396,11 +396,11 @@ function viewComments($comments) {
  */
 function commentForm($blog, $post)
 {
-	if(!USER_AUTHENTICATED)
+    if(!USER_AUTHENTICATED)
     {
-		echo showInfo("You need to be logged in to add comments");
-		return;
-	}
+        echo showInfo("You need to be logged in to add comments");
+        return;
+    }
 ?>
     <div class="comment-form">
         <form action="/blogs/<?=$blog['id']?>/posts/<?=$post['id']?>/addcomment" method="POST">

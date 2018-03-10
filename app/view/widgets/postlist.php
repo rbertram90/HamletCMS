@@ -15,7 +15,7 @@ class Postlist extends BlogCMSWidget {
         // Constructor
         $this->modelPosts = $modelPosts;
         $this->blog = $blog;
-		$this->config = $settings;
+        $this->config = $settings;
     }
 
     public function generate()

@@ -4,22 +4,22 @@ require_once SERVER_ROOT.'/app/view/widgets/widgets_parentclass.php';
 
 function generateWidgets($arrayWidgetConfig, $pobjPosts, $pobjBlogs, $pobjComments, $pobjBlog, $pobjUsers=null) {
 
-	// Ensure the widgets are ordered correctly
-	// orderList($arrayWidgetConfig);
+    // Ensure the widgets are ordered correctly
+    // orderList($arrayWidgetConfig);
   $return = array();
   
   // No widgets
   if(strtolower(getType($arrayWidgetConfig)) != 'array') return $return;
 
   foreach($arrayWidgetConfig as $category => $widgets) {
-	
-	$lsWidgetHTML = "";
-	
-	// Print out widgets
-	foreach($widgets as $widget):
+    
+    $lsWidgetHTML = "";
+    
+    // Print out widgets
+    foreach($widgets as $widget):
 
-		$key = $widget['type'];
-		
+        $key = $widget['type'];
+        
         $lsWidgetHTML.= '<div class="widget" id="widget_'.$key.'">';
         
         $className = ucfirst(strtolower($key)); // make the first character uppercase - the rest lower
@@ -36,10 +36,10 @@ function generateWidgets($arrayWidgetConfig, $pobjPosts, $pobjBlogs, $pobjCommen
         
         $lsWidgetHTML.= '</div>';
     
-		// endif;
-	endforeach;
-	
-	$return[$category] = '<div class="widgets">'.$lsWidgetHTML.'</div>';
+        // endif;
+    endforeach;
+    
+    $return[$category] = '<div class="widgets">'.$lsWidgetHTML.'</div>';
   }
   
   return $return;

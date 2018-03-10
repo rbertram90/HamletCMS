@@ -7,71 +7,71 @@
 
 <style type="text/css">
     #disabledwidgetlist, #enabledwidgetlist
-	{ldelim}
-		width: 45%; display:inline-block; border:2px dashed #cccccc;
-		border-radius:4px; padding:1%; margin:1%; height:300px;
-		scroll:auto; vertical-align:top;
-	{rdelim}
-	
+    {ldelim}
+        width: 45%; display:inline-block; border:2px dashed #cccccc;
+        border-radius:4px; padding:1%; margin:1%; height:300px;
+        scroll:auto; vertical-align:top;
+    {rdelim}
+    
     #enabledwidgetlist:before, #disabledwidgetlist:before
-	{ldelim}
-		font-weight:bold; display:block; margin-bottom:10px;
-	{rdelim}
-	
+    {ldelim}
+        font-weight:bold; display:block; margin-bottom:10px;
+    {rdelim}
+    
     #enabledwidgetlist:before
-	{ldelim}
-		content:"Enabled Items";
-	{rdelim}
-	
+    {ldelim}
+        content:"Enabled Items";
+    {rdelim}
+    
     #disabledwidgetlist:before
-	{ldelim}
-		content:"Disabled Items";
-	{rdelim}
-	
+    {ldelim}
+        content:"Disabled Items";
+    {rdelim}
+    
     .draggablewidget
-	{ldelim}
-		background-color:#eee; border:1px solid #ddd; padding:4px;
-		margin-bottom:8px; cursor:move;
-	{rdelim}
+    {ldelim}
+        background-color:#eee; border:1px solid #ddd; padding:4px;
+        margin-bottom:8px; cursor:move;
+    {rdelim}
 </style>
 
 <form action="{$clientroot_blogcms}/config/{$blog.id}/widgets/submit" method="POST">
 
-    <div id="disabledwidgetlist">	
-		{foreach from=$widgetconfig key=widgetname item=widgetsettings}
+    <div id="disabledwidgetlist">    
+        {foreach from=$widgetconfig key=widgetname item=widgetsettings}
 
-			{if array_key_exists('show', $widgetsettings) and $widgetsettings.show == 0}
-				<div id="{$widgetname}" class="draggablewidget">{$widgetname}
-					<input type="hidden" value="0" name="widgetfld_{$widgetname}_show" />
-					<input type="hidden" value="0" name="widgetfld_{$widgetname}_order" />
-					<a href="{$clientroot_blogcms}/config/{$blog.id}/widgets/{$widgetname}" style="float:right;">Settings</a>
-				</div>
-			{/if}
+            {if array_key_exists('show', $widgetsettings) and $widgetsettings.show == 0}
+                <div id="{$widgetname}" class="draggablewidget">{$widgetname}
+                    <input type="hidden" value="0" name="widgetfld_{$widgetname}_show" />
+                    <input type="hidden" value="0" name="widgetfld_{$widgetname}_order" />
+                    <a href="{$clientroot_blogcms}/config/{$blog.id}/widgets/{$widgetname}" style="float:right;">Settings</a>
+                </div>
+            {/if}
 
-		{/foreach}
+        {/foreach}
 
     </div><div id="enabledwidgetlist">
 
-		{$count = 1}
+        {$count = 1}
 
-		{foreach from=$widgetconfig key=widgetname item=widgetsettings}
+        {foreach from=$widgetconfig key=widgetname item=widgetsettings}
 
-			{if array_key_exists('order', $widgetsettings)}
-				{$order = $widgetsettings.order}
-			{else}
-				{$order = $count}
-			{/if}
+            {if array_key_exists('order', $widgetsettings)}
+                {$order = $widgetsettings.order}
+            {else}
+                {$order = $count}
+            {/if}
 
-			{if array_key_exists('show', $widgetsettings) and $widgetsettings.show == 1}
-				<div id="{$widgetname}" class="draggablewidget">{$widgetname}
-					<input type="hidden" value="1" name="widgetfld_{$widgetname}_show" />
-					<input type="hidden" value="{$order}" name="widgetfld_{$widgetname}_order" />
-					<a href="{$clientroot_blogcms}/config/{$blog.id}/widgets/{$widgetname}" style="float:right;">Settings</a>
-				</div>
-				{$count = $count + 1}
-			{/if}
+            {if array_key_exists('show', $widgetsettings) and $widgetsettings.show == 1}
+                <div id="{$widgetname}" class="draggablewidget">{$widgetname}
+                    <input type="hidden" value="1" name="widgetfld_{$widgetname}_show" />
+                    <input type="hidden" value="{$order}" name="widgetfld_{$widgetname}_order" />
+                    <a href="{$clientroot_blogcms}/config/{$blog.id}/widgets/{$widgetname}" style="float:right;">Settings</a>
+                </div>
+                {$count = $count + 1}
+            {/if}
 
-		{/foreach}
+        {/foreach}
 
     </div>
 

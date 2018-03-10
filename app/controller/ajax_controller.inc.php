@@ -36,26 +36,26 @@ class AjaxController extends GenericController
             case 'add_image':
                 require SERVER_ROOT.'/app/ajax/add_image_to_post.php';
                 break;
-			
-			case 'widget_settings':
-				require SERVER_ROOT.'/app/ajax/widget_settings.php';
-				break;
+            
+            case 'widget_settings':
+                require SERVER_ROOT.'/app/ajax/widget_settings.php';
+                break;
             
             case 'configure_widget':
                 require SERVER_ROOT.'/app/ajax/configure_widget.php';
                 break;
-			
-			case 'widget_list':
-				if(array_key_exists('element', $_GET))
-				{
-					$elem = sanitize_string($_GET['element']);
-					require SERVER_ROOT.'/app/ajax/get_widget_list.php';
-				}
-				else
-				{
-					echo "No element selected";
-				}
-				break;
+            
+            case 'widget_list':
+                if(array_key_exists('element', $_GET))
+                {
+                    $elem = sanitize_string($_GET['element']);
+                    require SERVER_ROOT.'/app/ajax/get_widget_list.php';
+                }
+                else
+                {
+                    echo "No element selected";
+                }
+                break;
 
             case 'check_title':
                 require SERVER_ROOT.'/app/ajax/ajax_checkDuplicateTitle.php';
@@ -65,9 +65,9 @@ class AjaxController extends GenericController
                 require SERVER_ROOT.'/app/ajax/submit_image_upload.php';
                 break;
                 
-			case 'autosave':
-				require SERVER_ROOT.'/app/ajax/autosave.php';
-				break;
+            case 'autosave':
+                require SERVER_ROOT.'/app/ajax/autosave.php';
+                break;
                 
             case 'view_image_drop':
                 require SERVER_ROOT.'/app/ajax/view_image_drop.php';

@@ -118,11 +118,11 @@
                 
                 output += "<table class='ui table'><thead>";
                 output += "<tr><th>Title</th><th>Tag(s)</th><th>Author</th>";
-	
+    
                 output += "<th>Visitors <a href='#' class='helptext' onclick='javascript:alert(\"This is the count of \'unique visitors\' for each post, not the number of times it has been viewed. So it will count 1 view even if someone refreshes the page multiple times\");'>[?]</a></th>";
-	
+    
                 output += "<th>Views <a href='#' class='helptext' onclick='javascript:alert(\"This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable\");'>[?]</a></th>";
-	
+    
                 output += "<th>Comments</th><th>Type</th><th>Word Count</th><th></th></tr></thead>";
             
                 for(var i=0; i<numtoshow; i++) {

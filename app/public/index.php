@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 use Codeliner;
 use Athens\CSRF;
+use rbwebdesigns\core\Sanitize;
 
 /****************************************************************
   Blog CMS System Start Point
@@ -34,7 +35,7 @@ use Athens\CSRF;
 
     define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');
 
-    // Include common setup script
+    // Include cms setup script
     require_once SERVER_ROOT.'/app/setup.inc.php';
 
     // Make sure we're in the right timezone
@@ -55,21 +56,18 @@ use Athens\CSRF;
 ****************************************************************/
     
     // Get controller
-    $action = isset($_GET['p']) ? safeString($_GET['p']) : -1;
+    $action = isset($_GET['p']) ? Sanitize::string($_GET['p']) : -1;
     
     // Proccess Query String
-    if(isset($_GET['query']))
-    {
+    if(isset($_GET['query'])) {
         $queryParams = strlen($_GET['query']) > 0 ? explode("/", $_GET['query']) : false;
     }
-    else
-    {
+    else {
         $queryParams = false;
     }
     
     // Check if we are in the CMS or viewing a blog
-    if($action == 'blogs' && strtolower(gettype($queryParams)) == 'array')
-    {
+    if($action == 'blogs' && strtolower(gettype($queryParams)) == 'array') {
         // Viewing a blog
         
         // Get the ID from the URL (& remove)
@@ -88,16 +86,14 @@ use Athens\CSRF;
         // Exit here
         exit;
     }
-    elseif($action == 'newuser')
-    {
+    elseif($action == 'newuser') {
         // Sign up process
-        require_once SERVER_ROOT.'/app/view/register.php';
+        require_once SERVER_ROOT . '/app/view/register.php';
         die();
     }
-    elseif(!USER_AUTHENTICATED)
-    {
+    elseif(!USER_AUTHENTICATED) {
         // Show login page
-        require_once SERVER_ROOT.'/app/view/login.php';
+        require_once SERVER_ROOT . '/app/view/login.php';
         die();
     }
 

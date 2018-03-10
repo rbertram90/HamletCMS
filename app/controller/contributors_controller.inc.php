@@ -19,48 +19,48 @@ class ContributorsController extends GenericController
     // View
     protected $view;
     
-	public function __construct($dbcms, $view)
+    public function __construct($dbcms, $view)
     {
-		$this->modelUsers = $GLOBALS['modelUsers'];
+        $this->modelUsers = $GLOBALS['modelUsers'];
         $this->modelBlogs =  new ClsBlog($dbcms);
         $this->modelPosts = new ClsPost($dbcms);
         $this->modelContributors = new ClsContributors($dbcms);
         
         $this->view = $view;
-	}
-    	
-	/**
-		Route all requests to the correct functions
-		examples
-		/blog_cms/contributors/1734978340
-		/blog_cms/contributors/1734978340/add
-	**/
-	public function route($params)
+    }
+        
+    /**
+        Route all requests to the correct functions
+        examples
+        /blog_cms/contributors/1734978340
+        /blog_cms/contributors/1734978340/add
+    **/
+    public function route($params)
     {
         // Handle Arguments
-	    $blogid = sanitize_number($params[0]);
+        $blogid = sanitize_number($params[0]);
         
         // Check we have permission to perform action
-		if(!$this->modelContributors->isBlogContributor($blogid, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($blogid, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
         
         $blog = $this->modelBlogs->getBlogById($blogid);
-		$action = array_key_exists(1, $params) ? strtolower($params[1]) : 'manage';
+        $action = array_key_exists(1, $params) ? strtolower($params[1]) : 'manage';
         
-		switch($action):
+        switch($action):
         
-			case "add":
-				// Check if form submitted
-				if(array_key_exists(2, $params) && strtolower($params[2]) == "submit")
+            case "add":
+                // Check if form submitted
+                if(array_key_exists(2, $params) && strtolower($params[2]) == "submit")
                 {
-					$this->actionAdd($blogid);
+                    $this->actionAdd($blogid);
                 }
-				
+                
                 // View 'add contributor page'
                 $this->view->setPageTitle('Add New Contributor - '.$blog['name']);
                 $this->view->setVar('blog', $blog);
                 // $this->view->setVar('friends', $this->modelUsers->expandedFriendsList($_SESSION['userid']));
                 $this->view->render('contributors/new.tpl');
-				break;
+                break;
         
             case "delete":
                 if(isset($_POST['fld_UserID'])) $this->actionDelete($_POST['fld_UserID'], $blogid);
@@ -75,20 +75,20 @@ class ContributorsController extends GenericController
             default:
             $this->manage($blog);
             break;
-		
-		endswitch;
-	}
-	
+        
+        endswitch;
+    }
+    
     
     /**
         View the manage contributors page
     **/
-	public function manage($blog)
+    public function manage($blog)
     {
         // View all contributors
         $this->view->setVar('contributors', $this->modelContributors->getBlogContributors($blog['id']));
         
-		// Get the number of post each contributor has made
+        // Get the number of post each contributor has made
         $this->view->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id']));
         
         // Set blog in view
@@ -99,12 +99,12 @@ class ContributorsController extends GenericController
         
         // Render the view
         $this->view->render('contributors/manage.tpl');
-	}	
+    }    
     
-	/**
-		Add a contributor to the database
-	**/
-	public function actionAdd($blogid)
+    /**
+        Add a contributor to the database
+    **/
+    public function actionAdd($blogid)
     {
         if($_POST['fld_contributor'] == 0)
         {
@@ -115,9 +115,9 @@ class ContributorsController extends GenericController
             $this->modelContributors->addBlogContributor($_POST['fld_contributor'], $_POST['fld_privileges'], $blogid);
             setSystemMessage(ITEM_CREATED, "Success");
         }
-		redirect('/contributors/'.$blogid);
-	}
-	
+        redirect('/contributors/'.$blogid);
+    }
+    
     
     /**
         Update the permission for a contributor

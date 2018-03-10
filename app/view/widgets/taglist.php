@@ -22,7 +22,7 @@ class Taglist extends BlogCMSWidget {
             'display' => 'list'
         );
         $this->config = $settings;
-		$this->setupConfig();
+        $this->setupConfig();
     }
     
     

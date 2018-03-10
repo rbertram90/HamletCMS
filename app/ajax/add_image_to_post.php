@@ -22,98 +22,98 @@ $lbShowExisiting = is_dir($path);
 
 <style type="text/css">
 #upload_area {
-	margin:10px;
-	padding:10px;
-	background-color:#eee;
-	height:90%;
+    margin:10px;
+    padding:10px;
+    background-color:#eee;
+    height:90%;
     overflow:auto;
 }
 .selectableimage {
-	cursor:pointer;
+    cursor:pointer;
 }
 </style>
 
 <div id="upload_area">
 
-	<?php if($lbShowExisiting): ?>
+    <?php if($lbShowExisiting): ?>
 
-	<button id="linkShowNew" type="button">Upload New</button> | <button id="linkShowExisting" type="button">Choose Existing</button>
-	
-	<div id="showExisting">
-		<h3>Choose from Existing Photos</h3>
-		<form id='frm_chooseExistingImage'>
-		
-		<input type="hidden" value="" name="fld_choosenimage" id="fld_choosenimage" />
-		<?php
-		if ($handle = opendir($path)) {
-			while (false !== ($file = readdir($handle))) {
-				$ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
+    <button id="linkShowNew" type="button">Upload New</button> | <button id="linkShowExisting" type="button">Choose Existing</button>
+    
+    <div id="showExisting">
+        <h3>Choose from Existing Photos</h3>
+        <form id='frm_chooseExistingImage'>
+        
+        <input type="hidden" value="" name="fld_choosenimage" id="fld_choosenimage" />
+        <?php
+        if ($handle = opendir($path)) {
+            while (false !== ($file = readdir($handle))) {
+                $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
 
-				if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-					echo '<img src="/blogdata/'.$lsBlogID.'/images/'.$file.'" height="100" width="" class="selectableimage" />';
-				}
-			}
-			closedir($handle);
-		}
-		?>
-		<input type='submit' value='Choose Image' name='btn_chooseImage' id='btn_chooseImage' />
-		</form>
-	</div>
-	
-	<script type="text/javascript">
-		// Show and hide the different tabs
-		$("#showExisting").hide();
-		$("#linkShowNew").click(function() {
-			$("#showExisting").hide();
-			$("#showNew").show();
-		});
-		$("#linkShowExisting").click(function() {
-			$("#showExisting").show();
-			$("#showNew").hide();
-		});
-		$(".selectableimage").click(function() {
-			$(".selectableimage").css('border','0');
-			$(this).css('border','4px solid green');
-			$("#fld_choosenimage").val($(this).attr('src'));
-		});
-		
-		// Insert an existing image into the post
-		$("#frm_chooseExistingImage").submit(function() {
-			if($("#fld_choosenimage").val() === "") {
-				alert("Please select an image");
-				return false;
-			}
-			return closeUploadWindow($("#fld_choosenimage").val());
-		});
-	</script>
-	
-	<?php endif; ?>
-	
-	<div id="showNew">
-		<h3>Upload an image</h3>
-		<form id='frm_chooseNewImage' method='post' enctype='multipart/form-data'>
-			<label for='file'>Filename:</label>
-			<input type='file' name='file' id='file' accept="image/png, image/gif, image/jpeg"/>
-			<div class="push-right">
-				<input type='submit' name='image_submit' value='submit' />
-			</div>
-		</form>
-	</div>
-	
-	<script type="text/javascript">
-		// Upload a new image (will redirect to a confirmation screen)
-		$("#frm_chooseNewImage").submit(function() {
-		  
-			// Make it so that the file can be passed using ajax
-			var formData = new FormData();			
-			formData.append("file", document.getElementById('file').files[0]);
-			
-			// Make the ajax call
-			ajax_PostFile("/ajax/submit_image_upload?blogid=<?=$lsBlogID?>&replace=1", formData, "showNew");
-			
-			// Don't redirect
-			return false;
-		});
+                if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
+                    echo '<img src="/blogdata/'.$lsBlogID.'/images/'.$file.'" height="100" width="" class="selectableimage" />';
+                }
+            }
+            closedir($handle);
+        }
+        ?>
+        <input type='submit' value='Choose Image' name='btn_chooseImage' id='btn_chooseImage' />
+        </form>
+    </div>
+    
+    <script type="text/javascript">
+        // Show and hide the different tabs
+        $("#showExisting").hide();
+        $("#linkShowNew").click(function() {
+            $("#showExisting").hide();
+            $("#showNew").show();
+        });
+        $("#linkShowExisting").click(function() {
+            $("#showExisting").show();
+            $("#showNew").hide();
+        });
+        $(".selectableimage").click(function() {
+            $(".selectableimage").css('border','0');
+            $(this).css('border','4px solid green');
+            $("#fld_choosenimage").val($(this).attr('src'));
+        });
+        
+        // Insert an existing image into the post
+        $("#frm_chooseExistingImage").submit(function() {
+            if($("#fld_choosenimage").val() === "") {
+                alert("Please select an image");
+                return false;
+            }
+            return closeUploadWindow($("#fld_choosenimage").val());
+        });
+    </script>
+    
+    <?php endif; ?>
+    
+    <div id="showNew">
+        <h3>Upload an image</h3>
+        <form id='frm_chooseNewImage' method='post' enctype='multipart/form-data'>
+            <label for='file'>Filename:</label>
+            <input type='file' name='file' id='file' accept="image/png, image/gif, image/jpeg"/>
+            <div class="push-right">
+                <input type='submit' name='image_submit' value='submit' />
+            </div>
+        </form>
+    </div>
+    
+    <script type="text/javascript">
+        // Upload a new image (will redirect to a confirmation screen)
+        $("#frm_chooseNewImage").submit(function() {
+          
+            // Make it so that the file can be passed using ajax
+            var formData = new FormData();            
+            formData.append("file", document.getElementById('file').files[0]);
+            
+            // Make the ajax call
+            ajax_PostFile("/ajax/submit_image_upload?blogid=<?=$lsBlogID?>&replace=1", formData, "showNew");
+            
+            // Don't redirect
+            return false;
+        });
         
         function insertAtCursor(myField, myValue) {
             //IE support
@@ -133,8 +133,8 @@ $lbShowExisiting = is_dir($path);
                 myField.value += myValue;
             }
         }
-		
-		var closeUploadWindow = function(newImageSrc) {
+        
+        var closeUploadWindow = function(newImageSrc) {
 <?php
             // Are we appending or replacing the original content?
             $operation = ($pReturnReplace == 1) ? 'html' : 'append';
@@ -176,13 +176,13 @@ $lbShowExisiting = is_dir($path);
 
             endswitch;
         ?>
-			
-			// Close window - have no reference to the original object - is it possible to pass it through?
-			$(".rbwindow_screen").remove();
-			$("html").css("overflow","visible");
-			$("body").css("overflow","visible");
-			
-			return false;
-		}
-	</script>
+            
+            // Close window - have no reference to the original object - is it possible to pass it through?
+            $(".rbwindow_screen").remove();
+            $("html").css("overflow","visible");
+            $("body").css("overflow","visible");
+            
+            return false;
+        }
+    </script>
 </div>

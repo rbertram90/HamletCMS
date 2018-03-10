@@ -16,19 +16,19 @@ EOD;
 
 $formhelper = new rbwebdesigns\HTMLFormsTools(null);
 $formJSON = '{
-	"title": "Widget Settings - '.$widget_title.'",
-	"icon": "avatar.png",
-	"action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/search/submit",
-	"submitbuttonlabel": "Update",
-	"fields":
-	[
-		{
-			"type": "text",
-			"name": "widgetfld_'.$widget_name.'_name",
-			"label": "Widget Title",
+    "title": "Widget Settings - '.$widget_title.'",
+    "icon": "avatar.png",
+    "action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/search/submit",
+    "submitbuttonlabel": "Update",
+    "fields":
+    [
+        {
+            "type": "text",
+            "name": "widgetfld_'.$widget_name.'_name",
+            "label": "Widget Title",
             "current": "[!data.name]"
-		}
-	]
+        }
+    ]
 }';
 echo $formhelper->generateFromJSON($formJSON, $arrayWidgetConfig[$widget_name]);
 

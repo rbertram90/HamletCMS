@@ -5,7 +5,7 @@ use rbwebdesigns;
 class FilesController extends GenericController
 {
     
-    private $modelBlogs;		// Blogs Model
+    private $modelBlogs;        // Blogs Model
     private $blog;
     protected $view;
     

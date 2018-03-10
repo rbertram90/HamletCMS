@@ -6,18 +6,20 @@
 
 namespace rbwebdesigns\blogcms;
 
-use rbwebdesigns;
+use rbwebdesigns\core\model\RBFactory;
 
-class ClsPost extends rbwebdesigns\RBmodel {
+class ClsPost extends RBFactory {
 
     protected $db, $dbc, $tblname;
 
     /**
-        Constructor
-        @param <db> $dbconn - instance of database class (defined in core includes)
-    **/
-    function __construct($dbconn) {
-        
+     * Constructor
+     * 
+     * @param db $dbconn
+     *   instance of database class (defined in core includes)
+     */
+    function __construct($dbconn)
+    {
         // Access to the database class
         $this->db = $dbconn;
         // Connect to the database
@@ -49,17 +51,17 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Get all avaliable information on a single blog post
-        @param <int> $postid - ID number of the post
+     *  Get all avaliable information on a single blog post
+     *  @param <int> $postid - ID number of the post
     **/
     public function getPostById($postid) {
         return $this->db->selectSingleRow($this->tblname, '*', array('id' => $postid));
     }
     
     /**
-        Get information on a post by sepcifying the url and blog id
-        @param <string> Post title part of the URL
-        @blogID <int> BlogID Number to uniquely identify the post
+     *  Get information on a post by sepcifying the url and blog id
+     *   @param <string> Post title part of the URL
+     *  @blogID <int> BlogID Number to uniquely identify the post
     **/
     public function getPostByURL($lsLink, $blogID) {
         return $this->db->selectSingleRow($this->tblname, '*', array(
@@ -69,8 +71,8 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Get the last blog post made on this blog
-        @param <int> $blogid - Blog ID number of the post
+     * Get the last blog post made on this blog
+     * @param <int> $blogid - Blog ID number of the post
     **/
     public function getLatestPost($blogid) {
         $arrayWhere = array('blog_id' => $blogid, 'timestamp' => '< CURRENT_TIMESTAMP', 'draft' => 0);
@@ -103,9 +105,9 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Count the number of posts on a blog
-        @param <int> $pBlogID - ID number of the blog
-        @param <bool> $incDrafts - Include draft posts in this count
+     * Count the number of posts on a blog
+     * @param <int> $pBlogID - ID number of the blog
+     * @param <bool> $incDrafts - Include draft posts in this count
     **/
     public function countPostsOnBlog($blogid, $incDrafts = false, $incfutures = false) {
         $query_string = 'SELECT count(*) as countvar FROM '.$this->tblname.' WHERE blog_id="'.$blogid.'"';
@@ -135,7 +137,8 @@ class ClsPost extends rbwebdesigns\RBmodel {
         $query_string.= "GROUP BY author_id ";
         $query_string.= "ORDER BY timestamp DESC";
         
-        return $this->db->select_multi($query_string);
+        $statement = $this->db->query($query_string);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     public function countTotalPostViews($blogid) {
@@ -146,9 +149,9 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Get all the posts on a blog - deprecate?
-        <boolean> $drafts - include draft posts or just live ones
-        <int> $pBlogID - ID number of the blog
+     * Get all the posts on a blog - deprecate?
+     * <boolean> $drafts - include draft posts or just live ones
+     * <int> $pBlogID - ID number of the blog
     **/
     public function getAllPostsOnBlog($pBlogID, $drafts=0, $future=0) {
         $tp = TBL_POSTS; $tc = TBL_COMMENTS;
@@ -158,15 +161,16 @@ class ClsPost extends rbwebdesigns\RBmodel {
         if($drafts == 0) $sql.= "AND $tp.draft='0' ";
         if($future == 0) $sql.= "AND $tp.timestamp<='".date('Y-m-d H:i:s')."'";
         $sql.= "ORDER BY $tp.timestamp DESC ";
-        return $this->db->select_multi($sql);
+        $statement = $this->db->query($sql);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
-        Get <array> posts from $blog including number of comments for each post
-        @param <int> $num - number of posts to get
-        @param <int> $page - page number
-        @param <boolean> $drafts - include draft posts or just live ones
-        @param <int> $pBlogID - ID number of the blog
+     * Get <array> posts from $blog including number of comments for each post
+     * @param <int> $num - number of posts to get
+     * @param <int> $page - page number
+     * @param <boolean> $drafts - include draft posts or just live ones
+     * @param <int> $pBlogID - ID number of the blog
     **/
     public function getPostsByBlog($pBlogID, $page=1, $num=10, $drafts=0, $future=0, $sort='') {
         $start = ($page-1) * $num;
@@ -198,14 +202,15 @@ class ClsPost extends rbwebdesigns\RBmodel {
         }
         
         $sql.= "LIMIT $start,$num";
-        return $this->db->select_multi($sql);
+        $statement = $this->db->query($sql);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
         
     /**
-        Get Recent Posts - Get posts made within the last X days for either a single or an array of blogs
-        @param <int> $pBlogID : id number of the blog to get posts for / array of blog id's
-        @param <date> $pDaysSincePostLimit : default 5 = get posts within the last 5 days
-        @return <array> list of posts that were made after @param timestamp
+     * Get Recent Posts - Get posts made within the last X days for either a single or an array of blogs
+     * @param <int> $pBlogID : id number of the blog to get posts for / array of blog id's
+     * @param <date> $pDaysSincePostLimit : default 5 = get posts within the last 5 days
+     * @return <array> list of posts that were made after @param timestamp
     **/
     public function getRecentPosts($pBlog, $pDaysSincePostLimit=7) {
         
@@ -226,14 +231,15 @@ class ClsPost extends rbwebdesigns\RBmodel {
         } else return false;
         
         $query_string.= " ORDER BY ".$this->tblname.".timestamp DESC LIMIT 30";
-        return $this->db->select_multi($query_string);
+        $statement = $this->db->query($query_string);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     
     /**
-        Check if a user contributes to a blog
-        @param <int> $pUser - User ID for target user
-        @param <int> $pBlog - Blog ID for target blog
+     * Check if a user contributes to a blog
+     * @param <int> $pUser - User ID for target user
+     * @param <int> $pBlog - Blog ID for target blog
     **/
     public function isContributor($userID, $blogID) {
         $query = $this->db->countRows($this->tblcontributors, array(
@@ -245,8 +251,8 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Create a new post
-        @param <array> $values
+     * Create a new post
+     * @param <array> $values
     **/
     public function createPost($newValues) {
         
@@ -274,12 +280,12 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Update a blog post
-        @param <string> $pTitle - Title of the post
-        @param <text> $pContent - Post content
-        @param <string> $pTags - CSV of tags
-        @param <number> $pPost - ID of the post to update
-        @param <boolean> $pDraft - Is the post a draft (not live on blog)
+     * Update a blog post
+     * @param <string> $pTitle - Title of the post
+     * @param <text> $pContent - Post content
+     * @param <string> $pTags - CSV of tags
+     * @param <number> $pPost - ID of the post to update
+     * @param <boolean> $pDraft - Is the post a draft (not live on blog)
     **/
     public function updatePost($postid, $newValues) {
         
@@ -297,11 +303,11 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Create Safe Tag List makes sure all tags in a string are 'valid'
-        i.e. don't exist more than once, don't contain funny characters
-        and deals with spaces.
-        @param <string> $lsTagCSV - comma seperated tag list
-        @return <string> - CSV of formatted, valid tags
+     * Create Safe Tag List makes sure all tags in a string are 'valid'
+     * i.e. don't exist more than once, don't contain funny characters
+     * and deals with spaces.
+     * @param <string> $lsTagCSV - comma seperated tag list
+     * @return <string> - CSV of formatted, valid tags
     **/
     private function createSafeTagList($lsTagCSV) {
     
@@ -331,9 +337,9 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Create a safe URL for a post (no funny characters)
-        @param <string> $text - string to use for URL
-        @return <string> a safe URL to make the pages more SEO friendly
+     * Create a safe URL for a post (no funny characters)
+     * @param <string> $text - string to use for URL
+     * @return <string> a safe URL to make the pages more SEO friendly
     **/
     private function createSafePostUrl($text) {
     
@@ -347,10 +353,10 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Get counts for all tags on a blog
-        @param <int> $blogid - blog to get counts
-        @return <array> of tuples - array[tagname,count]
-    **/
+     * Get counts for all tags on a blog
+     * @param <int> $blogid - blog to get counts
+     * @return <array> of tuples - array[tagname,count]
+     */
     public function countAllTagsByBlog($blogid) {
     
         // Get the posts from this blog
@@ -384,8 +390,8 @@ class ClsPost extends rbwebdesigns\RBmodel {
 
     
     /**
-        Get all unique tags that have been applied
-        to posts for this blog
+     * Get all unique tags that have been applied
+     * to posts for this blog
     **/
     public function getAllTagsByBlog($blogId) {
     
@@ -423,10 +429,10 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Check if the tag is in an array
-        @param <string> $pTag - needle to find
-        @param <array> $pArray - array to search
-        @return <bool> if the tag exists returns position, false otherwise
+     * Check if the tag is in an array
+     * @param <string> $pTag - needle to find
+     * @param <array> $pArray - array to search
+     * @return <bool> if the tag exists returns position, false otherwise
     **/
     private function searchForTag($pArray, $pTag) {
         for($i = 0; $i < count($pArray); $i++):
@@ -437,10 +443,10 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Get all the posts on a blog with specified tag (must be exact)
-        @param <int> $blogid - ID number of the blog
-        @param <string> $ptag - Tag
-        @return <array> of posts
+     * Get all the posts on a blog with specified tag (must be exact)
+     * @param <int> $blogid - ID number of the blog
+     * @param <string> $ptag - Tag
+     * @return <array> of posts
     **/
     public function getBlogPostsByTag($blogid, $ptag) {
         
@@ -465,10 +471,10 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Delete an existing post - DEPRECATED - User model->delete - Permissions checked in controller?!
-        @param <int> $blogid - id number of the blog to delete post from
-        @param <int> $postid - id number of the post to delete
-        NOTE - this function should also delete comments associated with this post!
+     * Delete an existing post - DEPRECATED - User model->delete - Permissions checked in controller?!
+     * @param <int> $blogid - id number of the blog to delete post from
+     * @param <int> $postid - id number of the post to delete
+     * NOTE - this function should also delete comments associated with this post!
     **/
     public function xxdeletePost($blogid, $postid) {
     
@@ -494,21 +500,22 @@ class ClsPost extends rbwebdesigns\RBmodel {
         
     
     /**
-        Get all IP that have viewed this post
-        @param $postid - id for the post that is viewed
+     * Get all IP that have viewed this post
+     * @param $postid - id for the post that is viewed
     **/
     public function getViewsByPost($postid) {
         $postid = sanitize_number($postid);
         $sql = 'SELECT * FROM '.TBL_POST_VIEWS.' WHERE postid = "'.$postid.'"';
-        return $this->db->select_multi($sql);
+        $statement = $this->db->query($sql);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     
     /**
-        Increment a specific users' view count (by IP)
-        @param $postid - id for the post that is viewed
-        @param $userip - the user's ip
-        @param $updatedviewcount - not used!?
+     * Increment a specific users' view count (by IP)
+     * @param $postid - id for the post that is viewed
+     * @param $userip - the user's ip
+     * @param $updatedviewcount - not used!?
     **/
     public function incrementUserView($postid, $userip, $updatedviewcount) {        
         $sql = "UPDATE ".TBL_POST_VIEWS." SET userviews=userviews+1 WHERE postid='$postid' AND userip='$userip'";
@@ -517,9 +524,9 @@ class ClsPost extends rbwebdesigns\RBmodel {
     
     
     /**
-        Add a new user row to the post view table
-        @param $postid - id for the post that is viewed
-        @param $userip - the user's ip
+     * Add a new user row to the post view table
+     * @param $postid - id for the post that is viewed
+     * @param $userip - the user's ip
     **/
     public function recordUserView($postid, $userip) {
         $this->db->insertRow(
@@ -533,7 +540,7 @@ class ClsPost extends rbwebdesigns\RBmodel {
     }
     
     /**
-        Auto Save Functionality
+     * Auto Save Functionality
     **/
     public function autosavePost() {
     

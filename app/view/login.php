@@ -1,47 +1,44 @@
 <?php
-    $username = "";
-    $message= "";
-    $continue = true;
+use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\AccountManager;
 
-    // really quick screen to log in
-    if(isset($_POST['fld_username']) && isset($_POST['fld_password']))
-    {
-        $username = sanitize_string($_POST['fld_username']);
-        $password = sanitize_string($_POST['fld_password']);
-        
-        if(strlen($username) == 0)
-        {
-            $message = "<div class='ui error message'>Username not entered</div>";
-            $continue = false;
-        }
-        elseif(strlen($password) == 0)
-        {
-            $message = "<div class='ui error message'>Please complete the password field</div>";
-            $continue = false;
-        }
-        
-        if($continue)
-        {
-            $account = new rbwebdesigns\AccountManager($cms_db);
+$username = "";
+$message= "";
+$continue = true;
 
-            if($account->login($username, $password))
-            {
-                redirect('/');
-            }
-            else
-            {
-                $message = "<div class='ui error message'>Login Failed</div>";
-            }
+// really quick screen to log in
+if(isset($_POST['fld_username']) && isset($_POST['fld_password'])) {
+    $username = Sanitize::string($_POST['fld_username']);
+    $password = Sanitize::string($_POST['fld_password']);
+    
+    if(strlen($username) == 0) {
+        $message = "<div class='ui error message'>Username not entered</div>";
+        $continue = false;
+    }
+    elseif(strlen($password) == 0) {
+        $message = "<div class='ui error message'>Please complete the password field</div>";
+        $continue = false;
+    }
+    
+    if($continue) {
+        $account = new AccountManager($cms_db);
+
+        if($account->login($username, $password)) {
+            redirect('/');
+        }
+        else {
+            $message = "<div class='ui error message'>Login Failed</div>";
         }
     }
+}
 
-    if(isset($_GET['newaccount']))
+if(isset($_GET['newaccount']))
+{
+    if($_GET['newaccount'] == 1)
     {
-        if($_GET['newaccount'] == 1)
-        {
-            $message = "<div class='ui success message'>Account Created</div>";
-        }
+        $message = "<div class='ui success message'>Account Created</div>";
     }
+}
 
 ?><!DOCTYPE html>
 <html>

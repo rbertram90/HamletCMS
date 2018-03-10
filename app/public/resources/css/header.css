@@ -1,45 +1,45 @@
 /* Clear for fixed top header */
 #header-clear {
-	height:42px;
+    height:42px;
 }
 
 /* Main Menu */
 header#global-header {
     font-family:arial,sans-serif;
-	position:fixed;
-	top:0;
-	left:0;
-	width:100%;
-	border-bottom:1px solid #999;
-	background-color:#ffffff !important;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    border-bottom:1px solid #999;
+    background-color:#ffffff !important;
     background-image:none;
-	z-index:2;
-	box-shadow:0 0 5px #999;
-	min-width:800px;
+    z-index:2;
+    box-shadow:0 0 5px #999;
+    min-width:800px;
     padding:0;
 }
 header#global-header > nav {
-	float:right;
-	margin:8px 10px;
+    float:right;
+    margin:8px 10px;
 }
 header#global-header > nav > a {
-	display:inline-block;
-	padding:5px 10px;
-	color:#444;
-	text-decoration:none;
-	font-size:12px;
-	line-height:16px;
+    display:inline-block;
+    padding:5px 10px;
+    color:#444;
+    text-decoration:none;
+    font-size:12px;
+    line-height:16px;
 }
 header#global-header > nav > a:hover {
-	text-decoration:underline;
+    text-decoration:underline;
 }
 
 header#global-header #current-user {
-	float:right;
-	font-weight:bold;
-	font-size:12px;
-	display:inline-block;
-	margin:7px 9px;
+    float:right;
+    font-weight:bold;
+    font-size:12px;
+    display:inline-block;
+    margin:7px 9px;
     padding:6px;
     color:#222;
     background-color:#eee;

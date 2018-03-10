@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{$page_title} - Blog CMS from RBwebdesigns</title>
-	<link rel="shortcut icon" href="/resources/icons/64/gear.png" type="image/png" />
+    <title>{$page_title} - Blog CMS from RBwebdesigns</title>
+    <link rel="shortcut icon" href="/resources/icons/64/gear.png" type="image/png" />
     
-	<meta charset="UTF-8"> 
-	<meta name="description" content="{$page_description}">
+    <meta charset="UTF-8"> 
+    <meta name="description" content="{$page_description}">
     
-	<script type="text/javascript">
+    <script type="text/javascript">
         function refreshPage() {
             setTimeout("location.reload(true);",1000);
         }
-	</script>
-	
+    </script>
+    
     {* Add tag for each stylesheet added *}
     {foreach from=$stylesheets item=stylesheet}
         <link rel="stylesheet" type="text/css" href="{$stylesheet}.css" />
     {/foreach}
-	
+    
     {* Add tag for each javascript file added *}
     {foreach from=$jsscripts item=script}
         <script type="text/javascript" src="{$script}.js"></script>
     {/foreach}
 </head>
 <body>
-    {* Include the rbwebdesigns global header *}
-    {include file="$serverroot/app/vendor/rbertram90/core/view/page_header.tpl"}
+    {* Include the rbwebdesigns global header NEEDS CHANGING!!! *}
+    {include file="$serverroot/app/vendor/rbertram90/core/src/view/page_header.tpl"}
     
     <div id="wrapper">
         
@@ -55,8 +55,8 @@
             
             <div id="messages">
                 {* Check for flash messages *}
-                {if isset($smarty.session.messagetoshow) and $smarty.session.messagetoshow != false}				
-					{$smarty.session.messagetoshow}
+                {if isset($smarty.session.messagetoshow) and $smarty.session.messagetoshow != false}                
+                    {$smarty.session.messagetoshow}
                 {/if}
             </div>
             

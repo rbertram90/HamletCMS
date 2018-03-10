@@ -70,7 +70,7 @@ class View {
         
         if(isset($_SESSION['userid']))
         {
-            $this->setVar('currentuser', $this->modelUsers->getUserById($_SESSION['userid']));
+            $this->setVar('currentuser', $this->modelUsers->getById($_SESSION['userid']));
         }
         
         $usesmarty = (substr($contenttemplate, -3) == 'tpl');

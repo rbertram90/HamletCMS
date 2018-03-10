@@ -1,45 +1,47 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns;
+use rbwebdesigns\core\AppSecurity;
+use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\DateFormatter;
 
-/**********************************************************************
-  class MainController
+/**
+ * class MainController
+ * 
+ * This is the controller which acts as the intermediatory between the
+ * model (database) and the view. Any requests to the model are sent from
+ * here rather than the view.
+ *
+ * The content generated here is then passed through the template. Any
+ * pages which are expected to return content will be passed the parameters
+ * $DATA and $params where:
+ *
+ *  $DATA - an array of configuration variables to be passed through
+ *  to the view. This will more than likely always be returned from the
+ *  function unless it redirects elsewhere.
 
-  This is the controller which acts as the intermediatory between the
-  model (database) and the view. Any requests to the model are sent from
-  here rather than the view.
-
-  The content generated here is then passed through the template. Any
-  pages which are expected to return content will be passed the parameters
-  $DATA and $params where:
-
-    $DATA - an array of configuration variables to be passed through
-    to the view. This will more than likely always be returned from the
-    function unless it redirects elsewhere.
-
-    structure - array (
-        'page_title' => <string>,
-        'page_description' => <string>,
-        'includes_css' => <array:string>, - file paths relative to the root directory
-        'includes_js' => <array:string>,
-        'page_content' => <memo>,
-        'page_menu_actions' => <memo>
-    )
-       
-    $params - Miscellaneous inputs from the URL such as blog id again
-    accessed in an array.
-    
-**********************************************************************/
-
+ *  structure - array (
+ *      'page_title' => <string>,
+ *      'page_description' => <string>,
+ *      'includes_css' => <array:string>, - file paths relative to the root directory
+ *      'includes_js' => <array:string>,
+ *      'page_content' => <memo>,
+ *      'page_menu_actions' => <memo>
+ *  )
+ *     
+ *  $params - Miscellaneous inputs from the URL such as blog id again
+ *  accessed in an array.
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ */
 class BlogcmsController extends GenericController
 {
     // Class Variables
     private $modelBlogs;        // Blogs Model
     private $modelPosts;        // Posts Model
     private $modelContributors; // Contributors
-    private $modelComments;        // Comments Model
+    private $modelComments;     // Comments Model
     private $modelUsers;        // Users Model
-    private $modelSecurity;        // Security Functions
+    private $modelSecurity;     // Security Functions
     protected $view;
 
     // Constructor
@@ -50,20 +52,17 @@ class BlogcmsController extends GenericController
         $this->modelPosts = new ClsPost($dbconn);
         $this->modelComments = new ClsComment($dbconn);
         $this->modelUsers = $GLOBALS['modelUsers'];
-        $this->modelSecurity = new rbwebdesigns\AppSecurity();
+        $this->modelSecurity = new AppSecurity();
         $this->view = $view;
     }
 
     public function logout($params)
     {
-        // Resume the session
         session_start();
-
-        // Kill the session completely
         session_destroy();
 
         // Navigate to homepage
-        header("location: /index.php");
+        header("location: /");
     }
     
     /******************************************************************
@@ -71,16 +70,17 @@ class BlogcmsController extends GenericController
     ******************************************************************/
     
     /**
-        View the blog cms main dashboard which shows all blogs that the user contributes to
-    **/
+     * View the blog cms main dashboard which shows all blogs that the user contributes to
+     */
     public function home($params)
     {
+        $user = BlogCMS::session()->currentUser; // currently coming out as number - suspect this will change...
+
         // Get all blogs which current user contributes to
-        $arrayBlogs = $this->modelContributors->getContributedBlogs($_SESSION['userid']);
+        $arrayBlogs = $this->modelContributors->getContributedBlogs($user);
         
         // Add in extra information
-        foreach($arrayBlogs as $key => $blog)
-        {
+        foreach($arrayBlogs as $key => $blog) {
             // The users who can contribute to this blog
             $arrayBlogs[$key]['contributors'] = $this->modelContributors->getBlogContributors($blog['id']);
             
@@ -88,13 +88,11 @@ class BlogcmsController extends GenericController
             $arrayBlogs[$key]['latestpost'] = $this->modelPosts->getLatestPost($blog['id']);
             
             // Format the lastest post date for this blog
-            if(gettype($arrayBlogs[$key]['latestpost']) == 'array')
-            {
-                $formatteddate = rbwebdesigns\DateFormatter::formatFriendlyTime($arrayBlogs[$key]['latestpost']['timestamp']);
+            if(gettype($arrayBlogs[$key]['latestpost']) == 'array') {
+                $formatteddate = DateFormatter::formatFriendlyTime($arrayBlogs[$key]['latestpost']['timestamp']);
                 $arrayBlogs[$key]['latestpost']['timestamp'] = 'Last posted: '.$formatteddate;
             }
-            else
-            {
+            else {
                 $lastposted = 'Currently Nothing Posted!';
             }
         }
@@ -103,18 +101,12 @@ class BlogcmsController extends GenericController
         $this->view->setVar('blogs', $arrayBlogs);
         
         // Get the current users favourite blogs
-        $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($_SESSION['userid']);
+        $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user);
         $this->view->setVar('favoriteblogs', $arrayFavoriteBlogs);
-        
-        // Get recent posts from those blogs
         $this->view->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
         
         $this->view->addScript('/js/showUserCard');
-
-        // Set the page title
         $this->view->setPageTitle('My Blogs');
-        
-        // Output the view
         $this->view->render('index.tpl');
     }
     
@@ -128,107 +120,62 @@ class BlogcmsController extends GenericController
         switch(sanitize_string($params[0]))
         {
             case 'blogsbyletter':
+                $this->view->setVar('counts', $this->modelBlogs->countBlogsByLetter());
+                $this->view->setVar('alphabet', array('0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'));
 
-            // Set Variables
-            $this->view->setVar('counts', $this->modelBlogs->countBlogsByLetter());
-            $this->view->setVar('alphabet', array('0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'));
-
-            if(array_key_exists(1, $params))
-            {
-                // Get Target Letter
-                $currentletter = strlen($params[1]) == 1 ? sanitize_string($params[1]) : 'A';
-
-                // Set Variables
-                $this->view->setVar('letter', $currentletter);
-                $this->view->setVar('blogs', $this->modelBlogs->getBlogsByLetter($currentletter));
-            }
-
-            // Page Title
-            $this->view->setPageTitle('Explore Blogs - Browse Blogs By Letter');
-
-            // Output the view
-            $this->view->render('explore/browse.tpl');
-
-            break;
+                if(array_key_exists(1, $params)) {
+                    // Get Target Letter
+                    $currentletter = strlen($params[1]) == 1 ? sanitize_string($params[1]) : 'A';
+                    $this->view->setVar('letter', $currentletter);
+                    $this->view->setVar('blogs', $this->modelBlogs->getBlogsByLetter($currentletter));
+                }
+                $this->view->setPageTitle('Explore Blogs - Browse Blogs By Letter');
+                $this->view->render('explore/browse.tpl');
+                break;
 
             case 'popular':
-
-            // Get most favourited blogs
-            $this->view->setVar('topblogs', $this->modelBlogs->getTopFavourites());
-
-            // Page Title
-            $this->view->setPageTitle('Explore Blogs - Top Favourites');
-
-            // Output the view
-            $this->view->render('explore/popular.tpl');
-
-            break;
+                // Get most favourited blogs
+                $this->view->setVar('topblogs', $this->modelBlogs->getTopFavourites());
+                $this->view->setPageTitle('Explore Blogs - Top Favourites');
+                $this->view->render('explore/popular.tpl');
+                break;
                 
-            
             case 'category':
+                $category = 'general';
+                if(array_key_exists(1, $params)) $category = sanitize_string($params[1]);
                 
-            $category = 'general';
-            
-            if(array_key_exists(1, $params)) $category = sanitize_string($params[1]);
-            
-            
-            // Set categories from config
-            $this->view->setVar('currentcategory', $category);
-                
-            // Set categories from config
-            $this->view->setVar('categories', $GLOBALS['config']['blogcategories']);
-            
-            // Get most favourited blogs
-            $this->view->setVar('blogs', $this->modelBlogs->getByCategory($category));
-
-            // Page Title
-            $this->view->setPageTitle('Explore Blogs by Category');
-            
-            // Output the view
-            $this->view->render('explore/category.tpl');
-            break;
+                $this->view->setVar('currentcategory', $category);
+                $this->view->setVar('categories', $GLOBALS['config']['blogcategories']);
+                $this->view->setVar('blogs', $this->modelBlogs->getByCategory($category));
+                $this->view->setPageTitle('Explore Blogs by Category');
+                $this->view->render('explore/category.tpl');
+                break;
         }
     }
     
     /**
-        View the Documentation Page (Admin Link Only)
-    **/
+     * View the Documentation Page (Admin Link Only)
+     */
     public function viewDocs($params)
     {
-        // Set page title
         $this->view->setPageTitle('Developer Documentation');
-        
-        // Include documentation CSS
         $this->view->addStylesheet('/css/docs');
-        
-        // Render View
         $this->view->render('documentation.tpl');
     }
     
     /**
-        View the Welcome Page
-    **/
-    public function welcome($params)
-    {
-        // Page title
-        $this->view->setPageTitle('Welcome to Blog CMS');
-        
-        // Render View
-        $this->view->render('welcome.tpl');
-    }
-    
-    /**
-        View overview/ summary of a single blog
-    **/
+     *  View overview/ summary of a single blog
+     */
     public function blogOverview($params)
     {
-        $blog_id = safeNumber($params[0]); // Try and get Blog ID
+        $blog_id = Sanitize::int($params[0]); // Try and get Blog ID
+        $currentUser = BlogCMS::session()->currentUser;
         
         // Check for Blog ID
         if(strlen($blog_id) == 0) return $this->home($params);
         
         // Check that user has permission to view this page
-        if($this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid']))
+        if($this->modelContributors->isBlogContributor($blog_id, $currentUser))
         {
             // Get info from blogs table
             $arrayBlog = $this->modelBlogs->getBlogById($blog_id);
@@ -241,7 +188,7 @@ class BlogcmsController extends GenericController
             foreach($latestcomments as $key => $comment)
             {
                 $user = $this->modelUsers->getUserById($comment['user_id']);
-                $username = $comment['user_id'] == $_SESSION['userid'] ? "You" : $user['username'];
+                $username = $comment['user_id'] == $currentUser ? "You" : $user['username'];
                 $latestcomments[$key]['userid'] = $comment['user_id'];
                 $latestcomments[$key]['name'] = $username;
             }
@@ -272,19 +219,21 @@ class BlogcmsController extends GenericController
     
     
     /**
-        manageComments
-        @description view all comments that have been made on the blog and give the option to delete
-        @param <array> split query string
-        @notes Need to change this view to look more like the manage posts view with a seperate
-        ajax call to get the comments themselves
-    **/
+     * manageComments
+     * view all comments that have been made on the blog and give the option to delete
+     * 
+     * @param <array> split query string
+     * @todo Change this view to look more like the manage posts view with a seperate
+     * ajax call to get the comments themselves
+     */
     public function manageComments($params)
     {
         // Get the Blog ID
-        $blog_id = sanitize_number($params[0]);
+        $blog_id = Sanitize::int($params[0]);
+        $currentUser = BlogCMS::session()->currentUser;
         
         // Check user has permissions to view comments
-        if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'])) return $this->throwAccessDenied();
+        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser)) return $this->throwAccessDenied();
         
         // Check if we are deleting a comment
         if(array_key_exists(2, $params) && $params[1] == 'delete')
@@ -303,7 +252,7 @@ class BlogcmsController extends GenericController
         // Get user data
         foreach($arrayComments as $key => $comment)
         {
-            $arrayComments[$key]['user'] = $this->modelUsers->getUserById($comment['user_id']);
+            $arrayComments[$key]['user'] = $this->modelUsers->getById($comment['user_id']);
         }
         
         // Assign the variables in the view
@@ -319,11 +268,12 @@ class BlogcmsController extends GenericController
     
     
     /**
-        deleteComment
-        @description remove a comment from a blog
-        @param $commentID <int> Unique ID for the comment
-        @param $blog_id <int> Unique ID for the blog
-    **/
+     * deleteComment
+     * remove a comment from a blog
+     * 
+     * @param $commentID <int> Unique ID for the comment
+     * @param $blog_id <int> Unique ID for the blog
+     */
     protected function deleteComment($commentID, $blog_id)
     {
         // Delete from database
@@ -337,11 +287,11 @@ class BlogcmsController extends GenericController
     }
     
     /**
-        approveComment
-        @description set approved=1 for a comment
-        @param $commentID <int> Unique ID for the comment
-        @param $blog_id <int> Unique ID for the blog
-    **/
+     * approveComment
+     * @description set approved=1 for a comment
+     * @param $commentID <int> Unique ID for the comment
+     * @param $blog_id <int> Unique ID for the blog
+     */
     protected function approveComment($commentID, $blog_id)
     {
         // Update database
@@ -360,20 +310,20 @@ class BlogcmsController extends GenericController
     ******************************************************************/
     
     /**
-        Create a new blog
-    **/
+     * Create a new blog
+     */
     public function action_createBlog()
     {
         // Check form key
         // if(!isset($_SESSION['secure_form_key']) || $_POST['secure_form_key'] !== $_SESSION['secure_form_key']) die('Security Check Failed');
         // unset($_SESSION['secure_form_key']);
         
-        if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($_SESSION['userid']) > 4)
-        {
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
             setSystemMessage('Unable to Continue - Maximum number of blogs exceeded!', 'Error');
         }
-        else
-        {
+        else {
             $newblogkey = $this->modelBlogs->createBlog($_POST['fld_blogname'], $_POST['fld_blogdesc']);
             $this->modelContributors->addBlogContributor($_SESSION['userid'], 'a', $newblogkey);
             setSystemMessage(ITEM_CREATED, 'Success');
@@ -382,8 +332,8 @@ class BlogcmsController extends GenericController
     }
     
     /**
-        View the new blog form
-    **/
+     * View the new blog form
+     */
     public function createBlog($params)
     {        
         // Page Title

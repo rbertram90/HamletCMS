@@ -13,10 +13,10 @@ function GetDirectorySize($path){
 // Create a unique filename
 function createFilename($path, $ext)
 {
-	$date = new DateTime();
-	$tmpfilename = mt_rand(1000, 9999).$date->getTimestamp().'.'.$ext;
-	if(file_exists($path.'/'.$tmpfilename)) $tmpfilename = createFilename($path);
-	return $tmpfilename;
+    $date = new DateTime();
+    $tmpfilename = mt_rand(1000, 9999).$date->getTimestamp().'.'.$ext;
+    if(file_exists($path.'/'.$tmpfilename)) $tmpfilename = createFilename($path);
+    return $tmpfilename;
 }
 
 // --- Main ---
@@ -32,12 +32,12 @@ if(!isset($_SESSION['userid']))
 // Check the blog id was passed in
 if(isset($_GET['blogid']))
 {
-	$BlogID = safeString($_GET['blogid']);
+    $BlogID = safeString($_GET['blogid']);
 }
 else
 {
     http_response_code(500);
-	die("Could not retrieve blog information");
+    die("Could not retrieve blog information");
 }
 
 if(!isset($_FILES) || !array_key_exists('file', $_FILES))
@@ -57,14 +57,14 @@ if (!($filetype == "image/gif" || $filetype == "image/jpg" || $filetype == "imag
 if($_FILES["file"]["size"] > 2000000)
 {
     http_response_code(500);
-	die("Unable to continue with upload: File too large - max size = 2MB");
+    die("Unable to continue with upload: File too large - max size = 2MB");
 }
 
 // then if file has upload error then return error
 if ($_FILES["file"]["error"] > 0)
 {
     http_response_code(500);
-	die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
+    die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
 }
 
 // Setup the images folder if needbe
@@ -72,18 +72,18 @@ $filepath = SERVER_ROOT."/data/blogs/$BlogID";
 
 if(!is_dir($filepath.'/images'))
 {
-	// No Images directory exists
-	if(is_dir($filepath))
+    // No Images directory exists
+    if(is_dir($filepath))
     {
-		// We're in the correct place - make a new folder
-		mkdir($filepath.'/images');
-	}
+        // We're in the correct place - make a new folder
+        mkdir($filepath.'/images');
+    }
     else
     {
         http_response_code(500);
-		// Not convinced we're in the right place - throw an error.
-		die("Unable to continue with upload: Unable to find blog directory - please contact the system administrator");
-	}
+        // Not convinced we're in the right place - throw an error.
+        die("Unable to continue with upload: Unable to find blog directory - please contact the system administrator");
+    }
 }
 
 $totalfoldersize = GetDirectorySize($filepath.'/images');

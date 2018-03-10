@@ -12,18 +12,18 @@ EOD;
 
 $formhelper = new rbwebdesigns\HTMLFormsTools(null);
 $formJSON = '{
-	"title": "Widget Settings - Taglist",
-	"icon": "listview.png",
-	"action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/taglist/submit",
-	"submitbuttonlabel": "Update",
-	"fields":
-	[
-		{
-			"type": "text",
-			"name": "widgetfld_taglist_name",
-			"label": "Widget Title",
+    "title": "Widget Settings - Taglist",
+    "icon": "listview.png",
+    "action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/taglist/submit",
+    "submitbuttonlabel": "Update",
+    "fields":
+    [
+        {
+            "type": "text",
+            "name": "widgetfld_taglist_name",
+            "label": "Widget Title",
             "current": "[!data.name]"
-		},
+        },
         {
             "type": "dropdown",
             "name": "widgetfld_taglist_display",
@@ -46,19 +46,19 @@ $formJSON = '{
                 "Name": "name"
             }
         },
-		{
-			"type": "text",
-			"name": "widgetfld_taglist_numtoshow",
-			"label": "Maximum number of tags to show",
+        {
+            "type": "text",
+            "name": "widgetfld_taglist_numtoshow",
+            "label": "Maximum number of tags to show",
             "current": "[!data.numtoshow]"
-		},
-		{
-			"type": "text",
-			"name": "widgetfld_taglist_lowerlimit",
-			"label": "Minimum tag count to show",
+        },
+        {
+            "type": "text",
+            "name": "widgetfld_taglist_lowerlimit",
+            "label": "Minimum tag count to show",
             "current": "[!data.lowerlimit]"
-		}
-	]
+        }
+    ]
 }';
 
 echo $formhelper->generateFromJSON($formJSON, $arrayWidgetConfig['taglist']);

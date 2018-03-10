@@ -1,9 +1,9 @@
 <?php
 /**
-	Autosave function
-	
-	Called via ajax every 5 seconds
-	if it is a new post then a draft is created in the posts table and a autosave is created in the autosaves table
+    Autosave function
+    
+    Called via ajax every 5 seconds
+    if it is a new post then a draft is created in the posts table and a autosave is created in the autosaves table
 **/
 
 namespace rbwebdesigns\blogcms;
@@ -14,22 +14,22 @@ $updateDB = $modelPosts->autosavePost();
 
 // return result as JSON
 if($updateDB === false) {
-	echo json_encode(array(
-		'status' => 'failed',
-		'message' => 'Could not run autosave - DB Update Error'
-	));
-	
+    echo json_encode(array(
+        'status' => 'failed',
+        'message' => 'Could not run autosave - DB Update Error'
+    ));
+    
 } else if($updateDB > 0 && $updateDB !== sanitize_number($_POST['fld_postid'])) {
-	echo json_encode(array(
-		'status' => 'success',
-		'message' => 'Post autosaved at '.date('H:i'),
-		'newpostid' => $updateDB
-	));
-	
+    echo json_encode(array(
+        'status' => 'success',
+        'message' => 'Post autosaved at '.date('H:i'),
+        'newpostid' => $updateDB
+    ));
+    
 } else {
-	echo json_encode(array(
-		'status' => 'success',
-		'message' => 'Post autosaved at '.date('H:i')
-	));
+    echo json_encode(array(
+        'status' => 'success',
+        'message' => 'Post autosaved at '.date('H:i')
+    ));
 }
 ?>

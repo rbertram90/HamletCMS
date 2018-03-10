@@ -25,7 +25,7 @@
         {/if}
     {/for}
     </select> / <select name='fld_dob_month'>
-	
+    
     {for $j=1 to 12}
         {if $dob['mon'] = $j}
             <option value='{$j}' selected>{$j}</option>
@@ -34,7 +34,7 @@
         {/if}
     {/for}
     </select> / <select name='fld_dob_year'>
-	
+    
     {for $k=1899 to date("Y")}
         {if $dob['year'] = $j}
             <option value='{$k}' selected>{$k}</option>
@@ -63,9 +63,9 @@
     <input type="text" name="fld_username" value="{$user.username}" />
     
     <label for="fld_email">Email</label>
-	<input type="text" name="fld_email" onkeyup="validate(this,{ldelim}email:true{rdelim}})" value="{$user.email}" />
+    <input type="text" name="fld_email" onkeyup="validate(this,{ldelim}email:true{rdelim}})" value="{$user.email}" />
     
-	<div style="text-align:right; width:100%;">
+    <div style="text-align:right; width:100%;">
         <input type="submit" name="fld_submit_accchange" value="Update Account" class="button_blue" />
     </div>
 </form>

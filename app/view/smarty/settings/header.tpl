@@ -104,25 +104,25 @@
         $("#horizontalalign-wrapper").show();
     {rdelim}
     
-	function removeImage()
+    function removeImage()
     {ldelim}
-		$("#current-profile-image").html("");
-		return false;
+        $("#current-profile-image").html("");
+        return false;
     {rdelim}
-	
-	$("#frm_updateheader").submit(function()
+    
+    $("#frm_updateheader").submit(function()
     {ldelim}
-		// add the new image location to the hidden field
-		if(typeof $("#current-profile-image > img").attr("src") == "string")
+        // add the new image location to the hidden field
+        if(typeof $("#current-profile-image > img").attr("src") == "string")
         {ldelim}
-			var text = $("#current-profile-image > img").attr("src");
-			$("#fld_headerbackgroundimage").attr("value", text);
+            var text = $("#current-profile-image > img").attr("src");
+            $("#fld_headerbackgroundimage").attr("value", text);
             
-		{rdelim}
+        {rdelim}
         else if($("#current-profile-image").html() == '')
         {ldelim}
             // Make sure it is actually removed
             $("#fld_headerbackgroundimage").attr("value", "");
         {rdelim}
-	{rdelim});
+    {rdelim});
 </script>

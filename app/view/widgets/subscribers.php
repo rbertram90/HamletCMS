@@ -6,7 +6,7 @@ class Subscribers implements BlogCMSWidget {
     private $blog;
     
     public function __construct($settings, $blog, $modelBlog, $modelPosts, $modelComments, $modelContributors, $modelUsers)
-	{
+    {
         // Constructor
         $this->modelUsers = $modelUsers;
         $this->blog = $blog;
@@ -21,7 +21,7 @@ class Subscribers implements BlogCMSWidget {
         endforeach;
 
         $lsRecentFollowers .= '<div class="push-right">';
-        $lsRecentFollowers .= '	<a href="/blog/id/followers">More...</a>';
+        $lsRecentFollowers .= '    <a href="/blog/id/followers">More...</a>';
         $lsRecentFollowers .= '</div>';
     */
         $lsRecentFollowers = ""; // not ready to implement as social network is not up and running!

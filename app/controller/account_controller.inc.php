@@ -124,11 +124,11 @@ class AccountController extends GenericController
     
     private function uploadProfilePhoto()
     {
-	// If file type is correct type and is less than 20kb
-	/*
-	($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
-	RESTRICTED TO JPG
-	*/
+    // If file type is correct type and is less than 20kb
+    /*
+    ($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
+    RESTRICTED TO JPG
+    */
         if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000))
         {
             setSystemMessage('Unsuitable Photo - file must be a JPEG image under 20KB', 'Error');

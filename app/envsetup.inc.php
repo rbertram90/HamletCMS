@@ -1,23 +1,13 @@
 <?php
+use rbwebdesigns\core\Database;
+
 /****************************************************************
   Session Handling
 ****************************************************************/
     
     // Start Session if not already started
     if(!isset($_SESSION)) session_start();
-    
-    
-/****************************************************************
-  Core Includes
-****************************************************************/
-
-    // Language file
-    require_once SERVER_ROOT . '/app/vendor/rbertram90/core/lang/en.inc.php';
-    
-    // Helper function library
-    require_once SERVER_ROOT . '/app/vendor/rbertram90/core/core.php';
-    
-    
+        
 /****************************************************************
   Database Constants
 ****************************************************************/
@@ -40,7 +30,8 @@
 ****************************************************************/
     
     // Connect to the blog_cms database
-    $cms_db = new rbwebdesigns\db($databaseCredentials['server'], $databaseCredentials['user'], $databaseCredentials['password'], $databaseCredentials['name']);
+    $cms_db = new Database();
+    $cms_db->connect($databaseCredentials['server'], $databaseCredentials['name'], $databaseCredentials['user'], $databaseCredentials['password']);
     
 
 /****************************************************************
@@ -64,5 +55,3 @@
     
     // Import view functions
     require_once SERVER_ROOT.'/app/view/page_header.php';
-
-?>

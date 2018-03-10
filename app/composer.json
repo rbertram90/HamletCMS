@@ -1,16 +1,9 @@
 {
-  "repositories": [
+  "repositories":
+  [
     {
-        "type": "package",
-        "package": {
-          "name": "rbertram90/core",
-          "version": "dev-master",
-          "source": {
-            "url": "https://github.com/rbertram90/core",
-            "type": "git",
-            "reference": "origin/master"
-          }
-        }
+      "type": "vcs",
+      "url": "https://github.com/rbertram90/core"
     }
   ],
   "require": {

@@ -14,19 +14,19 @@ EOD;
 $formhelper = new rbwebdesigns\HTMLFormsTools(null);
 
 $formJSON = '{
-	"title": "Widget Settings - Postlist",
-	"icon": "listview.png",
-	"action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/postlist/submit",
-	"submitbuttonlabel": "Update",
-	"fields":
-	[
-		{
-			"type": "text",
-			"name": "widgetfld_postlist_name",
-			"label": "Widget Title",
+    "title": "Widget Settings - Postlist",
+    "icon": "listview.png",
+    "action": "'.$const_blogcmsroot.'/config/'.$blog['id'].'/widgets/postlist/submit",
+    "submitbuttonlabel": "Update",
+    "fields":
+    [
+        {
+            "type": "text",
+            "name": "widgetfld_postlist_name",
+            "label": "Widget Title",
             "current": "[!data.name]"
-		}
-	]
+        }
+    ]
 }';
 echo $formhelper->generateFromJSON($formJSON, $arrayWidgetConfig['postlist']);
 

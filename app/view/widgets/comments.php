@@ -12,7 +12,7 @@ class Comments extends BlogCMSWidget {
     protected $defaults;
     
     public function __construct($settings, $blog, $modelBlog, $modelPosts, $modelComments, $modelContributors, $modelUsers)
-	{
+    {
         // Constructor
         $this->modelComments = $modelComments;
         $this->modelPosts = $modelPosts;
@@ -24,7 +24,7 @@ class Comments extends BlogCMSWidget {
             'maxlength' => 200
         );
         $this->config = $settings;
-		$this->setupConfig();
+        $this->setupConfig();
     }
     
     

@@ -24,9 +24,9 @@ function createFilename($path, $ext) {
 // require_once dirname(__FILE__).'/ajax_setup.inc.php';
 
 if(isset($_GET['blogid'])) {
-	$lsBlogID = safeString($_GET['blogid']);
+    $lsBlogID = safeString($_GET['blogid']);
 } else {
-	die(showError("Could not retrieve blog information"));
+    die(showError("Could not retrieve blog information"));
 }
 
 if(!isset($_FILES) || !array_key_exists('file', $_FILES)) {
@@ -45,26 +45,26 @@ if (!($filetype == "image/gif" || $filetype == "image/jpg" || $filetype == "imag
 // 50MB = 50000000
 
 if($_FILES["file"]["size"] > 2000000) {
-	die("Unable to continue with upload: File too large - max size = 2MB");
+    die("Unable to continue with upload: File too large - max size = 2MB");
 }
 
 // then if file has upload error then return error
 if ($_FILES["file"]["error"] > 0) {
-	die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
+    die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
 }
 
 // Setup the images folder if needbe
 $filepath = SERVER_PATH_BLOGS . "/$lsBlogID";
 
 if(!is_dir($filepath.'/images')) {
-	// No Images directory exists
-	if(is_dir($filepath)) {
-		// We're in the correct place - make a new folder
-		mkdir($filepath.'/images');
-	} else {
-		// Not convinced we're in the right place - throw an error.
-		die("Unable to continue with upload: Error finding blog directory - please contact the system administrator");
-	}
+    // No Images directory exists
+    if(is_dir($filepath)) {
+        // We're in the correct place - make a new folder
+        mkdir($filepath.'/images');
+    } else {
+        // Not convinced we're in the right place - throw an error.
+        die("Unable to continue with upload: Error finding blog directory - please contact the system administrator");
+    }
 }
 
 $totalfoldersize = GetDirectorySize($filepath.'/images');
@@ -84,7 +84,7 @@ move_uploaded_file($_FILES["file"]["tmp_name"], $filepath.'/images/'.$filename);
 <h3>File Uploaded Successful</h3>
 
 <form id="frm_uploadedImage" method="post" name="frm_uploadedImage" onsubmit="closeUploadWindow('/blogdata/<?=$lsBlogID?>/images/<?=$filename?>'); return false;">
-	<div class="push-right">
-		<input type="submit" value="Close and Add Image to Post" name="fld_submit" />
-	</div>
+    <div class="push-right">
+        <input type="submit" value="Close and Add Image to Post" name="fld_submit" />
+    </div>
 </form>

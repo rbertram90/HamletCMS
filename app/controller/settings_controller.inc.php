@@ -19,12 +19,12 @@ use rbwebdesigns;
 class SettingsController extends GenericController
 {
     // Class Variables
-    private $modelBlogs;		// Blogs Model
-    private $modelPosts;		// Posts Model
-    private $modelComments;		// Comments Model
-    private $modelUsers;		// Users Model
+    private $modelBlogs;        // Blogs Model
+    private $modelPosts;        // Posts Model
+    private $modelComments;        // Comments Model
+    private $modelUsers;        // Users Model
     private $modelContributors; // Contributors Model
-    private $classSecurity;		// Security Functions
+    private $classSecurity;        // Security Functions
     private $db;
     
     protected $view;
@@ -42,7 +42,7 @@ class SettingsController extends GenericController
         $this->db = $cms_db;
         $this->view = $view;
     }
-	
+    
     
     /*
         function: route
@@ -51,7 +51,7 @@ class SettingsController extends GenericController
         @param    DATA    an array of configuration variables to be passed through
                           to the view. This will more than likely always be returned
                           from the function unless it redirects elsewhere.
-		
+        
                           structure - array (
                             'page_title'        => <string>,
                             'page_description'  => <string>,
@@ -60,7 +60,7 @@ class SettingsController extends GenericController
                             'page_content'      => <memo>,
                             'page_menu_actions' => <memo>
                           )
-		
+        
         @param    params    Miscellaneous inputs from the URL such as blog id again
                             accessed in an array.
     */
@@ -69,7 +69,7 @@ class SettingsController extends GenericController
         // Deal with arguments!
         $blog_id = key_exists(0, $params) ? safeNumber($params[0]) : '';
         $page_name = key_exists(1, $params) ? sanitize_string($params[1]) : '';
-		
+        
         // Check we have permission to perform action
         if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
         
@@ -182,10 +182,10 @@ class SettingsController extends GenericController
             
         
             case "xxwidgets":
-			
-			// Save the overall widget list
-			if($formsubmitted) return $this->action_saveWidgetLayout($blog);
-			
+            
+            // Save the overall widget list
+            if($formsubmitted) return $this->action_saveWidgetLayout($blog);
+            
             // Check for submission on individual widget config forms
             $subformsubmitted = (key_exists(3, $params) && strtolower($params[3]) === 'submit');
             
@@ -203,24 +203,24 @@ class SettingsController extends GenericController
             //     $this->viewWidgetSpecificSettings($blog, $widgetname);
             //     break;
             // }
-			
+            
             // Convert Quotes
             $BlogJSON = str_replace("&#34;", '"', $blog['widgetJSON']);
             
-			// Convert to array
+            // Convert to array
             $BlogJSON = json_decode($BlogJSON, true);
-			
-			// Check all sections exist in config
-			$this->checkWidgetJSON($blog, $BlogJSON);
             
-			// echo printArray($BlogJSON);
-			
-			$this->view->addStylesheet('/resources/css/rbwindow');
-			$this->view->addScript('/resources/js/rbwindow');
-			
+            // Check all sections exist in config
+            $this->checkWidgetJSON($blog, $BlogJSON);
+            
+            // echo printArray($BlogJSON);
+            
+            $this->view->addStylesheet('/resources/css/rbwindow');
+            $this->view->addScript('/resources/js/rbwindow');
+            
             $this->view->setVar('widgetconfig', $BlogJSON);
             $this->view->render('settings/widgets.tpl');
-			
+            
             break;
             
                 
@@ -233,7 +233,7 @@ class SettingsController extends GenericController
                 $this->view->setVar('installedwidgets', $this->getInstalledWidgets());
                 $this->view->render('settings/widgets3.tpl');
                 break;
-			
+            
             case "header":
             // Change header content
             if($formsubmitted) return $this->action_updateHeaderContent($blog);
@@ -274,8 +274,8 @@ class SettingsController extends GenericController
             $this->view->render('settings/menu.tpl');
             break;
         }
-	}
-	
+    }
+    
     /**
         Old (?) was used in header section however we now use isset - though not
         properly tested.
@@ -293,10 +293,10 @@ class SettingsController extends GenericController
     }
     
     
-	/******************************************************************
-	    POST - Blog Settings
-	******************************************************************/
-	
+    /******************************************************************
+        POST - Blog Settings
+    ******************************************************************/
+    
     /**
         View a specific widget config page
     **/
@@ -309,14 +309,14 @@ class SettingsController extends GenericController
     }
     
     
-	/**
-		Update the name and description of a blog
-	**/
-	public function action_updateBlogGeneral($blog)
+    /**
+        Update the name and description of a blog
+    **/
+    public function action_updateBlogGeneral($blog)
     {
         
-		// Update Database
-		$update = $this->modelBlogs->updateBlog($blog['id'], array(
+        // Update Database
+        $update = $this->modelBlogs->updateBlog($blog['id'], array(
             'name' => $_POST['fld_blogname'],
             'description' => $_POST['fld_blogdesc'],
             'visibility' => $_POST['fld_blogsecurity'],
@@ -324,27 +324,27 @@ class SettingsController extends GenericController
         ));
         
         // System Message
-		if($update !== false) setSystemMessage(ITEM_UPDATED, "Success");
-		else setSystemMessage($update, "Error");
+        if($update !== false) setSystemMessage(ITEM_UPDATED, "Success");
+        else setSystemMessage($update, "Error");
         
         // Redirect
-		redirect('/config/'.$blog['id']);
-	}
-	
+        redirect('/config/'.$blog['id']);
+    }
     
-	/**
-		Update how posts are displayed on the blog
-	**/
-	public function action_updatePostsSettings($blog)
+    
+    /**
+        Update how posts are displayed on the blog
+    **/
+    public function action_updatePostsSettings($blog)
     {
-		// Sanitize Input -> Update DB
+        // Sanitize Input -> Update DB
         // Lots of inputs!!!!
         $this->updateBlogConfig($blog['id'], array(
-			'posts' => array(
-				'dateformat'        => safeString($_POST['fld_dateformat']),
-				'timeformat'        => safeString($_POST['fld_timeformat']),
-				'postsperpage'      => safeNumber($_POST['fld_postsperpage']),
-				'allowcomments'     => safeNumber($_POST['fld_commentapprove']),
+            'posts' => array(
+                'dateformat'        => safeString($_POST['fld_dateformat']),
+                'timeformat'        => safeString($_POST['fld_timeformat']),
+                'postsperpage'      => safeNumber($_POST['fld_postsperpage']),
+                'allowcomments'     => safeNumber($_POST['fld_commentapprove']),
                 'postsummarylength' => safeNumber($_POST['fld_postsummarylength']),
                 'showtags'          => safeString($_POST['fld_showtags']),
                 'dateprefix'        => safeString($_POST['fld_dateprefix']),
@@ -353,111 +353,111 @@ class SettingsController extends GenericController
                 'timelocation'      => safeString($_POST['fld_timelocation']),
                 'showsocialicons'   => safeString($_POST['fld_showsocialicons']),
                 'shownumcomments'   =>safeString($_POST['fld_shownumcomments'])
-			)
-		));
-		
-		// Success / Failure
-		setSystemMessage(ITEM_UPDATED, "Success");
+            )
+        ));
+        
+        // Success / Failure
+        setSystemMessage(ITEM_UPDATED, "Success");
         
         // Redirect
-		redirect('/config/'.$blog['id']);
-	}
-    
-    
-	/**
-		Get the blog config file JSON
-	**/
-	private function getBlogConfig($blogid)
-    {
-		return jsonToArray(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json');
-	}
-	
-    
-	/**
-		Save to the blog config file
-	**/
-	private function saveBlogConfig($blogid, $arrBlogConfig)
-    {
-		$json_string = json_encode($arrBlogConfig);
-		file_put_contents(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json', $json_string);
-	}
-	
-    
-	/**
-		Update the blog configuration file with new values
-		Note that new arrays are created if needs be.
-	**/
-	public function updateBlogConfig($pintblogid, $parrayupdates)
-    {
-	    // Check we have permission to update config file
-		if(!$this->modelContributors->isBlogContributor($pintblogid, $_SESSION['userid'])) return $this->throwAccessDenied();
-	    // Fetch config from JSON file
-		$lobjSettings = $this->getBlogConfig($pintblogid);
-		// Apply the changes
-		$this->processArray($lobjSettings, $parrayupdates);
-		// Save back to JSON file
-		$this->saveBlogConfig($pintblogid, $lobjSettings);
-		return true;
-	}
-	private function processArray(&$ptargetarray, $psourcearray)
-    {
-		foreach($psourcearray as $key => $value)
-        {
-			if(getType($psourcearray[$key]) == "array")
-            {
-				if(!array_key_exists($key, $ptargetarray)) $ptargetarray[$key] = array();
-				$this->processArray($ptargetarray[$key], $psourcearray[$key]);
-			}
-			else $ptargetarray[$key] = $value;
-		}
-	}
-	
-    
-	/**
-		Type: POST
-		Description: Update the content in the footer
-	**/
-    public function action_updateFooterContent($blog)
-    {
-        // Change Settings
-		$this->updateBlogConfig($blog['id'], array(
-			'footer' => array(
-				'numcols' => safeString($_POST['fld_numcolumns']),
-				'content_col1' => safeString($_POST['fld_contentcol1']),
-				'content_col2' => safeString($_POST['fld_contentcol2']),
-				'background_image' => safeString($_POST['fld_footerbackgroundimage']),
-				'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
-				'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition'])
-			)
-		));
-		
-		// Output
-		setSystemMessage(ITEM_UPDATED, "Success");
-		redirect('/config/'.$blog['id'].'/footer');
+        redirect('/config/'.$blog['id']);
     }
     
     
     /**
-		Type: POST
-		Description: Update the content in the header
-	**/
+        Get the blog config file JSON
+    **/
+    private function getBlogConfig($blogid)
+    {
+        return jsonToArray(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json');
+    }
+    
+    
+    /**
+        Save to the blog config file
+    **/
+    private function saveBlogConfig($blogid, $arrBlogConfig)
+    {
+        $json_string = json_encode($arrBlogConfig);
+        file_put_contents(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json', $json_string);
+    }
+    
+    
+    /**
+        Update the blog configuration file with new values
+        Note that new arrays are created if needs be.
+    **/
+    public function updateBlogConfig($pintblogid, $parrayupdates)
+    {
+        // Check we have permission to update config file
+        if(!$this->modelContributors->isBlogContributor($pintblogid, $_SESSION['userid'])) return $this->throwAccessDenied();
+        // Fetch config from JSON file
+        $lobjSettings = $this->getBlogConfig($pintblogid);
+        // Apply the changes
+        $this->processArray($lobjSettings, $parrayupdates);
+        // Save back to JSON file
+        $this->saveBlogConfig($pintblogid, $lobjSettings);
+        return true;
+    }
+    private function processArray(&$ptargetarray, $psourcearray)
+    {
+        foreach($psourcearray as $key => $value)
+        {
+            if(getType($psourcearray[$key]) == "array")
+            {
+                if(!array_key_exists($key, $ptargetarray)) $ptargetarray[$key] = array();
+                $this->processArray($ptargetarray[$key], $psourcearray[$key]);
+            }
+            else $ptargetarray[$key] = $value;
+        }
+    }
+    
+    
+    /**
+        Type: POST
+        Description: Update the content in the footer
+    **/
+    public function action_updateFooterContent($blog)
+    {
+        // Change Settings
+        $this->updateBlogConfig($blog['id'], array(
+            'footer' => array(
+                'numcols' => safeString($_POST['fld_numcolumns']),
+                'content_col1' => safeString($_POST['fld_contentcol1']),
+                'content_col2' => safeString($_POST['fld_contentcol2']),
+                'background_image' => safeString($_POST['fld_footerbackgroundimage']),
+                'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
+                'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition'])
+            )
+        ));
+        
+        // Output
+        setSystemMessage(ITEM_UPDATED, "Success");
+        redirect('/config/'.$blog['id'].'/footer');
+    }
+    
+    
+    /**
+        Type: POST
+        Description: Update the content in the header
+    **/
     public function action_updateHeaderContent($blog)
     {
         // Change Settings
-		$this->updateBlogConfig($blog['id'], array(
-			'header' => array(
-				'background_image' => safeString($_POST['fld_headerbackgroundimage']),
-				'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
-				'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition']),
+        $this->updateBlogConfig($blog['id'], array(
+            'header' => array(
+                'background_image' => safeString($_POST['fld_headerbackgroundimage']),
+                'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
+                'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition']),
                 'bg_image_align_horizontal' => safeString($_POST['fld_horizontalalign']),
                 'hide_title' => safeString($_POST['fld_hidetitle']),
                 'hide_description' => safeString($_POST['fld_hidedescription'])
-			)
-		));
-		
-		// Output
-		setSystemMessage(ITEM_UPDATED, "Success");
-		redirect('/config/'.$blog['id'].'/header');
+            )
+        ));
+        
+        // Output
+        setSystemMessage(ITEM_UPDATED, "Success");
+        redirect('/config/'.$blog['id'].'/header');
     }
     
     public function action_addPage($blog)
@@ -495,10 +495,10 @@ class SettingsController extends GenericController
         $this->modelBlogs->update(array('id' => $blog['id']), array('pagelist' => $pagelist));
         
         // Output
-		setSystemMessage(ITEM_CREATED, "Success");
-		redirect('/config/'.$blog['id'].'/pages');
+        setSystemMessage(ITEM_CREATED, "Success");
+        redirect('/config/'.$blog['id'].'/pages');
     }
-	
+    
     
     public function action_removePage($blog)
     {
@@ -540,7 +540,7 @@ class SettingsController extends GenericController
         {
             setSystemMessage("Unable To Remove Page", "Warning");
         }
-		redirect('/config/'.$blog['id'].'/pages');
+        redirect('/config/'.$blog['id'].'/pages');
     }
     
     
@@ -575,7 +575,7 @@ class SettingsController extends GenericController
             setSystemMessage("Unable To Move Page", "Warning");
         }
         
-		redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/pages');
+        redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/pages');
     }
     
     
@@ -609,92 +609,92 @@ class SettingsController extends GenericController
         {
             setSystemMessage("Unable To Move Page", "Warning");
         }
-		redirect('/config/'.$blog['id'].'/pages');
+        redirect('/config/'.$blog['id'].'/pages');
     }
     
     
-	/**
-		New - works in reverse of previous version
-		This is becuase we want to have values in JSON
-		that we don't want to send to the browser
-		
-		The previous version literally re-generated the
-		whole JSON every time the blog designer form
-		was submitted...
-		
-		This one loops through the JSON stored on the
-		server and looks for the corresponding value
-		in $_POST
-	**/
-	private function action_updateBlogDisplaySettings($blog)
-	{
+    /**
+        New - works in reverse of previous version
+        This is becuase we want to have values in JSON
+        that we don't want to send to the browser
+        
+        The previous version literally re-generated the
+        whole JSON every time the blog designer form
+        was submitted...
+        
+        This one loops through the JSON stored on the
+        server and looks for the corresponding value
+        in $_POST
+    **/
+    private function action_updateBlogDisplaySettings($blog)
+    {
         $log = "";
         
-		$arraySettings = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
-		// Loop through JSON array
+        $arraySettings = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
+        // Loop through JSON array
         // $log.= "looping through saved JSON<br>";
         
-		foreach($arraySettings as $group => $groupdata)
-		{		
-			if(strtolower($group) == 'layout') continue;
-			
+        foreach($arraySettings as $group => $groupdata)
+        {        
+            if(strtolower($group) == 'layout') continue;
+            
             // $log.= "<b>processing {$group}</b><br>";
             // $log.= "looking for [displayfield][{$group}] in POST<br>";
-			$postdata = $_POST['displayfield'][$group];
-			
-			// Check fields supplied in POST
-			if(is_array($postdata))
-			{
+            $postdata = $_POST['displayfield'][$group];
+            
+            // Check fields supplied in POST
+            if(is_array($postdata))
+            {
                 // $log.= "found in post<br>";
                 // $log.= "looping through [displayfield][{$group}] in POST<br>";
                 
-				for($i = 1; $i < count($groupdata); $i++)
-				{
-					// Check that the name from the config is in $_POST
+                for($i = 1; $i < count($groupdata); $i++)
+                {
+                    // Check that the name from the config is in $_POST
                     // echo array_key_exists('label', $groupdata[$i]);
-					$fieldname = str_replace(' ', '_', $groupdata[$i]['label']);
-					
-					// $log.= "checking for ".$fieldname."(json) in POST<br>";
+                    $fieldname = str_replace(' ', '_', $groupdata[$i]['label']);
                     
-					if(array_key_exists($fieldname, $postdata))
-					{
+                    // $log.= "checking for ".$fieldname."(json) in POST<br>";
+                    
+                    if(array_key_exists($fieldname, $postdata))
+                    {
                         // $log.= "found ".$fieldname."<br>";
                         
-						// Yes!
-						if(array_key_exists('defaultfield', $_POST) && array_key_exists($group, $_POST['defaultfield']) && array_key_exists($fieldname, $_POST['defaultfield'][$group]))
-						{
-							$defaultdata = $_POST['defaultfield'][$group][$fieldname];
-						}
-						else
-						{
-							$defaultdata = "off"; // may not be sent
-						}
-						
-						if(strtolower($defaultdata) == "on")
-						{
-							// Value is default
-							// echo "Reverting {$group} {$i} to default<br>";
-							$arraySettings[$group][$i]['current'] = $arraySettings[$group][$i]['default'];
-						}
-						else
-						{
-							// echo "setting {$group} {$i} current -> {$postdata[$fieldname]}<br>";
-							$arraySettings[$group][$i]['current'] = $postdata[$fieldname];
-						}
-					}
-				} // inner loop
-			}
-		} // outer loop
+                        // Yes!
+                        if(array_key_exists('defaultfield', $_POST) && array_key_exists($group, $_POST['defaultfield']) && array_key_exists($fieldname, $_POST['defaultfield'][$group]))
+                        {
+                            $defaultdata = $_POST['defaultfield'][$group][$fieldname];
+                        }
+                        else
+                        {
+                            $defaultdata = "off"; // may not be sent
+                        }
+                        
+                        if(strtolower($defaultdata) == "on")
+                        {
+                            // Value is default
+                            // echo "Reverting {$group} {$i} to default<br>";
+                            $arraySettings[$group][$i]['current'] = $arraySettings[$group][$i]['default'];
+                        }
+                        else
+                        {
+                            // echo "setting {$group} {$i} current -> {$postdata[$fieldname]}<br>";
+                            $arraySettings[$group][$i]['current'] = $postdata[$fieldname];
+                        }
+                    }
+                } // inner loop
+            }
+        } // outer loop
         
         // die($log);
-		
-		// Save the config file back
-		file_put_contents(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json', json_encode($arraySettings));
-		
-		setSystemMessage(ITEM_UPDATED, "Success");
-		redirect('/config/'.$blog['id']);
-	}
-	
+        
+        // Save the config file back
+        file_put_contents(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json', json_encode($arraySettings));
+        
+        setSystemMessage(ITEM_UPDATED, "Success");
+        redirect('/config/'.$blog['id']);
+    }
+    
     
     /**
         Replace the files needed to copy a new template to the blog
@@ -711,19 +711,19 @@ class SettingsController extends GenericController
         $new_json = SERVER_PATH_BLOGS.'/'.$blog_key.'/template_config.json';
         if (!copy($copy_json, $new_json)) die(showError('failed to copy '.$template_id.'.json'));
     }
-	
+    
     
     /**
         Apply a completely new template from the predefined templates
     **/
     public function action_applyNewTemplate($DATA, $params)
     {
-		// Sanitize Variables
+        // Sanitize Variables
         $blog_key = safeNumber($params[0]);
         $template_id = safeString($_POST['template_id']);
-		// Check we have permission to perform action
-		if(!$this->modelContributors->isBlogContributor($blog_key, $_SESSION['userid'])) return $this->throwAccessDenied();
-		// Apply the new template
+        // Check we have permission to perform action
+        if(!$this->modelContributors->isBlogContributor($blog_key, $_SESSION['userid'])) return $this->throwAccessDenied();
+        // Apply the new template
         $this->applyNewBlogTemplate($blog_key, $template_id);
         // Redirect Home
         setSystemMessage(ITEM_UPDATED, "Success");
@@ -736,12 +736,12 @@ class SettingsController extends GenericController
     **/
     public function action_saveStylesheet($params)
     {
-		// Sanitize Variables
+        // Sanitize Variables
         $css_string = strip_tags($_POST['fld_css']);
         $blog_id = sanitize_number($params[0]);
-		// Check we have permission to perform action
-		if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'])) return $this->throwAccessDenied();
-		// Update default.css
+        // Check we have permission to perform action
+        if(!$this->modelContributors->isBlogContributor($blog_id, $_SESSION['userid'])) return $this->throwAccessDenied();
+        // Update default.css
         if(is_dir(SERVER_PUBLIC_PATH.'/blogdata/'.$blog_id))
         {
             file_put_contents(SERVER_PATH_BLOGS.'/'.$blog_id.'/default.css', $css_string);
@@ -753,7 +753,7 @@ class SettingsController extends GenericController
         }
         redirect('/config/'.$blog_id.'/stylesheet');
     }
-	
+    
     
     /**
         Get some JSON which is okay to pass to the view - as widgets are dynamic if any are missing in the config
@@ -761,8 +761,8 @@ class SettingsController extends GenericController
     **/
     public function checkWidgetJSON($blog, &$widgetconfig)
     {
-		$arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
-		
+        $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
+        
         // Config
         //  -> Layout
         //     -> ColumnCount
@@ -771,34 +771,34 @@ class SettingsController extends GenericController
         //  -> (Leftpanel)
         //  -> (Rightpanel)
         
-		$numcolumns = (array_key_exists('Layout', $arrayBlogConfig) && array_key_exists('ColumnCount', $arrayBlogConfig['Layout'])) ? $arrayBlogConfig['Layout']['ColumnCount'] : 2;
-		
-		if(!array_key_exists('header', $widgetconfig)) $widgetconfig['header'] = array();
-		if(!array_key_exists('footer', $widgetconfig)) $widgetconfig['footer'] = array();
+        $numcolumns = (array_key_exists('Layout', $arrayBlogConfig) && array_key_exists('ColumnCount', $arrayBlogConfig['Layout'])) ? $arrayBlogConfig['Layout']['ColumnCount'] : 2;
         
-		switch($numcolumns)
+        if(!array_key_exists('header', $widgetconfig)) $widgetconfig['header'] = array();
+        if(!array_key_exists('footer', $widgetconfig)) $widgetconfig['footer'] = array();
+        
+        switch($numcolumns)
         {
-			case 3:
-				// 2 Columns for widgets
-				if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();
-				if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
-				break;
+            case 3:
+                // 2 Columns for widgets
+                if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();
+                if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
+                break;
                 
-			case 2:                
+            case 2:                
                 $postscolumnnumber = (array_key_exists('Layout', $arrayBlogConfig) && array_key_exists('PostsColumn', $arrayBlogConfig['Layout'])) ? $arrayBlogConfig['Layout']['PostsColumn'] : 1;
-				// 1 column for widgets
+                // 1 column for widgets
                 if($postscolumnnumber == 2) {
-				    if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();
+                    if(!array_key_exists('leftpanel', $widgetconfig)) $widgetconfig['leftpanel'] = array();
                 }
                 else {
-				    if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
+                    if(!array_key_exists('rightpanel', $widgetconfig)) $widgetconfig['rightpanel'] = array();
                 }
-				break;
+                break;
                 
-			case 1:
-				// Don't show any columns
-				break;
-		}
+            case 1:
+                // Don't show any columns
+                break;
+        }
     }
     
     
@@ -925,58 +925,58 @@ class SettingsController extends GenericController
         // Update config from all posted data
         // Widget POST variables are in format:
         // widgetfld_[widgetname]_[settingname]
-		
-		// Get the location of the widget
-		if(array_key_exists("sys_widget_location", $_POST))
-		{
-			$widgetlocation = sanitize_string($_POST['sys_widget_location']);
-		}
-		else die("No location found");
-		
-		// Get the id of the widget
-		if(array_key_exists("sys_widget_id", $_POST))
-		{
-			$widgetid = sanitize_string($_POST['sys_widget_id']);
-		}
-		else die("No id found");
-		
-		// Get the type of the widget
-		if(array_key_exists("sys_widget_type", $_POST))
-		{
-			$widgettype = sanitize_string($_POST['sys_widget_type']);
-		}
-		else die("No type found");
-				
-		// Create array for location if needed
-		if(!array_key_exists($widgetlocation, $arrayWidgetConfig))
-		{
-			$arrayWidgetConfig[$widgetlocation] = array();
-		}
-		
-		// Find match in current settings for id
-		$targetwidget = -1;
-		
-		for($i = 0; $i < count($arrayWidgetConfig[$widgetlocation]); $i++)
-		{
-			if($arrayWidgetConfig[$widgetlocation][$i]['id'] == $widgetid)
-			{
-				$targetwidget = $i;
-				break;
-			}
-		}
-		
-		// Create new if needed...
-		if($targetwidget == -1)
-		{
-			// Get the index
-			$targetwidget = count($arrayWidgetConfig[$widgetlocation]);
-			
-			$arrayWidgetConfig[$widgetlocation][] = array(
-				'id' => $widgetid,
-				'type' => $widgettype
-			);
-		}
-		
+        
+        // Get the location of the widget
+        if(array_key_exists("sys_widget_location", $_POST))
+        {
+            $widgetlocation = sanitize_string($_POST['sys_widget_location']);
+        }
+        else die("No location found");
+        
+        // Get the id of the widget
+        if(array_key_exists("sys_widget_id", $_POST))
+        {
+            $widgetid = sanitize_string($_POST['sys_widget_id']);
+        }
+        else die("No id found");
+        
+        // Get the type of the widget
+        if(array_key_exists("sys_widget_type", $_POST))
+        {
+            $widgettype = sanitize_string($_POST['sys_widget_type']);
+        }
+        else die("No type found");
+                
+        // Create array for location if needed
+        if(!array_key_exists($widgetlocation, $arrayWidgetConfig))
+        {
+            $arrayWidgetConfig[$widgetlocation] = array();
+        }
+        
+        // Find match in current settings for id
+        $targetwidget = -1;
+        
+        for($i = 0; $i < count($arrayWidgetConfig[$widgetlocation]); $i++)
+        {
+            if($arrayWidgetConfig[$widgetlocation][$i]['id'] == $widgetid)
+            {
+                $targetwidget = $i;
+                break;
+            }
+        }
+        
+        // Create new if needed...
+        if($targetwidget == -1)
+        {
+            // Get the index
+            $targetwidget = count($arrayWidgetConfig[$widgetlocation]);
+            
+            $arrayWidgetConfig[$widgetlocation][] = array(
+                'id' => $widgetid,
+                'type' => $widgettype
+            );
+        }
+        
         foreach($_POST as $key => $postvariable)
         {
             // ...
@@ -994,52 +994,52 @@ class SettingsController extends GenericController
         // Save to database
         $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog['id']);
 
-		// Return the updated widget config
+        // Return the updated widget config
         // Update UI - don't - this is called using ajax
-		// die($jsonWidgetConfig);
-		die(json_encode($arrayWidgetConfig[$widgetlocation][$targetwidget]));
-		
+        // die($jsonWidgetConfig);
+        die(json_encode($arrayWidgetConfig[$widgetlocation][$targetwidget]));
+        
         // setSystemMessage(ITEM_UPDATED, "Success");
         // redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/widgets');
     }
-	
-	function action_saveWidgetLayout($blog)
-	{		
-		if(!array_key_exists('fld_submit', $_POST)) die('Submit field missing');
-		if(!array_key_exists('widgets', $_POST))
-		{
-			// no widgets...
-			$jsonWidgetConfig = "{}";
-		}
-		else
-		{
-			$jsonWidgetConfig = "{";
-			$first = true;
-			
-			foreach($_POST['widgets'] as $widgetlocation => $widgets)
-			{
-				if(!$first) $jsonWidgetConfig.= ",";
-				$jsonWidgetConfig.= "&#34;$widgetlocation&#34;: [";
-				
-				$first2 = true;
-				foreach($widgets as $id => $widgetjson)
-				{
-					if(!$first2) $jsonWidgetConfig.= ",";
-					$jsonWidgetConfig.= sanitize_string($widgetjson);
-					$first2 = false;
-				}			
-				$jsonWidgetConfig.= "]";
-				$first = false;
-			}
-			$jsonWidgetConfig.= "}";
-		}
-		
-		$this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog['id']);
-		
-		setSystemMessage(ITEM_UPDATED, "Success");
+    
+    function action_saveWidgetLayout($blog)
+    {        
+        if(!array_key_exists('fld_submit', $_POST)) die('Submit field missing');
+        if(!array_key_exists('widgets', $_POST))
+        {
+            // no widgets...
+            $jsonWidgetConfig = "{}";
+        }
+        else
+        {
+            $jsonWidgetConfig = "{";
+            $first = true;
+            
+            foreach($_POST['widgets'] as $widgetlocation => $widgets)
+            {
+                if(!$first) $jsonWidgetConfig.= ",";
+                $jsonWidgetConfig.= "&#34;$widgetlocation&#34;: [";
+                
+                $first2 = true;
+                foreach($widgets as $id => $widgetjson)
+                {
+                    if(!$first2) $jsonWidgetConfig.= ",";
+                    $jsonWidgetConfig.= sanitize_string($widgetjson);
+                    $first2 = false;
+                }            
+                $jsonWidgetConfig.= "]";
+                $first = false;
+            }
+            $jsonWidgetConfig.= "}";
+        }
+        
+        $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog['id']);
+        
+        setSystemMessage(ITEM_UPDATED, "Success");
         redirect('/config/'.$blog['id'].'/widgets');
-		// echo printArray($_POST);
-		// echo $jsonWidgetConfig;
-	}
+        // echo printArray($_POST);
+        // echo $jsonWidgetConfig;
+    }
 }
 ?>

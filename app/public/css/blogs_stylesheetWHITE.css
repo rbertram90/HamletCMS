@@ -1,22 +1,22 @@
 body {
-	font-family:sans-serif;
-	margin:0;
+    font-family:sans-serif;
+    margin:0;
 }
 
 a {
-	color:#165CA1;
-	text-decoration:none;
+    color:#165CA1;
+    text-decoration:none;
 }
 a:hover {
-	text-decoration:underline;
+    text-decoration:underline;
 }
 
 tr{
-	background-color:#eee;
-	padding:8px;
+    background-color:#eee;
+    padding:8px;
 }
 th {
-	background-color:#fff;
+    background-color:#fff;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -36,76 +36,76 @@ p {
 }
 
 #wrapper {
-	width:90%;
-	min-width:900px;
-	border:solid #ccc;
-	border-width:0 1px;
-	margin:0 auto;
-	background-color:#f6f6f6;
-	box-shadow: 0px 0px 30px #ccc;
+    width:90%;
+    min-width:900px;
+    border:solid #ccc;
+    border-width:0 1px;
+    margin:0 auto;
+    background-color:#f6f6f6;
+    box-shadow: 0px 0px 30px #ccc;
     max-width:1200px;
 }
 
 #header {
-	padding:26px 10px 10px 10px;
-	color:#777;
-	background-color:#ddd;
-	border-bottom:10px solid #eee;
-	background-image:url('../images/header_background2.png');
-	background-position:right;
-	background-repeat:no-repeat;
+    padding:26px 10px 10px 10px;
+    color:#777;
+    background-color:#ddd;
+    border-bottom:10px solid #eee;
+    background-image:url('../images/header_background2.png');
+    background-position:right;
+    background-repeat:no-repeat;
 }
 
 #sidebar {
-	width:18%;
-	float:left;
+    width:18%;
+    float:left;
 }
-	#sidebar ul {
-		margin:0;
-		padding:0;
-		list-style:none;
-	}
-	#sidebar li {
-		border-bottom:1px solid #ccc;
-	}
-	#sidebar li a {
-		display:block;
-		padding:8px 10px;
-		text-decoration:none;
+    #sidebar ul {
+        margin:0;
+        padding:0;
+        list-style:none;
+    }
+    #sidebar li {
+        border-bottom:1px solid #ccc;
+    }
+    #sidebar li a {
+        display:block;
+        padding:8px 10px;
+        text-decoration:none;
         border-right: 1px solid #ccc;
-		background-image:url('../images/gradient_1.png');
-	}
-	#sidebar li a:hover {
-		background-color:#eee;
-		background-image:url('../images/gradient_2.png');
-		background-position:10px;
-	}
-	#sidebar li a.current {
-		background-color:#fff;
+        background-image:url('../images/gradient_1.png');
+    }
+    #sidebar li a:hover {
+        background-color:#eee;
+        background-image:url('../images/gradient_2.png');
+        background-position:10px;
+    }
+    #sidebar li a.current {
+        background-color:#fff;
         border-right-color: #fff;
-		background-image:none;
-		color:#000;
-	}
-	#sidebar li.nolink {
-		padding:8px 4px;
-		font-weight:bold;
+        background-image:none;
+        color:#000;
+    }
+    #sidebar li.nolink {
+        padding:8px 4px;
+        font-weight:bold;
         background-color: #ddd;
-	}
+    }
 
 #content {
-	padding:20px;
-	background-color:#fff;
-	margin-left:18%;
+    padding:20px;
+    background-color:#fff;
+    margin-left:18%;
     min-height: 360px;
 }
 
 #footer {
-	padding:40px 0;
-	font-size:0.8em;
-	text-align:center;
-	clear:both;
-	background-color:#ddd;
-	border-top:10px solid #eee;
+    padding:40px 0;
+    font-size:0.8em;
+    text-align:center;
+    clear:both;
+    background-color:#ddd;
+    border-top:10px solid #eee;
 }
 
 .action_button {
@@ -139,99 +139,99 @@ p {
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 .btn_red:hover {
-	background-color: #bd362f;
+    background-color: #bd362f;
 }
 
 .btn_green {
-	background-color:#64CD78;
+    background-color:#64CD78;
 }
 .btn_green:hover {
-	background-color:#64CD78;
+    background-color:#64CD78;
 }
 
 .settings-icon {
-	margin-right:20px;
-	zheight:60px;
-	display:inline-block;
+    margin-right:20px;
+    zheight:60px;
+    display:inline-block;
 }
 .settings-title {
-	display:inline-block;
-	vertical-align:top;
-	margin-top:15px;
-	margin-bottom:40px;
+    display:inline-block;
+    vertical-align:top;
+    margin-top:15px;
+    margin-bottom:40px;
 }
 .settings-title .subtitle {
-	font-size:20px;
+    font-size:20px;
 }
 
 .action_select {
-	padding:6px;
-	color:#555;
-	background-color:#eee;
+    padding:6px;
+    color:#555;
+    background-color:#eee;
     padding-bottom:0;
 }
 .action_select:hover, .action_select:focus {
-	color:#000;
-	background-color:#fff;
+    color:#000;
+    background-color:#fff;
 }
 .action_select option {
-	padding:4px;
+    padding:4px;
 }
 
 .summary_table {
     margin-bottom:30px;
 }
 .summary_table tr:hover {
-	background-image:url('../images/gradient_2.png');
-	background-position:10px;
+    background-image:url('../images/gradient_2.png');
+    background-position:10px;
 }
 .summary_table tr {
-	background-image:url('../images/gradient_1.png');
+    background-image:url('../images/gradient_1.png');
 }
 
 .date {
-	font-size:80%;
+    font-size:80%;
 }
 
 
 /* Crumbtrail */
 .crumbtrail {
-	border-left:3px solid #f8f8f8;
+    border-left:3px solid #f8f8f8;
     margin-bottom:15px;
-}	
+}    
 .crumbtrail a {
-	display:inline-block;
-	background-image:url("../images/crumbtrail-mid.png");
-	background-position:right;
-	padding:6px 30px 6px 10px;
+    display:inline-block;
+    background-image:url("../images/crumbtrail-mid.png");
+    background-position:right;
+    padding:6px 30px 6px 10px;
 }
 .crumbtrail a:last-child {
-	background-image:url("../images/crumbtrail-end.png");
-	color:#000;
+    background-image:url("../images/crumbtrail-end.png");
+    color:#000;
 }
 
 /* Explore */
 .explore-menu a {
-	background-color: #e8e8e8;
-	padding: 4px 10px;
-	display: inline-block;
-	margin: 2px 5px 16px 0;
-	border:1px solid #ccc;
-	border-radius:6px;
+    background-color: #e8e8e8;
+    padding: 4px 10px;
+    display: inline-block;
+    margin: 2px 5px 16px 0;
+    border:1px solid #ccc;
+    border-radius:6px;
 }
 .explore-menu a:hover {
-	text-decoration:none;
-	background-color:#aaa;
-	color:#fff;
-	border-color:#666;
+    text-decoration:none;
+    background-color:#aaa;
+    color:#fff;
+    border-color:#666;
 }
 
 /* Homepage Recent Posts */
 .recent-post {
-	background-color:#f6f6f6;
-	padding:8px;
-	border-bottom:2px solid #eee;
+    background-color:#f6f6f6;
+    padding:8px;
+    border-bottom:2px solid #eee;
 }
 .recent-post p {
-	margin-bottom:4px;
+    margin-bottom:4px;
 }

@@ -71,7 +71,7 @@
                 </div>
                 <div class="field">
                     <label for="fld_password">Password</label>
-                    <input type="password" name="fld_password" />			
+                    <input type="password" name="fld_password" />            
                 </div>
                 <div class="field">
                     <label for="fld_password_2">Re-type Password</label>

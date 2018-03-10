@@ -2,7 +2,7 @@
 /***************************************************************
     blog_setup.inc.php
     @description set-up code for blogs within the cms, need
-	seperate file as the include paths are different.
+    seperate file as the include paths are different.
     @author R Bertram
     @date MAR 2013
     
@@ -19,13 +19,13 @@
 
     // Setup Directory and Core DB Constants
     // require_once dirname(__FILE__).'/../../root.inc.php';
-	
+    
     // Setup - Stage 1
     require_once SERVER_ROOT.'/app/envsetup.inc.php';
-	
+    
     // Setup for 'Plugins' Installed using composer
     require_once SERVER_ROOT.'/app/vendor/autoload.php';
-	
+    
     // Include blogs controller
     require_once SERVER_ROOT.'/app/controller/blogcontent_controller.inc.php';
     
@@ -36,7 +36,7 @@
     
     // Connect to Users Database
     $modelUsers = new rbwebdesigns\Users($cms_db);
-	
+    
 
 /****************************************************************
   Stylesheet
@@ -103,13 +103,13 @@
         'is_favourite' => $page_controller->blogIsFavourite(),
         'page_headerbackground' => $page_controller->generateHeaderBackground(),
         'page_footercontent' => $page_controller->generateFooter(),
-		'page_navigation' => $page_controller->generateNavigation(),
+        'page_navigation' => $page_controller->generateNavigation(),
         'header_hide_title' => $page_controller->header_hideTitle,
         'header_hide_description' => $page_controller->header_hideDescription,
-		'template_config' => $page_controller->getTemplateConfig()
+        'template_config' => $page_controller->getTemplateConfig()
     );
     
-	// Proccess Query String - note has probabily already been done at index level!
+    // Proccess Query String - note has probabily already been done at index level!
     if(isset($queryParams))
     {
         $p = array_shift($queryParams); // get and remove the first element of array
@@ -130,64 +130,64 @@
     }
     
 
-	// Store any output in a buffer
-	ob_start();
+    // Store any output in a buffer
+    ob_start();
 
-	switch(strtolower($p)):
+    switch(strtolower($p)):
 
-		case "posts":
+        case "posts":
 
-			if(gettype($queryParams) !== "array")
+            if(gettype($queryParams) !== "array")
             {
-				$DATA = $page_controller->viewHome($DATA, $queryParams);
-				break;
-			}
-			
-			if(array_key_exists(1, $queryParams))
+                $DATA = $page_controller->viewHome($DATA, $queryParams);
+                break;
+            }
+            
+            if(array_key_exists(1, $queryParams))
             {
-				// Perform an action based on a post
-				$action = safeString($queryParams[1]);
+                // Perform an action based on a post
+                $action = safeString($queryParams[1]);
                 
-				switch($action)
+                switch($action)
                 {
                     case "addcomment":
-						// Add a comment to this post
-						$DATA = $page_controller->addComment($DATA, $queryParams);
-						break;
+                        // Add a comment to this post
+                        $DATA = $page_controller->addComment($DATA, $queryParams);
+                        break;
                         
-					default:
-						// View the post
-						$DATA = $page_controller->viewPost($DATA, $queryParams);
+                    default:
+                        // View the post
+                        $DATA = $page_controller->viewPost($DATA, $queryParams);
                         break;
                 }
-			}
+            }
             else
             {
-				// View Post
-				$DATA = $page_controller->viewPost($DATA, $queryParams);
-			}
-			break;
-			
-		case "tags":
-			// Search for posts with tag
-			$DATA = $page_controller->viewPostsByTag($DATA, $queryParams);
-			break;
-			
+                // View Post
+                $DATA = $page_controller->viewPost($DATA, $queryParams);
+            }
+            break;
+            
+        case "tags":
+            // Search for posts with tag
+            $DATA = $page_controller->viewPostsByTag($DATA, $queryParams);
+            break;
+            
         case "search":
-			// Search for posts with tag
-			$DATA = $page_controller->search($DATA, $queryParams);
-			break;
+            // Search for posts with tag
+            $DATA = $page_controller->search($DATA, $queryParams);
+            break;
 
-		default:
-			// View Homepage
-			$DATA = $page_controller->viewHome($DATA, $queryParams);
-			break;
+        default:
+            // View Homepage
+            $DATA = $page_controller->viewHome($DATA, $queryParams);
+            break;
 
-	endswitch;
+    endswitch;
 
-	$DATA['page_content'] = ob_get_contents();
+    $DATA['page_content'] = ob_get_contents();
 
-	ob_end_clean();
-	
-	require SERVER_ROOT.'/app/blog_template.php';
+    ob_end_clean();
+    
+    require SERVER_ROOT.'/app/blog_template.php';
 ?>

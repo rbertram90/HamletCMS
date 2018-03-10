@@ -1,92 +1,92 @@
 {
-	"default":
-	{
+    "default":
+    {
         "controller": "blogcms",
-		"function": "home",
-		"title": "Your Blogs"
-	},
+        "function": "home",
+        "title": "Your Blogs"
+    },
     "welcome":
     {
         "controller": "blogcms",
-		"function": "welcome",
-		"title": "Welcome to Blog CMS"
+        "function": "welcome",
+        "title": "Welcome to Blog CMS"
     },
     "overview":
     {
         "controller": "blogcms",
-		"function": "blogOverview"
+        "function": "blogOverview"
     },
     "comments":
     {
         "controller": "blogcms",
-		"function": "manageComments"
+        "function": "manageComments"
     },
     "explore":
     {
         "controller": "blogcms",
-		"function": "explore"
+        "function": "explore"
     },
     "developer":
     {
         "controller": "blogcms",
         "function": "viewDocs"
     },
-	"newblog":
-	{
+    "newblog":
+    {
         "controller": "blogcms",
-		"function": "createBlog",
-		"title": "Create A New Blog"
-	},
-	"submitnewblog":
-	{
+        "function": "createBlog",
+        "title": "Create A New Blog"
+    },
+    "submitnewblog":
+    {
         "controller": "blogcms",
-		"function": "action_createBlog"
-	},
+        "function": "action_createBlog"
+    },
     "logout":
     {
         "controller": "blogcms",
         "function": "logout"
     },
-	"accessdenied":
-	{
+    "accessdenied":
+    {
         "controller": "blogcms",
-		"function": "accessDenied",
-		"title": "403 - Access Denied"
-	},
+        "function": "accessDenied",
+        "title": "403 - Access Denied"
+    },
     "notfound":
     {
         "controller": "blogcms",
-		"function": "notFound",
-		"title": "404 - Unable to find page"
+        "function": "notFound",
+        "title": "404 - Unable to find page"
     },
     "account":
     {
         "controller": "account",
-		"function": "route",
+        "function": "route",
         "_notes": "The individual routes for this section are handled in the controller code"
     },
     "files":
     {
         "controller": "files",
-		"function": "route",
+        "function": "route",
         "_notes": "The individual routes for this section are handled in the controller code"
     },
     "config":
     {
         "controller": "settings",
-		"function": "route",
+        "function": "route",
         "_notes": "The individual routes for this section are handled in the controller code"
     },
     "contributors":
     {
         "controller": "contributors",
-		"function": "route",
+        "function": "route",
         "_notes": "The individual routes for this section are handled in the controller code"
     },
     "posts":
     {
         "controller": "posts",
-		"function": "route",
+        "function": "route",
         "_notes": "The individual routes for this section are handled in the controller code"
     },
     "ajax":

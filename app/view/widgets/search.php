@@ -20,7 +20,7 @@ class Search extends BlogCMSWidget {
         );
         
         $this->config = $settings;
-		$this->setupConfig();
+        $this->setupConfig();
     }    
     
     public function generate() {

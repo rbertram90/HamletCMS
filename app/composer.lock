@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "724202be35a531cb899d018c7b73d67f",
-    "content-hash": "938adb3528ee51bdbd0b52717027e634",
+    "content-hash": "c87a8ba8bed8816ad34ea2200b327eb4",
     "packages": [
         {
             "name": "athens/csrf",
@@ -35,7 +34,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Simple CSRF protection",
-            "time": "2016-02-23 16:56:18"
+            "time": "2016-02-23T16:56:18+00:00"
         },
         {
             "name": "codeliner/array-reader",
@@ -82,7 +81,7 @@
                 "php",
                 "util"
             ],
-            "time": "2015-07-02 17:50:54"
+            "time": "2015-07-02T17:50:54+00:00"
         },
         {
             "name": "michelf/php-markdown",
@@ -133,18 +132,37 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2014-05-05 02:43:50"
+            "time": "2014-05-05T02:43:50+00:00"
         },
         {
             "name": "rbertram90/core",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rbertram90/core",
-                "reference": "origin/master"
+                "url": "https://github.com/rbertram90/core.git",
+                "reference": "64dd3355783673e607a3d4b63d1c37e6e9f6af65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rbertram90/core/zipball/64dd3355783673e607a3d4b63d1c37e6e9f6af65",
+                "reference": "64dd3355783673e607a3d4b63d1c37e6e9f6af65",
+                "shasum": ""
             },
             "type": "library",
-            "time": "2017-11-17 21:42:44"
+            "autoload": {
+                "psr-4": {
+                    "rbwebdesigns\\core\\": "src",
+                    "rbwebdesigns\\core\\model\\": "src/model"
+                },
+                "files": [
+                    "src/core-functions.php"
+                ]
+            },
+            "support": {
+                "source": "https://github.com/rbertram90/core/tree/master",
+                "issues": "https://github.com/rbertram90/core/issues"
+            },
+            "time": "2018-01-30T12:03:12+00:00"
         },
         {
             "name": "smarty/smarty",
@@ -197,7 +215,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-12-14 21:57:25"
+            "time": "2016-12-14T21:57:25+00:00"
         }
     ],
     "packages-dev": [],

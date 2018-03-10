@@ -93,11 +93,11 @@
         $("#fld_horizontalposition").val("{$blogconfig.bg_image_post_horizontal}");
     {/if}
     
-	function removeImage()
+    function removeImage()
     {ldelim}
-		$("#current-profile-image").html("");
-		return false;
-	{rdelim}
+        $("#current-profile-image").html("");
+        return false;
+    {rdelim}
 
     var checkFields = function ()
     {ldelim}
@@ -118,23 +118,23 @@
     $("#fld_numcolumns").change(checkFields);
     // Init
     checkFields();
-	
-	
-	$("#frm_updatefooter").submit(function()
+    
+    
+    $("#frm_updatefooter").submit(function()
     {ldelim}
-		// add the new image location to the hidden field
-		//var newimagesrc = ;
-		if(typeof $("#current-profile-image > img").attr("src") == "string")
+        // add the new image location to the hidden field
+        //var newimagesrc = ;
+        if(typeof $("#current-profile-image > img").attr("src") == "string")
         {ldelim}
-			var text = $("#current-profile-image > img").attr("src");
-			$("#fld_footerbackgroundimage").attr("value", text);
-		{rdelim}
+            var text = $("#current-profile-image > img").attr("src");
+            $("#fld_footerbackgroundimage").attr("value", text);
+        {rdelim}
         else if($("#current-profile-image").html() == '')
         {ldelim}
             // Make sure it is actually removed
             $("#fld_footerbackgroundimage").attr("value", "");
         {rdelim}
-		//$("#fld_footerbackgroundimage").val("" + newimagesrc);
-		//return false;
-	{rdelim});
+        //$("#fld_footerbackgroundimage").val("" + newimagesrc);
+        //return false;
+    {rdelim});
 </script>

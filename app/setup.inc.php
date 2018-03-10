@@ -1,31 +1,33 @@
 <?php
 namespace rbwebdesigns\blogcms;
 use rbwebdesigns;
+use rbwebdesigns\core;
 
-/****************************************************************
-    setup.php
-		
-    Required at the TOP of the index page, after the root include
-    but before anything is echoed out.
-    
-    @author R Bertram
-    @date JAN 2013
-    
-****************************************************************/
+/**
+ * app/setup.php
+ * 
+ * Required at the top of the cms index page, after the root include
+ * but before anything is printed out. For the front-end blogs see
+ * blog_setup.php
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ */
 
-    // Setup for 'Plugins' Installed using composer
-    require_once SERVER_ROOT . '/app/vendor/autoload.php';
-    
-    // Setup - Stage 1
-    require_once SERVER_ROOT . '/app/envsetup.inc.php';
+// Composer setup
+require_once SERVER_ROOT . '/app/vendor/autoload.php';
 
-	
+require_once SERVER_ROOT . '/app/cms.php';
+
+// Setup common between cms and blog front-end
+require_once SERVER_ROOT . '/app/envsetup.inc.php';
+
+
 /****************************************************************
   Router
 ****************************************************************/
 
-    $pagelist = rbwebdesigns\JSONHelper::jsonToArray(SERVER_ROOT . '/app/config/routes.json');
-    $router = new rbwebdesigns\Router($pagelist);
+    $pagelist = rbwebdesigns\core\JSONHelper::JSONFileToArray(SERVER_ROOT . '/app/config/routes.json');
+    $router = new rbwebdesigns\core\Router($pagelist);
 
 
 /****************************************************************
@@ -33,40 +35,35 @@ use rbwebdesigns;
 ****************************************************************/    
     
     // Connect to users model
-    $modelUsers = new rbwebdesigns\Users($cms_db);
-	
+    $modelUsers = new rbwebdesigns\core\model\UserFactory($cms_db);
+  
+    $session = BlogCMS::session();
+
     // Check if we are logged in
-    if(!isset($_SESSION['userid']))
-    {
+    if($session->currentUser) {
+        define('USER_AUTHENTICATED', true);
+    }
+    else {
         define('USER_AUTHENTICATED', false);
     }
-    else
-    {
-        define('USER_AUTHENTICATED', true);
-        define('USER_ID', $_SESSION['userid']);
-        $gobjUser = $modelUsers->getUserById($_SESSION['userid']);
-    }
-	
-    	
+    
+        
 /****************************************************************
   Stylesheets - not used?
 ****************************************************************/
 
-	$global_css_includes = array(
-		'/resources/css/core',
-		'/resources/css/forms',
-	);
+    $global_css_includes = array(
+        '/resources/css/core',
+        '/resources/css/forms',
+    );
 
 /****************************************************************
   JavaScript - not used?
 ****************************************************************/
 
-	$global_js_includes = array(
-		'/resources/js/jquery-1.8.0.min',
-		'/resources/js/core-functions',
-		'/resources/js/validate',
-		'/resources/js/ajax'
-	);
-
-/***************************************************************/
-?>
+    $global_js_includes = array(
+        '/resources/js/jquery-1.8.0.min',
+        '/resources/js/core-functions',
+        '/resources/js/validate',
+        '/resources/js/ajax'
+    );

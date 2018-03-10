@@ -5,18 +5,18 @@
 **/
 
 /**
-	Formatting for tag list
+    Formatting for tag list
 **/
 function printTags($psTagList, $pBlogID) {
-	// Seperate CSV into Array
-	$res = "";
-	$lsTags = explode(",", $psTagList);
-	foreach($lsTags as $lsTag):
-		$lsTag = trim($lsTag);
+    // Seperate CSV into Array
+    $res = "";
+    $lsTags = explode(",", $psTagList);
+    foreach($lsTags as $lsTag):
+        $lsTag = trim($lsTag);
         $lsTag = str_replace("+"," ",$lsTag);
-		$res.= "<div class='ui horizontal label'><a href='/blogs/$pBlogID/tags/$lsTag'>$lsTag</a></div>";
-	endforeach;
-	return $res;
+        $res.= "<div class='ui horizontal label'><a href='/blogs/$pBlogID/tags/$lsTag'>$lsTag</a></div>";
+    endforeach;
+    return $res;
 }
 
 function showAjaxPagination($pages, $pagenum) {
@@ -95,15 +95,15 @@ echo <<<EOD
 
     <p>Showing {$startrecord} - {$endrecord} of {$totalposts}</p>
 
-	<table class="ui table">
+    <table class="ui table">
     <thead>
-	<tr><th>Title</th><th>Tag(s)</th><th>Author</th>
-	
-	<th>Visitors <a href="#" class="helptext" onclick="javascript:alert('This is the count of \'unique visitors\' for each post, not the number of times it has been viewed. So it will count 1 view even if someone refreshes the page multiple times');">[?]</a></th>
-	
-	<th>Views <a href="#" class="helptext" onclick="javascript:alert('This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable');">[?]</a></th>
-	
-	<th>Comments</th><th>Type</th><th>Word Count</th><th></th></tr></thead>
+    <tr><th>Title</th><th>Tag(s)</th><th>Author</th>
+    
+    <th>Visitors <a href="#" class="helptext" onclick="javascript:alert('This is the count of \'unique visitors\' for each post, not the number of times it has been viewed. So it will count 1 view even if someone refreshes the page multiple times');">[?]</a></th>
+    
+    <th>Views <a href="#" class="helptext" onclick="javascript:alert('This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable');">[?]</a></th>
+    
+    <th>Comments</th><th>Type</th><th>Word Count</th><th></th></tr></thead>
 EOD;
 
 /*************************************

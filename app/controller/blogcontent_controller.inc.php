@@ -207,10 +207,10 @@ class BlogContentController {
         
         // replace quotes - caused by sanitize_string when storing in database - should we be doing this?
         $blogJSON = str_replace("&#34;", '"', $this->blog['widgetJSON']);
-		
+        
         // Convert config to array
         $arrayWidgets = json_decode($blogJSON, true);
-		
+        
         // Default the JSON if none found - again this should be saved elsewhere...
         // if(strlen($blogJSON) == 0) $blogJSON = '{"profile":{"order":1,"show":1},"postlist":{"order":2,"show":1},"taglist":{"order":3,"show":1},"subscribers":{"order":4,"show":1},"comments":{"order":5,"show":1}}';
         
@@ -416,13 +416,13 @@ class BlogContentController {
         else return "Arial, Helvetica, sans-serif";
     }
     
-	
-	public function getTemplateConfig()
-	{
-		$lsSettings = file_get_contents(SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/template_config.json');
+    
+    public function getTemplateConfig()
+    {
+        $lsSettings = file_get_contents(SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/template_config.json');
         return json_decode($lsSettings, true);
-	}
-	
+    }
+    
     /**
         Generates the CSS for a blog specified in the JSON file 'template_config.json'
         which should exist under the $pblogid folder
@@ -435,8 +435,8 @@ class BlogContentController {
         if(count($lobjSettings) == 0) return;
         
         foreach($lobjSettings as $key => $lobjClass):
-			if(strtolower($key) == 'layout') continue;
-		
+            if(strtolower($key) == 'layout') continue;
+        
             // 0 should always be class name
              $css.= '.'.$lobjClass[0].' {';
             

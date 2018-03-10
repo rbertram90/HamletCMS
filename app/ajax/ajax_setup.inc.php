@@ -4,9 +4,9 @@
 
     // Start session
     session_start();
-	
-	// Get setup
-	require_once dirname(__FILE__).'/../../../root.inc.php';
+    
+    // Get setup
+    require_once dirname(__FILE__).'/../../../root.inc.php';
 
     // Require Environment setup
     require_once SERVER_ROOT.'/envsetup.inc.php';
