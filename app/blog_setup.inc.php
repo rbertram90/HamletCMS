@@ -35,7 +35,7 @@
 ****************************************************************/    
     
     // Connect to Users Database
-    $modelUsers = new rbwebdesigns\Users($cms_db);
+    $modelUsers = new rbwebdesigns\core\model\UserFactory($cms_db);
     
 
 /****************************************************************

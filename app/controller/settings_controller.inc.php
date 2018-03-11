@@ -1,32 +1,30 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns;
+
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
 
-/**********************************************************************
-  class SettingsController
-
-  This is the controller which acts as the intermediatory between the
-  model (database) and the view. Any requests to the model are sent from
-  here rather than the view.
-
-  Example requests that will be handled here:
-    /blog_cms/config/2756022810/posts
-    /blog_cms/config/2756022810/footer
-    /blog_cms/config/2756022810/footer/submit
-
-**********************************************************************/
-
+/**
+ * class SettingsController
+ *
+ * This is the controller which acts as the intermediatory between the
+ * model (database) and the view. Any requests to the model are sent from
+ * here rather than the view.
+ *
+ * Example requests that will be handled here:
+ *   /blog_cms/config/2756022810/posts
+ *   /blog_cms/config/2756022810/footer
+ *   /blog_cms/config/2756022810/footer/submit
+ */
 class SettingsController extends GenericController
 {
     // Class Variables
     private $modelBlogs;        // Blogs Model
     private $modelPosts;        // Posts Model
-    private $modelComments;        // Comments Model
+    private $modelComments;     // Comments Model
     private $modelUsers;        // Users Model
     private $modelContributors; // Contributors Model
-    private $classSecurity;        // Security Functions
+    private $classSecurity;     // Security Functions
     private $db;
     
     protected $view;
@@ -102,15 +100,13 @@ class SettingsController extends GenericController
             // Post formatting
             if($formsubmitted) return $this->action_updatePostsSettings($blog);
             $postConfig = $this->getBlogConfig($blog['id']);
-            if(isset($postConfig['posts']))
-            {
+            if(isset($postConfig['posts'])) {
                 // Default values where needed
                 if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
                 if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
                 $this->view->setVar('postConfig', $postConfig['posts']);
             }
-            else
-            {
+            else {
                 // No posts key exists - send defaults
                 $this->view->setVar('postConfig', array(
                     'postsperpage' => 5,

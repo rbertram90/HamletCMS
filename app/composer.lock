@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c87a8ba8bed8816ad34ea2200b327eb4",
+    "content-hash": "3064da8e3d5be28c8192b32acc5dfb8d",
     "packages": [
         {
             "name": "athens/csrf",
@@ -139,14 +139,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rbertram90/core.git",
-                "reference": "64dd3355783673e607a3d4b63d1c37e6e9f6af65"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rbertram90/core/zipball/64dd3355783673e607a3d4b63d1c37e6e9f6af65",
-                "reference": "64dd3355783673e607a3d4b63d1c37e6e9f6af65",
-                "shasum": ""
+                "url": "C:/xampp_5.6.24/htdocs/core",
+                "reference": "3ccf23097c0d5f17587bed5d67e46d6b1a0aa309"
             },
             "type": "library",
             "autoload": {
@@ -158,11 +152,7 @@
                     "src/core-functions.php"
                 ]
             },
-            "support": {
-                "source": "https://github.com/rbertram90/core/tree/master",
-                "issues": "https://github.com/rbertram90/core/issues"
-            },
-            "time": "2018-01-30T12:03:12+00:00"
+            "time": "2018-03-11T20:12:18+00:00"
         },
         {
             "name": "smarty/smarty",

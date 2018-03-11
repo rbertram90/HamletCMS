@@ -68,9 +68,9 @@ class View {
         // Either way we still use smarty for the template
         $this->setVar('serverroot', SERVER_ROOT);
         
-        if(isset($_SESSION['userid']))
+        if(isset($_SESSION['user']))
         {
-            $this->setVar('currentuser', $this->modelUsers->getById($_SESSION['userid']));
+            $this->setVar('currentuser', $this->modelUsers->getById($_SESSION['user']));
         }
         
         $usesmarty = (substr($contenttemplate, -3) == 'tpl');

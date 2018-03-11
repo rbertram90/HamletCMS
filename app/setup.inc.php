@@ -16,8 +16,6 @@ use rbwebdesigns\core;
 // Composer setup
 require_once SERVER_ROOT . '/app/vendor/autoload.php';
 
-require_once SERVER_ROOT . '/app/cms.php';
-
 // Setup common between cms and blog front-end
 require_once SERVER_ROOT . '/app/envsetup.inc.php';
 

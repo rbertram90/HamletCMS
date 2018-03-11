@@ -38,6 +38,9 @@ use rbwebdesigns\core\Database;
   Includes
 ****************************************************************/
 
+    require_once SERVER_ROOT . '/app/view/response.php';
+    require_once SERVER_ROOT . '/app/cms.php';
+
     // Smarty
     require_once SERVER_ROOT.'/app/vendor/smarty/smarty/libs/Smarty.class.php';
     
@@ -46,6 +49,7 @@ use rbwebdesigns\core\Database;
     require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_comment.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
+    require_once SERVER_ROOT.'/app/model/mdl_account.inc.php';
     
     // Generic controller class
     require_once SERVER_ROOT.'/app/controller/generic_controller.inc.php';

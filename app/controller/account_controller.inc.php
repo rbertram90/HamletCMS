@@ -5,15 +5,11 @@ use rbwebdesigns\core\Sanitize;
 
 class AccountController extends GenericController
 {
-    protected $db;
-    protected $mdlUsers;
-    protected $view;
+    protected $model;
     
-    public function __construct($db, $view)
+    public function __construct()
     {
-        $this->view = $view;
-        $this->db = $db;
-        $this->mdlUsers = new \rbwebdesigns\Users($db);
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\AccountFactory');
     }
     
     public function route($params)
@@ -59,6 +55,29 @@ class AccountController extends GenericController
         }
     }
     
+    public function login(&$request, &$response) {
+        if($request->method() == 'POST') return $this->runLogin($request, $response);
+
+        $response->setTitle('Login required');
+        $response->write('account/login.tpl');
+    }
+
+    protected function runLogin(&$request, &$response) {
+        $username = $request->getString('fld_username');
+        $password = $request->getString('fld_password');
+
+        if(strlen($username) == 0 || strlen($password) == 0) {
+            redirect('/account/login', 'Please complete all fields', 'error');
+        }
+
+        if($this->model->login($username, $password)) {
+            redirect('/', 'Welcome back', 'success');
+        }
+        else {
+            redirect('/account/login', 'No match found for username and password', 'error');
+        }
+    }
+
     private function updateAccountDetails()
     {        
         $details = array(
@@ -108,9 +127,7 @@ class AccountController extends GenericController
             
         redirect('/account/changepassword');
     }
-    
-    
-    
+        
     private function generateProfilePhotoName()
     {
         $filename = rand(10000,32000) . rand(10000,32000) . "." . pathinfo($_FILES["avatar"]["name"], PATHINFO_EXTENSION);
@@ -123,14 +140,13 @@ class AccountController extends GenericController
         return $filename;
     }
     
-    
     private function uploadProfilePhoto()
     {
-    // If file type is correct type and is less than 20kb
-    /*
-    ($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
-    RESTRICTED TO JPG
-    */
+        // If file type is correct type and is less than 20kb
+        /*
+        ($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
+        RESTRICTED TO JPG
+        */
         if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000))
         {
             setSystemMessage('Unsuitable Photo - file must be a JPEG image under 20KB', 'Error');
