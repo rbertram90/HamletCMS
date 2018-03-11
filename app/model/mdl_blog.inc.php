@@ -1,22 +1,22 @@
 <?php
-/******************************************************************************
-  Models -> ClsBlog
-  Access to the blogs database is done through this class
-******************************************************************************/
+namespace rbwebdesigns\blogcms\model;
 
-namespace rbwebdesigns\blogcms;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
-class ClsBlog extends RBFactory
+/**
+ * /app/model/mdl_blog.php
+ * Access to the blogs database is done through this class
+ */
+class Blogs extends RBFactory
 {
-    protected $db, $tableName;
-    private $dbc, $tblbloguser, $dbfields;
+    protected $db;
+    protected $tableName;
+    private $tblbloguser, $dbfields;
 
-    function __construct($dbconn)
+    function __construct($modelManager)
     {
-        $this->db = $dbconn;
-        $this->dbc = $this->db->getConnection();
+        $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;

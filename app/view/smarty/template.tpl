@@ -13,20 +13,10 @@
         }
     </script>
     
-    {* Add tag for each stylesheet added *}
-    {foreach from=$stylesheets item=stylesheet}
-        <link rel="stylesheet" type="text/css" href="{$stylesheet}.css" />
-    {/foreach}
-    
-    {* Add tag for each javascript file added *}
-    {foreach from=$jsscripts item=script}
-        <script type="text/javascript" src="{$script}.js"></script>
-    {/foreach}
+    {$stylesheets}
+    {$scripts}
 </head>
 <body>
-    {* Include the rbwebdesigns global header NEEDS CHANGING!!! *}
-    {include file="$serverroot/app/vendor/rbertram90/core/src/view/page_header.tpl"}
-    
     <div id="wrapper">
         
         <div id="sidebar">
@@ -40,7 +30,7 @@
                 <li><a href="/"><img src='/resources/icons/64/book.png'><span class='menuitemtext'>My Blogs</span></a></li>
                 <li><a href="/explore"><img src='/resources/icons/64/plane.png'><span class='menuitemtext'>Explore Blogs</span></a></li>
 
-                {if $smarty.session.admin == 1}
+                {if $current_user.admin == 1}
                 <li><a href="/developer"><img src='/resources/icons/64/bargraph.png'><span class='menuitemtext'>Developer Docs</span></a></li>
                 {/if}
                 
@@ -54,14 +44,13 @@
         <div id="content">
             
             <div id="messages">
-                {* Check for flash messages *}
-                {if isset($smarty.session.messagetoshow) and $smarty.session.messagetoshow != false}                
-                    {$smarty.session.messagetoshow}
-                {/if}
+                {foreach from=$messages item=$message}                
+                    <p class="message {$message.type}">{$message.text}</p>
+                {/foreach}
             </div>
             
             {* Output main content *}
-            {$content}
+            {$body_content}
         </div>
     </div>
 </body>

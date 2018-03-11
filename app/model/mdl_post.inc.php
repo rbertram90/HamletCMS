@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
@@ -8,9 +8,10 @@ use rbwebdesigns\core\Sanitize;
  * /app/model/mdl_post.inc.php
  * (All) Access to the posts database table is done through this class
  */
-class ClsPost extends RBFactory
+class Posts extends RBFactory
 {
-    protected $db, $dbc, $tableName;
+    protected $db;
+    protected $tableName;
 
     /**
      * Constructor
@@ -18,12 +19,10 @@ class ClsPost extends RBFactory
      * @param db $dbconn
      *   instance of database class (defined in core includes)
      */
-    function __construct($dbconn)
+    function __construct($modelManager)
     {
         // Access to the database class
-        $this->db = $dbconn;
-        // Connect to the database
-        $this->dbc = $this->db->getConnection();
+        $this->db = $modelManager->getDatabaseConnection();
         
         // Set table names
         $this->tableName = TBL_POSTS;

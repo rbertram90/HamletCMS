@@ -13,21 +13,6 @@ class BlogCMSResponse extends Response
         $this->smarty->setTemplateDir([
             'main' => SERVER_ROOT.'/app/view/smarty/'
         ]);
-
-        // Add default stylesheet(s)
-        $this->addStylesheet('/css/semantic');
-        // $this->addStylesheet('/resources/css/core');
-        $this->addStylesheet('/resources/css/header');
-        // $this->addStylesheet('/resources/css/forms');
-        $this->addStylesheet('/css/blogs_stylesheet');
-        
-        // Add default script(s)
-        $this->addScript('/resources/js/jquery-1.8.0.min');
-        $this->addScript('/js/semantic');
-        $this->addScript('/resources/js/core-functions');
-        $this->addScript('/resources/js/validate');
-        $this->addScript('/resources/js/ajax');
-        $this->addScript('/js/sidemenu');
     }
 
     /**
@@ -42,6 +27,28 @@ class BlogCMSResponse extends Response
         
         // Note using this class we are ALWAYS using smarty template
         // $usesmarty = (substr($templatePath, -3) == 'tpl');
+
+        if(!file_exists($this->smarty->getTemplateDir('main') . $templatePath)) {
+            $debug = print_r(debug_backtrace(), true);
+            die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
+        }
+        else {
+            $this->smarty->display($templatePath);
+        }
+    }
+
+    /**
+     * Output the template SMARTY style
+     */
+    public function writeTemplate($templatePath)
+    {
+        $session = BlogCMS::session();
+
+        $this->setVar('scripts', $this->prepareScripts());
+        $this->setVar('stylesheets', $this->prepareStylesheets());
+        $this->setVar('body_content', $this->body);
+        $this->setVar('current_user', $session->currentUser);
+        $this->setVar('messages', $session->getAllMessages());
 
         if(!file_exists($this->smarty->getTemplateDir('main') . $templatePath)) {
             $debug = print_r(debug_backtrace(), true);

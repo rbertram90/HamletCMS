@@ -45,15 +45,15 @@ class BlogcmsController extends GenericController
     protected $view;
 
     // Constructor
-    public function __construct($dbconn, $view) {
+    public function __construct() {
         // Initialise Models
-        $this->modelBlogs = new ClsBlog($dbconn);
-        $this->modelContributors = new ClsContributors($dbconn);
-        $this->modelPosts = new ClsPost($dbconn);
-        $this->modelComments = new ClsComment($dbconn);
-        $this->modelUsers = $GLOBALS['modelUsers'];
-        $this->modelSecurity = new AppSecurity();
-        $this->view = $view;
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        // $this->modelComments = new ClsComment($dbconn);
+        // $this->modelUsers = $GLOBALS['modelUsers'];
+        // $this->modelSecurity = new AppSecurity();
+        // $this->view = $view;
     }
 
     public function logout($params)
@@ -64,6 +64,11 @@ class BlogcmsController extends GenericController
         // Navigate to homepage
         header("location: /");
     }
+
+    public function defaultAction(&$request, &$response)
+    {
+        return $this->home($request, $response);
+    }
     
     /******************************************************************
         GET - General Pages
@@ -72,12 +77,12 @@ class BlogcmsController extends GenericController
     /**
      * View the blog cms main dashboard which shows all blogs that the user contributes to
      */
-    public function home($params)
+    public function home(&$request, &$response)
     {
         $user = BlogCMS::session()->currentUser; // currently coming out as number - suspect this will change...
 
         // Get all blogs which current user contributes to
-        $arrayBlogs = $this->modelContributors->getContributedBlogs($user);
+        $arrayBlogs = $this->modelContributors->getContributedBlogs($user['id']);
         
         // Add in extra information
         foreach($arrayBlogs as $key => $blog) {
@@ -98,16 +103,16 @@ class BlogcmsController extends GenericController
         }
         
         // Add to template
-        $this->view->setVar('blogs', $arrayBlogs);
+        $response->setVar('blogs', $arrayBlogs);
         
         // Get the current users favourite blogs
-        $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user);
-        $this->view->setVar('favoriteblogs', $arrayFavoriteBlogs);
-        $this->view->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
+        $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);
+        $response->setVar('favoriteblogs', $arrayFavoriteBlogs);
+        $response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
         
-        $this->view->addScript('/js/showUserCard');
-        $this->view->setPageTitle('My Blogs');
-        $this->view->render('index.tpl');
+        $response->addScript('/js/showUserCard');
+        $response->setTitle('My Blogs');
+        $response->write('index.tpl');
     }
     
     /**

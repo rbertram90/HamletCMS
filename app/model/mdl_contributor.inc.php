@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
@@ -8,18 +8,17 @@ use rbwebdesigns\core\Sanitize;
  * /app/model/mdl_contributor.inc.php
  */
 
-class ClsContributors extends RBFactory
+class Contributors extends RBFactory
 {
     protected $db;
-    protected $dbc;
     protected $tblbloguser;
     protected $tableName;
     
-    public function __construct($db)
+    public function __construct($modelFactory)
     {
-        $this->db = $db;
-        $this->dbc = $this->db->getConnection();
+        $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = TBL_CONTRIBUTORS;
+
         $this->tblusers = TBL_USERS;
         $this->tblblogs = TBL_BLOGS;
         $this->fields = array(

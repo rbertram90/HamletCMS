@@ -9,6 +9,11 @@ class GenericController {
     public function __construct($cms_db, $view) {
         $this->view = $view;
     }
+
+    public function defaultAction(&$request, &$response)
+    {
+        $this->throwNotFound();
+    }
     
     /**
         Throw Errors - can we include instead!

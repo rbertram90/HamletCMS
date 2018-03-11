@@ -98,12 +98,6 @@ use rbwebdesigns\core\Sanitize;
     // Check form submissions for CSRF token
     CSRF::init();
 
-/****************************************************************
-  Setup View
-****************************************************************/
-
-    $view = new View($models);
-
 
 /****************************************************************
   Setup controller
@@ -123,53 +117,48 @@ use rbwebdesigns\core\Sanitize;
     $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
     $controller = new $controllerClassName();
 
+
+/****************************************************************
+  Get body content
+****************************************************************/
+
+    $response->setTitle('Default title');
+    $response->setDescription('Default page description');
+
     // Call the requested function
-    $action = $request->getUrlParameter(0, 'default');
-    $controller->$action();
+    $action = $request->getUrlParameter(0, 'defaultAction');
+    ob_start();
+    $controller->$action($request, $response);
+    $response->setBody(ob_get_contents());
+    ob_end_clean();
 
     // Cases where template not required
     if($controllerName == 'ajax' || $controllerName == 'api') {
         exit;
     }
 
+    
 /****************************************************************
-  Additional site-specific file paths
+  Output Template
 ****************************************************************/
 
-    $css_includes = array(
-        '/css/blogs_stylesheet'
-    );
-    
-    $js_includes = array(
-        '/js/sidemenu'
-    );
-    
-    
-/****************************************************************
-  Default template content
-****************************************************************/
-    
-    // Data Required for each page - Defaulted
-    $DATA = array(
-        'page_title' => 'Default Page Title',
-        'page_description' => 'Default Page Description',
-        'includes_css' => array_merge($global_css_includes, $css_includes),
-        'includes_js' => array_merge($global_js_includes, $js_includes),
-        'page_content' => '',
-        'page_menu_actions' => ''
-    );
-
-    
-/****************************************************************
-  Generate final content
-****************************************************************/
-    
-    // Try and get values from JSON
-    if(array_key_exists('title', $endpoint)) $DATA['page_title'] = $endpoint['title'];
-    if(array_key_exists('description', $endpoint)) $DATA['page_description'] = $endpoint['description'];
-    
     // Set the side menu content
-    $view->setSideMenu($controller->getSideMenu($queryParams, $action));
-    
-    // Title, description could also be dynamically assigned in this function call
-    $controller->$endpoint['function']($queryParams);
+    // $view->setSideMenu($controller->getSideMenu($queryParams, $action));
+
+    // Add default stylesheet(s)
+    $response->addStylesheet('/css/semantic.css');
+    // $this->addStylesheet('/resources/css/core');
+    $response->addStylesheet('/resources/css/header.css');
+    // $this->addStylesheet('/resources/css/forms');
+    $response->addStylesheet('/css/blogs_stylesheet.css');
+
+    // Add default script(s)
+    $response->addScript('/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/js/semantic.js');
+    $response->addScript('/resources/js/core-functions.js');
+    $response->addScript('/resources/js/validate.js');
+    $response->addScript('/resources/js/ajax.js');
+    $response->addScript('/js/sidemenu.js');
+
+    // Run Template here
+    $response->writeTemplate('template.tpl');
