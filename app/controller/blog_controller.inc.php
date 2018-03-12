@@ -33,7 +33,7 @@ use rbwebdesigns\core\DateFormatter;
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
-class BlogcmsController extends GenericController
+class BlogController extends GenericController
 {
     // Class Variables
     private $modelBlogs;        // Blogs Model
@@ -50,8 +50,8 @@ class BlogcmsController extends GenericController
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
-        // $this->modelComments = new ClsComment($dbconn);
-        // $this->modelUsers = $GLOBALS['modelUsers'];
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
         // $this->modelSecurity = new AppSecurity();
         // $this->view = $view;
     }
@@ -171,144 +171,52 @@ class BlogcmsController extends GenericController
     /**
      *  View overview/ summary of a single blog
      */
-    public function blogOverview($params)
+    public function overview(&$request, &$response)
     {
-        $blog_id = Sanitize::int($params[0]); // Try and get Blog ID
+        $blogID = $request->getUrlParameter(1);
         $currentUser = BlogCMS::session()->currentUser;
-        
-        // Check for Blog ID
-        if(strlen($blog_id) == 0) return $this->home($params);
-        
-        // Check that user has permission to view this page
-        if($this->modelContributors->isBlogContributor($blog_id, $currentUser))
-        {
-            // Get info from blogs table
-            $arrayBlog = $this->modelBlogs->getBlogById($blog_id);
-            $this->view->setVar('blog', $arrayBlog);
-            
-            // Get latest 5 comments
-            $latestcomments = $this->modelComments->getCommentsByBlog($blog_id, 5);
-            
-            // Get comment-ers usernames
-            foreach($latestcomments as $key => $comment) {
-                $user = $this->modelUsers->getById($comment['user_id']);
-                $username = $comment['user_id'] == $currentUser ? "You" : $user['username'];
-                $latestcomments[$key]['userid'] = $comment['user_id'];
-                $latestcomments[$key]['name'] = $username;
-            }
-            $this->view->setVar('comments', $latestcomments);
-            
-            // Get latest 5 posts
-            $this->view->setVar('posts', $this->modelPosts->getPostsByBlog($blog_id, 1, 5, 1, 1));
-            
-            // Get count statistics
-            $this->view->setVar('counts', array(
-                'posts' => $this->modelPosts->countPostsOnBlog($blog_id, true),
-                'comments' => $this->modelComments->getCount(array('blog_id' => $blog_id)),
-                'contributors' => $this->modelContributors->getCount(array('blog_id' => $blog_id)),
-                'totalviews' => $this->modelPosts->countTotalPostViews($blog_id)
-            ));
-            
-            // Set page title
-            $this->view->setPageTitle('Dashboard - '.$arrayBlog['name']);
-            
-            // Output the view
-            $this->view->render('overview.tpl');
+
+        // Validation
+        if(strlen($blogID) == 0) {
+            redirect('/');
         }
-        else
-        {
-            include '403.php';
+        elseif(!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
+            redirect('/', 'You do not contribute to this blog', 'error');
         }
+
+        $blog = $this->modelBlogs->getBlogById($blogID);
+        $response->setVar('blog', $blog);
+        
+        // Get latest 5 comments
+        $latestcomments = $this->modelComments->getCommentsByBlog($blogID, 5);
+        
+        // Get comment-ers usernames
+        foreach($latestcomments as $key => $comment) {
+            $user = $this->modelUsers->getById($comment['user_id']);
+            $username = $comment['user_id'] == $currentUser['id'] ? "You" : $user['username'];
+            $latestcomments[$key]['userid'] = $comment['user_id'];
+            $latestcomments[$key]['name'] = $username;
+        }
+        $response->setVar('comments', $latestcomments);
+        
+        // Get latest 5 posts
+        $response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
+        
+        // Get count statistics
+        $response->setVar('counts', array(
+            'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
+            'comments' => $this->modelComments->getCount(array('blog_id' => $blogID)),
+            'contributors' => $this->modelContributors->getCount(array('blog_id' => $blogID)),
+            'totalviews' => $this->modelPosts->countTotalPostViews($blogID)
+        ));
+        
+        // Set page title
+        $response->setTitle('Dashboard - '.$blog['name']);
+        
+        // Output the view
+        $response->write('overview.tpl');
     }
-    
-    
-    /**
-     * manageComments
-     * view all comments that have been made on the blog and give the option to delete
-     * 
-     * @param <array> split query string
-     * @todo Change this view to look more like the manage posts view with a seperate
-     * ajax call to get the comments themselves
-     */
-    public function manageComments($params)
-    {
-        // Get the Blog ID
-        $blog_id = Sanitize::int($params[0]);
-        $currentUser = BlogCMS::session()->currentUser;
-        
-        // Check user has permissions to view comments
-        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser)) return $this->throwAccessDenied();
-        
-        // Check if we are deleting a comment
-        if(array_key_exists(2, $params) && $params[1] == 'delete')
-        {
-            $commentID = safeNumber($params[2]);
-            $this->deleteComment($commentID, $blog_id);
-        }
-        elseif(array_key_exists(2, $params) && $params[1] == 'approve') {
-            $commentID = safeNumber($params[2]);
-            $this->approveComment($commentID, $blog_id);
-        }
-        
-        // View Current Comments
-        $arrayComments = $this->modelComments->getCommentsByBlog($blog_id);
-        
-        // Get user data
-        foreach($arrayComments as $key => $comment)
-        {
-            $arrayComments[$key]['user'] = $this->modelUsers->getById($comment['user_id']);
-        }
-        
-        // Assign the variables in the view
-        $this->view->setVar('comments', $arrayComments);
-        $blog = $this->modelBlogs->getBlogById($blog_id);
-        $this->view->setVar('blog', $blog);
-        $this->view->setPageTitle('Manage Comments - '.$blog['name']);
-        $this->view->addScript('/resources/js/paginate');
-        
-        // Output template
-        $this->view->render('comments.tpl');
-    }
-    
-    
-    /**
-     * deleteComment
-     * remove a comment from a blog
-     * 
-     * @param $commentID <int> Unique ID for the comment
-     * @param $blog_id <int> Unique ID for the blog
-     */
-    protected function deleteComment($commentID, $blog_id)
-    {
-        // Delete from database
-        $this->modelComments->delete($commentID);
-        
-        // Set the message to show on the next page
-        setSystemMessage(ITEM_DELETED, 'Success');
-        
-        // Redirect back to comments page
-        redirect('/comments/' . $blog_id);
-    }
-    
-    /**
-     * approveComment
-     * @description set approved=1 for a comment
-     * @param $commentID <int> Unique ID for the comment
-     * @param $blog_id <int> Unique ID for the blog
-     */
-    protected function approveComment($commentID, $blog_id)
-    {
-        // Update database
-        $this->modelComments->approve($commentID);
-        
-        // Set the message to show on the next page
-        setSystemMessage('Comment approved', 'Success');
-        
-        // Redirect back to comments page
-        redirect('/comments/' . $blog_id);
-    }
-    
-        
+            
     /******************************************************************
         POST - Blogs
     ******************************************************************/

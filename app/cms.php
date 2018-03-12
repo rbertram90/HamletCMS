@@ -50,7 +50,7 @@ class BlogCMS
     {
         if(is_null(self::$request)) {
             self::$request = new Request([
-                'defaultControllerName' => 'blogcms'
+                'defaultControllerName' => 'blog'
             ]);
         }
         return self::$request;

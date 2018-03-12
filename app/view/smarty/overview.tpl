@@ -91,7 +91,7 @@
                 </div>
             {/foreach}
         </div>
-            <a href='/comments/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
+            <a href='/comments/all/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
 
         {else}
             <p class="info">No comments have been made on your posts on this blog :(</p>

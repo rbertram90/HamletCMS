@@ -17,7 +17,7 @@
         {foreach from=$blogs item=blog}
             <tr>
                 <td>
-                    <a href="/overview/{$blog.id}" title="{$blog.name}" style="font-size:120%;">{$blog.name}</a>
+                    <a href="/blog/overview/{$blog.id}" title="{$blog.name}" style="font-size:120%;">{$blog.name}</a>
                     <br><span class="date">{$blog.latestpost.timestamp}</span>
                 </td>
                 <td>

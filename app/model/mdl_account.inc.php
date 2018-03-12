@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\model;
 
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
@@ -13,11 +13,14 @@ class AccountFactory extends RBFactory
     protected $database;
 
     /**
+     * Check username and password are a match in database
+     * and set session flags to log the user in
+     * 
      * @param string $username
      * @param string $password
      * 
      * @return bool
-     *  Is the login successful?
+     *  Was the login successful?
      * 
      * @todo Stop using md5 hashing for passwords
      */
@@ -36,5 +39,17 @@ class AccountFactory extends RBFactory
         else {
             return false;
         }
+    }
+
+    /**
+     * Get a user record from database by id
+     * 
+     * @param int $userID
+     * 
+     * @return array
+     */
+    public function getById($userID)
+    {
+        return $this->get(['*'], ['id' => $userID], '', '', false);
     }
 }

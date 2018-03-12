@@ -31,14 +31,6 @@ use rbwebdesigns\core\Sanitize;
     // Store the configuration
     BlogCMS::addToConfig($config);
 
-/****************************************************************
-  Setup model
-****************************************************************/
-    
-    $models = array(
-        'users' => $GLOBALS['modelUsers']
-    );
-
 
 /****************************************************************
   Route request
@@ -71,7 +63,7 @@ use rbwebdesigns\core\Sanitize;
         if(strlen(BLOG_KEY) != 10 || !is_numeric(BLOG_KEY)) redirect('/notfound');
         
         // Location to blog index file
-        $indexPath = SERVER_PATH_BLOGS . "/" . BLOG_KEY . "/default.php";
+        $indexPath = SERVER_PATH_BLOGS . '/' . BLOG_KEY . '/default.php';
         
         // Check index file exists
         if(file_exists($indexPath)) require $indexPath;
@@ -116,7 +108,6 @@ use rbwebdesigns\core\Sanitize;
     // Dynamically instantiate new class
     $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
     $controller = new $controllerClassName();
-
 
 /****************************************************************
   Get body content

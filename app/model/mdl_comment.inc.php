@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
@@ -10,15 +10,18 @@ use rbwebdesigns\core\Sanitize;
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
-class ClsComment extends RBFactory
+class Comments extends RBFactory
 {
     protected $db, $dbc, $tableName;
 
-    function __construct($dbconn)
+    /**
+     * @param \rbwebdesigns\core\model\ModelManager $modelFactory
+     */
+    function __construct($modelFactory)
     {
-        $this->db = $dbconn;
-        $this->dbc = $this->db->getConnection();
+        $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = TBL_COMMENTS;
+
         $this->fields = array(
             'id' => 'number',
             'message' => 'memo',
@@ -37,18 +40,20 @@ class ClsComment extends RBFactory
     }
     
     // Get all the posts from $blog
-    public function getCommentsByBlog($blog, $limit=0)
+    public function getCommentsByBlog($blogID, $limit=0)
     {
         $tp = TBL_POSTS;
-        $tc = $this->tableName;
-        // $query_string = "SELECT $tc.*, $tp.title, $tp.link FROM $tc LEFT JOIN $tp ON $tc.post_id = $tp.id WHERE $tc.blog_id='".$blog."' ORDER BY $tc.timestamp DESC";
+        $tu = TBL_USERS;
+        $sql = "SELECT tc.*, tu.id as userid, tu.username, tp.title, tp.link
+            FROM $this->tableName as tc, $tp as tp, $tu as tu
+            WHERE tc.post_id = tp.id
+            AND tc.user_id = tu.id
+            AND tc.blog_id='{$blogID}'
+            ORDER BY tc.timestamp DESC";
         
-        $query_string = "SELECT $tc.*, $tp.title, $tp.link FROM $tc, $tp WHERE $tc.post_id = $tp.id AND $tc.blog_id='".$blog."' ORDER BY $tc.timestamp DESC";
+        if ($limit > 0) $sql.= ' LIMIT '. Sanitize::int($limit);
         
-        if($limit > 0) $query_string.= ' LIMIT '. Sanitize::int($limit);
-        
-        $statement = $this->db->query($query_string);
-
+        $statement = $this->db->query($sql);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     

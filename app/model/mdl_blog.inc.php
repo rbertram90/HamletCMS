@@ -43,7 +43,6 @@ class Blogs extends RBFactory
         return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), array('id' => $blogid));
     }
     
-    
     /**
      *  Get all the blogs created by a user
      *  @param int ID for User
@@ -53,7 +52,6 @@ class Blogs extends RBFactory
     {
         return $this->db->selectMultipleRows($this->tableName, '*', array('user_id' => $intUserid));
     }
-    
     
     /**
      *  Get public blogs starting with @param0
@@ -67,7 +65,6 @@ class Blogs extends RBFactory
         return $this->db->select_multi($qs);
     }
     
-
     /**
      *  Get count of number of public blogs for each letter - explore page
      *  IMPROVED! 20 JULY 2014 - Now uses 1 query rather than 27 to get data by making
@@ -80,7 +77,6 @@ class Blogs extends RBFactory
         foreach(range('A', 'Z') as $letter) $res[$letter] = 0;
         
         $sql = 'SELECT UCASE(LEFT(name, 1)) as letter, count(*) as count FROM '.$this->tableName.' Where visibility = "anon" Group By UCASE(LEFT(name, 1))';
-        
         $results = $this->db->select_multi($sql);
         
         foreach($results as $value) {
@@ -93,10 +89,8 @@ class Blogs extends RBFactory
                 $res['0'] += 0 + $value['count'];
             }
         }
-        
         return $res;
     }
-    
     
     /**
      *  Get number of blogs a user contributes to

@@ -9,7 +9,7 @@ class AccountController extends GenericController
     
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\AccountFactory');
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
     }
     
     public function route($params)
