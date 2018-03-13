@@ -5,55 +5,52 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
 
 /**
- * class MainController
- * 
- * This is the controller which acts as the intermediatory between the
+ * /app/controller/blog_controller.inc.php
+ *  
+ * The controller acts as the intermediatory between the
  * model (database) and the view. Any requests to the model are sent from
- * here rather than the view.
+ * here rather than directly from the view.
  *
  * The content generated here is then passed through the template. Any
  * pages which are expected to return content will be passed the parameters
- * $DATA and $params where:
+ * $request and $response where:
  *
- *  $DATA - an array of configuration variables to be passed through
- *  to the view. This will more than likely always be returned from the
- *  function unless it redirects elsewhere.
-
- *  structure - array (
- *      'page_title' => <string>,
- *      'page_description' => <string>,
- *      'includes_css' => <array:string>, - file paths relative to the root directory
- *      'includes_js' => <array:string>,
- *      'page_content' => <memo>,
- *      'page_menu_actions' => <memo>
- *  )
- *     
- *  $params - Miscellaneous inputs from the URL such as blog id again
- *  accessed in an array.
+ * $request \rbwebdesigns\core\Request
+ * $response \rbwebdesigns\core\Response
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
 class BlogController extends GenericController
 {
-    // Class Variables
-    private $modelBlogs;        // Blogs Model
-    private $modelPosts;        // Posts Model
-    private $modelContributors; // Contributors
-    private $modelComments;     // Comments Model
-    private $modelUsers;        // Users Model
-    private $modelSecurity;     // Security Functions
-    protected $view;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Blogs
+     */
+    protected $modelBlogs;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Posts
+     */
+    protected $modelPosts;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Contributors
+     */
+    protected $modelContributors;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Comments
+     */
+    protected $modelComments;
+    /**
+     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     */
+    protected $modelUsers;
 
-    // Constructor
-    public function __construct() {
-        // Initialise Models
+
+    public function __construct()
+    {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-        // $this->modelSecurity = new AppSecurity();
-        // $this->view = $view;
     }
 
     public function logout($params)
@@ -70,32 +67,26 @@ class BlogController extends GenericController
         return $this->home($request, $response);
     }
     
-    /******************************************************************
-        GET - General Pages
-    ******************************************************************/
-    
     /**
      * View the blog cms main dashboard which shows all blogs that the user contributes to
      */
     public function home(&$request, &$response)
     {
-        $user = BlogCMS::session()->currentUser; // currently coming out as number - suspect this will change...
-
-        // Get all blogs which current user contributes to
-        $arrayBlogs = $this->modelContributors->getContributedBlogs($user['id']);
+        $user = BlogCMS::session()->currentUser;
+        $blogs = $this->modelContributors->getContributedBlogs($user['id']);
         
         // Add in extra information
-        foreach($arrayBlogs as $key => $blog) {
+        foreach($blogs as $key => $blog) {
             // The users who can contribute to this blog
-            $arrayBlogs[$key]['contributors'] = $this->modelContributors->getBlogContributors($blog['id']);
+            $blogs[$key]['contributors'] = $this->modelContributors->getBlogContributors($blog['id']);
             
             // The lastest post for this blog
-            $arrayBlogs[$key]['latestpost'] = $this->modelPosts->getLatestPost($blog['id']);
+            $blogs[$key]['latestpost'] = $this->modelPosts->getLatestPost($blog['id']);
             
             // Format the lastest post date for this blog
-            if(gettype($arrayBlogs[$key]['latestpost']) == 'array') {
-                $formatteddate = DateFormatter::formatFriendlyTime($arrayBlogs[$key]['latestpost']['timestamp']);
-                $arrayBlogs[$key]['latestpost']['timestamp'] = 'Last posted: '.$formatteddate;
+            if(gettype($blogs[$key]['latestpost']) == 'array') {
+                $formatteddate = DateFormatter::formatFriendlyTime($blogs[$key]['latestpost']['timestamp']);
+                $blogs[$key]['latestpost']['timestamp'] = 'Last posted: '.$formatteddate;
             }
             else {
                 $lastposted = 'Currently Nothing Posted!';
@@ -103,7 +94,7 @@ class BlogController extends GenericController
         }
         
         // Add to template
-        $response->setVar('blogs', $arrayBlogs);
+        $response->setVar('blogs', $blogs);
         
         // Get the current users favourite blogs
         $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);

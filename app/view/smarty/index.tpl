@@ -51,7 +51,7 @@
                             <i class="dropdown icon"></i>
                             <div class="menu">
                                 <a href="/posts/{$blog.id}" class="item">Manage Current Posts</a>
-                                <a href="/posts/{$blog.id}/new" class="item">Create New Post</a>
+                                <a href="/posts/create/{$blog.id}" class="item">Create New Post</a>
                                 <a href="/contributors/{$blog.id}" class="item">Contributors</a>
                                 <a href="/config/{$blog.id}" class="item">Blog Settings</a>
                                 <a href="/files/{$blog.id}" class="item">Files</a>

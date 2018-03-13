@@ -21,27 +21,26 @@ Example requests that will be handled here:
     
 **********************************************************************/
 
-class PostsController extends GenericController {
+class PostsController extends GenericController
+{
+    /**
+     * @var \rbwebdesigns\blogcms\model\Posts
+     */
+    protected $model;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Blogs
+     */
+    protected $modelBlogs;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Contributors
+     */
+    protected $modelContributors;
 
-    // Class Variables
-    private $modelBlogs;        // Blogs Model
-    private $modelPosts;        // Posts Model
-    private $modelComments;     // Comments Model
-    private $modelUsers;        // Users Model
-    private $modelSecurity;     // Security Functions
-    
-    protected $view;
-
-    // Constructor
-    public function __construct($cms_db, $view) {
-        // Initialise Models
-        $this->modelBlogs = new ClsBlog($cms_db);
-        $this->modelContributors = new ClsContributors($cms_db);
-        $this->modelPosts = new ClsPost($cms_db);
-        $this->modelComments = new ClsComment($cms_db);
-        $this->modelUsers = $GLOBALS['modelUsers'];
-        $this->modelSecurity = new AppSecurity();
-        $this->view = $view;
+    public function __construct()
+    {
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
     }
     
     /**
@@ -126,54 +125,56 @@ class PostsController extends GenericController {
         }
     }
         
-    /******************************************************************
-        GET
-    ******************************************************************/
-    
     /**
-        View post overview page
-    **/
-    public function managePosts($arrayblog)
+     * View post overview page
+     * Handles /posts/manage/<blogid>
+     * Most of the heavy data is done in a seperate ajax call
+     */
+    public function manage(&$request, &$response)
     {
-        $this->view->setVar('blog', $arrayblog);
-        $this->view->setPageTitle('Manage Posts - '.$arrayblog['name']);
-        $this->view->addScript('/js/showUserCard');
-        $this->view->render('posts/manage.tpl');
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('Manage Posts - ' . $blog['name']);
+        $response->addScript('/js/showUserCard.js');
+        $response->write('posts/manage.tpl');
     }
     
     
     /**
         View new post form
     **/
-    public function createPost($arrayblog, $viewtype)
+    public function create(&$request, &$response)
     {
-        // Set blog in view
-        $this->view->setVar('blog', $arrayblog);
-        $this->view->setPageTitle('New Post');
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('New Post');
         
-        $this->view->addScript('/resources/js/rbwindow');
-        $this->view->addScript('/resources/js/rbrtf');
-        $this->view->addStylesheet('/resources/css/rbwindow');
-        $this->view->addStylesheet('/resources/css/rbrtf');
+        $response->addScript('/resources/js/rbwindow.css');
+        $response->addScript('/resources/js/rbrtf.css');
+        $response->addStylesheet('/resources/css/rbwindow.css');
+        $response->addStylesheet('/resources/css/rbrtf.css');
         
-        // View Form
-        switch($viewtype)
-        {
+        $viewtype = $request->getUrlParameter(2);
+
+        switch($viewtype) {
             case 'video':
-            $this->view->render('posts/videopost.tpl');
+            $response->write('posts/videopost.tpl');
             break;
             
             case 'gallery':
-            $this->view->render('posts/gallerypost.tpl');
+            $response->write('posts/gallerypost.tpl');
             break;
             
             case 'standard':
-            $this->view->render('posts/standardpost.tpl');
+            $response->write('posts/standardpost.tpl');
             break;
             
             default:
-            // Render the view
-            $this->view->render('posts/newpostmenu.tpl');
+            $response->write('posts/newpostmenu.tpl');
             break;
         }
     }

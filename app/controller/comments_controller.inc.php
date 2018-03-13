@@ -36,24 +36,26 @@ class CommentsController extends GenericController
     }
 
     /**
-     * manageComments
+     * Handles /comments
+     * Won't know which blog user is referring to in this case
+     * so just send them back home with an error message
+     */
+    public function defaultAction(&$request, &$response)
+    {
+        return $response->redirect('/', 'Invalid request', 'error');
+    }
+
+    /**
+     * Administer comments made on the blog
      * Handles /comments/all/<blogid>
-     * view all comments that have been made on the blog and give the option to delete
      * 
-     * @param <array> split query string
      * @todo Change this view to look more like the manage posts view with a seperate
-     * ajax call to get the comments themselves
+     * ajax call to get the comments themselves?
      */
     public function all(&$request, &$response)
     {
         // Get the Blog ID
         $blogID = $request->getUrlParameter(1);
-        $currentUser = BlogCMS::session()->currentUser;
-        
-        // Check user has permissions to view comments
-        if (!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            return $this->throwAccessDenied();
-        }
         
         // View Current Comments
         $comments = $this->model->getCommentsByBlog($blogID);

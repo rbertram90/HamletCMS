@@ -19,13 +19,10 @@
             
             <h1>Welcome</h1>
             {foreach from=$messages item=$message}
-                <p class="{$message.type}">{$message.text}</p>
+                <div class="ui message {$message.type}">{$message.text}</div>
             {/foreach}
             
             <form action="/account/login" method="POST" class="ui form">
-                
-                <div class="ui error message"></div>
-                
                 <div class="field">
                     <label for="fld_username">Username</label>
                     <input type="text" name="fld_username" value="" required>

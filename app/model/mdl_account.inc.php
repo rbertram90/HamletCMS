@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms\model;
 
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -9,9 +10,11 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class AccountFactory extends RBFactory
 {
+    /**
+     * @var string Database table name for this model
+     */
     protected $tableName = 'users';
-    protected $database;
-
+    
     /**
      * Check username and password are a match in database
      * and set session flags to log the user in

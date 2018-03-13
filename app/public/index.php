@@ -84,7 +84,21 @@ use rbwebdesigns\core\Sanitize;
 
     // User must be logged in to do anything in the CMS
     if(!USER_AUTHENTICATED) {
-        $response->redirect('/account/login', 'Login required', 'error');
+        $response->redirect('/account/login', 'Login required', 'warning');
+    }
+    else {
+        // Check the user has access to view/edit this blog
+        $blogID = $request->getUrlParameter(1);
+        if(strlen($blogID) == 10 && is_numeric($blogID)) {
+            // Surely must be an ID for a blog
+            // Check the user has edit permissions
+            $user = BlogCMS::session()->currentUser;
+            $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+
+            if (!$modelContributors->isBlogContributor($blogID, $user['id'])) {
+                redirect('/', 'You\'re not a contributor for that blog!', 'error');
+            }
+        }
     }
 
     // Check form submissions for CSRF token
@@ -125,6 +139,7 @@ use rbwebdesigns\core\Sanitize;
 
     // Cases where template not required
     if($controllerName == 'ajax' || $controllerName == 'api') {
+        $response->writeBody();
         exit;
     }
 
