@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog.id}", {$blog.name}, "/config/{$blog.id}", 'Settings'), 'Configure Pages')}
+            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}, "/settings/menu/{$blog.id}", 'Settings'), 'Configure Pages')}
         </div>
     </div>
     <div class="one column row">
@@ -15,9 +15,7 @@
             </div>
 
             {if count($pages) == 0}
-
                 <p class='info'>No Pages Found</p>
-
             {else}
 
                 <div class="ui segments">
@@ -26,17 +24,17 @@
                         {if getType($page) == 'string'}
                             {substr($page,2)}
                 
-                            <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">Remove</button>
                             </form>
                             
-                            <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">&#x25BC;</button>
                             </form>
                             
-                            <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">&#x25B2;</button>
                             </form>
@@ -44,17 +42,17 @@
                         {else}
                             <a href="/blogs/{$blog.id}/posts/{$page.link}" target="_blank">{$page.title}</a>
 
-                            <form action="/config/{$blog.id}/pages/remove" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">Remove</button>
                             </form>
                             
-                            <form action="/config/{$blog.id}/pages/down" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">&#x25BC;</button>
                             </form>
 
-                            <form action="/config/{$blog.id}/pages/up" method="POST" style="display:inline">
+                            <form action="/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">&#x25B2;</button>
                             </form>
@@ -72,7 +70,7 @@
             </div>
 
 
-            <form action="/config/{$blog.id}/pages/add" method="POST" class="ui form">
+            <form action="/settings/pages/{$blog.id}/add" method="POST" class="ui form">
                 <div id="selectpost" class="field">
                     <label for="fld_pagetype">Page Type</label>
                     <select name="fld_pagetype" id="fld_pagetype">

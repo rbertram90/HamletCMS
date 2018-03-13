@@ -25,7 +25,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Widgets')}
+            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", $blog['name'], "/settings/menu/{$blog['id']}", 'Settings'), 'Widgets')}
         </div>
     </div>
     <div class="one column row">
@@ -33,7 +33,7 @@
             {* Header *}
             {viewPageHeader('Widgets', 'oven_gear.png', $blog['name'])}
     
-            <form action="/config/{$blog['id']}/widgets/submit" method="post" id="configureWidgetsMainForm">
+            <form action="/settings/widgets/{$blog['id']}" method="post" id="configureWidgetsMainForm">
             
                 {* Save Message *}
                 <div class="ui yellow clearing message" id="unsaved-changes" style="display:none;">

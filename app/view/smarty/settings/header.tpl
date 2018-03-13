@@ -1,14 +1,14 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Header')}
+            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", $blog['name'], "/settings/menu/{$blog['id']}", 'Settings'), 'Header')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
             {viewPageHeader('Customise Header', 'header.png', $blog['name'])}
 
-            <form action="/config/{$blog.id}/header/submit" method="post" id="frm_updateheader">
+            <form action="/settings/header/{$blog.id}" method="post" id="frm_updateheader">
 
                 <label for="fld_backgroundimage">Background Image</label>
 

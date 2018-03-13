@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog.id}", {$blog.name}), 'Settings')}
+            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}), 'Settings')}
         </div>
     </div>
     <div class="one column row">
@@ -19,17 +19,17 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/id.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/general">Name &amp; Description</a></p>
+                <p><a href="/settings/general/{$blog.id}">Name &amp; Description</a></p>
                 <p>Update the identity of your blog</p>
             </div>
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/header.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/header">Header</a></p>
+                <p><a href="/settings/header/{$blog.id}">Header</a></p>
                 <p>Settings for your blog header</p>
             </div>
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/pages">Pages</a></p>
+                <p><a href="/settings/pages/{$blog.id}">Pages</a></p>
                 <p>Add posts to the blog menu</p>
             </div>
         </div>
@@ -37,12 +37,12 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/posts">Posts</a></p>
+                <p><a href="/settings/posts/{$blog.id}">Posts</a></p>
                 <p>Change how posts are displayed</p>
             </div>
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/footer.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/footer">Footer</a></p>
+                <p><a href="/settings/footer/{$blog.id}">Footer</a></p>
                 <p>Settings for your blog footer</p>
             </div>
         </div>
@@ -55,12 +55,12 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/paintbrush.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/blogdesigner">Customise Design</a></p>
+                <p><a href="/settings/blogdesigner/{$blog.id}">Customise Design</a></p>
                 <p>Fine tune the look of your blog</p>
             </div>
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/star_doc.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/template">Change Template</a></p>
+                <p><a href="/settings/template/{$blog.id}">Change Template</a></p>
                 <p>Choose from our pre-made designs</p>
             </div>
         </div>
@@ -68,12 +68,12 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/oven_gear.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/widgets">Configure Widgets</a></p>
+                <p><a href="/settings/widgets/{$blog.id}">Configure Widgets</a></p>
                 <p>Change what is shown on the sidebar of your blog</p>
             </div>
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/css.png" class="ui left floated image">
-                <p><a href="/config/{$blog.id}/stylesheet">Edit Stylesheet</a></p>
+                <p><a href="/settings/stylesheet/{$blog.id}">Edit Stylesheet</a></p>
                 <p>Ideal for Advanced Users</p>
             </div>
         </div>

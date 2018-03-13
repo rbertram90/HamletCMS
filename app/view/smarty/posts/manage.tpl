@@ -4,7 +4,7 @@
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog.name}"), 'Manage Posts')}
+            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog.name}"), 'Manage Posts')}
         </div>
     </div>
     

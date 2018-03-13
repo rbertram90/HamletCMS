@@ -95,9 +95,20 @@ use rbwebdesigns\core\Sanitize;
             $user = BlogCMS::session()->currentUser;
             $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
 
-            if (!$modelContributors->isBlogContributor($blogID, $user['id'])) {
+            $userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
+            $userIsAdminContributor = $modelContributors->isBlogContributor($blogID, $user['id'], 'all');
+
+            if (!$userIsContributor) {
                 redirect('/', 'You\'re not a contributor for that blog!', 'error');
             }
+            elseif ($controllerName == 'settings') {
+                if(!$userIsAdminContributor) {
+                    redirect('/', 'You haven\'t got sufficient permissions to access that page', 'error');
+                }
+            }
+
+            require SERVER_ROOT . '/app/view/sidemenu.php';
+            $sideMenu = getCMSSideMenu($blogID, $userIsAdminContributor);
         }
     }
 
@@ -138,7 +149,7 @@ use rbwebdesigns\core\Sanitize;
     ob_end_clean();
 
     // Cases where template not required
-    if($controllerName == 'ajax' || $controllerName == 'api') {
+    if ($controllerName == 'ajax' || $controllerName == 'api') {
         $response->writeBody();
         exit;
     }
@@ -165,6 +176,9 @@ use rbwebdesigns\core\Sanitize;
     $response->addScript('/resources/js/validate.js');
     $response->addScript('/resources/js/ajax.js');
     $response->addScript('/js/sidemenu.js');
+
+    $sideMenu = isset($sideMenu) ? $sideMenu : '';
+    $response->setVar('page_sidemenu', $sideMenu);
 
     // Run Template here
     $response->writeTemplate('template.tpl');

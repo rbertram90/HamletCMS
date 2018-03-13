@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\AppSecurity;
 
 /**
@@ -18,264 +19,239 @@ use rbwebdesigns\core\AppSecurity;
  */
 class SettingsController extends GenericController
 {
-    // Class Variables
-    private $modelBlogs;        // Blogs Model
-    private $modelPosts;        // Posts Model
-    private $modelComments;     // Comments Model
-    private $modelUsers;        // Users Model
-    private $modelContributors; // Contributors Model
-    private $classSecurity;     // Security Functions
-    private $db;
+    private $modelBlogs;
+    private $modelPosts;
+    private $modelComments;
+    private $modelUsers;
+    private $modelContributors;
     
     protected $view;
     
     // Constructor
-    public function __construct($cms_db, $view)
+    public function __construct()
     {
         // Initialise Models
-        $this->modelBlogs           = new ClsBlog($cms_db);
-        $this->modelContributors    = new ClsContributors($cms_db);
-        $this->modelPosts           = new ClsPost($cms_db);
-        $this->modelComments        = new ClsComment($cms_db);
-        $this->modelUsers           = $GLOBALS['modelUsers'];
-        $this->classSecurity        = new AppSecurity();
-        $this->db = $cms_db;
-        $this->view = $view;
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
     }
     
-    
-    /*
-        function: route
-        View A Page Under the Blog Settings Section
-
-        @param    DATA    an array of configuration variables to be passed through
-                          to the view. This will more than likely always be returned
-                          from the function unless it redirects elsewhere.
-        
-                          structure - array (
-                            'page_title'        => <string>,
-                            'page_description'  => <string>,
-                            'includes_css'      => <array:string>, - file paths relative to the root directory
-                            'includes_js'       => <array:string>,
-                            'page_content'      => <memo>,
-                            'page_menu_actions' => <memo>
-                          )
-        
-        @param    params    Miscellaneous inputs from the URL such as blog id again
-                            accessed in an array.
-    */
-    public function route($params)
+    /**
+     * Handles /settings/menu
+     */
+    public function menu(&$request, &$response)
     {
-        // Deal with arguments!
-        $blog_id = key_exists(0, $params) ? Sanitize::int($params[0]) : '';
-        $page_name = key_exists(1, $params) ? Sanitize::string($params[1]) : '';
-        
-        $currentUser = BlogCMS::session()->currentUser;
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
 
-        // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser, 'all')) return $this->throwAccessDenied();
-        
-        // Get blog info
-        $blog = $this->modelBlogs->getBlogById($blog_id);
-        
-        // See if a form has been submitted
-        $formsubmitted = (key_exists(2, $params) && strtolower($params[2]) === 'submit');
-        
-        // Set blog in view
-        $this->view->setVar('blog', $blog);
-        
-        // Route to correct content
-        switch($page_name)
-        {
-            case "general":
-            // Name, Description etc.
-            if($formsubmitted) return $this->action_updateBlogGeneral($blog); // todo: check
-            $this->view->setPageTitle('General Settings - '.$blog['name']);
-            $this->view->setVar('categorylist', $GLOBALS['config']['blogcategories']);
-            $this->view->render('settings/general.tpl');
-            break;
-
-        
-            case "posts":
-            // Post formatting
-            if($formsubmitted) return $this->action_updatePostsSettings($blog);
-            $postConfig = $this->getBlogConfig($blog['id']);
-            if(isset($postConfig['posts'])) {
-                // Default values where needed
-                if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
-                if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
-                $this->view->setVar('postConfig', $postConfig['posts']);
-            }
-            else {
-                // No posts key exists - send defaults
-                $this->view->setVar('postConfig', array(
-                    'postsperpage' => 5,
-                    'postsummarylength' => 200
-                ));
-            }
-            $this->view->setPageTitle('Post Settings - '.$blog['name']);
-            $this->view->render('settings/posts.tpl');
-            break;
-
-        
-            case "stylesheet":
-            // Manual Edit Stylesheet
-            if($formsubmitted) return $this->action_saveStylesheet($params);
-            $this->view->setPageTitle('Edit Stylesheet - '.$blog['name']);
-            $this->view->render('settings/stylesheet.tpl');
-            break;
-
-        
-            case "blogdesigner":
-            // Blog Style Designer
-            if($formsubmitted) return $this->action_updateBlogDisplaySettings($blog);
-            $this->view->setPageTitle('Blog Designer - '.$blog['name']);
-            $this->view->addScript('/resources/colorpicker/jscolor');
-            $this->view->render(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $blog, 'cms_db' => $this->db));
-            break;
-            
-            
-            case "template":
-            // Template Chooser
-            if($formsubmitted) return $this->action_applyNewTemplate($DATA, $params);
-            $this->view->setPageTitle('Choose Template - '.$blog['name']);
-            $this->view->render('settings/template.tpl');
-            break;
-            
-            
-            case "pages":
-            // Check actions
-            if(key_exists(2, $params))
-            {            
-                switch(strtolower($params[2]))
-                {
-                    case 'add'   : $this->action_addPage($blog); break;
-                    case 'up'    : $this->action_movePageUp($blog); break;
-                    case 'down'  : $this->action_movePageDown($blog); break;
-                    case 'remove': $this->action_removePage($blog); break;
-                }
-            }
-
-            $pagelist = explode(',', $blog['pagelist']);
-            $pages = array();
-            $taglist = array();
-
-            foreach($pagelist as $postID)
-            {
-                if(is_numeric($postID)) $pages[] = $this->modelPosts->get('*', array('id' => $postID), '', '', false);
-                elseif(substr($postID, 0, 2) == "t:") {
-                    $taglist[] = substr($postID, 2);
-                    $pages[] = $postID;
-                }
-            }
-            
-            $tags = $this->modelPosts->getAllTagsByBlog($blog['id']);
-
-            $this->view->setVar('pagelist', $pagelist); // todo: this is setting a string, should be array...
-            $this->view->setVar('pages', $pages);
-            $this->view->setVar('taglist', $taglist);
-            $this->view->setVar('tags', $tags);
-            $this->view->setVar('posts', $this->modelPosts->get(array('id','title'), array('blog_id' => $blog['id'])));
-            $this->view->setPageTitle('Manage Pages - '.$blog['name']);
-            $this->view->render('settings/pages.tpl');
-            break;
-            
-        
-            case "xxwidgets":
-            
-            // Save the overall widget list
-            if($formsubmitted) return $this->action_saveWidgetLayout($blog);
-            
-            // Check for submission on individual widget config forms
-            $subformsubmitted = (key_exists(3, $params) && strtolower($params[3]) === 'submit');
-            
-            // Check if the form has been submitted
-            if($subformsubmitted) return $this->action_saveWidgetConfig($blog);
-            
-            // Set Page Title
-            $this->view->setPageTitle('Customise Widgets - '.$blog['name']);
-            
-            // Expect name of widget - cannot be 'submit' as already checked!
-            // if(array_key_exists(2, $params))
-            // {
-            //     // specific config found
-            //     $widgetname = sanitize_string($params[2]);
-            //     $this->viewWidgetSpecificSettings($blog, $widgetname);
-            //     break;
-            // }
-            
-            // Convert Quotes
-            $BlogJSON = str_replace("&#34;", '"', $blog['widgetJSON']);
-            
-            // Convert to array
-            $BlogJSON = json_decode($BlogJSON, true);
-            
-            // Check all sections exist in config
-            $this->checkWidgetJSON($blog, $BlogJSON);
-            
-            // echo printArray($BlogJSON);
-            
-            $this->view->addStylesheet('/resources/css/rbwindow');
-            $this->view->addScript('/resources/js/rbwindow');
-            
-            $this->view->setVar('widgetconfig', $BlogJSON);
-            $this->view->render('settings/widgets.tpl');
-            
-            break;
-            
-                
-            case "widgets":
-                // Save the overall widget list
-                if($formsubmitted) return $this->action_updateWidgets($blog);
-                
-                $this->view->setPageTitle('Customise Widgets - ' . $blog['name']);
-                $this->view->setVar('widgetconfig', $this->getWidgetConfig($blog['id']));
-                $this->view->setVar('installedwidgets', $this->getInstalledWidgets());
-                $this->view->render('settings/widgets3.tpl');
-                break;
-            
-            case "header":
-            // Change header content
-            if($formsubmitted) return $this->action_updateHeaderContent($blog);
-            
-            // Set the config array
-            $blogconfig = $this->getBlogConfig($blog['id']);
-            if(isset($blogconfig['header'])) $this->view->setVar('blogconfig', $blogconfig['header']);
-            else $this->view->setVar('blogconfig', array());
-            $this->view->addScript('/resources/js/rbwindow');
-            $this->view->addScript('/resources/js/rbrtf');
-            $this->view->addStylesheet('/resources/css/rbrtf');
-            $this->view->addStylesheet('/resources/css/rbwindow');
-            $this->view->setPageTitle('Customise Blog Header - '.$blog['name']);
-            $this->view->render('settings/header.tpl');
-            break;
-            
-            
-            case "footer":
-            // Change footer content
-            if($formsubmitted) return $this->action_updateFooterContent($blog);
-            
-            // Set the config array
-            $blogconfig = $this->getBlogConfig($blog['id']);
-            if(isset($blogconfig['footer'])) $this->view->setVar('blogconfig', $blogconfig['footer']);
-            else $this->view->setVar('blogconfig', array());
-            $this->view->addScript('/resources/js/rbwindow');
-            $this->view->addScript('/resources/js/rbrtf');
-            $this->view->addStylesheet('/resources/css/rbrtf');
-            $this->view->addStylesheet('/resources/css/rbwindow');
-            $this->view->setPageTitle('Customise Blog Footer - '.$blog['name']);
-            $this->view->render('settings/footer.tpl');
-            break;
-            
-
-            default:
-            // View the settings menu page
-            $this->view->setPageTitle('Blog Settings - '.$blog['name']);
-            $this->view->render('settings/menu.tpl');
-            break;
-        }
+        $response->setVar('blog', $blog);
+        $response->setTitle('Blog Settings - ' . $blog['name']);
+        $response->write('settings/menu.tpl');
     }
-    
+
+    /**
+     * Handles /settings/general/<blogid>
+     * Edit blog name, description etc.
+     */
+    public function general(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updateBlogGeneral($blog);
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('General Settings - ' . $blog['name']);
+        $response->setVar('categorylist', BlogCMS::config()['blogcategories']);
+        $response->write('settings/general.tpl');
+    }
+
+    /**
+     * Handles /settings/posts/<blogid>
+     * Edit post display settings
+     */
+    public function posts(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updatePostsSettings($blog);
+
+        $postConfig = $this->getBlogConfig($blog['id']);
+
+        if (isset($postConfig['posts'])) {
+            // Default values where needed
+            if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
+            if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
+            $response->setVar('postConfig', $postConfig['posts']);
+        }
+        else {
+            // No posts config exists - send defaults
+            $response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
+        }
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('Post Settings - ' . $blog['name']);
+        $response->write('settings/posts.tpl');
+    }
+
+    /**
+     * Handles /settings/header/<blogid>
+     */
+    public function header(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updateHeaderContent($blog);
+        
+        $blogconfig = $this->getBlogConfig($blog['id']);
+        if (isset($blogconfig['header'])) $response->setVar('blogconfig', $blogconfig['header']);
+        else $response->setVar('blogconfig', []);
+
+        $response->setVar('blog', $blog);
+        $response->addScript('/resources/js/rbwindow');
+        $response->addScript('/resources/js/rbrtf');
+        $response->addStylesheet('/resources/css/rbrtf');
+        $response->addStylesheet('/resources/css/rbwindow');
+        $response->setTitle('Customise Blog Header - ' . $blog['name']);
+        $response->write('settings/header.tpl');        
+    }
+
+    /**
+     * Handles /settings/footer/<blogid>
+     */
+    public function footer(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updateFooterContent($blog);
+        
+        $blogconfig = $this->getBlogConfig($blog['id']);
+        if (isset($blogconfig['footer'])) $response->setVar('blogconfig', $blogconfig['footer']);
+        else $response->setVar('blogconfig', []);
+
+        $response->setVar('blog', $blog);
+        $response->addScript('/resources/js/rbwindow.js');
+        $response->addScript('/resources/js/rbrtf.js');
+        $response->addStylesheet('/resources/css/rbrtf.css');
+        $response->addStylesheet('/resources/css/rbwindow.css');
+        $response->setTitle('Customise Blog Footer - ' . $blog['name']);
+        $response->write('settings/footer.tpl');
+    }
+
+    /**
+     * Handles /settings/pages/<blogid>
+     */
+    public function pages(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        $action = $request->getUrlParameter(2);        
+        switch ($action) {
+            case 'add'    : $this->action_addPage($blog); break;
+            case 'up'     : $this->action_movePageUp($blog); break;
+            case 'down'   : $this->action_movePageDown($blog); break;
+            case 'remove' : $this->action_removePage($blog); break;
+        }
+
+        $pagelist = explode(',', $blog['pagelist']);
+        $pages = $taglist = [];
+
+        foreach ($pagelist as $postID) {
+            if (is_numeric($postID)) {
+                $pages[] = $this->modelPosts->get('*', ['id' => $postID], '', '', false);
+            }
+            elseif (substr($postID, 0, 2) == 't:') {
+                $taglist[] = substr($postID, 2);
+                $pages[] = $postID;
+            }
+        }
+        
+        $tags = $this->modelPosts->getAllTagsByBlog($blog['id']);
+        $posts = $this->modelPosts->get(['id', 'title'], ['blog_id' => $blog['id']]);
+
+        $response->setVar('pagelist', $pagelist);
+        $response->setVar('pages', $pages);
+        $response->setVar('taglist', $taglist);
+        $response->setVar('tags', $tags);
+        $response->setVar('posts', $posts);
+        $response->setVar('blog', $blog);
+        $response->setTitle('Manage Pages - ' . $blog['name']);
+        $response->write('settings/pages.tpl');
+    }
+
+    /**
+     * Handles /settings/stylesheet/<blogid>
+     */
+    public function stylesheet(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if($request->method() == 'POST') return $this->action_saveStylesheet($params);
+
+        $response->setVar('serverroot', SERVER_ROOT);
+        $response->setVar('blog', $blog);
+        $response->setTitle('Edit Stylesheet - ' . $blog['name']);
+        $response->write('settings/stylesheet.tpl');
+    }
+
+    /**
+     * Handles /settings/stylesheet/<blogid>
+     */
+    public function template(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_applyNewTemplate($request, $response);
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('Choose Template - ' . $blog['name']);
+        $response->write('settings/template.tpl');
+    }
+
+
+    /**
+     * Handles /settings/blogdesigner/<blogid>
+     * 
+     * @todo find a way to run a non-smarty template
+     */
+    public function blogdesigner(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updateBlogDisplaySettings($blog);
+
+        $response->setVar('blog', $blog);
+        $response->setTitle('Blog Designer - ' . $blog['name']);
+        $response->addScript('/resources/colorpicker/jscolor.js');
+        $response->write(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $blog, 'cms_db' => $this->db));
+    }
+        
+    /**
+     * Handles /settings/widgets/<blogid>
+     */
+    public function widgets(&$request, &$response)
+    {
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->action_updateWidgets($blog);
+        
+        $response->setTitle('Customise Widgets - ' . $blog['name']);
+        $response->setVar('blog', $blog);
+        $response->setVar('widgetconfig', $this->getWidgetConfig($blog['id']));
+        $response->setVar('installedwidgets', $this->getInstalledWidgets());
+        $response->write('settings/widgets3.tpl');
+    }
+
     /**
         Old (?) was used in header section however we now use isset - though not
         properly tested.
@@ -818,7 +794,7 @@ class SettingsController extends GenericController
         
         if(file_exists($widgetSettingsFilePath))
         {
-            return rbwebdesigns\JSONhelper::jsonToArray($widgetSettingsFilePath);
+            return JSONhelper::JSONFileToArray($widgetSettingsFilePath);
         }
         
         return $this->createWidgetSettingsFile($blogID);
@@ -835,7 +811,7 @@ class SettingsController extends GenericController
         if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
         {
             $defaultWidgetConfig = array('Header' => []);
-            $templateConfig = rbwebdesigns\JSONhelper::jsonToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            $templateConfig = rbwebdesigns\JSONhelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
             
             if(multiarray_key_exists($templateConfig, 'Layout.ColumnCount'))
             {
@@ -858,7 +834,7 @@ class SettingsController extends GenericController
             
             $defaultWidgetConfig['Footer'] = [];
             
-            fwrite($widgetConfigFile, rbwebdesigns\JSONhelper::arrayToJSON($defaultWidgetConfig));
+            fwrite($widgetConfigFile, JSONhelper::arrayToJSON($defaultWidgetConfig));
             fclose($widgetConfigFile);
             return $defaultWidgetConfig;
         }
@@ -879,9 +855,9 @@ class SettingsController extends GenericController
             {
                 $configPath = SERVER_PATH_WIDGETS . '/' . $file . '/config.json';
                 if(!file_exists($configPath)) continue;
-                $config = rbwebdesigns\JSONhelper::jsonToArray($configPath);
+                $config = JSONhelper::JSONFileToArray($configPath);
                 $folders[$file] = $config;
-                $folders[$file]['_settings_json'] = rbwebdesigns\JSONhelper::arrayToJSON($config['defaults']);
+                $folders[$file]['_settings_json'] = JSONhelper::arrayToJSON($config['defaults']);
             }
         }
         
