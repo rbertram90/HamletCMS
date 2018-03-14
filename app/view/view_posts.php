@@ -5,6 +5,7 @@
 *********************************************************************/
 
 use \Michelf\Markdown;
+use rbwebdesigns\core\Pagination;
 
 require_once SERVER_ROOT.'/app/view/view_post_summary.php';
 
@@ -349,9 +350,9 @@ function viewMultiplePosts($arrayPosts, $blogid, $arrayPostSettings, $pTotalPost
 
     // Show Pagination Menu
     $numPages = ceil($pTotalPostsOnBlog / $numPostsToShow);
-    echo showPagination($numPages, $pCurrentPage);
-    
-} // end loop
+    $paginator = new Pagination();
+    echo $paginator->showPagination($numPages, $pCurrentPage);
+}
 
 
 /**

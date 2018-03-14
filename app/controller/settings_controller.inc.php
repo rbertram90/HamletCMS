@@ -11,23 +11,30 @@ use rbwebdesigns\core\AppSecurity;
  * This is the controller which acts as the intermediatory between the
  * model (database) and the view. Any requests to the model are sent from
  * here rather than the view.
- *
- * Example requests that will be handled here:
- *   /blog_cms/config/2756022810/posts
- *   /blog_cms/config/2756022810/footer
- *   /blog_cms/config/2756022810/footer/submit
  */
 class SettingsController extends GenericController
 {
-    private $modelBlogs;
-    private $modelPosts;
-    private $modelComments;
-    private $modelUsers;
-    private $modelContributors;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Blogs
+     */
+    protected $modelBlogs;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Posts
+     */
+    protected $modelPosts;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Comments
+     */
+    protected $modelComments;
+    /**
+     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     */
+    protected $modelUsers;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Contributors
+     */
+    protected $modelContributors;
     
-    protected $view;
-    
-    // Constructor
     public function __construct()
     {
         // Initialise Models

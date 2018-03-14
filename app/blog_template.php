@@ -52,20 +52,15 @@
     </script>
 </head>
 <body>
-<!--RBwebdesigns Branding-->
-<?php
-    include SERVER_ROOT.'/app/vendor/rbertram90/core/view/page-header.php';
-?>
-
     <div class="wrapper">
 
         <div class="header">            
             <?php if(!$DATA['header_hide_title']): ?>
-            <h1><a href="<?=$blogroot?>"><?=$gobjBlog['name']?></a></h1>
+            <h1><a href="<?=$blogroot?>"><?=$blog['name']?></a></h1>
             <?php endif; ?>
             
             <?php if(!$DATA['header_hide_description']): ?>
-            <h2><?=$gobjBlog['description']?></h2>
+            <h2><?=$blog['description']?></h2>
             <?php endif; ?>
             
             <?php if(array_key_exists('header', $DATA['widget_content'])) echo $DATA['widget_content']['header']; ?>

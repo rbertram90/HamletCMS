@@ -1,40 +1,39 @@
 <?php
-/*********************************************************************
-  blog_content_controller
-  this class is for front end actions on the blogs within blog_cms
-  i.e. viewing posts, making comments etc.
-*********************************************************************/
-
 namespace rbwebdesigns\blogcms;
+
 use Codeliner;
 use rbwebdesigns\core\Sanitize;
 
-class BlogContentController {
-
-    // Class Variables
-    private $modelBlogs;       // Blogs Model
-    private $modelPosts;       // Posts Model
-    private $modelComments;    // Comments Model
-    private $modelUsers;       // Users Model
-    private $blog;             // Current viewing blog
-    private $blogID;           // ID of current blog
-    private $blogConfig;       // Config array of current blog
-    private $blogPostCount;    // Number of posts on current blog
-    private $userPermissionsLevel; // 0 = none, 1 = post only, 2 = full
+/**
+ * blog_content_controller
+ * this class is for front end actions on the blogs within blog_cms
+ * i.e. viewing posts, making comments etc.
+ */
+class BlogContentController 
+{
+    protected $modelBlogs;       // Blogs Model
+    protected $modelPosts;       // Posts Model
+    protected $modelComments;    // Comments Model
+    protected $modelUsers;       // Users Model
+    protected $blog;             // Current viewing blog
+    protected $blogID;           // ID of current blog
+    protected $blogConfig;       // Config array of current blog
+    protected $blogPostCount;    // Number of posts on current blog
+    protected $userPermissionsLevel; // 0 = none, 1 = post only, 2 = full
     
     public $header_hideTitle = false;
     public $header_hideDescription = false;
     
-    public function __construct($dbconn, $blog_key)
+    public function __construct($blog_key)
     {
         $currentUser = BlogCMS::session()->currentUser;
 
         // Create Models
-        $this->modelBlogs        = new ClsBlog($dbconn);
-        $this->modelContributors = new ClsContributors($dbconn);
-        $this->modelPosts        = new ClsPost($dbconn);
-        $this->modelComments     = new ClsComment($dbconn);
-        $this->modelUsers        = $GLOBALS['modelUsers'];
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
                 
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
@@ -42,10 +41,10 @@ class BlogContentController {
         $this->blogConfig    = null;
         $this->blogPostCount = null;
         
-        if($this->modelContributors->isBlogContributor($blog_key, $currentUser, 'all')) {
+        if ($this->modelContributors->isBlogContributor($blog_key, $currentUser, 'all')) {
             $this->userPermissionsLevel = 2;
         }
-        elseif($this->userIsContributor()) {
+        elseif ($this->userIsContributor()) {
             $this->userPermissionsLevel = 1;
         }
         else {
@@ -53,30 +52,27 @@ class BlogContentController {
         }
     }
     
-    
     /**
-        function getBlogInfo()
-        @return <array> All information from blog table for current blog
-    **/
+     * function getBlogInfo()
+     * @return array All information from blog table for current blog
+     */
     public function getBlogInfo()
     {
         return $this->blog;
     }
     
-    
     /**
-        function getBlogID()
-        @return <int> ID number for instance
-    **/
+     *  function getBlogID()
+     *  @return int ID number for instance
+     */
     public function getBlogID()
     {
         return $this->blogID;
     }
     
-    
     /**
-        function getPostCount()
-        @return <int> number of posts on blog
+     * function getPostCount()
+     * @return int number of posts on blog
     **/
     public function getPostCount()
     {
@@ -87,11 +83,10 @@ class BlogContentController {
         return $this->blogPostCount;
     }
     
-    
     /**
-        Check if the current user is a contributor of this blog
-        @return <bool> true if user is a contributor, false otherwise
-    **/
+     *  Check if the current user is a contributor of this blog
+     *  @return bool true if user is a contributor, false otherwise
+     */
     public function userIsContributor()
     {
         $currentUser = BlogCMS::session()->currentUser;
@@ -99,11 +94,10 @@ class BlogContentController {
         return $this->modelContributors->isBlogContributor($this->blogID, $currentUser);
     }
 
-    
     /**
-        Check if this blog is currently listed in the users favourites
-        @return <bool> true if blog is in current users favourites, false otherwise
-    **/
+     * Check if this blog is currently listed in the users favourites
+     * @return bool true if blog is in current users favourites, false otherwise
+     */
     public function blogIsFavourite()
     {
         $currentUser = BlogCMS::session()->currentUser;
@@ -111,11 +105,10 @@ class BlogContentController {
         return $this->modelBlogs->isFavourite($currentUser, $this->blogID);
     }
     
-    
     /**
-        View blog homepage
-        @return <array> data for template
-    **/
+     *  View blog homepage
+     *  @return <array> data for template
+     */
     public function viewHome($DATA, $queryParams)
     {
         // Include the view posts functions
@@ -133,7 +126,7 @@ class BlogContentController {
             return $DATA;
         }
         
-        $pageNum = (isset($_GET['s']) && $_GET['s'] > 0) ? safeNumber($_GET['s']) : 1;
+        $pageNum = (isset($_GET['s']) && $_GET['s'] > 0) ? Sanitize::int($_GET['s']) : 1;
         // $pageNum = Request::GetNumberVariable('s');
         $blogConfig = $this->getBlogConfig($this->blogID);
         $postsperpage = getNumPostsToView($blogConfig);
@@ -146,12 +139,11 @@ class BlogContentController {
         return $DATA;
     }
 
-
     /**
-        View the search page which allows you to free text search blog posts for this blog
-    **/
-    public function search($DATA, $queryParams) {
-        
+     * View the search page which allows you to free text search blog posts for this blog
+     */
+    public function search($DATA, $queryParams)
+    {
         // Perform Search
         if(isset($_GET['q'])) {
             $search_string = Sanitize::string($_GET['q']);
@@ -166,50 +158,46 @@ class BlogContentController {
         return $DATA;
     }
     
-    
     /**
-        Output the top menu of pages which the user has selected
-        @return nothing
-    **/
-    public function generatePagelist() {
+     * Output the top menu of pages which the user has selected
+     */
+    public function generatePagelist()
+    {
         echo $this->blog['pagelist'];
     }
 
-
     /**
-        Each link is a blog post which has been marked as a 'page' through the settings menus
-        @return <string> html for a top navigation bar
+     * Each link is a blog post which has been marked as a 'page' through the settings menus
+     * @return string html for a top navigation bar
     **/
-    public function generateNavigation() {
-        if(!array_key_exists('pagelist', $this->blog) || strlen($this->blog['pagelist']) == 0) {
+    public function generateNavigation()
+    {
+        if (!array_key_exists('pagelist', $this->blog) || strlen($this->blog['pagelist']) == 0) {
             return '';
         }
         $navigation = '';
         $pagelist = explode(',', $this->blog['pagelist']);
 
-        foreach($pagelist as $postid) {
-            if(is_numeric($postid))
-            {
+        foreach ($pagelist as $postid) {
+            if (is_numeric($postid)) {
                 $arrayPosts = $this->modelPosts->get('*', array('id' => $postid));
                 $arrayPost = $arrayPosts[0];
                 $navigation.= '<a href="/blogs/'.$arrayPost['blog_id'].'/posts/'.$arrayPost['link'].'">'.$arrayPost['title'].'</a>';
             }
-            elseif(substr($postid, 0, 2) == 't:')
-            {
+            elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
                 $navigation.= '<a href="/blogs/'.$this->blog['id'].'/tags/'.$tag.'">'.$tag.'</a>';
             }
         }
         return $navigation;
     }
-    
 
     /**
-        Generate the HTML for the widgets on the blog
-        @return <string> Page HTML
-    **/
-    public function generateWidgets() {
-        
+     *  Generate the HTML for the widgets on the blog
+     *  @return <string> Page HTML
+     */
+    public function generateWidgets()
+    {
         // replace quotes - caused by sanitize_string when storing in database - should we be doing this?
         $blogJSON = str_replace("&#34;", '"', $this->blog['widgetJSON']);
         
@@ -224,23 +212,25 @@ class BlogContentController {
         return generateWidgets($arrayWidgets, $this->modelPosts, $this->modelBlogs, $this->modelComments, $this->blog, $this->modelUsers);
     }
     
-    public function generateWidgets2() {
+    /**
+     * New widget generator
+     * @todo complete
+     */
+    public function generateWidgets2()
+    {
         $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
         
         if(!file_exists($widgetConfigPath)) return '';
         
         $widgetConfig = rbwebdesigns\JSONhelper::jsonToArray($widgetConfigPath);
-        
-        
     }
     
-
     /**
-        Generate the HTML to be shown in the footer
-        @return <string> html
-    **/
-    public function generateFooter() {
-                
+     * Generate the HTML to be shown in the footer
+     * @return string html
+     */
+    public function generateFooter()
+    {
         // Get the JSON blog config
         $blogConfig = $this->getBlogConfig($this->blogID);
         
@@ -255,23 +245,22 @@ class BlogContentController {
         $backgroundImage = $configReader->stringValue('footer.background_image', false); // Background Image
         
         // Generate Content HTML
-        if($numcols == 1 && $contentColumn1) {
+        if ($numcols == 1 && $contentColumn1) {
             // Single Column
             $footerContent = $contentColumn1;
             
-        } elseif($numcols == 2 && $contentColumn1 && $contentColumn2) {
+        } elseif ($numcols == 2 && $contentColumn1 && $contentColumn2) {
             // Two Column Layout
             $footerContent = '<div class="cols2_1">'.$contentColumn1.'</div><div class="col_sep"></div>';
             $footerContent.= '<div class="cols2_2">'.$contentColumn2.'</div>';
-            
         } else {
             // No content
             $footerContent = '';
         }
         
         // Generate Background CSS
-        if($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0) {
-            
+        if ($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0)
+        {
             // Background position
             $h = $configReader->stringValue('footer.bg_image_post_horizontal', false);
             $v = $configReader->stringValue('footer.bg_image_post_vertical', false);
@@ -296,13 +285,12 @@ class BlogContentController {
         return $footerContent;
     }
     
-    
     /**
-        Generate the CSS for the header background
-        @return <string> html style tag for header
-    **/
-    public function generateHeaderBackground() {
-        
+     * Generate the CSS for the header background
+     * @return string html style tag for header
+     */
+    public function generateHeaderBackground()
+    {
         // Get the JSON blog config
         $blogConfig = $this->getBlogConfig($this->blogID);
         
@@ -356,10 +344,10 @@ class BlogContentController {
     
     
     /**
-        Show all posts matching tag
-    **/
-    public function viewPostsByTag($DATA, $queryParams) {
-
+     * Show all posts matching tag
+     */
+    public function viewPostsByTag($DATA, $queryParams)
+    {
         // Include view functions
         include SERVER_ROOT.'/app/view/view_posts.php';
 
@@ -384,13 +372,12 @@ class BlogContentController {
 
         return $DATA;
     }
-    
-
 
     /**
-        Get the blog config file 'config.json' as an array
-    **/
-    private function getBlogConfig($blogid) {
+     * Get the blog config file 'config.json' as an array
+     */
+    private function getBlogConfig($blogid)
+    {
         // Check variable cache
         if($this->blogConfig === null) {
             $settings = file_get_contents(SERVER_PATH_BLOGS.'/'.$blogid.'/config.json');
@@ -399,13 +386,12 @@ class BlogContentController {
         return $this->blogConfig;
     }
     
-
-
     /**
-        getFontFamilyFromName($fontName as String)
-        @return <string> CSS String for font-family rule
-    **/
-    public function getFontFamilyFromName($fontName) {
+     * getFontFamilyFromName($fontName as String)
+     * @return <string> CSS String for font-family rule
+     */
+    public function getFontFamilyFromName($fontName)
+    {
         $fontarray = array(
             "ARIAL" => "Arial, Helvetica, sans-serif",
             "CALIBRI" => "Calibri, sans-serif",
@@ -421,7 +407,6 @@ class BlogContentController {
         else return "Arial, Helvetica, sans-serif";
     }
     
-    
     public function getTemplateConfig()
     {
         $lsSettings = file_get_contents(SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/template_config.json');
@@ -429,11 +414,11 @@ class BlogContentController {
     }
     
     /**
-        Generates the CSS for a blog specified in the JSON file 'template_config.json'
-        which should exist under the $pblogid folder
-    **/
-    public function getBlogCustomCSS($pblogid) {
-    
+     * Generates the CSS for a blog specified in the JSON file 'template_config.json'
+     * which should exist under the $pblogid folder
+     */
+    public function getBlogCustomCSS($pblogid)
+    {
         $lobjSettings = $this->getTemplateConfig();
         $css = "";
         
@@ -471,13 +456,12 @@ class BlogContentController {
         return $css;
     }
     
-    
     /**
-        addView($postid as int)
-        Record that user has viewed the post
-    **/
-    public function addView($postid) {
-        
+     * addView($postid as int)
+     * Record that user has viewed the post
+     */
+    public function addView($postid)
+    {
         $arrayVisitors = $this->modelPosts->getViewsByPost($postid);
         $userip = $_SERVER['REMOTE_ADDR'];
         $countUpdated = false;
@@ -501,10 +485,10 @@ class BlogContentController {
     
     
     /**
-        View Individual Post
-    **/
-    public function viewPost($DATA, $queryParams) {
-
+     * View Individual Post
+     */
+    public function viewPost($DATA, $queryParams)
+    {
         // Include the view post functions
         include SERVER_ROOT.'/app/view/view_posts.php';
         
@@ -601,4 +585,3 @@ class BlogContentController {
         redirect("/blogs/{$DATA['blog_key']}/posts/{$post['link']}");
     }
 }
-?>
