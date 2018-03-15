@@ -210,7 +210,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if($request->method() == 'POST') return $this->action_saveStylesheet($params);
+        if($request->method() == 'POST') return $this->action_saveStylesheet($request, $response, $blog);
 
         $response->setVar('serverroot', SERVER_ROOT);
         $response->setVar('blog', $blog);
@@ -267,23 +267,6 @@ class SettingsController extends GenericController
         $response->setVar('installedwidgets', $this->getInstalledWidgets());
         $response->write('settings/widgets3.tpl');
     }
-
-    /**
-        Old (?) was used in header section however we now use isset - though not
-        properly tested.
-    **/
-    public function getHeaderValue($parray, $key)
-    {
-        if(gettype($parray) == 'array' && array_key_exists('header', $parray))
-        {
-            if(array_key_exists($key, $parray['header']))
-            {
-                return $parray['header'][$key];
-            }
-        }
-        return ""; // not found
-    }
-    
     
     /******************************************************************
         POST - Blog Settings
@@ -645,75 +628,50 @@ class SettingsController extends GenericController
         setSystemMessage(ITEM_UPDATED, "Success");
         redirect('/config/'.$blog['id']);
     }
-    
-    
+        
     /**
-        Replace the files needed to copy a new template to the blog
-    **/
-    private function applyNewBlogTemplate($blog_key, $template_id)
+     * Apply a completely new template from the predefined templates
+     */
+    public function action_applyNewTemplate($request, $response, $blog)
     {
+        if(!$template_id = $request->getString('template_id', false)) {
+            $response->redirect('/settings/template/' . $blog['id'], 'Template not found', 'error');
+        }
+
         // Update default.css
-        $copy_css = SERVER_PATH_TEMPLATES.'/stylesheets/'.$template_id.'.css';
-        $new_css = SERVER_PATH_BLOGS.'/'.$blog_key.'/default.css';
+        $copy_css = SERVER_PATH_TEMPLATES . "/stylesheets/{$template_id}.css";
+        $new_css  = SERVER_PATH_BLOGS . "/{$blog['id']}/default.css";
         if (!copy($copy_css, $new_css)) die(showError('failed to copy '.$template_id.'.css'));
         
         // Update template_config.json
-        $copy_json = SERVER_PATH_TEMPLATES.'/stylesheets/'.$template_id.'.json';
-        $new_json = SERVER_PATH_BLOGS.'/'.$blog_key.'/template_config.json';
+        $copy_json = SERVER_PATH_TEMPLATES . "/stylesheets/{$template_id}.json";
+        $new_json  = SERVER_PATH_BLOGS . "/{$blog['id']}/template_config.json";
         if (!copy($copy_json, $new_json)) die(showError('failed to copy '.$template_id.'.json'));
+
+        $response->redirect('/settings/template/' . $blog['id'], 'Template changed', 'success');
     }
     
-    
     /**
-        Apply a completely new template from the predefined templates
-    **/
-    public function action_applyNewTemplate($DATA, $params)
+     * Save changes made to the stylesheet
+     */
+    public function action_saveStylesheet($request, $response, $blog)
     {
         // Sanitize Variables
-        $blog_key = safeNumber($params[0]);
-        $template_id = safeString($_POST['template_id']);
-        $currentUser = BlogCMS::session()->currentUser;
+        $css_string = strip_tags($request->get('fld_css'));
 
-        // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_key, $currentUser)) return $this->throwAccessDenied();
-        // Apply the new template
-        $this->applyNewBlogTemplate($blog_key, $template_id);
-        // Redirect Home
-        setSystemMessage(ITEM_UPDATED, "Success");
-        redirect('/config/'.$blog_key);
+        if (is_dir(SERVER_PATH_BLOGS . "/{$blog['id']}") &&
+            file_put_contents(SERVER_PATH_BLOGS. "/{$blog['id']}/default.css", $css_string)) {
+            $response->redirect("/settings/stylesheet/{$blog_id}", "Stylesheet updated", "success");
+        }
+        else {
+            $response->redirect("/settings/stylesheet/{$blog_id}", "Update failed", "error");
+        }
     }
     
-    
     /**
-        Save changes made to the stylesheet
-    **/
-    public function action_saveStylesheet($params)
-    {
-        // Sanitize Variables
-        $css_string = strip_tags($_POST['fld_css']);
-        $blog_id = Sanitize::int($params[0]);
-        $currentUser = BlogCMS::session()->currentUser;
-
-        // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blog_id, $currentUser)) return $this->throwAccessDenied();
-        // Update default.css
-        if(is_dir(SERVER_PUBLIC_PATH.'/blogdata/'.$blog_id))
-        {
-            file_put_contents(SERVER_PATH_BLOGS.'/'.$blog_id.'/default.css', $css_string);
-            setSystemMessage(ITEM_UPDATED, "Success");
-        }
-        else
-        {
-            setSystemMessage("An error has occured - please contact support", "Error");
-        }
-        redirect('/config/'.$blog_id.'/stylesheet');
-    }
-    
-    
-    /**
-        Get some JSON which is okay to pass to the view - as widgets are dynamic if any are missing in the config
-        then we still want them to show in the options menu
-    **/
+     * Get some JSON which is okay to pass to the view - as widgets are dynamic if any are missing in the config
+     * then we still want them to show in the options menu
+     */
     public function checkWidgetJSON($blog, &$widgetconfig)
     {
         $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
@@ -765,14 +723,12 @@ class SettingsController extends GenericController
     {
         $widgetSettingsFilePath = SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json';
         
-        if(file_exists($widgetSettingsFilePath))
-        {
-            return JSONhelper::JSONFileToArray($widgetSettingsFilePath);
+        if(file_exists($widgetSettingsFilePath)) {
+            return JSONHelper::JSONFileToArray($widgetSettingsFilePath);
         }
         
         return $this->createWidgetSettingsFile($blogID);
     }
-    
     
     /**
      * Create the settings.json file
@@ -784,20 +740,17 @@ class SettingsController extends GenericController
         if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
         {
             $defaultWidgetConfig = array('Header' => []);
-            $templateConfig = rbwebdesigns\JSONhelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            $templateConfig = rbwebdesigns\JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
             
-            if(multiarray_key_exists($templateConfig, 'Layout.ColumnCount'))
-            {
-                switch($templateConfig['Layout']['ColumnCount'])
-                {
+            if(multiarray_key_exists($templateConfig, 'Layout.ColumnCount')) {
+                switch($templateConfig['Layout']['ColumnCount']) {
                     case 3:
                         $defaultWidgetConfig['RightPanel'] = [];
                         $defaultWidgetConfig['LeftPanel'] = [];
                         break;
                         
                     case 2:
-                        if(multiarray_key_exists($templateConfig, 'Layout.PostsColumn'))
-                        {
+                        if(multiarray_key_exists($templateConfig, 'Layout.PostsColumn')) {
                             if($templateConfig['Layout']['PostsColumn'] == 2) $defaultWidgetConfig['LeftPanel'] = [];
                             else $defaultWidgetConfig['RightPanel'] = [];
                         }
@@ -815,19 +768,16 @@ class SettingsController extends GenericController
         die('Error: Unable to create widget settings - check folder permissions');
     }
     
-    
     public function getInstalledWidgets()
     {        
         $handle = opendir(SERVER_PATH_WIDGETS);
         $folders = array();
         
         // May be wise to create a cache for this...
-        while($file = readdir($handle))
-        {
-            if(is_dir(SERVER_PATH_WIDGETS . '/' . $file) && $file != '.' && $file != '..')
-            {
+        while ($file = readdir($handle)) {
+            if (is_dir(SERVER_PATH_WIDGETS . '/' . $file) && $file != '.' && $file != '..') {
                 $configPath = SERVER_PATH_WIDGETS . '/' . $file . '/config.json';
-                if(!file_exists($configPath)) continue;
+                if (!file_exists($configPath)) continue;
                 $config = JSONhelper::JSONFileToArray($configPath);
                 $folders[$file] = $config;
                 $folders[$file]['_settings_json'] = JSONhelper::arrayToJSON($config['defaults']);
@@ -841,23 +791,21 @@ class SettingsController extends GenericController
            
         $configPath = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/widgets.json';
         if(!file_exists($configPath)) die('Cannot find widget config file');
-        $config = rbwebdesigns\JSONhelper::jsonToArray($configPath);
+        $config = JSONhelper::jsonToArray($configPath);
         
         // Clear all existing widgets
-        foreach($config as $sectionName => $section) {
+        foreach ($config as $sectionName => $section) {
             $config[$sectionName] = [];
         }
 
-        foreach($_POST['widgets'] as $sectionName => $section)
-        {
-            foreach($section as $widgettype => $widgetconfig)
-            {
+        foreach($_POST['widgets'] as $sectionName => $section) {
+            foreach($section as $widgettype => $widgetconfig) {
                 $config[$sectionName][$widgettype] = json_decode($widgetconfig, true);;
             }
         }
         
         // Save JSON back to config file
-        file_put_contents($configPath, rbwebdesigns\JSONhelper::arrayToJSON($config));
+        file_put_contents($configPath, JSONhelper::arrayToJSON($config));
         
         // Say it worked
         setSystemMessage(ITEM_UPDATED, "Success");
@@ -881,61 +829,49 @@ class SettingsController extends GenericController
         // widgetfld_[widgetname]_[settingname]
         
         // Get the location of the widget
-        if(array_key_exists("sys_widget_location", $_POST))
-        {
+        if(array_key_exists("sys_widget_location", $_POST)) {
             $widgetlocation = sanitize_string($_POST['sys_widget_location']);
         }
         else die("No location found");
         
         // Get the id of the widget
-        if(array_key_exists("sys_widget_id", $_POST))
-        {
+        if(array_key_exists("sys_widget_id", $_POST)) {
             $widgetid = sanitize_string($_POST['sys_widget_id']);
         }
         else die("No id found");
         
         // Get the type of the widget
-        if(array_key_exists("sys_widget_type", $_POST))
-        {
+        if(array_key_exists("sys_widget_type", $_POST)) {
             $widgettype = sanitize_string($_POST['sys_widget_type']);
         }
         else die("No type found");
                 
         // Create array for location if needed
-        if(!array_key_exists($widgetlocation, $arrayWidgetConfig))
-        {
+        if(!array_key_exists($widgetlocation, $arrayWidgetConfig)) {
             $arrayWidgetConfig[$widgetlocation] = array();
         }
         
         // Find match in current settings for id
         $targetwidget = -1;
         
-        for($i = 0; $i < count($arrayWidgetConfig[$widgetlocation]); $i++)
-        {
-            if($arrayWidgetConfig[$widgetlocation][$i]['id'] == $widgetid)
-            {
+        for($i = 0; $i < count($arrayWidgetConfig[$widgetlocation]); $i++) {
+            if($arrayWidgetConfig[$widgetlocation][$i]['id'] == $widgetid) {
                 $targetwidget = $i;
                 break;
             }
         }
         
         // Create new if needed...
-        if($targetwidget == -1)
-        {
-            // Get the index
+        if($targetwidget == -1) {
             $targetwidget = count($arrayWidgetConfig[$widgetlocation]);
-            
             $arrayWidgetConfig[$widgetlocation][] = array(
                 'id' => $widgetid,
                 'type' => $widgettype
             );
         }
         
-        foreach($_POST as $key => $postvariable)
-        {
-            // ...
-            if(substr($key, 0, 9) == "widgetfld")
-            {
+        foreach($_POST as $key => $postvariable) {
+            if(substr($key, 0, 9) == "widgetfld") {
                 $splitkey = explode('_', $key);
                 if(count($splitkey) < 3) continue;
                 $arrayWidgetConfig[$widgetlocation][$targetwidget][$splitkey[2]] = $postvariable;
