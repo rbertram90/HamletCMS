@@ -158,12 +158,22 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        $action = $request->getUrlParameter(2);        
+        $action = $request->getUrlParameter(2);
+        $actionTaken = true;
+
         switch ($action) {
-            case 'add'    : $this->action_addPage($blog); break;
-            case 'up'     : $this->action_movePageUp($blog); break;
-            case 'down'   : $this->action_movePageDown($blog); break;
-            case 'remove' : $this->action_removePage($blog); break;
+            case 'add'    : $result = $this->action_addPage($request, $response, $blog); break;
+            case 'up'     : $result = $this->action_movePageUp($request, $response, $blog); break;
+            case 'down'   : $result = $this->action_movePageDown($request, $response, $blog); break;
+            case 'remove' : $result = $this->action_removePage($request, $response, $blog); break;
+            default: $actionTaken = false;
+        }
+
+        if($actionTaken && $result) {
+            BlogCMS::Session()->addMessage('Page list updated', 'success');
+        }
+        elseif($actionTaken && !$result) {
+            BlogCMS::Session()->addMessage('Failed to update page list', 'error');
         }
 
         $pagelist = explode(',', $blog['pagelist']);
@@ -426,171 +436,146 @@ class SettingsController extends GenericController
         redirect('/config/'.$blog['id'].'/header');
     }
     
-    public function action_addPage($blog)
+    /**
+     * Add a page to the list of pages to show on menu
+     * 
+     * @param $request
+     * @param $response
+     * @param array $blog
+     * 
+     * @return bool Was the page added successfully?
+     */
+    public function action_addPage(&$request, &$response, &$blog)
     {
-        // need to check the id does actually correspond to a post
-        // which belongs to the blog!
-        if(!isset($_POST['fld_pagetype'])) return false;
+        if (!$pageType = $request->getString('fld_pagetype', false)) return false;
         
-        $pageType = sanitize_string($_POST['fld_pagetype']);
-        
-        switch($pageType)
-        {
+        switch ($pageType) {
             case 'p':
-                $newpageID = Sanitize::int($_POST['fld_postid']);
-                
-                // Check the post exists and belongs to this blog
-                $targetpost = $this->modelPosts->get(array('id','blog_id'), array('id' => $newpageID), '', '', false);
-
-                if(strtolower(getType($targetpost)) != 'array' || $targetpost['blog_id'] != $blog['id']) die("Unexpected Post ID!");
-
+                // Check that post we're adding is valid
+                $newpageID = $request->getInt('fld_postid');
+                $targetpost = $this->modelPosts->get(['blog_id'], ['id' => $newpageID], '', '', false);
+                if (!$targetpost || $targetpost['blog_id'] != $blog['id']) {
+                    return false;
+                }
                 break;
-                
                 
             case 't':
-                $tag = str_replace(',', '', sanitize_string($_POST['fld_tag']));
+                if (!$tag = $request->getString('fld_tag', false)) return false;
+                $tag = str_replace(',', '', $tag);
                 $newpageID = 't:' . $tag;
                 break;
+
+            default:
+                return false;
         }
 
-        
         // Update Current Page List
-        if(array_key_exists('pagelist', $blog) && strlen($blog['pagelist']) > 0) $pagelist = $blog['pagelist'].','.$newpageID;
-        else $pagelist = $newpageID;
-        
-        $this->modelBlogs->update(array('id' => $blog['id']), array('pagelist' => $pagelist));
-        
-        // Output
-        setSystemMessage(ITEM_CREATED, "Success");
-        redirect('/config/'.$blog['id'].'/pages');
-    }
-    
-    
-    public function action_removePage($blog)
-    {
-        // need to check the id does actually correspond to a post
-        // which belongs to the blog!
-        if(!isset($_POST['fld_postid'])) return false;
-        
-        if(is_numeric($_POST['fld_postid']))
-        {
-            $targetPostID = Sanitize::int($_POST['fld_postid']);
+        if (array_key_exists('pagelist', $blog) && strlen($blog['pagelist']) > 0) {
+            $pagelist = $blog['pagelist'] . ',' . $newpageID;
+        }
+        else {
+            $pagelist = $newpageID;
+        }
 
-            // Check the post exists and belongs to this blog
-            $targetpost = $this->modelPosts->get(array('id','blog_id'), array('id' => $targetPostID), '', '', false);
-            
-            if(strtolower(getType($targetpost)) != 'array' || $targetpost['blog_id'] != $blog['id']) die("Unexpected Post ID!");
-        }
-        else
-        {
-            $targetPostID = sanitize_string($_POST['fld_postid']);
-        }
+        // Make sure we've got the most recent data for this request
+        $blog['pagelist'] = $pagelist;
         
-        $pagelist = explode(',', $blog['pagelist']);
-        $idKey = array_search($targetPostID, $pagelist);
-        
-        if($idKey !== false)
-        {
-            array_splice($pagelist, $idKey, 1);
-            
-            // Update Current Page List
-            $pagelist = implode(',', $pagelist);
-                        
-            // Update Database
-            $this->modelBlogs->update(array('id' => $blog['id']), array('pagelist' => $pagelist));
-            
-            // Set Message
-            setSystemMessage("Page Removed", "Success");
-        }
-        else
-        {
-            setSystemMessage("Unable To Remove Page", "Warning");
-        }
-        redirect('/config/'.$blog['id'].'/pages');
+        return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
     }
-    
-    
-    public function action_movePageUp($blog)
-    {
-        // need to check the id does actually correspond to a post
-        // which belongs to the blog!
-        if(!isset($_POST['fld_postid'])) return false;
-        
-        if(is_numeric($targetPostID)) $targetPostID = Sanitize::int($_POST['fld_postid']);
-        else $targetPostID = sanitize_string($_POST['fld_postid']);
-        
-        $pagelist = explode(',', $blog['pagelist']);
-        $idKey = array_search($targetPostID, $pagelist);
-        
-        if($idKey !== false && $idKey > 0)
-        {
-            $pagelist[$idKey] = $pagelist[$idKey - 1];
-            $pagelist[$idKey - 1] = $targetPostID;
-            
-            // Update Current Page List
-            $pagelist = implode(',', $pagelist);
-                        
-            // Update Database
-            $this->modelBlogs->update(array('id' => $blog['id']), array('pagelist' => $pagelist));
-            
-            // Set Message
-            setSystemMessage("Page Moved Up", "Success");
-        }
-        else
-        {
-            setSystemMessage("Unable To Move Page", "Warning");
-        }
-        
-        redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/pages');
-    }
-    
-    
-    public function action_movePageDown($blog)
-    {
-        // need to check the id does actually correspond to a post
-        // which belongs to the blog!
-        if(!isset($_POST['fld_postid'])) return false;
-        
-        if(is_numeric($targetPostID)) $targetPostID = Sanitize::int($_POST['fld_postid']);
-        else $targetPostID = sanitize_string($_POST['fld_postid']);
-        
-        $pagelist = explode(',', $blog['pagelist']);
-        $idKey = array_search($targetPostID, $pagelist);
-        
-        if($idKey !== false && $idKey < count($pagelist)-1)
-        {
-            $pagelist[$idKey] = $pagelist[$idKey + 1];
-            $pagelist[$idKey + 1] = $targetPostID;
-            
-            // Update Current Page List
-            $pagelist = implode(',', $pagelist);
-            
-            // Update Database
-            $this->modelBlogs->update(array('id' => $blog['id']), array('pagelist' => $pagelist));
-            
-            // Set Message
-            setSystemMessage("Page Moved Down", "Success");
-        }
-        else
-        {
-            setSystemMessage("Unable To Move Page", "Warning");
-        }
-        redirect('/config/'.$blog['id'].'/pages');
-    }
-    
     
     /**
-        New - works in reverse of previous version
-        This is becuase we want to have values in JSON
-        that we don't want to send to the browser
+     * @param $request
+     * @param $response
+     * @param array $blog
+     * 
+     * @return bool Was the page removed successfully?
+     */
+    public function action_removePage(&$request, &$response, &$blog)
+    {
+        if (!$page = $request->getString('fld_postid', false)) return false;
         
-        The previous version literally re-generated the
-        whole JSON every time the blog designer form
-        was submitted...
+        // Get position of page in the comma seperated list
+        $pagelist = explode(',', $blog['pagelist']);
+        $idKey = array_search($page, $pagelist);
+        if ($idKey === false) return false;
+
+        // Remove page from list
+        array_splice($pagelist, $idKey, 1);
         
-        This one loops through the JSON stored on the
-        server and looks for the corresponding value
-        in $_POST
+        // Make sure we've got the most recent data for this request
+        $blog['pagelist'] = implode(',', $pagelist);
+
+        return $this->modelBlogs->update(['id' => $blog['id']], [
+            'pagelist' => $blog['pagelist']
+        ]);
+    }
+    
+    /**
+     * @param $request
+     * @param $response
+     * @param array $blog
+     * 
+     * @return bool Was the page moved successfully?
+     */
+    public function action_movePageUp(&$request, &$response, &$blog)
+    {
+        if (!$page = $request->getString('fld_postid', false)) return false;
+        
+        $pagelist = explode(',', $blog['pagelist']);
+        $idKey = array_search($page, $pagelist);
+        
+        if ($idKey !== false && $idKey > 0) {
+            $pagelist[$idKey] = $pagelist[$idKey - 1];
+            $pagelist[$idKey - 1] = $page;
+            $pagelist = implode(',', $pagelist);
+
+            $blog['pagelist'] = $pagelist;
+
+            return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
+        }
+
+        return false;
+    }
+    
+    /**
+     * @param $request
+     * @param $response
+     * @param array $blog
+     * 
+     * @return bool Was the page moved successfully?
+     */
+    public function action_movePageDown(&$request, &$response, &$blog)
+    {
+        if (!$page = $request->getString('fld_postid', false)) return false;
+        
+        $pagelist = explode(',', $blog['pagelist']);
+        $idKey = array_search($page, $pagelist);
+        
+        if ($idKey !== false && $idKey < count($pagelist) - 1) {
+            $pagelist[$idKey] = $pagelist[$idKey + 1];
+            $pagelist[$idKey + 1] = $page;
+            $pagelist = implode(',', $pagelist);
+            
+            $blog['pagelist'] = $pagelist;
+
+            return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * New - works in reverse of previous version
+     * This is becuase we want to have values in JSON
+     * that we don't want to send to the browser
+     *  
+     * The previous version literally re-generated the
+     * whole JSON every time the blog designer form
+     * was submitted...
+     *  
+     * This one loops through the JSON stored on the
+     * server and looks for the corresponding value
+     * in $_POST
     **/
     private function action_updateBlogDisplaySettings($blog)
     {

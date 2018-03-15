@@ -71,9 +71,9 @@
 
 
             <form action="/settings/pages/{$blog.id}/add" method="POST" class="ui form">
-                <div id="selectpost" class="field">
+                <div id="pagetype" class="field">
                     <label for="fld_pagetype">Page Type</label>
-                    <select name="fld_pagetype" id="fld_pagetype">
+                    <select name="fld_pagetype" id="fld_pagetype" class="semantic-dropdown">
                         <option value="p" selected>Post</option>
                         <option value="t">Tag</option>
                     </select>
@@ -81,31 +81,25 @@
 
                 <div id="selectpost" class="field">
                     <label for="fld_postid">Post</label>
-                    <select name="fld_postid" id="fld_postid">
-
+                    <select name="fld_postid" id="fld_postid" class="semantic-dropdown">
                         {foreach from=$posts item=post}
-
                             {if in_array({$post.id}, $pagelist) == false}
                                 <option value="{$post.id}">{$post.title}</option>
                             {/if}
-
                         {/foreach}
-
                     </select>
                 </div>
                 <div id="selecttag" class="field" style="display:none;">
                     <label for="fld_tag">Tag</label>
-                    <select name="fld_tag" id="fld_tag">
-
+                    <select name="fld_tag" id="fld_tag" class="semantic-dropdown">
                         {foreach from=$tags item=tag}
                             {if in_array($tag, $taglist) == false}
                                 <option value="{$tag}">{$tag}</option>
                             {/if}
                         {/foreach}
-
                     </select>
                 </div>
-                <input type="submit" name="fld_submit" class="ui button teal" value="Add" />
+                <input type="submit" name="fld_submit" class="ui button teal" value="Add">
             </form>
 
             <script>
@@ -122,6 +116,11 @@
                             break;
                     }
                 });
+            </script>
+
+            <script>
+                // Apply semantic UI dropdown
+                $(".semantic-dropdown").dropdown();
             </script>
 
             <input type="button" class="ui right floated button" value="Go Back" name="goback" onclick="window.history.back()" />
