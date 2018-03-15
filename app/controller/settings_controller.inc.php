@@ -112,7 +112,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if ($request->method() == 'POST') return $this->action_updateHeaderContent($blog);
+        if ($request->method() == 'POST') return $this->action_updateHeaderContent($request, $response, $blog);
         
         $blogconfig = $this->getBlogConfig($blog['id']);
         if (isset($blogconfig['header'])) $response->setVar('blogconfig', $blogconfig['header']);
@@ -135,7 +135,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if ($request->method() == 'POST') return $this->action_updateFooterContent($blog);
+        if ($request->method() == 'POST') return $this->action_updateFooterContent($request, $response, $blog);
         
         $blogconfig = $this->getBlogConfig($blog['id']);
         if (isset($blogconfig['footer'])) $response->setVar('blogconfig', $blogconfig['footer']);
@@ -226,7 +226,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if ($request->method() == 'POST') return $this->action_applyNewTemplate($request, $response);
+        if ($request->method() == 'POST') return $this->action_applyNewTemplate($request, $response, $blog);
 
         $response->setVar('blog', $blog);
         $response->setTitle('Choose Template - ' . $blog['name']);
@@ -373,50 +373,43 @@ class SettingsController extends GenericController
     }
     
     /**
-        Type: POST
-        Description: Update the content in the footer
-    **/
-    public function action_updateFooterContent($blog)
+     * Update the content in the footer
+     */
+    public function action_updateFooterContent(&$request, &$response, $blog)
     {
-        // Change Settings
-        $this->updateBlogConfig($blog['id'], array(
-            'footer' => array(
-                'numcols' => safeString($_POST['fld_numcolumns']),
-                'content_col1' => safeString($_POST['fld_contentcol1']),
-                'content_col2' => safeString($_POST['fld_contentcol2']),
-                'background_image' => safeString($_POST['fld_footerbackgroundimage']),
-                'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
-                'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition'])
-            )
-        ));
+        $update = $this->updateBlogConfig($blog['id'], [
+            'footer' => [
+                'numcols'                  => $request->getString('fld_numcolumns'),
+                'content_col1'             => $request->getString('fld_contentcol1'),
+                'content_col2'             => $request->getString('fld_contentcol2'),
+                'background_image'         => $request->getString('fld_footerbackgroundimage'),
+                'bg_image_post_horizontal' => $request->getString('fld_horizontalposition'),
+                'bg_image_post_vertical'   => $request->getString('fld_veritcalposition')
+            ]
+        ]);
+
+        if(!$update) $response->redirect('/settings/footer/' . $blog['id'], 'Updated failed', 'error');
         
-        // Output
-        setSystemMessage(ITEM_UPDATED, "Success");
-        redirect('/config/'.$blog['id'].'/footer');
+        $response->redirect('/settings/footer/' . $blog['id'], 'Footer updated', 'success');
     }
     
-    
     /**
-        Type: POST
-        Description: Update the content in the header
-    **/
-    public function action_updateHeaderContent($blog)
+     * Update the content in the header
+     */
+    public function action_updateHeaderContent(&$request, &$response, $blog)
     {
-        // Change Settings
-        $this->updateBlogConfig($blog['id'], array(
-            'header' => array(
-                'background_image' => safeString($_POST['fld_headerbackgroundimage']),
-                'bg_image_post_horizontal' => safeString($_POST['fld_horizontalposition']),
-                'bg_image_post_vertical' => safeString($_POST['fld_veritcalposition']),
-                'bg_image_align_horizontal' => safeString($_POST['fld_horizontalalign']),
-                'hide_title' => safeString($_POST['fld_hidetitle']),
-                'hide_description' => safeString($_POST['fld_hidedescription'])
-            )
-        ));
+        $update = $this->updateBlogConfig($blog['id'], ['header' => [
+            'background_image'          => $request->getString('fld_headerbackgroundimage'),
+            'bg_image_post_horizontal'  => $request->getString('fld_horizontalposition'),
+            'bg_image_post_vertical'    => $request->getString('fld_veritcalposition'),
+            'bg_image_align_horizontal' => $request->getString('fld_horizontalalign'),
+            'hide_title'                => $request->getString('fld_hidetitle'),
+            'hide_description'          => $request->getString('fld_hidedescription')
+        ]]);
+
+        if(!$update) $response->redirect('/settings/header/' . $blog['id'], 'Updated failed', 'error');
         
-        // Output
-        setSystemMessage(ITEM_UPDATED, "Success");
-        redirect('/config/'.$blog['id'].'/header');
+        $response->redirect('/settings/header/' . $blog['id'], 'Header updated', 'success');
     }
     
     /**
