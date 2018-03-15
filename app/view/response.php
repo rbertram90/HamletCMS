@@ -23,7 +23,7 @@ class BlogCMSResponse extends Response
         $session = BlogCMS::session();
         $currentUser = $session->currentUser;
 
-        $this->setVar('messages', $session->getAllMessages());
+        // $this->setVar('messages', $session->getAllMessages());
         
         // Note using this class we are ALWAYS using smarty template
         // $usesmarty = (substr($templatePath, -3) == 'tpl');

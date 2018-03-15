@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms\model;
 
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -223,42 +224,7 @@ class Blogs extends RBFactory
         
         // Remove Comments...
     }
-    
-    
-    /**
-     * This (more generic function will take an array of key-value
-     * pairs to update the corresponding fields in the database
-     */
-    public function updateBlog($blogid, $paramNewValues)
-    {
-        $blogid = Sanitize::int($blogid);
-        $updateFields = array();
         
-        // Check User Permissions
-        if(!$this->canWrite($blogid)) return "You do not have permission to edit this blog";
-        
-        // Create array and sanitize variables
-        foreach($this->fields as $fieldname => $datatype) {
-            if(array_key_exists($fieldname, $paramNewValues)) {
-                switch($datatype):
-                    case 'string':
-                        $updateFields[$fieldname] = Sanitize::string($paramNewValues[$fieldname]);
-                        break;
-                    case 'number':
-                        $updateFields[$fieldname] = Sanitize::int($paramNewValues[$fieldname]);
-                        break;
-                    case 'boolean':
-                        $updateFields[$fieldname] = sanitize_boolean($paramNewValues[$fieldname]);
-                        break;
-                    default:
-                        $updateFields[$fieldname] = Sanitize::string($paramNewValues[$fieldname]);
-                        break;
-                endswitch;
-            }
-        }
-        return $this->db->updateRow($this->tableName, array('id' => $blogid), $updateFields);
-    }
-    
     /**
      * Update just the widget configuration JSON for a blog
      */

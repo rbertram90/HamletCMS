@@ -45,7 +45,7 @@
             
             <div id="messages">
                 {foreach from=$messages item=$message}                
-                    <p class="message {$message.type}">{$message.text}</p>
+                    <p class="ui message {$message.type}">{$message.text}</p>
                 {/foreach}
             </div>
             

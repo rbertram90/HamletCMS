@@ -67,7 +67,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if ($request->method() == 'POST') return $this->action_updateBlogGeneral($blog);
+        if ($request->method() == 'POST') return $this->action_updateBlogGeneral($request, $response, $blog);
 
         $response->setVar('blog', $blog);
         $response->setTitle('General Settings - ' . $blog['name']);
@@ -84,7 +84,7 @@ class SettingsController extends GenericController
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        if ($request->method() == 'POST') return $this->action_updatePostsSettings($blog);
+        if ($request->method() == 'POST') return $this->action_updatePostsSettings($request, $response, $blog);
 
         $postConfig = $this->getBlogConfig($blog['id']);
 
@@ -223,7 +223,6 @@ class SettingsController extends GenericController
         $response->write('settings/template.tpl');
     }
 
-
     /**
      * Handles /settings/blogdesigner/<blogid>
      * 
@@ -281,8 +280,8 @@ class SettingsController extends GenericController
     ******************************************************************/
     
     /**
-        View a specific widget config page
-    **/
+     * View a specific widget config page
+     */
     private function viewWidgetSpecificSettings($blog, $widgetname)
     {
         $settings_view = SERVER_ROOT.'/app/view/settings/widgets_'.$widgetname.'.php';
@@ -291,112 +290,94 @@ class SettingsController extends GenericController
         else $this->throwNotFound();
     }
     
-    
     /**
-        Update the name and description of a blog
-    **/
-    public function action_updateBlogGeneral($blog)
+     * Run update for name and description of a blog
+     * @param array $blog
+     */
+    public function action_updateBlogGeneral($request, $response, $blog)
     {
-        
-        // Update Database
-        $update = $this->modelBlogs->updateBlog($blog['id'], array(
-            'name' => $_POST['fld_blogname'],
-            'description' => $_POST['fld_blogdesc'],
-            'visibility' => $_POST['fld_blogsecurity'],
-            'category' => $_POST['fld_category']
-        ));
-        
-        // System Message
-        if($update !== false) setSystemMessage(ITEM_UPDATED, "Success");
-        else setSystemMessage($update, "Error");
-        
-        // Redirect
-        redirect('/config/'.$blog['id']);
-    }
-    
-    
-    /**
-        Update how posts are displayed on the blog
-    **/
-    public function action_updatePostsSettings($blog)
-    {
-        // Sanitize Input -> Update DB
-        // Lots of inputs!!!!
-        $this->updateBlogConfig($blog['id'], array(
-            'posts' => array(
-                'dateformat'        => safeString($_POST['fld_dateformat']),
-                'timeformat'        => safeString($_POST['fld_timeformat']),
-                'postsperpage'      => safeNumber($_POST['fld_postsperpage']),
-                'allowcomments'     => safeNumber($_POST['fld_commentapprove']),
-                'postsummarylength' => safeNumber($_POST['fld_postsummarylength']),
-                'showtags'          => safeString($_POST['fld_showtags']),
-                'dateprefix'        => safeString($_POST['fld_dateprefix']),
-                'dateseperator'     => safeString($_POST['fld_dateseperator']),
-                'datelocation'      => safeString($_POST['fld_datelocation']),
-                'timelocation'      => safeString($_POST['fld_timelocation']),
-                'showsocialicons'   => safeString($_POST['fld_showsocialicons']),
-                'shownumcomments'   =>safeString($_POST['fld_shownumcomments'])
-            )
-        ));
-        
-        // Success / Failure
-        setSystemMessage(ITEM_UPDATED, "Success");
-        
-        // Redirect
-        redirect('/config/'.$blog['id']);
-    }
-    
-    
-    /**
-        Get the blog config file JSON
-    **/
-    private function getBlogConfig($blogid)
-    {
-        return jsonToArray(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json');
-    }
-    
-    
-    /**
-        Save to the blog config file
-    **/
-    private function saveBlogConfig($blogid, $arrBlogConfig)
-    {
-        $json_string = json_encode($arrBlogConfig);
-        file_put_contents(SERVER_PUBLIC_PATH.'/blogdata/'.$blogid.'/config.json', $json_string);
-    }
-    
-    
-    /**
-        Update the blog configuration file with new values
-        Note that new arrays are created if needs be.
-    **/
-    public function updateBlogConfig($pintblogid, $parrayupdates)
-    {
-        $currentUser = BlogCMS::session()->currentUser;
+        $update = $this->modelBlogs->update(['id' => $blog['id']], [
+            'name'        => $request->getString('fld_blogname'),
+            'description' => $request->getString('fld_blogdesc'),
+            'visibility'  => $request->getString('fld_blogsecurity'),
+            'category'    => $request->getString('fld_category')
+        ]);
 
-        // Check we have permission to update config file
-        if(!$this->modelContributors->isBlogContributor($pintblogid, $currentUser)) return $this->throwAccessDenied();
-        // Fetch config from JSON file
-        $lobjSettings = $this->getBlogConfig($pintblogid);
-        // Apply the changes
-        $this->processArray($lobjSettings, $parrayupdates);
-        // Save back to JSON file
-        $this->saveBlogConfig($pintblogid, $lobjSettings);
-        return true;
-    }
-    private function processArray(&$ptargetarray, $psourcearray)
-    {
-        foreach($psourcearray as $key => $value)
-        {
-            if(getType($psourcearray[$key]) == "array")
-            {
-                if(!array_key_exists($key, $ptargetarray)) $ptargetarray[$key] = array();
-                $this->processArray($ptargetarray[$key], $psourcearray[$key]);
-            }
-            else $ptargetarray[$key] = $value;
+        if($update) {
+            $response->redirect('/settings/general/' . $blog['id'], "Blog settings updated", "success");
+        }
+        else {
+            $response->redirect('/settings/general/' . $blog['id'], "Error saving to database", "error");
         }
     }
     
+    /**
+     *  Update how posts are displayed on the blog
+     */
+    public function action_updatePostsSettings($request, $response, $blog)
+    {
+        $update = $this->updateBlogConfig($blog['id'], [
+            'posts' => [
+                'dateformat'        => $request->getString('fld_dateformat'),
+                'timeformat'        => $request->getString('fld_timeformat'),
+                'postsperpage'      => $request->getInt('fld_postsperpage'),
+                'allowcomments'     => $request->getInt('fld_commentapprove'),
+                'postsummarylength' => $request->getInt('fld_postsummarylength'),
+                'showtags'          => $request->getString('fld_showtags'),
+                'dateprefix'        => $request->getString('fld_dateprefix'),
+                'dateseperator'     => $request->getString('fld_dateseperator'),
+                'datelocation'      => $request->getString('fld_datelocation'),
+                'timelocation'      => $request->getString('fld_timelocation'),
+                'showsocialicons'   => $request->getString('fld_showsocialicons'),
+                'shownumcomments'   => $request->getString('fld_shownumcomments')
+            ]
+        ]);
+        
+        if($update) {
+            $response->redirect('/settings/posts/' . $blog['id'], "Post settings updated", "success");
+        }
+        else {
+            $response->redirect('/settings/posts/' . $blog['id'], "Error saving to database", "error");
+        }
+    }
+    
+    /**
+     * Get the blog config file JSON
+     * 
+     * @param int $blogid
+     * 
+     * @return array
+     */
+    protected function getBlogConfig($blogid)
+    {
+        return JSONhelper::JSONFileToArray(SERVER_PUBLIC_PATH . "/blogdata/{$blogid}/config.json");
+    }
+    
+    /**
+     * Save to the blog config file
+     * 
+     * @param int $blogid
+     * @param array $blogConfig
+     * 
+     * @return bool Was the save successful?
+     */
+    protected function saveBlogConfig($blogid, $blogConfig)
+    {
+        $json_string = JSONhelper::arrayToJSON($blogConfig);
+        $save = file_put_contents(SERVER_PUBLIC_PATH . "/blogdata/{$blogid}/config.json", $json_string);
+        return $save !== false;
+    }
+    
+    /**
+     * Update the blog configuration file with new values
+     * Note that new arrays are created if needs be.
+     */
+    protected function updateBlogConfig($blogid, $data)
+    {
+        $settings = $this->getBlogConfig($blogid);
+        $settings = array_replace_recursive($settings, $data);
+        return $this->saveBlogConfig($blogid, $settings);
+    }
     
     /**
         Type: POST
@@ -994,13 +975,11 @@ class SettingsController extends GenericController
     function action_saveWidgetLayout($blog)
     {        
         if(!array_key_exists('fld_submit', $_POST)) die('Submit field missing');
-        if(!array_key_exists('widgets', $_POST))
-        {
+        if(!array_key_exists('widgets', $_POST)) {
             // no widgets...
             $jsonWidgetConfig = "{}";
         }
-        else
-        {
+        else {
             $jsonWidgetConfig = "{";
             $first = true;
             
@@ -1026,8 +1005,5 @@ class SettingsController extends GenericController
         
         setSystemMessage(ITEM_UPDATED, "Success");
         redirect('/config/'.$blog['id'].'/widgets');
-        // echo printArray($_POST);
-        // echo $jsonWidgetConfig;
     }
 }
-?>
