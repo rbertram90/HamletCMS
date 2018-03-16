@@ -45,6 +45,31 @@ class AccountFactory extends RBFactory
     }
 
     /**
+     * Create a new user
+     * 
+     * @param array $details
+     * 
+     * @todo throw exception if username is already taken
+     * @todo not use md5 for hashing
+     */
+    public function register($details)
+    {
+        if($this->count(['username' => $details['username']]) > 0) {
+            return false;
+        }
+
+        return $this->insert([
+            'name' => $details['firstname'],
+            'surname' => $details['surname'],
+            'username' => $details['username'],
+            'password' => md5($details['password']),
+            'email' => md5($details['email']),
+            'admin' => 0,
+            'signup_date' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
      * Get a user record from database by id
      * 
      * @param int $userID

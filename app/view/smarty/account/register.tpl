@@ -1,24 +1,7 @@
-<?php
-    $error= "";
-
-    // really quick screen to log in
-    if(isset($_POST['fld_submit_registration']))
-    {
-        $account = new rbwebdesigns\AccountManager($cms_db);
-        if($account->newAccount())
-        {
-            redirect('/');
-        }
-        else
-        {
-            $error = "Unable to create account";
-        }
-    }
-
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
-        <title>Login</title>
+        <title>Register</title>
         <link rel="stylesheet" href="/css/semantic.css" type="text/css">
         <link rel="stylesheet" href="/css/blogs_stylesheet.css">
         
@@ -37,8 +20,7 @@
                 <img src="/images/logo.png" alt="Blog CMS" />
             </div>
             
-            
-            <form action="/newuser/submit" method="POST" class="ui form">
+            <form action="/account/register" method="POST" class="ui form">
                 <h2 class="ui header">Create an Account</h2>
                 <p>Complete the following fields to get access to Blog CMS. The account is free for life!</p>
                 

@@ -140,7 +140,7 @@
             "source": {
                 "type": "git",
                 "url": "C:/xampp_5.6.24/htdocs/core",
-                "reference": "3ccf23097c0d5f17587bed5d67e46d6b1a0aa309"
+                "reference": "8909da05111f024fcb3c80c8248286a82ca55f9c"
             },
             "type": "library",
             "autoload": {
@@ -152,7 +152,7 @@
                     "src/core-functions.php"
                 ]
             },
-            "time": "2018-03-11T20:12:18+00:00"
+            "time": "2018-03-16T17:56:49+00:00"
         },
         {
             "name": "smarty/smarty",

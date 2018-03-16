@@ -141,10 +141,9 @@ class PostsController extends GenericController
         $response->write('posts/manage.tpl');
     }
     
-    
     /**
-        View new post form
-    **/
+     * View new post form
+     */
     public function create(&$request, &$response)
     {
         $blogID = $request->getUrlParameter(1);
@@ -179,70 +178,76 @@ class PostsController extends GenericController
         }
     }
     
-    
     /**
-        View edit post form
-    **/
-    public function editPost($arrayblog, $arraypost)
+     * View edit post form
+     */
+    public function edit(&$request, &$response)
     {
+        $blogid = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogid);
+
+        $postid = $request->getUrlParameter(2);
+        $post = $this->model->getPostById($postid);
+        
+        if (getType($blog) != 'array' || getType($post) != 'array') {
+            $response->redirect('/', 'Unable to load content', 'error');
+        }
+        
+        if ($post['type'] == 'gallery') {
+            $post['gallery_imagelist'] = explode(',', $post['gallery_imagelist']);
+        }
+
+        // Check permission
         $currentUser = BlogCMS::session()->currentUser;
+        if (!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
+            $response->redirect('/', 'Permission denied', 'error');
+        }
 
-        if($arraypost['initialautosave'] == 1)
-        {
+        if ($post['initialautosave'] == 1) {
             // get the most recent content from the actual autosave record
-            $arrayAutosave = $this->modelPosts->getAutosave($arraypost['id']);
+            $autosave = $this->model->getAutosave($post['id']);
 
-            if(getType($arrayAutosave) == 'array')
-            {
-                // Merge the two
-                $arraypost = array_merge($arraypost, $arrayAutosave);
+            if (getType($autosave) == 'array') {
+                $post = array_merge($post, $autosave);
             }
 
-            // mark as autosave off
-            $this->modelPosts->update(array('id' => $arraypost['id']), array('initialautosave' => 0));
-            
+            $this->model->update(['id' => $post['id']], ['initialautosave' => 0]);
         }
-        elseif($this->modelPosts->autosaveExists($arraypost['id']))
-        {
+        elseif ($this->model->autosaveExists($post['id'])) {
             // Has been edited without being saved
-            // Show a notice
-            $arraypost['autosave'] = $this->modelPosts->getAutosave($arraypost['id']);
+            $post['autosave'] = $this->model->getAutosave($post['id']);
         }
-        
-        // Check we have permission to perform action
-        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
                 
-        $this->view->setVar('post', $arraypost);
-        $this->view->setVar('blog', $arrayblog);
-        $this->view->setPageTitle('Edit Post - '.$arraypost['title']);
+        $response->setVar('post', $post);
+        $response->setVar('blog', $blog);
+        $response->setTitle('Edit Post - ' . $post['title']);
         
-        $this->view->addScript('/resources/js/rbwindow');
-        $this->view->addScript('/resources/js/rbrtf');
-        $this->view->addStylesheet('/resources/css/rbwindow');
-        $this->view->addStylesheet('/resources/css/rbrtf');
+        $response->addScript('/resources/js/rbwindow.js');
+        $response->addScript('/resources/js/rbrtf.js');
+        $response->addStylesheet('/resources/css/rbwindow.css');
+        $response->addStylesheet('/resources/css/rbrtf.css');
 
-        switch($arraypost['type'])
-        {
+        switch($post['type']) {
             case 'video':
-            $this->view->render('posts/videopost.tpl');
+            $response->write('posts/videopost.tpl');
             break;
             
             case 'gallery':
-            $this->view->render('posts/gallerypost.tpl');
+            $response->write('posts/gallerypost.tpl');
             break;
             
             default:
-            case 'standard':
-            $this->view->render('posts/standardpost.tpl');
+            $response->write('posts/standardpost.tpl');
             break;
         }
     }
     
+    /**
+     * @todo Everything!
+     */
     public function previewPost() {
-        
         echo "Preview Post - functionality to be completed!";
-        
-        exit; // go no further!
+        exit;
     }
     
 
@@ -251,8 +256,8 @@ class PostsController extends GenericController
     ******************************************************************/
     
     /**
-        Create a new blog post
-    **/
+     * Create a new blog post
+     */
     public function action_createPost()
     {
         // Check & Format date
@@ -414,4 +419,3 @@ class PostsController extends GenericController
     }
     
 }
-?>

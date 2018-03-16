@@ -55,26 +55,69 @@ class AccountController extends GenericController
         }
     }
     
-    public function login(&$request, &$response) {
+    public function login(&$request, &$response)
+    {
         if($request->method() == 'POST') return $this->runLogin($request, $response);
 
         $response->setTitle('Login required');
-        $response->write('account/login.tpl');
+        $response->writeTemplate('account/login.tpl');
     }
 
-    protected function runLogin(&$request, &$response) {
+    public function register(&$request, &$response)
+    {
+        if($request->method() == 'POST') return $this->runRegister($request, $response);
+
+        $response->setTitle('Create a new account');
+        $response->writeTemplate('account/register.tpl');
+    }
+
+    protected function runLogin(&$request, &$response)
+    {
         $username = $request->getString('fld_username');
         $password = $request->getString('fld_password');
 
-        if(strlen($username) == 0 || strlen($password) == 0) {
+        if (strlen($username) == 0 || strlen($password) == 0) {
             redirect('/account/login', 'Please complete all fields', 'error');
         }
 
-        if($this->model->login($username, $password)) {
+        if ($this->model->login($username, $password)) {
             redirect('/', 'Welcome back', 'success');
         }
         else {
             redirect('/account/login', 'No match found for username and password', 'error');
+        }
+    }
+
+    protected function runRegister(&$request, &$response)
+    {
+        $details = [
+            'firstname' => $request->getString('fld_name'),
+            'surname' => $request->getString('fld_surname'),
+            'email' => $request->getString('fld_email'),
+            'emailConfirm' => $request->getString('fld_email_2'),
+            'username' => $request->getString('fld_username'),
+            'password' => $request->getString('fld_password'),
+            'passwordConfirm' => $request->getString('fld_password_2')
+        ];
+
+        // Check all fields complete
+        foreach ($details as $value) {
+            if (strlen($value) == 0) {
+                redirect('/account/login', 'Please complete all fields', 'error');
+                break;
+            }
+        }
+
+        // Validate
+        if ($details['email'] != $details['emailConfirm'] || $details['password'] != $details['passwordConfirm']) {
+            redirect('/account/register', 'Email or passwords did not match', 'error');
+        }
+
+        if ($this->model->register($details)) {
+            redirect('/account/login', 'Account created', 'success');
+        }
+        else {
+            redirect('/account/login', 'Unable to create account right now - please try again later', 'error');
         }
     }
 

@@ -33,7 +33,7 @@
                     <input type="password" name="fld_password" required>
                 </div>
 
-                <a href="/newuser">Register new account</a>
+                <a href="/account/register">Register new account</a>
                 
                 <button class="ui right floated teal button">Login &nbsp;&#10095;</button>
                 <div class="clear"></div>

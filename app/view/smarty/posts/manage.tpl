@@ -199,8 +199,8 @@
                     output += " <div class='option-dropdown' style='width:100px;'>";
                     output += "   <div class='default-option'>- Actions -</div>";
                     output += "   <div class='hidden-options'>";
-                    output += "     <a href='/posts/" + data.blog.id + "/edit/" + post.id + "'>Edit</a>";
-                    output += "     <a href='/posts/" + data.blog.id + "/delete/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
+                    output += "     <a href='/posts/edit/" + data.blog.id + "/" + post.id + "'>Edit</a>";
+                    output += "     <a href='/posts/delete/" + data.blog.id + "/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
                     output += " </div></div>";
 
                     output += " </td></tr>";
@@ -233,7 +233,7 @@
             
                 output += '</div>';
             
-                output += '<a href="/posts/' + data.blog.id + '/new" class="ui button teal right floated">New Post</a>';
+                output += '<a href="/posts/create/' + data.blog.id + '" class="ui button teal right floated">New Post</a>';
                 
                 output += '<script>';
                 output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';
