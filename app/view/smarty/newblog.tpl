@@ -8,7 +8,7 @@
     
     <div class="one column row">
         <div class="column">            
-            <form action="/submitnewblog" method="post" class="ui form">
+            <form action="/blog/create" method="post" class="ui form">
 
                 <div class="ui error message"></div>
                 

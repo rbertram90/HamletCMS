@@ -15,14 +15,14 @@
     <div class="four column row">
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/posts/{$blog.id}" title="Manage Posts">
+                <a href="/posts/manage/{$blog.id}" title="Manage Posts">
                     <span class="ui header huge">{$counts.posts}</span><br><span>Posts</span>
                 </a>
             </div>
         </div>
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/comments/{$blog.id}" title="View Comments">
+                <a href="/comments/all/{$blog.id}" title="View Comments">
                     <span class="ui header huge">{$counts.comments}</span><br><span>Comments</span>
                 </a>
             </div>
@@ -36,7 +36,7 @@
         </div>
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/posts/{$blog.id}" title="Manage Posts">
+                <a href="/posts/manage/{$blog.id}" title="Manage Posts">
                     <span class="ui header huge">{$counts.totalviews}</span><br><span>Total Post Views</span>
                 </a>
             </div>
@@ -69,7 +69,7 @@
                 {/foreach}
                 </div>
             {else}
-                <p class="info">Nothing has been posted on this blog, why not <a href="/posts/{$blog.id}/new">make a start</a>?</p>
+                <p class="ui message info">Nothing has been posted on this blog, why not <a href="/posts/create/{$blog.id}">make a start</a>?</p>
             {/if}
             <a href='/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
             <a href='/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>
@@ -94,7 +94,7 @@
             <a href='/comments/all/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
 
         {else}
-            <p class="info">No comments have been made on your posts on this blog :(</p>
+            <p class="ui message info">No comments have been made on your posts on this blog :(</p>
         {/if}
         </div>
     </div>    

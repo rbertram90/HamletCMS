@@ -28,75 +28,72 @@ class Contributors extends RBFactory
         );
     }
     
-    /**
-        Select
-    **/
-    
     // Get all blogs a user can contribute too
-    public function getContributedBlogs($userid) {
+    public function getContributedBlogs($userid)
+    {
         // Get all the blog id for this user
         $query_string = 'SELECT a.blog_id, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblblogs.' as b ON a.blog_id = b.id WHERE a.user_id='.$userid;
         $results = $this->db->query($query_string);
         return $results->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    
     // Get all users that can contribute to a $blog
-    public function getBlogContributors($blogid) {
+    public function getBlogContributors($blogid)
+    {
         $query_string = 'SELECT a.privileges, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblusers.' as b ON a.user_id = b.id WHERE a.blog_id='.$blogid;
         $statement = $this->db->query($query_string);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    
-    // Check if user is the blog owner - note this should probabily be a seperate permission!
-    public function isBlogOwner($userid, $blogid) {
-        $liCount = $this->db->countRows($this->tblblogs, array('user_id' => $userid, 'id' => $blogid));
-        return ($liCount >= 1);
-    }
-    
-    /**
-     * Determine if a $user is already on the contributor list for a $blog
-     */
-    public function isBlogContributor($intBlog, $intUser, $privilegeLevel='')
+    // Check if user is the blog owner
+    public function isBlogOwner($userid, $blogid)
     {
-        // Create and execute query
-        $arrWhere = array(
-            'blog_id' => Sanitize::int($intBlog),
-            'user_id' => Sanitize::int($intUser)
-        );
-        if($privilegeLevel !== '') $arrWhere['privileges'] = $privilegeLevel;
-        
-        $result = $this->db->selectSingleRow($this->tableName, 'count(*) as matches', $arrWhere);
-        
-        // Interpret Results
-        return ($result['matches'] > 0);
+        return  $this->db->countRows($this->tblblogs, ['user_id' => $userid, 'id' => $blogid]) >= 1;
     }
     
-    
     /**
-        Insert
-    **/
-    
-    // Add a new $contributor to a $blog
-    public function addBlogContributor($puser, $paccess, $pblog) {
-    
-        $liUser = Sanitize::int($puser);
-        $liBlog = Sanitize::int($pblog);
-        $lsAccess = (strtolower($paccess) == "a") ? "all" : "postonly";
-        
-        // Check the user doesn't already contribute to this blog
-        if($this->isBlogContributor($liBlog, $liUser)) {
-            return "Unable to add contributor - User already found in contributor list";
-        }
-        $query_string = "INSERT INTO ".$this->tableName." (user_id, privileges, blog_id) VALUES ('$liUser', '$lsAccess', '$liBlog')";
-        return $this->db->query($query_string);
+     * Determine if a user is already on the contributor list for a blog
+     * 
+     * @param int $blog
+     * @param int $user
+     * @param string $privilageLevel
+     * 
+     * @return bool Is the user and contributor to the blog?
+     */
+    public function isBlogContributor($blogID, $userID, $privilegeLevel='')
+    {
+        $where = [
+            'blog_id' => Sanitize::int($blogID),
+            'user_id' => Sanitize::int($userID)
+        ];
+        if ($privilegeLevel !== '') $where['privileges'] = $privilegeLevel;
+
+        return $this->count($where) > 0;
     }
     
+    /**
+     * Add a new contributor to a blog
+     * 
+     * @param int $userID
+     * @param string $access
+     * @param int $blogID
+     * 
+     * @return bool Was the insert successful
+     */
+    public function addBlogContributor($userID, $access, $blogID)
+    {
+        if ($this->isBlogContributor($blogID, $userID)) return false;
+
+        return $this->insert([
+            'user_id' => $userID,
+            'privileges' => (strtolower($access) == "a") ? "all" : "postonly",
+            'blog_id' => $blogID,
+        ]);
+    }
     
     /**
-        Update (11/08/2014)
-    **/
+     * Update (11/08/2014)
+     */
     public function changePermissions($userid, $blogid, $permission) {
         $blogid = Sanitize::int($blogid);
         $userid = Sanitize::int($userid);

@@ -107,7 +107,18 @@ class BlogController extends GenericController
     }
     
     /**
-        Explore Pages
+     * View the new blog form
+     */
+    public function create(&$request, &$response)
+    {
+        if ($request->method() == 'POST') return $this->runCreateBlog($request, $response);
+
+        $response->setTitle('Create New Blog');
+        $response->write('newblog.tpl');
+    }
+
+    /**
+     * Explore Pages
     **/
     public function explore($params)
     {
@@ -160,7 +171,7 @@ class BlogController extends GenericController
     }
     
     /**
-     *  View overview/ summary of a single blog
+     * View overview/ summary of a single blog
      */
     public function overview(&$request, &$response)
     {
@@ -214,37 +225,28 @@ class BlogController extends GenericController
     
     /**
      * Create a new blog
+     * 
+     * @todo add blog limit into config
      */
-    public function action_createBlog()
+    public function runCreateBlog(&$request, &$response)
     {
-        // Check form key
-        // if(!isset($_SESSION['secure_form_key']) || $_POST['secure_form_key'] !== $_SESSION['secure_form_key']) die('Security Check Failed');
-        // unset($_SESSION['secure_form_key']);
-        
         $currentUser = BlogCMS::session()->currentUser;
 
         if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
-            setSystemMessage('Unable to Continue - Maximum number of blogs exceeded!', 'Error');
+            $response->redirect('/', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
         }
         else {
-            $newblogkey = $this->modelBlogs->createBlog($_POST['fld_blogname'], $_POST['fld_blogdesc']);
-            $this->modelContributors->addBlogContributor($currentUser, 'a', $newblogkey);
-            setSystemMessage(ITEM_CREATED, 'Success');
+            $newblogkey = $this->modelBlogs->createBlog($request->getString('fld_blogname'), $request->getString('fld_blogdesc'));
+
+            if (!$newblogkey) {
+                $response->redirect('/', 'Error creating blog please try again later', 'error');
+            }
+
+            if (!$this->modelContributors->addBlogContributor($currentUser['id'], 'a', $newblogkey)) {
+                $response->redirect('/', 'Error adding to contributor please try again later', 'error');
+            }
+
+            $response->redirect('/blog/overview/' . $newblogkey, 'Blog created', 'Success');
         }
-        redirect('/');
     }
-    
-    /**
-     * View the new blog form
-     */
-    public function createBlog($params)
-    {        
-        // Page Title
-        $this->view->setPageTitle('Create New Blog');
-        
-        // Render the view
-        $this->view->render('newblog.tpl');
-    }
-    
 }
-?>

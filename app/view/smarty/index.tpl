@@ -71,7 +71,7 @@
 {* This user doesn't have any blogs *}
 {else}
 
-    <p class="info">You aren't contributing to any blogs, why not <a href="/newblog">create a blog</a>?</p>
+    <p class="ui message info">You're not contributing to any blogs, why not <a href="/blog/create">create your first blog</a>?</p>
 
 {/if}
 

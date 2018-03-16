@@ -99,10 +99,8 @@ class Blogs extends RBFactory
      */
     public function countBlogsByUser($userid)
     {
-        $count = $this->db->selectSingleRow($this->tableName, 'count(*) as blogcount', array('user_id' => $userid));
-        return $count['blogcount'];
+        return $this->db->count(['user_id' => $userid]);
     }
-    
     
     /**
      *  Create a new blog id number (random)
@@ -121,7 +119,6 @@ class Blogs extends RBFactory
         else return $blog_key;
     }
     
-    
     /**
      * Check if a blog key already exists in the database
      * @param string
@@ -131,13 +128,8 @@ class Blogs extends RBFactory
      */
     private function blogKeyExists($key)
     {
-        $query_string = 'SELECT count(*) as keycount FROM '.$this->tableName.' WHERE id='.Sanitize::int($key);
-        
-        $result = $this->db->select_single($query_string);
-        
-        return ($result['keycount'] > 0);
+        return $this->count(['id' => $key]);
     }
-    
     
     /**
      * Create a new blog
@@ -152,11 +144,8 @@ class Blogs extends RBFactory
      * @return string
      *   key used for the blog
      */
-    public function createBlog($pname, $pdesc, $pkey='')
+    public function createBlog($name, $desc, $pkey='')
     {
-        $blog_name = Sanitize::string($pname);
-        $blog_desc = Sanitize::string($pdesc);
-        
         if(strlen($pkey) == 0) {
             // Generate a new blog key
             $blog_key = $this->generateBlogKey();
@@ -197,11 +186,14 @@ class Blogs extends RBFactory
             $blog_key = Sanitize::int($pkey);
         }
         
-        // Insert blog into DB
-        $query_string = 'INSERT INTO '.TBL_BLOGS.' (id, name, description, user_id) ';
-        $query_string.= "VALUES ('$blog_key','$blog_name','$blog_desc','".$_SESSION['userid']."')";
-        
-        $this->db->runQuery($query_string);
+        $insert = $this->insert([
+            'id' => $blog_key,
+            'name' => $name,
+            'description' => $desc,
+            'user_id' => BlogCMS::session()->currentUser['id']
+        ]);
+
+        if ($insert == false) return false;
         
         return $blog_key;
     }
