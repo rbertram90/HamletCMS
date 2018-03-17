@@ -5,14 +5,11 @@ use rbwebdesigns\core\Sanitize;
 
 class AjaxController extends GenericController
 {
-    private $db;
-    protected $view;
+    protected $modelPosts;
     
-    public function __construct($db, $view, $params)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->route($params);
-        $this->view = $view;
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
     }
     
     public function route($params)
@@ -65,10 +62,6 @@ class AjaxController extends GenericController
                 require SERVER_ROOT.'/app/ajax/submit_image_upload.php';
                 break;
                 
-            case 'autosave':
-                require SERVER_ROOT.'/app/ajax/autosave.php';
-                break;
-                
             case 'view_image_drop':
                 require SERVER_ROOT.'/app/ajax/view_image_drop.php';
                 break;
@@ -94,6 +87,65 @@ class AjaxController extends GenericController
         
         return;
     }
+
+    public function autosave(&$request, &$response)
+    {
+        $postID = $request->getInt('fld_postid');
+
+        $data = [
+            'title'         => $request->getString('fld_title'),
+            'content'       => $request->getString('fld_content'),
+            'tags'          => $request->getString('fld_tags'),
+            'allowcomments' => $request->getInt('fld_allowcomments'),
+            'type'          => $request->getString('fld_type'),
+        ];
+
+        $updateDB = $this->modelPosts->autosavePost($postID, $data);
+
+        if($updateDB === false) {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Could not run autosave - DB Update Error'
+            ]);
+        }
+        elseif($updateDB > 0 && $updateDB !== $postID) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Post autosaved at ' . date('H:i'),
+                'newpostid' => $updateDB
+            ]);
+        }
+        else {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Post autosaved at ' . date('H:i')
+            ]);
+        }
+    }
     
+    /**
+     * @todo exclude current post ID!!!
+     */
+    public function checkDuplicateTitle(&$request, &$response)
+    {
+        $blogID = $request->getInt('blog_id');
+        $postID = $request->getInt('post_id', 0);
+        $title = $request->getString('post_title');
+        $link = $this->modelPosts->createSafePostUrl($title);
+        
+        $matchingPosts = $this->modelPosts->count(['link' => $link]);
+        if ($matchingPosts == 0) {
+            print "false";
+            return;
+        }
+        elseif ($matchingPosts == 1) {
+            $post = $this->modelPosts->getPostByURL($link, $blogID);
+            if ($post['id'] == $postID) {
+                print "false";
+                return;
+            }
+        }
+
+        print "true";
+    }
 }
-?>

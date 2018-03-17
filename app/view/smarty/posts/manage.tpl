@@ -199,8 +199,8 @@
                     output += " <div class='option-dropdown' style='width:100px;'>";
                     output += "   <div class='default-option'>- Actions -</div>";
                     output += "   <div class='hidden-options'>";
-                    output += "     <a href='/posts/edit/" + data.blog.id + "/" + post.id + "'>Edit</a>";
-                    output += "     <a href='/posts/delete/" + data.blog.id + "/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
+                    output += "     <a href='/posts/edit/" + post.id + "'>Edit</a>";
+                    output += "     <a href='/posts/delete/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
                     output += " </div></div>";
 
                     output += " </td></tr>";

@@ -89,18 +89,7 @@ class PostsController extends GenericController
             if (!$formsubmitted) $formsubmitted = (array_key_exists(3, $params) && $params[3] == 'submit'); // Submit
             
             switch($action)
-            {
-                case 'new':
-                    if($formsubmitted) $this->action_createPost();
-                    $posttype = $paramsReader->stringValue(2, '');        
-                    $this->createPost($arrayblog, $posttype);
-                    break;
-                    
-                case 'edit':
-                    if($formsubmitted) $this->action_editPost($arraypost);
-                    $this->editPost($arrayblog, $arraypost);
-                    break;
-                
+            {                                    
                 case 'delete':
                     $this->action_deletePost($arraypost);
                     break;
@@ -112,16 +101,7 @@ class PostsController extends GenericController
                 case 'cancelsave':
                     $this->action_removeAutosave($arraypost);
                     break;
-                
-                default:
-                    $this->managePosts($arrayblog);
-                    break;
             }
-        }
-        else
-        {
-            // Must have at least one param -> blogid
-            return $this->throwNotFound();
         }
     }
         
@@ -148,6 +128,8 @@ class PostsController extends GenericController
     {
         $blogID = $request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
+
+        if ($request->method() == 'POST') return $this->runCreatePost($request, $response, $blog);
 
         $response->setVar('blog', $blog);
         $response->setTitle('New Post');
@@ -183,12 +165,16 @@ class PostsController extends GenericController
      */
     public function edit(&$request, &$response)
     {
-        $blogid = $request->getUrlParameter(1);
+        $postid = $request->getUrlParameter(1);
+        $post = $this->model->getPostById($postid);
+
+        $blogid = $post['blog_id'];
         $blog = $this->modelBlogs->getBlogById($blogid);
 
-        $postid = $request->getUrlParameter(2);
-        $post = $this->model->getPostById($postid);
-        
+        if ($request->method() == 'POST') {
+            return $this->runEditPost($request, $response, $post);
+        }
+
         if (getType($blog) != 'array' || getType($post) != 'array') {
             $response->redirect('/', 'Unable to load content', 'error');
         }
@@ -245,7 +231,8 @@ class PostsController extends GenericController
     /**
      * @todo Everything!
      */
-    public function previewPost() {
+    public function previewPost()
+    {
         echo "Preview Post - functionality to be completed!";
         exit;
     }
@@ -258,67 +245,52 @@ class PostsController extends GenericController
     /**
      * Create a new blog post
      */
-    public function action_createPost()
+    protected function runCreatePost(&$request, &$response, $blog)
     {
-        // Check & Format date
-        $posttime = strtotime($_POST['fld_postdate']);
+        $posttime = strtotime($request->getString('fld_postdate'));
         
-        if(checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime)))
-        {
+        if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
         }
-        else
-        {
-            $postdate = date("Y-m-d H:i:00"); // Default to now
+        else {
+            $postdate = date("Y-m-d H:i:00");
         }
         
-        $newPost = array(
-            'title'           => $_POST['fld_posttitle'],
-            'content'         => $_POST['fld_postcontent'],
-            'tags'            => $_POST['fld_tags'],
-            'blog_id'         => $_POST['fld_blogid'],
-            'draft'           => $_POST['fld_draft'],
-            'allowcomments'   => $_POST['fld_allowcomment'],
-            'type'            => $_POST['fld_posttype'],
+        $newPost = [
+            'title'           => $request->getString('fld_posttitle'),
+            'content'         => $request->getString('fld_postcontent'),
+            'tags'            => $request->getString('fld_tags'),
+            'blog_id'         => $blog['id'],
+            'draft'           => $request->getInt('fld_draft'),
+            'allowcomments'   => $request->getInt('fld_allowcomment'),
+            'type'            => $request->getString('fld_posttype'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
-        );
+        ];
         
-        // Add additional fields for video post
-        if($newPost['type'] == 'video')
-        {
-            $newPost['videoid'] = $_POST['fld_postvideoID'];
-            $newPost['videosource'] = $_POST['fld_postvideosource'];
+        if ($newPost['type'] == 'video') {
+            $newPost['videoid'] = $request->getString('fld_postvideoID');
+            $newPost['videosource'] = $request->getString('fld_postvideosource');
         }
         
-        // Add additional fields for gallery post
-        if($newPost['type'] == 'gallery')
-        {
-            $newPost['gallery_imagelist'] = $_POST['fld_gallery_imagelist'];
+        if ($newPost['type'] == 'gallery') {
+            $newPost['gallery_imagelist'] = $request->get('fld_gallery_imagelist');
         }
-        
-        // Add to database
-        if(array_key_exists('fld_postid', $_POST))
-        {
-            // This should be the case as it should have been created when the autosave run
-            $postid = Sanitize::int($_POST['fld_postid']);
-            
-            if($this->modelPosts->updatePost($postid, $newPost))
-            {
-                // Remove any autosaves
-                $this->modelPosts->removeAutosave($postid);
 
-                setSystemMessage(ITEM_CREATED, 'Success');
+        if($postID = $request->getInt('fld_postid', false)) {
+            // This should be the case as it should have been created when the autosave run
+            if ($this->model->updatePost($postID, $newPost)) {
+                $this->model->removeAutosave($postID);
             }
-            else setSystemMessage('Failed when saving post', 'Error');
+            else {
+                $response->redirect('/posts/edit/' . $postID, 'Error updating post', 'error');
+            }
         }
-        else
-        {
-            if($this->modelPosts->createPost($newPost)) setSystemMessage(ITEM_CREATED, 'Success');
-            else setSystemMessage('Error Creating Post', 'Error');
+        elseif (!$this->model->createPost($newPost)) {
+            $response->redirect('/posts/manage/' . $blog['id'], 'Error creating post', 'error');
         }
-        
-        redirect('/posts/'.$_POST['fld_blogid']);
+
+        $response->redirect('/posts/manage/' . $blog['id'], 'Post created', 'success');
     }
     
     // Cancel action from new post screen
@@ -343,79 +315,76 @@ class PostsController extends GenericController
     }
     
     /**
-        Edit an existing blog post
+     *  Edit an existing blog post
     **/
-    public function action_editPost($arraypost)
+    public function runEditPost($request, $response, $post)
     {
         $currentUser = BlogCMS::session()->currentUser;
 
         // Re-check security with heightened permissions
-        if(!($this->modelContributors->isBlogContributor($_POST['fld_blogid'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
+        if (!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
+            $response->redirect('/posts/manage/' . $post['blog_id'], 'You do not have permission to do that', 'error');
+        }
         
         // Check & Format date
-        $posttime = strtotime($_POST['fld_postdate']);
+        $posttime = strtotime($request->getString('fld_postdate'));
         
-        if(checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime)))
-        {
+        if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
         }
-        else
-        {
+        else {
             $postdate = $arraypost['timestamp']; // Keep to original
         }
         
-        $arrayPostUpdates = array(
-            'title' => $_POST['fld_posttitle'],
-            'content' => $_POST['fld_postcontent'],
-            'tags' => $_POST['fld_tags'],
-            'draft' => $_POST['fld_draft'],
-            'allowcomments' => $_POST['fld_allowcomment'],
+        $updates = [
+            'title'           => $request->getString('fld_posttitle'),
+            'content'         => $request->getString('fld_postcontent'),
+            'tags'            => $request->getString('fld_tags'),
+            'draft'           => $request->getInt('fld_draft'),
+            'allowcomments'   => $request->getInt('fld_allowcomment'),
             'initialautosave' => 0,
-            'timestamp' => $postdate
-        );
+            'timestamp'       => $postdate
+        ];
         
-        // Add additional fields for video post
-        if($arraypost['type'] == 'video')
-        {
-            $arrayPostUpdates['videoid'] = $_POST['fld_postvideoID'];
-            $arrayPostUpdates['videosource'] = $_POST['fld_postvideosource'];
+        if ($post['type'] == 'video') {
+            $updates['videoid']     = $request->getString('fld_postvideoID');
+            $updates['videosource'] = $request->getString('fld_postvideosource');
+        }
+        if ($post['type'] == 'gallery') {
+            $updates['gallery_imagelist'] = $request->get('fld_gallery_imagelist');
         }
         
-        if($arraypost['type'] == 'gallery')
-        {
-            $arrayPostUpdates['gallery_imagelist'] = $_POST['fld_gallery_imagelist'];
-        }
+        $this->model->updatePost($post['id'], $updates);
+        $this->model->removeAutosave($post['id']);
         
-        // Update DB with post information
-        $this->modelPosts->updatePost($_POST['fld_postid'], $arrayPostUpdates);
-        
-        // Remove Autosave
-        $this->modelPosts->removeAutosave($_POST['fld_postid']);
-        
-        // Set Success Message
-        setSystemMessage(ITEM_UPDATED, 'Success');
-        redirect('/posts/'.$_POST['fld_blogid'].'/edit/'.$_POST['fld_postid']);
+        $response->redirect('/posts/edit/' . $post['id'], 'Save successful', 'success');
     }
     
-    
     /**
-        Delete a blog post
-    **/
-    public function action_deletePost($arraypost) {
+     * Handles /posts/delete/<postID>
+     * 
+     * @todo make sure there are no pages with this post ID
+     */
+    public function delete(&$request, &$response)
+    {
         $currentUser = BlogCMS::session()->currentUser;
+        $postID = $request->getUrlParameter(1);
+
+        if(!$post = $this->model->getPostById($postID)) {
+            $response->redirect('/', 'Could not find blog post', 'error');
+        }
 
         // Check we have permission to perform action - if the user created the post or is blog admin
-        if(!($this->modelContributors->isBlogContributor($arraypost['blog_id'], $currentUser, 'all') || $currentUser == $arraypost['author_id'])) return $this->throwAccessDenied();
+        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
+            $response->redirect('/', 'You do not have access to delete this blog post', 'error');
+        }
         
-        // Perform Database query (using generic delete)
-        $delete = $this->modelPosts->delete(array('id' => $arraypost['id']));
-        
-        // Check outcome
-        if($delete) setSystemMessage(ITEM_DELETED, 'Success');
-        else setSystemMessage('Sorry, There has been an error deleting your post.', 'Error');
-        
-        // Redirect
-        redirect('/posts/' . $arraypost['blog_id']);
+        if($delete = $this->model->delete(['id' => $post['id']]) && $this->model->removeAutosave($post['id'])) {
+            $response->redirect('/', 'Blog post deleted', 'success');
+        }
+        else {
+            $response->redirect('/posts/manage/' . $post['blog_id'], 'Blog post deleted', 'error');
+        }
     }
     
 }

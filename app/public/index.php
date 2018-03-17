@@ -138,6 +138,21 @@ use rbwebdesigns\core\Sanitize;
   Get body content
 ****************************************************************/
 
+    // Add default stylesheet(s)
+    $response->addStylesheet('/css/semantic.css');
+    // $this->addStylesheet('/resources/css/core');
+    $response->addStylesheet('/resources/css/header.css');
+    // $this->addStylesheet('/resources/css/forms');
+    $response->addStylesheet('/css/blogs_stylesheet.css');
+
+    // Add default script(s)
+    $response->addScript('/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/js/semantic.js');
+    $response->addScript('/resources/js/core-functions.js');
+    $response->addScript('/resources/js/validate.js');
+    $response->addScript('/resources/js/ajax.js');
+    $response->addScript('/js/sidemenu.js');
+
     $response->setTitle('Default title');
     $response->setDescription('Default page description');
 
@@ -162,20 +177,6 @@ use rbwebdesigns\core\Sanitize;
     // Set the side menu content
     // $view->setSideMenu($controller->getSideMenu($queryParams, $action));
 
-    // Add default stylesheet(s)
-    $response->addStylesheet('/css/semantic.css');
-    // $this->addStylesheet('/resources/css/core');
-    $response->addStylesheet('/resources/css/header.css');
-    // $this->addStylesheet('/resources/css/forms');
-    $response->addStylesheet('/css/blogs_stylesheet.css');
-
-    // Add default script(s)
-    $response->addScript('/resources/js/jquery-1.8.0.min.js');
-    $response->addScript('/js/semantic.js');
-    $response->addScript('/resources/js/core-functions.js');
-    $response->addScript('/resources/js/validate.js');
-    $response->addScript('/resources/js/ajax.js');
-    $response->addScript('/js/sidemenu.js');
 
     $sideMenu = isset($sideMenu) ? $sideMenu : '';
     $response->setVar('page_sidemenu', $sideMenu);

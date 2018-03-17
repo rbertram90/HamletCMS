@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms\model;
 
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
@@ -52,21 +53,23 @@ class Posts extends RBFactory
     /**
      *  Get all avaliable information on a single blog post
      *  @param <int> $postid - ID number of the post
-    **/
-    public function getPostById($postid) {
+     */
+    public function getPostById($postid)
+    {
         return $this->db->selectSingleRow($this->tableName, '*', array('id' => $postid));
     }
     
     /**
      *  Get information on a post by sepcifying the url and blog id
-     *   @param <string> Post title part of the URL
-     *  @blogID <int> BlogID Number to uniquely identify the post
-    **/
-    public function getPostByURL($lsLink, $blogID) {
-        return $this->db->selectSingleRow($this->tableName, '*', array(
-            'link' => $lsLink,
+     *  @param string Post title part of the URL
+     *  @param int BlogID Number to uniquely identify the post
+     */
+    public function getPostByURL($link, $blogID)
+    {
+        return $this->db->selectSingleRow($this->tableName, '*', [
+            'link' => $link,
             'blog_id' => $blogID
-        ));
+        ]);
     }
     
     /**
@@ -244,141 +247,127 @@ class Posts extends RBFactory
     
     /**
      * Check if a user contributes to a blog
-     * @param <int> $pUser - User ID for target user
-     * @param <int> $pBlog - Blog ID for target blog
+     * 
+     * @param int $userID
+     * @param int $blogID
+     * 
+     * @todo remove this function!
+     * 
+     * @deprecated
     **/
     public function isContributor($userID, $blogID) {
-        $query = $this->db->countRows($this->tblcontributors, array(
+        $query = $this->db->countRows($this->tblcontributors, [
             'user_id' => $userID,
             'blog_id' => $blogID
-        ));
+        ]);
         return ($query > 0);
     }
     
-    
     /**
      * Create a new post
-     * @param <array> $values
+     * @param array $newValues
     **/
-    public function createPost($newValues) {
-        
+    public function createPost($newValues)
+    {
         $currentUser = BlogCMS::session()->currentUser;
-
-        // Make sure that the current user has the permission to post to this blog
-        if(!$this->isContributor($currentUser, $newValues['blog_id'])) {
-            die("User not authorised to post to this blog!");
-            return;
-        }
         
         if(!array_key_exists('title', $newValues) || !array_key_exists('content', $newValues)) {
-            die("Unable to continue - TITLE and CONTENT fields are mandatory");
+            return false;
         }
         
-        // System / Defaulted values
         if(!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
         if(!array_key_exists('allowcomments', $newValues)) $newValues['allowcomments'] = 1;
         if(!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
+
         $newValues['timestamp'] = date("Y-m-d H:i:s");
         $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
-        $newValues['author_id'] = $currentUser;
+        $newValues['author_id'] = $currentUser['id'];
         
         return $this->insert($newValues);
     }
     
-    
     /**
      * Update a blog post
-     * @param <string> $pTitle - Title of the post
-     * @param <text> $pContent - Post content
-     * @param <string> $pTags - CSV of tags
-     * @param <number> $pPost - ID of the post to update
-     * @param <boolean> $pDraft - Is the post a draft (not live on blog)
-    **/
-    public function updatePost($postid, $newValues) {
-        
+     * @param int $postid
+     * @param array $newValues
+     */
+    public function updatePost($postid, $newValues)
+    {
         $postid = Sanitize::int($postid);
-        
-        // if(!array_key_exists('link', $newValues))
-        // automattically create link
         $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         
         if(array_key_exists('tags', $newValues))
           $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
         
-        return $this->update(array('id' => $postid), $newValues);
+        return $this->update(['id' => $postid], $newValues);
     }
-    
     
     /**
      * Create Safe Tag List makes sure all tags in a string are 'valid'
      * i.e. don't exist more than once, don't contain funny characters
      * and deals with spaces.
-     * @param <string> $lsTagCSV - comma seperated tag list
-     * @return <string> - CSV of formatted, valid tags
+     * 
+     * @param string $tags
+     *   Comma seperated tag list
+     * @return string
+     *   CSV of formatted, valid tags
     **/
-    private function createSafeTagList($lsTagCSV) {
-    
-        $splitCSV = explode(",", $lsTagCSV);
+    private function createSafeTagList($tags)
+    {
+        $splitCSV = explode(",", $tags);
         $validTagsString = "";
         $validTagsArray = Array();
         
-        foreach($splitCSV as $tag):
-            // Remove Whitespace
+        foreach ($splitCSV as $tag) {
             $validTag = trim($tag);
             // Remove anything that isn't alphanumeric or a space
             $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag); 
-            // Convert Spaces to +
-            $validTag = str_replace(" ","+",$validTag);
+            $validTag = str_replace(" ", "+", $validTag);
             // Check the entry doesn't already exists
-            if(array_search($validTag, $validTagsArray) === false):
+            if (array_search($validTag, $validTagsArray) === false) {
                 // Append to new CSV
                 if(strlen($validTagsString) > 0) $validTagsString.= ",".$validTag;
                 else $validTagsString.= $validTag;
                 // Add to array also
                 array_push($validTagsArray, $validTag);
-            endif;
-        endforeach;
+            }
+        }
         
         return $validTagsString;
     }
-    
     
     /**
      * Create a safe URL for a post (no funny characters)
      * @param <string> $text - string to use for URL
      * @return <string> a safe URL to make the pages more SEO friendly
     **/
-    private function createSafePostUrl($text) {
-    
+    public function createSafePostUrl($text)
+    {
         // Remove anything that isn't alphanumeric or a space
         $postlink = preg_replace("/[^A-Za-z0-9 ]/", '', $text);
-        // Replace Spaces with dashes
-        $postlink = strtolower(str_replace(" ", "-", safeString($postlink)));
-        
-        return $postlink;
+        return strtolower(str_replace(" ", "-", Sanitize::string($postlink)));
     }
-    
     
     /**
      * Get counts for all tags on a blog
      * @param <int> $blogid - blog to get counts
      * @return <array> of tuples - array[tagname,count]
      */
-    public function countAllTagsByBlog($blogid) {
-    
+    public function countAllTagsByBlog($blogid)
+    {
         // Get the posts from this blog
         $lobjPosts = $this->getAllPostsOnBlog($blogid);
         $res = array();
         
         // Loop through the posts
-        foreach($lobjPosts as $post):
+        foreach ($lobjPosts as $post) {
             // Create array from CSV string
             $tags = explode(",", $post['tags']);
             // Check this post has tags
-            if(count($tags) === 0) continue;
+            if (count($tags) === 0) continue;
             // Loop through tags
-            foreach($tags as $tag):
+            foreach ($tags as $tag) {
                 $tag = trim($tag);
                 // Check tag is not empty
                 if(strlen($tag) === 0) continue;
@@ -387,8 +376,8 @@ class Posts extends RBFactory
                 // Increment count depending on if it key already exists
                 if($countadded === false) $res[] = array(strtolower($tag),1);
                 else $res[$countadded][1] += 1;
-            endforeach;
-        endforeach;
+            }
+        }
         
         // Sort by name
         sksort($res, 0, true);
@@ -396,7 +385,6 @@ class Posts extends RBFactory
         return $res;
     }
 
-    
     /**
      * Get all unique tags that have been applied
      * to posts for this blog
@@ -417,7 +405,6 @@ class Posts extends RBFactory
             if(count($tags) === 0) continue;
         
             foreach($tags as $tag):
-                
                 $tag = trim($tag);
                 
                 // Check tag is not empty
@@ -551,91 +538,82 @@ class Posts extends RBFactory
     
     /**
      * Auto Save Functionality
-    **/
-    public function autosavePost() {
-    
-        $postid = Sanitize::int($_POST['fld_postid']);
-        $postCheck = $this->db->countRows($this->tableName, array("id" => $postid));
-        $postInserted = false;
-        
-        $newContent = Sanitize::string($_POST['fld_content']);
-        $newTitle = Sanitize::string($_POST['fld_title']);
-        $newTags = $this->createSafeTagList($_POST['fld_tags']);
-        $newCommentFlag = Sanitize::int($_POST['fld_allowcomments']);
-        $type = Sanitize::string($_POST['fld_type']);
-        
+     * 
+     * @todo Video and Gallery post autosave!
+     */
+    public function autosavePost($postID, $data)
+    {
+        // $postCheck = $this->count(['id' => $postID]);
+        $newTags = $this->createSafeTagList($data['tags']);
         $currentUser = BlogCMS::session()->currentUser;
 
-        if($postid <= 0 || $postCheck == 0) {
+        if($postID <= 0) {
             // Post is not saved into the main table - create it as a draft
-            $this->db->insertRow($this->tableName, array(
-                'content'         => $newContent,
-                'title'           => $newTitle,
+            $this->insert([
+                'content'         => $data['content'],
+                'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $newCommentFlag,
-                'draft'           => 1,
-                'type'            => $type,
+                'allowcomments'   => $data['allowcomments'],
+                'type'            => $data['type'],
                 'blog_id'         => Sanitize::int($_POST['fld_blogid']),
-                'author_id'       => Sanitize::int($currentUser),
+                'author_id'       => $currentUser['id'],
+                'draft'           => 1,
                 'initialautosave' => 1,
-                'link'            => $this->createSafePostUrl($newTitle),
+                'link'            => $this->createSafePostUrl($data['title']),
                 'timestamp'       => date('Y-m-d H:i:s')
-            ));
-            
-            $postInserted = true;
-            
-            // Record the new post id
-            $postid = $this->db->getLastInsertID();
+            ]);
+                        
+            $postID = $this->db->getLastInsertID();
         }
+        else {
+            $arrayPost = $this->get('initialautosave', ['id' => $postID], '', '', false);
         
-        $arrayPost = $this->db->selectSingleRow($this->tableName, 'initialautosave', array('id' => $postid));
-        
-        if($arrayPost['initialautosave'] == 1 && !$postInserted) {
-            // Update the post
-            $update = $this->db->updateRow($this->tableName, array('id' => $postid), array(
-                'content'         => $newContent,
-                'title'           => $newTitle,
-                'link'            => $this->createSafePostUrl($newTitle),
-                'tags'            => $newTags,
-                'allowcomments'   => $newCommentFlag
-            ));
+            if($arrayPost['initialautosave'] == 1) {
+                // Update the post
+                $update = $this->update(['id' => $postID], [
+                    'content'         => $data['content'],
+                    'title'           => $data['title'],
+                    'link'            => $this->createSafePostUrl($data['title']),
+                    'tags'            => $newTags,
+                    'allowcomments'   => $data['allowcomments']
+                ]);
+            }
         }
         
         // Check for existing save for this post
-        $autosaveCheck = $this->db->countRows($this->tblautosave, array("post_id" => $postid));
+        $autosaveCheck = $this->db->countRows($this->tblautosave, ["post_id" => $postID]);
         
         if($autosaveCheck == 1) {
             // Found - Update
-            $update = $this->db->updateRow($this->tblautosave, array('post_id' => $postid), array(
-                'content'         => $newContent,
-                'title'           => $newTitle,
+            $update = $this->db->updateRow($this->tblautosave, ['post_id' => $postID], [
+                'content'         => $data['content'],
+                'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $newCommentFlag,
+                'allowcomments'   => $data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
-            ));
+            ]);
             if($update === false) return $false;
-            else return $postid;
-            
-        } else {
+            else return $postID;
+        }
+        else {
             // Not Found - Create
             $insert = $this->db->insertRow($this->tblautosave, array(
-                'post_id'         => $postid,
-                'content'         => $newContent,
-                'title'           => $newTitle,
+                'post_id'         => $postID,
+                'content'         => $data['content'],
+                'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $newCommentFlag,
+                'allowcomments'   => $data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
             ));
             if($insert === false) return $false;
-            else return $postid;
+            else return $postID;
         }
     }
     
     public function removeAutosave($postid)
     {
         $postid = Sanitize::int($postid);
-        $this->db->deleteRow($this->tblautosave, array('post_id' => $postid));
-        // if($deletesuccess === false)
+        return $this->db->deleteRow($this->tblautosave, ['post_id' => $postid]);
     }
     
     public function autosaveExists($postid)

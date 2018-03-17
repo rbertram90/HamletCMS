@@ -1,7 +1,7 @@
 {if isset($post)}
 
     {* We are editing the post *}
-    {$formAction = "/posts/{$blog['id']}/edit/{$post['id']}/submit"}
+    {$formAction = "/posts/edit/{$post['id']}"}
     {$fieldTitle = $post['title']}
     {$fieldContent = $post['content']}
     {$fieldTags = str_replace("+"," ",$post['tags'])}
@@ -11,7 +11,7 @@
 
 {else}
     {* This must be a new post *}
-    {$formAction = "/posts/{$blog['id']}/new/submit"}
+    {$formAction = "/posts/create/{$blog['id']}/standard"}
     {$fieldTitle = ''}
     {$fieldContent = ''}
     {$fieldTags = ''}
@@ -163,6 +163,7 @@ function openPreview() {ldelim}
 
 <script type="text/javascript">
 var content_changed = false;
+window.postTitleIsValid = false;
     
 $(document).ready(function () {
 
@@ -199,61 +200,58 @@ $(document).ready(function () {
                 $("#autosave_status").html(data.message);
                 $("#autosave_status").show();
 
+                content_changed = false;
+
             }, "json");
         }
     }
 
     // Run on key down of content
     $("#fld_postcontent").on("keyup", function() { content_changed = true; });
-    $("#fld_title").on("keyup", function() { content_changed = true; });
+    $("#fld_posttitle").on("keyup", function() { window.postTitleIsValid = false; content_changed = true; });
     $("#fld_tags").on("keyup", function() { content_changed = true; });
 
     // Saves every 10 seconds if something has changed
     var save_interval = setInterval(runsave, 5000);
 
     // Function to submit form
-    var submitForm = function () {ldelim}
+    var submitForm = function () {
         document.frm_createpost.submit();
-    {rdelim};
+    };
 
     // Handle form submission
-    $("#frm_createpost").submit(function()
-    {ldelim}
-                                
+    $("#frm_createpost").submit(function() {
+
         $(window).unbind('beforeunload');
 
         // Check that the post title is unique
-        var post_title = $("#fld_posttitle").val();
+        var post_title = document.getElementById('fld_posttitle').value;
         var blog_id = {$blog.id};
-        var url = "/ajax/check_title?blog_id=" + blog_id + "&post_title=" + post_title;
 
-        if(post_title.length == 0) {
+        if (post_title.length == 0) {
             alert("Please enter a title");
             return false;
         }
-    
-        $.get({ldelim}url:url, async:false{rdelim}, function(data)
-        {ldelim}
-            if(data !== "false") alert("Validation Failed - Title needs to be unique for this blog!");
-            return false;
-        {rdelim});
 
-        // Update the wiki code
-        /*
-        if($(".rbrtf-rtfinput").is(":visible")) {ldelim}
-            // Update wiki fields before submitting
-            var htmlcontent = $(".rbrtf-editor .rbrtf-rtfinput").html();
-            jQuery.get("/ajax/ajax_viewWikiMarkup.php", {ldelim}content:htmlcontent{rdelim},  function(data) {ldelim}
-                $(".rbrtf-editor .rbrtf-wikiinput").val(data);
-                submitForm();
-            {rdelim});
-            // Wait for the ajax to submit the form on completion
-            return false;
-        {rdelim}
-        */
-    
-        return true;
-    {rdelim});
+        {if isset($post)}
+            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
+        {else}
+            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
+        {/if}
+
+        $.ajax({ url: url, async: false }).done(function(data) {
+            if(data.trim() !== "false") {
+                alert("Validation Failed - Title needs to be unique for this blog!");
+            }
+            else {
+                console.log('a');
+                window.postTitleIsValid = true;
+            }
+        });
+
+    console.log('b' + window.postTitleIsValid);
+        return window.postTitleIsValid;
+    });
 
     {if $mode == 'edit'}
         // Apply Defaults
