@@ -138,11 +138,10 @@ function getNumPostsToView($pobjPostSettings) {
 
 
 /**
-    @param blogid <int> blog id
-    @param tags <string> comma-seperated tag list
-    @return <string> html to display
-**/
-
+ * @param blogid <int> blog id
+ * @param tags <string> comma-seperated tag list
+ * @return <string> html to display
+ */
 function showTags($blogid, $tags) {
     
     // Split the string by comma

@@ -2,7 +2,9 @@
 namespace rbwebdesigns\blogcms;
 
 use Codeliner;
+use Michelf\Markdown;
 use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\Pagination;
 
 /**
  * blog_content_controller
@@ -109,7 +111,7 @@ class BlogContentController
      *  View blog homepage
      *  @return <array> data for template
      */
-    public function viewHome($DATA, $queryParams)
+    public function viewHome(&$request, &$response)
     {
         // Include the view posts functions
         include SERVER_ROOT.'/app/view/view_posts.php';
@@ -118,7 +120,7 @@ class BlogContentController
         $numPosts = $this->getPostCount();
         
         // Set page title
-        $DATA['page_title'] = $this->blog['name'];
+        $response->setTitle('page_title', $this->blog['name']);
         
         if($numPosts === 0) {
             // No Posts
@@ -136,7 +138,6 @@ class BlogContentController
         
         // View Posts
         viewMultiplePosts($arrayPosts, $this->blogID, $blogConfig, $numPosts, $pageNum);
-        return $DATA;
     }
 
     /**
@@ -342,35 +343,67 @@ class BlogContentController
         return $headerContent;
     }
     
-    
     /**
      * Show all posts matching tag
      */
-    public function viewPostsByTag($DATA, $queryParams)
+    public function viewPostsByTag(&$request, &$response)
     {
-        // Include view functions
-        include SERVER_ROOT.'/app/view/view_posts.php';
+        $tag = $request->getUrlParameter(2);
+        $pageNum = $request->getInt('s', 1);
+        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag);
 
-        // Page Heading
-        echo "<h1>Posts tagged with '".$queryParams[0]."'</h1>";
+        $isContributor = false;
+        if ($currentUser = BlogCMS::session()->currentUser) {
+            $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
+        }
 
-        // Fetch Posts from DB
-        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $queryParams[0]);
+        $blogConfig = $this->getBlogConfig($this->blogID);
+        $postConfig = null;
+        $showTags = 1;
+        $shownumcomments = 1;
+        $showsocialicons = 1;
+        $summarylength = 150;
+        $postsperpage = 5;
 
-        // Current Page
-        $pageNum = isset($_GET['s']) ? safeNumber($_GET['s']) : 1;
+        if (isset($blogConfig['posts'])) {
+            $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['showtags']))     $showtags = $postConfig['showtags'];
+            if (isset($postConfig['shownumcomments'])) $shownumcomments = $postConfig['shownumcomments'];
+            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
+            if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
+            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+        }
 
-        // Get post count
-        $numPosts = count($postlist);
+        $response->setVar('showtags', $showTags);
+        $response->setVar('shownumcomments', $shownumcomments);
+        $response->setVar('showsocialicons', $showsocialicons);
+        $response->setVar('postsperpage', $postsperpage);
+        $response->setVar('currentPage', $pageNum);
 
-        // Generate Page HTML
-        if($numPosts > 0) viewMultiplePosts($postlist, $this->blogID, $this->getBlogConfig($this->blogID), $numPosts, $pageNum);
-        else echo showInfo("There are no posts tagged with <i>'".$queryParams[0]."'</i> on this blog");
+        $response->setVar('totalnumposts', count($postlist));
+
+        // Format content
+        for ($p = 0; $p < count($postlist); $p++) {
+            $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+            $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
+            $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
+
+            $postlist[$p]['headerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'title');
+            $postlist[$p]['footerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'footer');
+
+            if ($postlist[$p]['type'] == 'gallery') {
+                $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
+            }
+        }
 
         // Set Page Title
-        $DATA['page_title'] = 'Posts tagged with '.$queryParams[0].' - '.$this->blog['name'];
-
-        return $DATA;
+        $response->setTitle("Posts tagged with {$tag} - {$this->blog['name']}");
+        $response->setVar('userIsContributor', $isContributor);
+        $response->setVar('tagName', $tag);
+        $response->setVar('posts', $postlist);
+        $response->setVar('paginator', new Pagination());
+        $response->setVar('blog', $this->blog);
+        $response->write('blog/posts/postsbytag.tpl');
     }
 
     /**
@@ -390,9 +423,9 @@ class BlogContentController
      * getFontFamilyFromName($fontName as String)
      * @return <string> CSS String for font-family rule
      */
-    public function getFontFamilyFromName($fontName)
+    protected function getFontFamilyFromName($fontName)
     {
-        $fontarray = array(
+        $fontarray = [
             "ARIAL" => "Arial, Helvetica, sans-serif",
             "CALIBRI" => "Calibri, sans-serif",
             "COMICSANS" => "'Comic Sans MS', cursive",
@@ -401,7 +434,7 @@ class BlogContentController
             "LUCIDA" => "'Lucida Console', Monaco, monospace",
             "TAHOMA" => 'Tahoma, Geneva, sans-serif',
             "TREBUCHET" => "'Trebuchet MS', sans-serif"
-        );
+        ];
 
         if(array_key_exists($fontName, $fontarray)) return $fontarray[$fontName];
         else return "Arial, Helvetica, sans-serif";
@@ -428,7 +461,7 @@ class BlogContentController
             if(strtolower($key) == 'layout') continue;
         
             // 0 should always be class name
-             $css.= '.'.$lobjClass[0].' {';
+            $css.= '.'.$lobjClass[0].' {';
             
             foreach($lobjClass as $rule):
                 // Check it is an array
@@ -468,9 +501,6 @@ class BlogContentController
                 
         foreach($arrayVisitors as $visitor) {
             if($userip == $visitor['userip']) {
-                // already visited this page
-                // $userviews = $visitor['viewcount'] + 1;
-    // echo "pre".$userviews;
                 $this->modelPosts->incrementUserView($postid, $userip, $visitor['userviews']);
                 $countUpdated = true;
                 break;
@@ -483,105 +513,193 @@ class BlogContentController
         }
     }
     
-    
     /**
      * View Individual Post
      */
-    public function viewPost($DATA, $queryParams)
+    public function viewPost(&$request, &$response)
     {
-        // Include the view post functions
-        include SERVER_ROOT.'/app/view/view_posts.php';
-        
-        // Get post info from DB
-        $arrayPost = $this->modelPosts->getPostByURL($queryParams[0], $DATA['blog_key']);
-        
+        $postUrl = $request->getUrlParameter(2);
+
         // Check conditions in which the user is not allowed to view the post
-        if($arrayPost) {
-            if($arrayPost['draft'] == 1 && !$this->userIsContributor()) {
-                $arrayPost = false; // user not entitled to view post
+        if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
+            $isContributor = false;
+
+            if ($currentUser = BlogCMS::session()->currentUser) {
+                $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
             }
-            elseif(strtotime($arrayPost['timestamp']) > time() && !$this->userIsContributor()) {
-                $arrayPost = false; // post has not yet been released in the wild!
+            if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
+                $response->redirect("/blogs/{$this->blogID}", 'Cannot view this post', 'error');
             }
         }
-
-        // Check post is still valid to view by user
-        if($arrayPost) {
-            
-            // Get next and back posts
-            $nextPost = $this->modelPosts->getNextPost($this->blogID, $arrayPost['timestamp']);
-            $prevPost = $this->modelPosts->getPreviousPost($this->blogID, $arrayPost['timestamp']);
-            
-            // Output the HTML
-            viewSinglePost($arrayPost, $this->getBlogConfig($this->blogID), $prevPost, $nextPost);
-            
-            // Generate Comment Section
-            if($arrayPost['allowcomments'] == 1) {
-                // View comment form
-                $lobjBlogID = $this->modelPosts->getPostByURL($queryParams[0], $this->blogID);
-                $arrayComments = $this->modelComments->getCommentsByPost($lobjBlogID['id'], false);
-                viewComments($arrayComments);
-                commentForm($this->blog, $arrayPost);
-            }
-            
-            // Count the view
-            $this->addView($arrayPost['id']);
-
+        else {
+            $response->redirect("/blogs/{$this->blogID}", 'Cannot find this post', 'error');
         }
-        else echo showInfo("Unable to find post");
+        
+        // Get all data required
+        if ($post['allowcomments']) {
+            $response->setVar('comments', $this->modelComments->getCommentsByPost($post['id'], false));
+        }
 
-        $DATA['page_title'] = $arrayPost['title'];
-        return $DATA;
+        // Apply post configuration
+        $blogConfig = $this->getBlogConfig($this->blogID);
+        $showtags = $showsocialicons = 1;
+
+        if (isset($blogConfig['posts'])) {
+            $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['showtags'])) $showtags = $postConfig['showtags'];
+            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
+            $response->setVar('headerDate', $this->formatDateFromSettings($post['timestamp'], $postConfig, 'title'));
+            $response->setVar('footerDate', $this->formatDateFromSettings($post['timestamp'], $postConfig, 'footer'));
+        }
+        else {
+            $response->setVar('headerDate', '');
+            $response->setVar('footerDate', $this->formatDateFromSettings($post['timestamp'], null, 'footer'));
+        }
+
+        // Record the view
+        $this->addView($post['id']);
+
+        $response->setVar('post', $post);
+        $response->setVar('showtags', $showtags);
+        $response->setVar('showsocialicons', $showsocialicons);
+        $response->setVar('userAuthenticated', getType($currentUser) == 'array');
+        $response->setVar('userIsContributor', $isContributor);
+        $response->setVar('mdContent', Markdown::defaultTransform($post['content']));
+        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
+        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
+        $response->setTitle($post['title']);
+        $response->write('blog/posts/singlepost.tpl');
     }
     
-    /************* Comments ******************/
-    
-    public function addComment($DATA, $queryParams)
+    /**
+     * Output the post date based on user defined settings
+     */
+    protected function formatDateFromSettings($timestamp, $postSettings, $location)
     {
-        // todo: Check that the user hasn't submitted more than 5 comments in last 30 seconds?
-        // Or if the last X comments were from the same user?
-        // to prevent comment spamming
+        $res = "";
         
-        // Check that the comment was accutally submitted?
-        // Stops people just browsing to the /addcomment URL
-        $postID = Sanitize::int($queryParams[0]);
-        
-        // Validate comment
-        $formValid = true;
+        // Get Values
+        $dateformat    = 'Y-m-d';
+        $timeformat    = 'H:i:s';
+        $timelocation  = 'footer';
+        $datelocation  = 'footer';
+        $dateprefix    = 'Posted on: ';
+        $dateseperator = ' at ';
 
-        $currentUser = BlogCMS::session()->currentUser;
-        
-        if(!isset($_POST['fld_submitcomment'])) $formValid = false;
-        
-        if(!isset($_POST['fld_comment']) || strlen($_POST['fld_comment']) == 0)
-        {
-            $formValid = false;
-            setSystemMessage("Please enter a comment", "Error");
+        if (getType($postSettings) == 'array') {
+            if (isset($postSettings['dateformat']))    $dateformat    = $postSettings['dateformat'];
+            if (isset($postSettings['timeformat']))    $timeformat    = $postSettings['timeformat'];
+            if (isset($postSettings['timelocation']))  $timelocation  = $postSettings['timelocation'];
+            if (isset($postSettings['datelocation']))  $datelocation  = $postSettings['datelocation'];
+            if (isset($postSettings['dateprefix']))    $dateprefix    = $postSettings['dateprefix'];
+            if (isset($postSettings['dateseperator'])) $dateseperator = $postSettings['dateseperator'];
         }
         
-        if($formValid)
-        {
-            // Get the post from DB
-            $post = $this->modelPosts->getPostByID($postID, $DATA['blog_key']);
+        if ($datelocation == $location) {
+            // Show Date
+            $res.= $dateprefix;
+            $res.= date($dateformat, strtotime($timestamp));
+        }
+        
+        if ($timelocation == $location) {
+            // Show Time
+            $res.= $dateseperator;
+            $res.= date($timeformat, strtotime($timestamp));
+        }
+        
+        return $res;
+    }
+    
+    /**
+     * trimContent
+     * This function provides (needs improvement) a HTML friendly summary of post
+     * content, ensuring that rather than blindly taking the first (200) characters
+     * it does not cut a tag in half and leave invalid HTML.
+     * 
+     * @param string $fullcontent
+     * @param mixed $charactersToShow
+     * @param string $openTag
+     * @param string $closeTag
+     * 
+     * @return string Summary of content
+     * 
+     * @todo check all open tags have been closed
+     */
+    protected function trimContent($fullcontent, $charactersToShow='all', $openTag='<', $closeTag='>')
+    {
+        if($charactersToShow !== "all") {
+        
+            // Number of characters has been limited
+            $trimmedContent = substr($fullcontent, 0, $charactersToShow);
+            $lastOpeningTag = strrpos($trimmedContent, $openTag);
             
-            // Check that post allows reader comments
-            if($post['allowcomments'] == 0)
-            {
-                setSystemMessage("Failed to add comment", "Error");
-            }
-            else
-            {
-                // Sanitize Comment
-                $content = Sanitize::string($_POST['fld_comment']);
+            if($lastOpeningTag !== false) {
+            
+                // There has been a tag started (we thinks)
+                $lastClosingTag = strrpos($trimmedContent, $closeTag);
                 
-                // Submit to DB
-                $this->modelComments->addComment($content, $post['id'], $DATA['blog_key'], $currentUser);
-                
-                // Show Success
-                setSystemMessage("Comment submitted - awaiting approval", "Success");
+                if($lastClosingTag === false || $lastOpeningTag > $lastClosingTag) {
+                    
+                    // Believe there is still an open tag
+                    $nextClosingTag = strpos($fullcontent, $closeTag, $lastOpeningTag + 1);
+                    $nextOpeningTag = strpos($fullcontent, $openTag, $lastOpeningTag + 1);
+                    
+                    if($nextOpeningTag !== false && $nextClosingTag !== false) {
+                        if($nextClosingTag < $nextOpeningTag) {
+                            $charactersToShow = $nextClosingTag + 1;
+                        }
+                    }
+                    elseif($nextClosingTag !== false) {
+                        // Choose to end the substr after the tag has finished
+                        $charactersToShow = $nextClosingTag + 1;
+                    }
+                }
             }
+            // Reapply Limit to X characters
+            $trimmedContent = substr($fullcontent, 0, $charactersToShow);
+            
+            // Add continuation marks if actual length is more than summary
+            if(strlen($fullcontent) > $charactersToShow && $charactersToShow > 0) $trimmedContent.= "...";
+        }
+        else {
+            $trimmedContent = $fullcontent;
         }
         
-        redirect("/blogs/{$DATA['blog_key']}/posts/{$post['link']}");
+        // Remove Whitespace and return answer
+        return trim($trimmedContent);
+    }
+
+    /**
+     * Add a comment to a blog post
+     * 
+     * @todo Check that the user hasn't submitted more than 5 comments in last 30 seconds?
+     *   Or if the last X comments were from the same user? to prevent comment spamming
+     */
+    public function addComment(&$request, &$response)
+    {
+        $postID = $request->getUrlParameter(2);
+        $post = $this->modelPosts->getPostByID($postID, $this->blogID);
+        $commentText = $request->getString('fld_comment');
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!$post) {
+            $response->redirect("/blogs/{$this->blogID}", 'Post not found', 'error');
+        }
+        
+        if (!isset($commentText) || strlen($commentText) == 0) {
+            $response->redirect("/blogs/{$this->blogID}/posts/{$postID}", 'Please enter a comment', 'error');
+        }        
+        
+        // Check that post allows reader comments
+        if ($post['allowcomments'] == 0) {
+            $response->redirect("/blogs/{$this->blogID}/posts/{$postID}", 'Comments are not allowed here', 'error');
+        }
+
+        if ($this->modelComments->addComment($commentText, $post['id'], $this->blogID, $currentUser['id'])) {
+            $response->redirect("/blogs/{$this->blogID}/posts/{$postID}", 'Comment submitted - awaiting approval', 'success');
+        }
+        else {
+            $response->redirect("/blogs/{$this->blogID}/posts/{$postID}", 'Error adding comment', 'error');
+        }
     }
 }

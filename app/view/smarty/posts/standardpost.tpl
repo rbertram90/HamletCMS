@@ -43,7 +43,7 @@ function openPreview() {ldelim}
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
+            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
         </div>
     </div>
     

@@ -516,7 +516,7 @@ class Posts extends RBFactory
     **/
     public function incrementUserView($postid, $userip, $updatedviewcount) {        
         $sql = "UPDATE ".TBL_POST_VIEWS." SET userviews=userviews+1 WHERE postid='$postid' AND userip='$userip'";
-        $this->db->runQuery($sql);
+        $this->db->query($sql);
     }
     
     
@@ -630,4 +630,3 @@ class Posts extends RBFactory
         return $this->db->selectSingleRow($this->tblautosave, '*', array('post_id' => $postid));
     }
 }
-?>

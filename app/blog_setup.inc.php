@@ -28,101 +28,75 @@ use rbwebdesigns\core\Sanitize;
 
 
 /****************************************************************
-  Stylesheet
-****************************************************************/
-
-    $global_css_includes = array(
-        '/resources/css/core',
-        '/resources/css/header',
-        '/resources/css/forms'
-    );
-
-    // blog_cms Specific CSS
-    $css_includes = array();
-
-
-/****************************************************************
-  JavaScript
-****************************************************************/
-    
-    $global_js_includes = array(
-        '/resources/js/jquery-1.8.0.min',
-        '/resources/js/core-functions',
-        '/resources/js/validate',
-        '/resources/js/galleria-1.4.2.min',
-        '/resources/js/galleria.classic.min'
-    );
-    // blog_cms Specific JS
-    $js_includes = array(
-        '/projects/blog_cms/js/addFavourite'
-    );
-
-
-/****************************************************************
     Setup and Decide on actual page content
 ****************************************************************/
 
     $request = BlogCMS::request();
     $response = BlogCMS::response();
 
-    // Create Controller
     $page_controller = new BlogContentController(BLOG_KEY);
     $blog = $page_controller->getBlogInfo();
-    
-    // Get style defined using the colour pickers
-    $custom_css = $page_controller->getBlogCustomCSS(BLOG_KEY);
 
-    // Data Required page - Defaulted
-    $DATA = array(
-        'page_title' => 'Default Page Title',
-        'page_description' => 'Default Page Description',
-        'includes_css' => array_merge($global_css_includes, $css_includes),
-        'includes_js' => array_merge($global_js_includes, $js_includes),
-        'page_content' => '',
-        'widget_content' => $page_controller->generateWidgets(),
-        'blog_key' => BLOG_KEY,
-        'custom_css' => $custom_css,
-        'user_is_contributor' => $page_controller->userIsContributor(),
-        'is_favourite' => $page_controller->blogIsFavourite(),
-        'page_headerbackground' => $page_controller->generateHeaderBackground(),
-        'page_footercontent' => $page_controller->generateFooter(),
-        'page_navigation' => $page_controller->generateNavigation(),
-        'header_hide_title' => $page_controller->header_hideTitle,
-        'header_hide_description' => $page_controller->header_hideDescription,
-        'template_config' => $page_controller->getTemplateConfig()
-    );
+    $response->addStylesheet('/resources/css/core.css');
+    $response->addStylesheet('/resources/css/header.css');
+    $response->addStylesheet('/resources/css/forms.css');
+
+    $response->addScript('/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/resources/js/core-functions.js');
+    $response->addScript('/resources/js/validate.js');
+    $response->addScript('/resources/js/galleria-1.4.2.min.js');
+    $response->addScript('/resources/js/galleria.classic.min.js');
+    $response->addScript('/projects/blog_cms/js/addFavourite.js');
+    
+    $response->setVar('blog', $blog);
+    $response->setVar('blog_key', BLOG_KEY);
+    // $response->setVar('page_content', '');
+    $response->setTitle('Default Page Title');
+    $response->setDescription('Default Page Description');
+    $response->setVar('custom_css', $page_controller->getBlogCustomCSS(BLOG_KEY));
+
+    $response->setVar('widget_content', $page_controller->generateWidgets());
+    $response->setVar('user_is_contributor', $page_controller->userIsContributor()); // @todo this is broken...
+    $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
+    $response->setVar('is_favourite', $page_controller->blogIsFavourite());
+    $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());
+    $response->setVar('page_footercontent', $page_controller->generateFooter());
+    $response->setVar('page_navigation', $page_controller->generateNavigation());
+    $response->setVar('header_hide_title', $page_controller->header_hideTitle);
+    $response->setVar('header_hide_description', $page_controller->header_hideDescription);
+    $response->setVar('template_config', $page_controller->getTemplateConfig());
 
     // Store any output in a buffer
     ob_start();
 
     switch (strtolower($request->getUrlParameter(1))) {
         case "posts":
-            $DATA = $page_controller->viewPost($DATA, $queryParams);
+            $page_controller->viewPost($request, $response);
             break;
             
         case "addcomment":
             // Add a comment to this post
-            $DATA = $page_controller->addComment($DATA, $queryParams);
+            $page_controller->addComment($request, $response);
             break;
             
         case "tags":
             // Search for posts with tag
-            $DATA = $page_controller->viewPostsByTag($DATA, $queryParams);
+            $page_controller->viewPostsByTag($request, $response);
             break;
             
         case "search":
             // Search for posts with tag
-            $DATA = $page_controller->search($DATA, $queryParams);
+            $page_controller->search($request, $response);
             break;
 
         default:
             // View Homepage
-            $DATA = $page_controller->viewHome($DATA, $queryParams);
+            $page_controller->viewHome($request, $response);
             break;
     }
 
-    $DATA['page_content'] = ob_get_contents();
+    $response->setBody(ob_get_contents());
 
     ob_end_clean();
-    
-    require SERVER_ROOT.'/app/blog_template.php';
+
+    $response->writeTemplate('blog/main.tpl');
