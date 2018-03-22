@@ -380,7 +380,7 @@ class PostsController extends GenericController
         }
         
         if($delete = $this->model->delete(['id' => $post['id']]) && $this->model->removeAutosave($post['id'])) {
-            $response->redirect('/', 'Blog post deleted', 'success');
+            $response->redirect('/posts/manage/' . $post['blog_id'], 'Blog post deleted', 'success');
         }
         else {
             $response->redirect('/posts/manage/' . $post['blog_id'], 'Blog post deleted', 'error');

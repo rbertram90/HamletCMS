@@ -1,14 +1,17 @@
-<div class="post">
-    {if strlen($headerDate) > 0}
-        {$headerDate}
-    {/if}
+<article class="post">
 
-    <h1 class="post-title">{$post.title}</h1>
+    <header>
+        {if strlen($headerDate) > 0}
+            {$headerDate}
+        {/if}
+
+        <h1 class="post-title">{$post.title}</h1>
+    </header>
 
     <!-- Note we won't always want to use wiki language! need to either ask user or 
     programmatically determine if the post uses wiki -->
-    <div class="post-content">
-        
+    <main class="ui text container">
+
         {if $post.type == 'video'}
             {if $post.videosource == 'youtube'}
                 <iframe width="100%" style="max-width:560px;" height="315" src="//www.youtube.com/embed/{$post.videoid}" frameborder="0" allowfullscreen></iframe>
@@ -40,9 +43,10 @@
         {/if}
         
         {$mdContent}
-    </div>
+
+    </main>
     
-    <div class="post-footer">
+    <footer>
         <!-- Post Date -->
         {if strlen($footerDate) > 0}
             {$footerDate}
@@ -50,7 +54,12 @@
         
         <!-- Post Tags -->
         {if strlen($post.tags) > 0 and $showtags != '0'}
-            <p class="post-tags">Tags: <?=showTags($arrayPost['blog_id'], $arrayPost['tags'])?></p>
+            <div class="post-tags">
+                {foreach $post.tags as $tag}
+                    {$caption = str_replace("+", " ", $tag)}
+                    <a href="/blogs/{$blog.id}/tags/{$tag}" class="ui tag label">{$caption}</a>
+                {/foreach}
+            </div>
         {/if}
 
         {if $showsocialicons}
@@ -64,23 +73,44 @@
                 <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank"><img src="/resources/icons/social/googleplus256.png" /></a>
                 <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}"><img src="/resources/icons/social/email256.png" /></a>
             </div>
+            <div class="ui hidden divider"></div>
         {/if}
         
         <!-- Add / Edit Options -->
         {if $userIsContributor}
-            <a href="/posts/edit/{$post.id}">Edit</a> | 
-            <a href="/posts/delete/{$post.id}" onclick='return confirm(\"Are you sure?\");'>Delete</a>
+            <div class="ui buttons">
+                <a href="/posts/edit/{$post.id}" class="ui button">Edit</a>
+                <a href="/posts/delete/{$post.id}" onclick='return confirm(\"Are you sure?\");' class="ui button">Delete</a>
+            </div>
+            <div class="ui hidden divider"></div>
         {/if}
 
-        {if getType($nextPost) == "array"}
-            <a href="/blogs/{$post.blog_id}/posts/{$nextPost.link}" style="float:right;" class="next-post-link"><span>Next Post: </span>{$nextPost.title} &gt;</a>
-        {/if}
+        <div class="ui buttons">
+            {if gettype($previousPost) == "array"}
+                <a href="/blogs/{$post.blog_id}/posts/{$previousPost.link}" class="ui labeled icon button">
+                    <i class="left chevron icon"></i>
+                    Previous Post: {$previousPost.title}
+                </a>
+            {/if}
 
-        {if getType($previousPost) == "array"}
-            <a href="/blogs/{$post.blog_id}/posts/{$previousPost.link}" class="previous-post-link"><span>&lt; Previous Post: </span>{$previousPost.title}</a>
-        {/if}
+            {if gettype($nextPost) == "array"}
+                <a href="/blogs/{$post.blog_id}/posts/{$nextPost.link}" style="float:right;" class="ui right labeled icon button">
+                    <i class="right chevron icon"></i>
+                    Next Post: {$nextPost.title}
+                </a>
+            {/if}
+        </div>
+        <div class="ui hidden divider"></div>
+    </footer>
+
+    <div>
+        {include file='blog/comments/postcomments.tpl'}
     </div>
-</div>
 
-{include file='blog/comments/postcomments.tpl'}
-{include file='blog/comments/newcommentform.tpl'}
+    <div class="ui hidden divider"></div>
+
+    <div>
+        {include file='blog/comments/newcommentform.tpl'}
+    </div>
+
+</article>

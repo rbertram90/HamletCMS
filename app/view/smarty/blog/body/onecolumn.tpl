@@ -5,7 +5,7 @@
     {/foreach}
     </div>
 
-    {$page_content}
+    {$body_content}
 
     <div class="actions">
         {include file='blog/actions.tpl'}

@@ -2,7 +2,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog.id}", {$blog.name}), 'Files')}
+            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}), 'Files')}
         </div>
     </div>
     <div class="one column row">
@@ -12,7 +12,7 @@
     </div>
 </div>
 {if count($images) == 0}
-    <p class="info">No images uploaded to this blog</p>
+    <p class="ui message info">No images have been uploaded to this blog</p>
 {/if}
 
 <style>

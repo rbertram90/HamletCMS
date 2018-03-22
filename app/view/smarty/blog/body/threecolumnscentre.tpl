@@ -14,7 +14,7 @@
     {/foreach}
     </div>
 
-    {$page_content}
+    {$body_content}
     
 </div><div class="rightcolumn">
     {if isset($widget_content.rightpanel)}

@@ -38,8 +38,6 @@ use rbwebdesigns\core\Sanitize;
     $blog = $page_controller->getBlogInfo();
 
     $response->addStylesheet('/resources/css/core.css');
-    $response->addStylesheet('/resources/css/header.css');
-    $response->addStylesheet('/resources/css/forms.css');
 
     $response->addScript('/resources/js/jquery-1.8.0.min.js');
     $response->addScript('/resources/js/core-functions.js');
@@ -50,7 +48,6 @@ use rbwebdesigns\core\Sanitize;
     
     $response->setVar('blog', $blog);
     $response->setVar('blog_key', BLOG_KEY);
-    // $response->setVar('page_content', '');
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
     $response->setVar('custom_css', $page_controller->getBlogCustomCSS(BLOG_KEY));
@@ -64,7 +61,17 @@ use rbwebdesigns\core\Sanitize;
     $response->setVar('page_navigation', $page_controller->generateNavigation());
     $response->setVar('header_hide_title', $page_controller->header_hideTitle);
     $response->setVar('header_hide_description', $page_controller->header_hideDescription);
-    $response->setVar('template_config', $page_controller->getTemplateConfig());
+
+    $templateConfig = $page_controller->getTemplateConfig();
+    $response->setVar('template_config', $templateConfig);
+
+    if (isset($templateConfig['Includes'])) {
+        $includes = $templateConfig['Includes'];
+        if (isset($includes['semantic-ui']) && $includes['semantic-ui']) {
+            $response->addStylesheet('/css/semantic.css');
+            $response->addScript('/js/semantic.js');
+        }
+    }
 
     // Store any output in a buffer
     ob_start();

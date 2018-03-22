@@ -244,7 +244,7 @@ class Blogs extends RBFactory
 
         $rowCount = $this->db->countRows($this->tblcontributors, array(
             'blog_id' => $blogid,
-            'user_id' => $currentUser
+            'user_id' => $currentUser['id']
         ));
         
         return $rowCount > 0;

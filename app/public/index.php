@@ -62,12 +62,7 @@ use rbwebdesigns\core\Sanitize;
         // Check key is somewhat valid
         if(strlen(BLOG_KEY) != 10 || !is_numeric(BLOG_KEY)) redirect('/notfound');
         
-        // Location to blog index file
-        $indexPath = SERVER_PATH_BLOGS . '/' . BLOG_KEY . '/default.php';
-        
-        // Check index file exists
-        if(file_exists($indexPath)) require $indexPath;
-        else redirect('/notfound');
+        require SERVER_ROOT . '/app/blog_setup.inc.php';
         
         // Exit here
         exit;

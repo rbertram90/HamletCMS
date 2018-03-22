@@ -1,74 +1,19 @@
 <?php
 namespace rbwebdesigns\blogcms;
+
 use rbwebdesigns;
 use rbwebdesigns\core\Sanitize;
 
 class FilesController extends GenericController
 {
+    protected $modelBlogs;
+    protected $blog;
     
-    private $modelBlogs;        // Blogs Model
-    private $blog;
-    protected $view;
-    
-    public function __construct($cms_db, $view)
+    public function __construct()
     {
-        $this->modelBlogs = new ClsBlog($cms_db);      
-        $this->view = $view;
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
     }
-    
-    public function route($params)
-    {
-        $blogid = Sanitize::int($params[0]);
-        
-        // Check Permissions
-        if(!$this->modelBlogs->canWrite($blogid)) return $this->throwAccessDenied();
-        
-        // Get blog
-        $this->blog = $this->modelBlogs->getBlogById($blogid);
-        
-        // No blog found!
-        if(!is_array($this->blog)) return $this->throwNotFound();
-        
-        $this->view->setVar('blog', $this->blog);
-        
-        if(array_key_exists(1, $params))
-        {
-            switch(Sanitize::string($params[1]))
-            {
-                case 'delete':
-                    
-                    // Check an filename has been passed in
-                    if(!array_key_exists(2, $params)) $this->throwNotFound();
-                    
-                    // Where the image will be stored
-                    $imagesDirectory = SERVER_PATH_BLOGS.'/'.$blogid.'/images';
-                    
-                    // Restore filetype
-                    $filename = str_replace('_', '.', Sanitize::string($params[2]));
-                    
-                    // Check the image exists
-                    if(!file_exists($imagesDirectory.'/'.$filename)) $this->throwNotFound();
-                    
-                    // Perform Delete
-                    unlink($imagesDirectory.'/'.$filename);
-                    
-                    // View Images Page
-                    redirect('/files/'.$blogid);
-                    
-                    break;
-                    
-                default:
-                    $this->manageFiles();
-                    break;
-            }
-        }
-        else
-        {
-            $this->manageFiles();
-        }
-    }
-    
-    
+
     /* Get the size in bytes of a folder */
     private function GetDirectorySize($path){
         $bytestotal = 0;
@@ -81,44 +26,79 @@ class FilesController extends GenericController
         return $bytestotal;
     }
     
-    
-    /* Setup and run the manage files page */
-    private function manageFiles()
+    /**
+     * Handles /files/manage/<blogid>
+     * Setup and run the manage files page
+     */
+    public function manage(&$request, &$response)
     {
-        $imagesDirectory = SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/images';
+        $blogid = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogid);
+        
+        if(!is_array($blog)) {
+            $response->redirect('/', 'Could not find blog', 'error');
+        }
+        elseif(!$this->modelBlogs->canWrite($blog['id'])) {
+            $response->redirect('/', 'Access denied', 'error');
+        }
+
+        $imagesDirectory = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/images';
         $images = array();
         
-        if(is_dir($imagesDirectory))
-        {
+        if(is_dir($imagesDirectory)) {
             $files = scandir($imagesDirectory);
             
-            foreach($files as $filename)
-            {
+            foreach($files as $filename) {
                 $ext = explode('.', $filename)[1];
-                if(strtolower($ext) == 'jpg' or strtolower($ext) == 'png')
-                {
-                    $images[] = array(
+                if(strtolower($ext) == 'jpg' || strtolower($ext) == 'png') {
+                    $images[] = [
                         'name' => $filename,
                         'size' => number_format(filesize($imagesDirectory.'/'.$filename) / 1000, 2),
                         'date' => date("F d Y", filemtime($imagesDirectory.'/'.$filename)),
                         'file' => str_replace('.', '_', $filename)
-                    );
+                    ];
                 }
             }
         }
         
-        $this->view->setVar('foldersize', number_format($this->GetDirectorySize($imagesDirectory) / 1000, 2));
+        $response->setVar('blog', $blog);
+        $response->setVar('foldersize', number_format($this->GetDirectorySize($imagesDirectory) / 1000, 2));
+        $response->setVar('images', $images);
+
+        $response->addScript('/resources/js/rbwindow.js');
+        $response->addScript('/resources/js/rbrtf.js');
+        $response->addStylesheet('/resources/css/rbwindow.css');
+        $response->addStylesheet('/resources/css/rbrtf.css');
         
-        $this->view->addScript('/resources/js/rbwindow');
-        $this->view->addScript('/resources/js/rbrtf');
-        $this->view->addStylesheet('/resources/css/rbwindow');
-        $this->view->addStylesheet('/resources/css/rbrtf');
+        $response->setTitle('Manage Files - ' . $blog['name']);
+        $response->write('files/manage.tpl');
+    }
+
+    /**
+     * Handles /files/delete/<blogid>/<filename>
+     * Delete a file by filename
+     */
+    public function delete(&$request, &$response)
+    {
+        $blogid = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogid);
         
-        $this->view->setVar('images', $images);
+        if(!is_array($blog)) {
+            $response->redirect('/', 'Could not find blog', 'error');
+        }
+        elseif(!$this->modelBlogs->canWrite($blogid)) {
+            $response->redirect('/', 'Access denied', 'error');
+        }
+
+        $imagesDirectory = SERVER_PATH_BLOGS.'/' . $blogid . '/images';
+        $filename = str_replace('_', '.', $request->getUrlParameter(2));
         
-        $this->view->setPageTitle('Manage Files - '.$this->blog['name']);
+        if(!file_exists($imagesDirectory . '/' . $filename)) {
+            $response->redirect('/files/manage' . $blog['id'], 'Could not find blog', 'error');
+        }
         
-        $this->view->render('files/manage.tpl');
+        unlink($imagesDirectory . '/' . $filename);
+        
+        $response->redirect('/files/manage' . $blog['id'], 'File deleted', 'success');
     }
 }
-?>

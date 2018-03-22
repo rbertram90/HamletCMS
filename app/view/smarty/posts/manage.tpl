@@ -14,32 +14,36 @@
         </div>
         <div class="column">
             <div class="ui form">
-                <div class="ui horizontal segments margin" style="margin-top:0px; margin-bottom:0px;">
+                <div class="ui horizontal segments margin" style="margin:0;">
                     <div class="ui segment">
-                        <label for="numtoshow">Show</label>
-                        <select id="numtoshow" name="numtoshow">
-                            <option>5</option>
-                            <option selected>10</option>
-                            <option>15</option>
-                            <option>20</option>
-                        </select>
+                        <div class="field">
+                            <label for="numtoshow">Show</label>
+                            <select id="numtoshow" name="numtoshow" class="ui dropdown">
+                                <option>5</option>
+                                <option selected>10</option>
+                                <option>15</option>
+                                <option>20</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="ui segment">
-                        <label for="sortby">Sort</label>
-                        <select id="sortby" name="sortby">
-                            <option value="timestamp DESC">Date Posted (Newest First)</option>
-                            <option value="timestamp ASC">Date Posted (Oldest First)</option>
-                            <option value="title ASC">Title (A First)</option>
-                            <option value="title DESC">Title (Z First)</option>
-                            <option value="author_id ASC">Author ID (Low -> High)</option>
-                            <option value="author_id DESC">Author ID (High -> Low)</option>
-                            <option value="hits DESC">Views (Most First)</option>
-                            <option value="hits ASC">Views (Least First)</option>
-                            <option value="uniqueviews DESC">Visitors (Most First)</option>
-                            <option value="uniqueviews ASC">Visitors (Least First)</option>
-                            <option value="numcomments DESC">Comments (Most First)</option>
-                            <option value="numcomments ASC">Comments (Least First)</option>
-                        </select>
+                        <div class="field">
+                            <label for="sortby">Sort</label>
+                            <select id="sortby" name="sortby" class="ui dropdown">
+                                <option value="timestamp DESC">Date Posted (Newest First)</option>
+                                <option value="timestamp ASC">Date Posted (Oldest First)</option>
+                                <option value="title ASC">Title (A First)</option>
+                                <option value="title DESC">Title (Z First)</option>
+                                <option value="author_id ASC">Author ID (Low -> High)</option>
+                                <option value="author_id DESC">Author ID (High -> Low)</option>
+                                <option value="hits DESC">Views (Most First)</option>
+                                <option value="hits ASC">Views (Least First)</option>
+                                <option value="uniqueviews DESC">Visitors (Most First)</option>
+                                <option value="uniqueviews ASC">Visitors (Least First)</option>
+                                <option value="numcomments DESC">Comments (Most First)</option>
+                                <option value="numcomments ASC">Comments (Least First)</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="ui segment">
                     <div class="inline field">

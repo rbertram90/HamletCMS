@@ -1,12 +1,15 @@
 {if $userAuthenticated}
-    <div class="comment-form">
+    <h2>Add Comment</h2>
+
+    <div class="ui form">
         <form action="/blogs/{$post.blog_id}/posts/{$post.id}/addcomment" method="POST">
             
-            <label for="fld_comment">Comment</label>
-            <textarea name="fld_comment"></textarea>
+            <div class="field">
+                <textarea name="fld_comment" rows="2"></textarea>
+            </div>
 
             <div class="push-right">
-                <input type="submit" name="fld_submitcomment" value="Add Comment" />
+                <input type="submit" name="fld_submitcomment" class="ui button primary" value="Add">
             </div>
         </form>
     </div>

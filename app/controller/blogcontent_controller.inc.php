@@ -36,7 +36,7 @@ class BlogContentController
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-                
+        
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
         $this->blogID        = $blog_key;
@@ -458,7 +458,8 @@ class BlogContentController
         if(count($lobjSettings) == 0) return;
         
         foreach($lobjSettings as $key => $lobjClass):
-            if(strtolower($key) == 'layout') continue;
+            $key = strtolower($key);
+            if($key == 'layout' || $key == 'includes') continue;
         
             // 0 should always be class name
             $css.= '.'.$lobjClass[0].' {';

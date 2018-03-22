@@ -130,7 +130,13 @@ class AjaxController extends GenericController
     {
         $blogID = $request->getInt('blog_id');
         $postID = $request->getInt('post_id', 0);
-        $title = $request->getString('post_title');
+        $title = $request->getString('post_title', '');
+
+        if (strlen($title) == 0) {
+            print "true";
+            return;
+        } 
+
         $link = $this->modelPosts->createSafePostUrl($title);
         
         $matchingPosts = $this->modelPosts->count(['link' => $link]);
@@ -140,7 +146,9 @@ class AjaxController extends GenericController
         }
         elseif ($matchingPosts == 1) {
             $post = $this->modelPosts->getPostByURL($link, $blogID);
-            if ($post['id'] == $postID) {
+            // Valid if new post & only one match or if the found post
+            // is the one we're editing
+            if ($postID == 0 || $post['id'] == $postID) {
                 print "false";
                 return;
             }

@@ -18,5 +18,5 @@
     {/foreach}
     </div>
 
-    {$page_content}
+    {$body_content}
 </div>

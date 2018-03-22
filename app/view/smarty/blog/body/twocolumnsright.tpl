@@ -5,7 +5,7 @@
     {/foreach}
     </div>
 
-    {$page_content}
+    {$body_content}
     
 </div><div class="leftcolumn">
     <div class="actions">

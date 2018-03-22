@@ -17,7 +17,7 @@ function getCMSSideMenu($blogid, $admin=false)
         <li><a href='/posts/manage/{$blogid}'><img src='/resources/icons/64/papers.png'><span class='menuitemtext'>Manage Posts</span></a></li>
         <li><a href='/comments/all/{$blogid}'><img src='/resources/icons/64/comment.png'><span class='menuitemtext'>Comments</span></a></li>
         <li><a href='/posts/create/{$blogid}'><img src='/resources/icons/64/doc_add.png'><span class='menuitemtext'>Create New Post</span></a></li>
-        <li><a href='/files/{$blogid}'><img src='/resources/icons/64/landscape.png'><span class='menuitemtext'>Files</span></a></li>";
+        <li><a href='/files/manage/{$blogid}'><img src='/resources/icons/64/landscape.png'><span class='menuitemtext'>Files</span></a></li>";
 
     if($admin)
         $output.= "<li><a href='/settings/menu/{$blogid}'><img src='/resources/icons/64/gear.png'><span class='menuitemtext'>Settings</span></a></li>
