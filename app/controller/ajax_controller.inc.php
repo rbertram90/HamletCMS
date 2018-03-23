@@ -3,13 +3,21 @@ namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Sanitize;
 
+/**
+ * This controller will be no longer
+ * 
+ * Will be moving methods over to their appropriate controller (posts/comments/blogs)
+ */
+
 class AjaxController extends GenericController
 {
     protected $modelPosts;
+    protected $modelBlogs;
     
     public function __construct()
     {
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
     }
     
     public function route($params)
@@ -57,15 +65,7 @@ class AjaxController extends GenericController
             case 'check_title':
                 require SERVER_ROOT.'/app/ajax/ajax_checkDuplicateTitle.php';
                 break;
-                
-            case 'submit_image_upload':
-                require SERVER_ROOT.'/app/ajax/submit_image_upload.php';
-                break;
-                
-            case 'view_image_drop':
-                require SERVER_ROOT.'/app/ajax/view_image_drop.php';
-                break;
-                
+                                
             case 'drop_image_upload':
                 
                 if(isset($_GET['blogid'])) {
@@ -156,4 +156,5 @@ class AjaxController extends GenericController
 
         print "true";
     }
+
 }

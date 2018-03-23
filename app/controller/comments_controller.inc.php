@@ -71,38 +71,65 @@ class CommentsController extends GenericController
     /**
      * deleteComment
      * remove a comment from a blog
-     * 
-     * @param $commentID <int> Unique ID for the comment
-     * @param $blog_id <int> Unique ID for the blog
      */
-    protected function deleteComment($commentID, $blog_id)
+    public function delete(&$request, &$response)
     {
-        // Delete from database
-        $this->modelComments->delete($commentID);
-        
-        // Set the message to show on the next page
-        setSystemMessage(ITEM_DELETED, 'Success');
-        
-        // Redirect back to comments page
-        redirect('/comments/' . $blog_id);
+        $commentID = $request->getUrlParameter(1);
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!$comment = $this->model->getCommentById($commentID)) {
+            $response->redirect('/', 'Comment not found', 'error');
+        }
+
+        $blogID = $comment['blog_id'];
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            $response->redirect('/', 'Blog not found', 'error');
+        }
+
+        if (!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
+            $response->redirect('/', 'Access denied', 'error');
+        }
+
+        if($this->model->deleteComment($commentID)) {
+            $response->redirect('/comments/all/' . $blog['id'], 'Comment removed', 'success');
+        }
+        else {
+            $response->redirect('/comments/all/' . $blog['id'], 'Unable to remove comment', 'error');
+        }
     }
     
     /**
      * approveComment
      * @description set approved=1 for a comment
-     * @param $commentID <int> Unique ID for the comment
-     * @param $blog_id <int> Unique ID for the blog
+     * 
+     * @todo refactor to stop repeat code
      */
-    protected function approveComment($commentID, $blog_id)
+    public function approve(&$request, &$response)
     {
-        // Update database
-        $this->modelComments->approve($commentID);
+        /* Duplicate code! */
+        $commentID = $request->getUrlParameter(1);
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!$comment = $this->model->getCommentById($commentID)) {
+            $response->redirect('/', 'Comment not found', 'error');
+        }
+
+        $blogID = $comment['blog_id'];
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            $response->redirect('/', 'Blog not found', 'error');
+        }
+
+        if (!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
+            $response->redirect('/', 'Access denied', 'error');
+        }
+        /* End Duplicate code! */
         
-        // Set the message to show on the next page
-        setSystemMessage('Comment approved', 'Success');
-        
-        // Redirect back to comments page
-        redirect('/comments/' . $blog_id);
+        if($this->model->approve($commentID)) {
+            $response->redirect('/comments/all/' . $blog['id'], 'Comment approved', 'success');
+        }
+        else {
+            $response->redirect('/comments/all/' . $blog['id'], 'Unable to approve comment', 'error');
+        }
     }
     
 }

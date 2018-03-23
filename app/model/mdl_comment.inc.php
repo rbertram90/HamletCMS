@@ -32,11 +32,10 @@ class Comments extends RBFactory
         );
     }
     
-    // Get stored information on a single blog - DEPRECATED! should use $modelcomment->get(array('id'=>'45093870'));
+    // Get stored information on a single blog
     public function getCommentById($commentid)
     {
-        $query_string = 'SELECT * FROM '.$this->tableName.' WHERE id="'.$commentid.'"';
-        return $this->db->selectSingleRow($query_string);
+        return $this->get('*', ['id' => $commentid], '', '', false);
     }
     
     // Get all the posts from $blog
@@ -57,10 +56,11 @@ class Comments extends RBFactory
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    // Get all the comments from $post - DEPRECATED! should use $modelcomment->get(array('post_id'=>'45093870'));
+    // Get all the comments from $post
     public function getCommentsByPost($post, $includeApprovals=true)
     {
-        $query_string = 'SELECT * FROM ' . $this->tableName . ' WHERE post_id="'.$post.'"';
+        $query_string = 'SELECT c.*, u.name, u.username, CONCAT(u.name, \'\', u.surname) as fullname FROM ' . $this->tableName . ' as c, users as u WHERE u.id = c.user_id AND post_id="'.$post.'"';
+
         if(!$includeApprovals) $query_string .= ' AND approved = 1';
         $statement = $this->db->query($query_string);
 
@@ -81,22 +81,26 @@ class Comments extends RBFactory
     }
     
     // Create a new comment
-    public function addComment($pComment, $postid, $blogid, $userid)
+    public function addComment($comment, $postid, $blogid, $userid)
     {
-        if($postid)
-        $query_string = 'INSERT INTO '.$this->tableName.'(message,blog_id,post_id,timestamp,user_id) VALUES ("'.$pComment.'","'.$blogid.'","'.$postid.'","'.date("Y-m-d H:i:s").'","'.$userid.'")';
-        return $this->db->runQuery($query_string);
+        return $this->insert([
+            'message' => $comment,
+            'blog_id' => $blogid,
+            'post_id' => $postid,
+            'timestamp' => date("Y-m-d H:i:s"),
+            'user_id' => $userid,
+        ]);
     }
     
     // Delete an existing comment - should there be more checking here?
-    public function delete($commentID)
+    public function deleteComment($commentID)
     {
-        return $this->db->deleteRow($this->tableName, array('id' => $commentID));
+        return $this->delete(['id' => $commentID]);
     }
     
     public function approve($commentID)
     {
-        return $this->db->updateRow($this->tableName, array('id' => $commentID), array('approved' => 1));
+        return $this->update(['id' => $commentID], ['approved' => 1]);
     }
     
     // Update a comment

@@ -15,7 +15,7 @@ class FilesController extends GenericController
     }
 
     /* Get the size in bytes of a folder */
-    private function GetDirectorySize($path){
+    private function getDirectorySize($path){
         $bytestotal = 0;
         $path = realpath($path);
         if($path!==false){
@@ -26,6 +26,15 @@ class FilesController extends GenericController
         return $bytestotal;
     }
     
+    // Create a unique filename
+    protected function createFilename($path, $ext)
+    {
+        $date = new \DateTime();
+        $tmpfilename = mt_rand(1000, 9999).$date->getTimestamp().'.'.$ext;
+        if(file_exists($path.'/'.$tmpfilename)) $tmpfilename = createFilename($path);
+        return $tmpfilename;
+    }
+
     /**
      * Handles /files/manage/<blogid>
      * Setup and run the manage files page
@@ -62,7 +71,7 @@ class FilesController extends GenericController
         }
         
         $response->setVar('blog', $blog);
-        $response->setVar('foldersize', number_format($this->GetDirectorySize($imagesDirectory) / 1000, 2));
+        $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));
         $response->setVar('images', $images);
 
         $response->addScript('/resources/js/rbwindow.js');
@@ -99,6 +108,77 @@ class FilesController extends GenericController
         
         unlink($imagesDirectory . '/' . $filename);
         
-        $response->redirect('/files/manage' . $blog['id'], 'File deleted', 'success');
+        $response->redirect('/files/manage/' . $blog['id'], 'File deleted', 'success');
+    }
+
+    /**
+     * Handles /files/viewimagedrop?blogid=<blogid>
+     */
+    public function viewimagedrop(&$request, &$response)
+    {
+        $request->isAjax = true;
+
+        if($blogID = $request->getInt('blogid')) {
+            $blog = $this->modelBlogs->getBlogById($blogID);
+            $response->setVar('blog', $blog);
+            $response->write('files/upload.tpl');
+        }
+    }
+    
+    /**
+     * Handles /files/uploadimage?blogid=<blogid>
+     */
+    public function uploadimages(&$request, &$response)
+    {
+        $request->isAjax = true;
+
+        if($blogID = $request->getInt('blogid')) {
+            $blog = $this->modelBlogs->getBlogById($blogID);
+        }
+        if(!$blog) {
+            $response->redirect('/', 'Blog not found', 'error');
+        }
+        if(!isset($_FILES) || !array_key_exists('file', $_FILES)) {
+            die("You need to select a file. Please reopen link to upload!");
+        }
+        
+        $filetype = strtolower($_FILES["file"]["type"]);
+        
+        if (!($filetype == "image/gif" || $filetype == "image/jpg" || $filetype == "image/jpeg" || $filetype == "image/pjpeg" || $filetype == "image/png")) {
+            die("Unable to continue with upload: Unrecognised file type - $filetype");
+        }
+        if($_FILES["file"]["size"] > 2000000) { // 1KB = 1000
+            die("Unable to continue with upload: File too large - max size = 2MB");
+        }
+        if ($_FILES["file"]["error"] > 0) {
+            die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
+        }
+        
+        $filepath = SERVER_PATH_BLOGS . "/" . $blog['id'];
+        
+        if(!is_dir($filepath.'/images')) {
+            // No Images directory exists
+            if(is_dir($filepath)) {
+                // We're in the correct place - make a new folder
+                mkdir($filepath.'/images');
+            } else {
+                // Not convinced we're in the right place - throw an error.
+                die("Unable to continue with upload: Error finding blog directory - please contact the system administrator");
+            }
+        }
+        
+        $totalfoldersize = $this->getDirectorySize($filepath . '/images');
+        
+        if($totalfoldersize + $_FILES["file"]["size"] > 50000000) {
+            die("Unable to continue with upload: 50 MB total upload limit exceeded!");
+        }
+        
+        $ext = strtoupper(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+        $filename = $this->createFilename($filepath, $ext);
+        
+        // Save in correct location
+        move_uploaded_file($_FILES["file"]["tmp_name"], $filepath . '/images/' . $filename);
+
+        print "success";
     }
 }

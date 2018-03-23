@@ -44,7 +44,7 @@
 </style>
 
 <div>
-    <button type="button" onclick="rbrtf_showWindow('/ajax/view_image_drop?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /> Add Image</button>
+    <button type="button" onclick="rbrtf_showWindow('/files/viewimagedrop?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /> Add Image</button>
     
     <p>Total Space Used = {$foldersize} KB <br> Limit = 50 MB</p>
 </div>
@@ -53,7 +53,7 @@
     {foreach $images as $image}{strip}
     <div class="imageholder">
         <div style="background-image:url('/blogdata/{$blog.id}/images/{$image.name}');" class="image">
-            <form action="/files/{$blog.id}/delete/{$image.file}" method="POST">
+            <form action="/files/delete/{$blog.id}/{$image.file}" method="POST">
                 <button onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
             </form>
         </div>

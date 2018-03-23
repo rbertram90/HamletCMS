@@ -159,7 +159,7 @@ use rbwebdesigns\core\Sanitize;
     ob_end_clean();
 
     // Cases where template not required
-    if ($controllerName == 'ajax' || $controllerName == 'api') {
+    if ($controllerName == 'ajax' || $controllerName == 'api' || $request->isAjax) {
         $response->writeBody();
         exit;
     }

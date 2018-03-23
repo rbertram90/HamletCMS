@@ -54,9 +54,9 @@
             <td class="single line right aligned">
                 
                 {if $comment['approved'] == 0}
-                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/approve/{$comment.id}'{rdelim}" title="Approve Comment">Approve</button>
+                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/comments/approve/{$comment.id}'{rdelim}" title="Approve Comment">Approve</button>
                 {/if}
-                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/comments/{$comment.blog_id}/delete/{$comment.id}'{rdelim}" title="Remove Comment">Delete</button>
+                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/comments/delete/{$comment.id}'{rdelim}" title="Remove Comment">Delete</button>
             </td>
         </tr>
     {/strip}{/foreach}
