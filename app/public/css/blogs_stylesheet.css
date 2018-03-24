@@ -22,6 +22,14 @@ p {
     margin-bottom:          4px;
 }
 
+.logo {
+    max-width: 100%;
+}
+
+.ui.vertical.menu .header.item {
+    background-color: rgba(0,0,0, 0.025);
+}
+
 .action_button {
     background-color: #006dcc;
     background-image: linear-gradient(to bottom, #0088cc, #0044cc);

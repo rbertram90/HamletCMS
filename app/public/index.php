@@ -68,17 +68,19 @@ use rbwebdesigns\core\Sanitize;
         exit;
     }
 
-    if($controllerName == 'account') {
+    if ($controllerName == 'account') {
         $action = $request->getUrlParameter(0, 'login');
 
-        require SERVER_ROOT . '/app/controller/account_controller.inc.php';
-        $controller = new \rbwebdesigns\blogcms\AccountController();
-        $controller->$action($request, $response);
-        exit;
+        if ($action == 'login' || $action == 'register') {
+            require SERVER_ROOT . '/app/controller/account_controller.inc.php';
+            $controller = new \rbwebdesigns\blogcms\AccountController();
+            $controller->$action($request, $response);
+            exit;
+        }
     }
 
     // User must be logged in to do anything in the CMS
-    if(!USER_AUTHENTICATED) {
+    if (!USER_AUTHENTICATED) {
         $response->redirect('/account/login', 'Login required', 'warning');
     }
     else {

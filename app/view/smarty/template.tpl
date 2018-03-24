@@ -21,7 +21,7 @@
     <div class="ui stackable two column grid">
         <div class="four wide tablet three wide computer column">
             <div class="ui center aligned inverted teal segment">
-                <img src="/images/logo.png" alt="Blog CMS">
+                <img src="/images/logo.png" alt="Blog CMS" class="logo">
             </div>
 
             <nav class="ui fluid vertical pointing menu">

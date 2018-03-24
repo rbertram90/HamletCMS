@@ -6,55 +6,42 @@ use rbwebdesigns\core\Sanitize;
 class AccountController extends GenericController
 {
     protected $model;
+    protected $request, $response;
     
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
     }
     
-    public function route($params)
+    /**
+     * Handles /account/user/[<userid>]
+     */
+    public function user()
     {
-        if(!USER_AUTHENTICATED) $this->thrownAccessDenied();
-        
-        switch($params[0])
-        {
-            case 'user':
-                if(isset($params[1])) $user = $GLOBALS['modelUsers']->getUserById(Sanitize::int($params[1]));
-                else return $this->throwNotFound();
-                
-                $this->view->setVar('user', $user);
-                $this->view->setPageTitle($user['username'] . '\'s profile');
-                $this->view->render('account/viewuser.tpl');
-                break;
-                
-            case 'edit':
-                if(isset($_POST['fld_submit_accchange'])) $this->updateAccountDetails();
-                $this->view->setPageTitle('Edit Profile');
-                $this->view->setVar('user', $GLOBALS['gobjUser']);
-                $this->view->render('account/editdetails.tpl');
-                break;
-                
-            case 'changepassword':
-                if(isset($_POST['fld_submit_passwordchange'])) $this->updatePassword();
-                $this->view->setPageTitle('Change Password');
-                // $this->view->setVar();
-                $this->view->render('account/changepassword.tpl');
-                break;
-            
-            case 'changeprofilephoto':
-                if(isset($_POST['fld_submit_uploadphoto'])) $this->uploadProfilePhoto();
-                $this->view->setPageTitle('Upload profile photo');
-                $this->view->render('account/uploadavatar.tpl');
-                break;
-                
-            default:
-                // profile main
-                $this->view->setPageTitle('Your Account');
-                $this->view->render('account/main.tpl');
-                break;
+        if ($userID = $this->request->getUrlParameter(1)) {
+            if($user = $this->model->getById($userID)) {
+                // Found user
+            }
+            else {
+                $this->response->redirect('/', 'User not found', 'error');
+            }
         }
+        else {
+            $userID = BlogCMS::session()->currentUser['id'];
+            $user = $this->model->getById($userID);
+        }
+        
+        $this->response->setVar('user', $user);
+        $this->response->setTitle($user['username'] . '\'s profile');
+        $this->response->write('account/viewuser.tpl');
     }
-    
+
+    /**
+     * Handles GET /account/login
+     */
     public function login(&$request, &$response)
     {
         if($request->method() == 'POST') return $this->runLogin($request, $response);
@@ -63,6 +50,9 @@ class AccountController extends GenericController
         $response->writeTemplate('account/login.tpl');
     }
 
+    /**
+     * Handles GET /account/register
+     */
     public function register(&$request, &$response)
     {
         if($request->method() == 'POST') return $this->runRegister($request, $response);
@@ -71,23 +61,29 @@ class AccountController extends GenericController
         $response->writeTemplate('account/register.tpl');
     }
 
+    /**
+     * Handles POST /account/login
+     */
     protected function runLogin(&$request, &$response)
     {
         $username = $request->getString('fld_username');
         $password = $request->getString('fld_password');
 
         if (strlen($username) == 0 || strlen($password) == 0) {
-            redirect('/account/login', 'Please complete all fields', 'error');
+            $response->redirect('/account/login', 'Please complete all fields', 'error');
         }
 
         if ($this->model->login($username, $password)) {
-            redirect('/', 'Welcome back', 'success');
+            $response->redirect('/', 'Welcome back', 'success');
         }
         else {
-            redirect('/account/login', 'No match found for username and password', 'error');
+            $response->redirect('/account/login', 'No match found for username and password', 'error');
         }
     }
 
+    /**
+     * Handles POST /account/register
+     */
     protected function runRegister(&$request, &$response)
     {
         $details = [
@@ -103,59 +99,99 @@ class AccountController extends GenericController
         // Check all fields complete
         foreach ($details as $value) {
             if (strlen($value) == 0) {
-                redirect('/account/login', 'Please complete all fields', 'error');
+                $response->redirect('/account/login', 'Please complete all fields', 'error');
                 break;
             }
         }
 
         // Validate
         if ($details['email'] != $details['emailConfirm'] || $details['password'] != $details['passwordConfirm']) {
-            redirect('/account/register', 'Email or passwords did not match', 'error');
+            $response->redirect('/account/register', 'Email or passwords did not match', 'error');
         }
 
         if ($this->model->register($details)) {
-            redirect('/account/login', 'Account created', 'success');
+            $response->redirect('/account/login', 'Account created', 'success');
         }
         else {
-            redirect('/account/login', 'Unable to create account right now - please try again later', 'error');
+            $response->redirect('/account/login', 'Unable to create account right now - please try again later', 'error');
         }
     }
 
-    private function updateAccountDetails()
-    {        
-        $details = array(
-            "name" => Sanitize::string($_POST['fld_firstname']),
-            "surname" => Sanitize::string($_POST['fld_surname']),
-            "description" => Sanitize::string($_POST['fld_description']),
-            "email" => Sanitize::email($_POST['fld_email']),
-            "gender" => Sanitize::string($_POST['fld_gender']),
-            "location" => Sanitize::string($_POST['fld_location']),
-            "username" => Sanitize::string($_POST['fld_username'])
-        );
+    /**
+     * Handles GET /account/logout
+     */
+    public function logout(&$request, &$response)
+    {
+        $session = BlogCMS::session();
+        $session->delete('user');
+        $session->end();
+        
+        $response->redirect('/', 'Logout successful', 'success');
+    }
+
+    /**
+     * Handles GET /account/settings
+     */
+    public function settings()
+    {
+        if($this->request->method() == 'POST') return $this->saveAccountSettings();
+
+        $this->response->setVar('user', $this->model->getById(BlogCMS::session()->currentUser['id']));
+        $this->response->setTitle('Profile settings');
+        $this->response->write('account/editdetails.tpl');
+    }
+
+    /**
+     * Handles POST /account/settings
+     */
+    protected function saveAccountSettings()
+    {
+        $details = [
+            "name"        => $this->request->getString('fld_firstname'),
+            "surname"     => $this->request->getString('fld_surname'),
+            "description" => $this->request->getString('fld_description'),
+            "email"       => $this->request->getString('fld_email'),
+            "gender"      => $this->request->getString('fld_gender'),
+            "location"    => $this->request->getString('fld_location'),
+            "username"    => $this->request->getString('fld_username'),
+        ];
         
         // Sanitize Date Input
-        $in_dob_day = Sanitize::int($_POST['fld_dob_day']);
-        $in_dob_month = Sanitize::int($_POST['fld_dob_month']);
-        $in_dob_year = Sanitize::int($_POST['fld_dob_year']);
+        $in_dob_day   = $this->request->getInt('fld_dob_day');
+        $in_dob_month = $this->request->getInt('fld_dob_month');
+        $in_dob_year  = $this->request->getInt('fld_dob_year');
         
-        // Check the date combination actually exists!
         if(checkdate($in_dob_month, $in_dob_day, $in_dob_year)) {
-            // Convert to date
             $details['dob'] = date("Y-m-d", strtotime($in_dob_year."-".$in_dob_month."-".$in_dob_day));
-        
-        } else {
-            setSystemMessage("Unable to set date of birth", "Error");
-            redirect('/account/edit');
+        }
+        else {
+            $this->response->redirect('/account/settings', 'Invalid date of birth', 'error');
         }
         
-        // Check that if the username has changed then if this one is avaliable
-        $this->mdlUsers->updateDetails($details);
-        
-        setSystemMessage("Details updated", "Success");
-        redirect('/account/edit');
+        if ($this->model->saveSettings($details)) {
+            $this->response->redirect('/account/settings', 'Account updated', 'success');
+        }
+        else {
+            $this->response->redirect('/account/settings', 'Unable to save profile', 'error');
+        }
     }
-    
-    private function updatePassword()
+
+    /**
+     * Handles GET /account/password
+     */
+    public function password()
+    {
+        if ($this->request->method() == 'POST') return $this->updatePassword();
+        
+        $this->response->setTitle('Change Password');
+        // $this->view->setVar();
+        $this->response->write('account/changepassword.tpl');
+    }
+
+    /**
+     * Handles POST /account/password
+     */
+    protected function updatePassword()
     {
         // Change Password
         $details = array(
@@ -170,8 +206,8 @@ class AccountController extends GenericController
             
         redirect('/account/changepassword');
     }
-        
-    private function generateProfilePhotoName()
+    
+    protected function generateProfilePhotoName()
     {
         $filename = rand(10000,32000) . rand(10000,32000) . "." . pathinfo($_FILES["avatar"]["name"], PATHINFO_EXTENSION);
         
@@ -182,8 +218,22 @@ class AccountController extends GenericController
         
         return $filename;
     }
-    
-    private function uploadProfilePhoto()
+
+    /**
+     * Handles GET /account/avatar
+     */
+    public function avatar()
+    {
+        if ($this->request->method() == 'POST') return $this->updateAvatar();
+
+        $this->response->setTitle('Upload profile photo');
+        $this->response->write('account/uploadavatar.tpl');
+    }
+
+    /**
+     * Handles POST /account/avatar
+     */
+    protected function updateAvatar()
     {
         // If file type is correct type and is less than 20kb
         /*

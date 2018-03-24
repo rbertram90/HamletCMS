@@ -82,6 +82,30 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
         ];
     }
 
+    $links = array_merge($links, [
+        [
+            'label' => 'Your Account'
+        ],
+        [
+            'key' => 'profile',
+            'url' => '/account/user',
+            'icon' => 'user',
+            'label' => 'View Profile',
+        ],
+        [
+            'key' => 'profile',
+            'url' => '/account/settings',
+            'icon' => 'cogs',
+            'label' => 'Settings',
+        ],
+        [
+            'key' => 'logout',
+            'url' => '/account/logout',
+            'icon' => 'arrow left',
+            'label' => 'Logout',
+        ]
+    ]);
+
     foreach ($links as $link) {
         if (isset($link['url'])) {
             $active = $activeItem && $link['key'] == $activeItem ? 'active ' : '';

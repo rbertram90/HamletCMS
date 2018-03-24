@@ -63,7 +63,7 @@ class AccountFactory extends RBFactory
             'surname' => $details['surname'],
             'username' => $details['username'],
             'password' => md5($details['password']),
-            'email' => md5($details['email']),
+            'email' => $details['email'],
             'admin' => 0,
             'signup_date' => date('Y-m-d H:i:s')
         ]);
@@ -79,5 +79,15 @@ class AccountFactory extends RBFactory
     public function getById($userID)
     {
         return $this->get(['*'], ['id' => $userID], '', '', false);
+    }
+
+    /**
+     * Save account settings
+     */
+    public function saveSettings($fields)
+    {        
+        $user = BlogCMS::session()->currentUser;
+
+        return $this->update(['id' => $user['id']], $fields);
     }
 }
