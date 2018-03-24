@@ -38,7 +38,7 @@ use rbwebdesigns\core\Sanitize;
     
     $request = BlogCMS::request();
     $response = BlogCMS::response();
-
+    
     // Controller naming is important!
     // For simplicity, the code makes the following assumptions:
     //
@@ -85,25 +85,24 @@ use rbwebdesigns\core\Sanitize;
         // Check the user has access to view/edit this blog
         $blogID = $request->getUrlParameter(1);
         if(strlen($blogID) == 10 && is_numeric($blogID)) {
+            BlogCMS::$blogID = $blogID;
+
             // Surely must be an ID for a blog
             // Check the user has edit permissions
             $user = BlogCMS::session()->currentUser;
             $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
 
-            $userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
-            $userIsAdminContributor = $modelContributors->isBlogContributor($blogID, $user['id'], 'all');
+            BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
+            BlogCMS::$userIsAdminContributor = $modelContributors->isBlogContributor($blogID, $user['id'], 'all');
 
-            if (!$userIsContributor) {
+            if (!BlogCMS::$userIsContributor) {
                 redirect('/', 'You\'re not a contributor for that blog!', 'error');
             }
             elseif ($controllerName == 'settings') {
-                if(!$userIsAdminContributor) {
+                if(!BlogCMS::$userIsAdminContributor) {
                     redirect('/', 'You haven\'t got sufficient permissions to access that page', 'error');
                 }
             }
-
-            require SERVER_ROOT . '/app/view/sidemenu.php';
-            $sideMenu = getCMSSideMenu($blogID, $userIsAdminContributor);
         }
     }
 
@@ -172,8 +171,14 @@ use rbwebdesigns\core\Sanitize;
     // Set the side menu content
     // $view->setSideMenu($controller->getSideMenu($queryParams, $action));
 
+    require SERVER_ROOT . '/app/view/sidemenu.php';
 
-    $sideMenu = isset($sideMenu) ? $sideMenu : '';
+    if (BlogCMS::$blogID) {
+        $sideMenu = getCMSSideMenu(BlogCMS::$blogID, BlogCMS::$userIsAdminContributor, BlogCMS::$activeMenuLink);
+    }
+    else {
+        $sideMenu = getCMSSideMenu(0, 0, BlogCMS::$activeMenuLink);
+    }
     $response->setVar('page_sidemenu', $sideMenu);
 
     // Run Template here

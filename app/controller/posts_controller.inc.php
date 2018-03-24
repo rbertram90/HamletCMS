@@ -41,6 +41,8 @@ class PostsController extends GenericController
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+
+        BlogCMS::$activeMenuLink = 'posts';
     }
     
     /**

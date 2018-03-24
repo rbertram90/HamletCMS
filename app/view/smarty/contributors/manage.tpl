@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
+            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
         </div>
     </div>
     <div class="one column row">
@@ -25,7 +25,7 @@
         {if $postCount['author_id'] == $contributor['id']}
 
             {$userPostCount = $postCount['post_count']}
-            {$lastPost = rbwebdesigns\dateFormatter::formatFriendlyTime($postCount['last_post'])}
+            {$lastPost = rbwebdesigns\core\dateFormatter::formatFriendlyTime($postCount['last_post'])}
 
             {break}
         {/if}

@@ -93,6 +93,8 @@ class BlogController extends GenericController
             }
         }
         
+        BlogCMS::$activeMenuLink = 'dashboard';
+
         // Add to template
         $response->setVar('blogs', $blogs);
         
@@ -212,10 +214,8 @@ class BlogController extends GenericController
             'totalviews' => $this->modelPosts->countTotalPostViews($blogID)
         ));
         
-        // Set page title
+        BlogCMS::$activeMenuLink = 'overview';
         $response->setTitle('Dashboard - '.$blog['name']);
-        
-        // Output the view
         $response->write('overview.tpl');
     }
             

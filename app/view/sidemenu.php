@@ -4,26 +4,93 @@
  * 
  * @param int $blogid
  *   ID for a blog record to match database
+ * @param bool $admin
+ *   Are we to include the administrator links
+ * @param string|null
+ *   Key for the menu item to show as active
  * 
  * @return string
  *   HTML to show in side menu with links specific to the blog
  * 
  * @todo not show the settings menu option to users who do not have permission to perform the actions
  */
-function getCMSSideMenu($blogid, $admin=false)
+function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
 {
-    $output = "<li class='nolink'><span class='menuitemtext'>Blog Actions</span></li>
-        <li><a href='/blog/overview/{$blogid}'><img src='/resources/icons/64/bargraph.png'><span class='menuitemtext'>Dashboard</span></a></li>
-        <li><a href='/posts/manage/{$blogid}'><img src='/resources/icons/64/papers.png'><span class='menuitemtext'>Manage Posts</span></a></li>
-        <li><a href='/comments/all/{$blogid}'><img src='/resources/icons/64/comment.png'><span class='menuitemtext'>Comments</span></a></li>
-        <li><a href='/posts/create/{$blogid}'><img src='/resources/icons/64/doc_add.png'><span class='menuitemtext'>Create New Post</span></a></li>
-        <li><a href='/files/manage/{$blogid}'><img src='/resources/icons/64/landscape.png'><span class='menuitemtext'>Files</span></a></li>";
+    $output = "";
+    $links = [
+        [
+            'key' => 'dashboard',
+            'url' => '/',
+            'icon' => 'list ul',
+            'label' => 'My Blogs',
+        ],
+    ];
 
-    if($admin)
-        $output.= "<li><a href='/settings/menu/{$blogid}'><img src='/resources/icons/64/gear.png'><span class='menuitemtext'>Settings</span></a></li>
-        <li><a href='/contributors/{$blogid}'><img src='/resources/icons/64/friends.png'><span class='menuitemtext'>Contributors</span></a></li>";
+    if ($blogid > 0) {
+        $links = array_merge($links, [
+            [
+                'label' => 'Blog Actions'
+            ],
+            [
+                'key' => 'overview',
+                'url' => '/blog/overview/'. $blogid,
+                'icon' => 'chart bar',
+                'label' => 'Dashboard',
+            ],
+            [
+                'key' => 'posts',
+                'url' => '/posts/manage/'. $blogid,
+                'icon' => 'copy outline',
+                'label' => 'Posts',
+            ],
+            [
+                'key' => 'comments',
+                'url' => '/comments/all/'. $blogid,
+                'icon' => 'comments outline',
+                'label' => 'Comments',
+            ],
+            [
+                'key' => 'files',
+                'url' => '/files/manage/'. $blogid,
+                'icon' => 'image outline',
+                'label' => 'Files',
+            ],
+        ]);
 
-    $output.= "<li><a href='/blogs/{$blogid}'><img src='/resources/icons/64/bargraph.png'><span class='menuitemtext'>View Blog</span></a></li>";
-    
+        if ($admin) {
+            $links = array_merge($links, [
+                [
+                'key' => 'settings',
+                'url' => '/settings/menu/'. $blogid,
+                'icon' => 'cogs',
+                'label' => 'Settings',
+                ],
+                [
+                    'key' => 'users',
+                    'url' => '/contributors/manage/'. $blogid,
+                    'icon' => 'users',
+                    'label' => 'Contributors',
+                ]
+            ]);
+        }
+
+        $links[] = [
+            'key' => 'blog',
+            'url' => '/blogs/'. $blogid,
+            'icon' => 'book',
+            'label' => 'View Blog',
+        ];
+    }
+
+    foreach ($links as $link) {
+        if (isset($link['url'])) {
+            $active = $activeItem && $link['key'] == $activeItem ? 'active ' : '';
+            $output.= '<a href="'.$link['url'].'" class="' . $active . 'teal item"><span class="left floated"><i class="'.$link['icon'].' icon"></i></span> '.$link['label'].'</a>';
+        }
+        else {
+            $output.= '<div class="header item">' . $link['label'] . '</div>';
+        }
+    }
     return $output;
 }
+

@@ -17,32 +17,23 @@
     {$scripts}
 </head>
 <body>
-    <div id="wrapper">
-        
-        <div id="sidebar">
-            
-            <div id="logo-holder">
-                <img src="/images/logo.png" />
-            </div>
-            
-            <ul>
-                {* todo: apply 'current' class back in *}
-                <li><a href="/"><img src='/resources/icons/64/book.png'><span class='menuitemtext'>My Blogs</span></a></li>
-                <li><a href="/explore"><img src='/resources/icons/64/plane.png'><span class='menuitemtext'>Explore Blogs</span></a></li>
 
-                {if $current_user.admin == 1}
-                <li><a href="/developer"><img src='/resources/icons/64/bargraph.png'><span class='menuitemtext'>Developer Docs</span></a></li>
-                {/if}
-                
-                {* Add page-specific menu options *}
+    <div class="ui stackable two column grid">
+        <div class="four wide tablet three wide computer column">
+            <div class="ui center aligned inverted teal segment">
+                <img src="/images/logo.png" alt="Blog CMS">
+            </div>
+
+            <nav class="ui fluid vertical pointing menu">
                 {$page_sidemenu}
-                <li id="hidesidemenu"><a href="#" onclick="window.hideSideMenu(); return false;"><img src="/resources/icons/64/arrow_left.png"><span class='menuitemtext'>Minimise</span></a></li>
-                <li id="showsidemenu"><a href="#" onclick="window.showSideMenu(); return false;"><img src="/resources/icons/64/arrow_right.png"></a></li>
-            </ul>
+
+                {*
+                <a id="hidesidemenu" onclick="window.hideSideMenu(); return false;" class="item"><span class="left floated"><i class="arrow alternate circle left outline icon"></i></span> Minimise</a>
+                <a id="showsidemenu" onclick="window.showSideMenu(); return false;" class="item"><span class="left floated"><i class="arrow alternate circle right outline icon"></i></span> Maximise</a>
+                *}
+            </nav>
         </div>
-        
-        <div id="content">
-            
+        <div class="twelve wide tablet thirteen wide computer column">
             <div id="messages">
                 {foreach from=$messages item=$message}                
                     <p class="ui message {$message.type}">{$message.text}</p>

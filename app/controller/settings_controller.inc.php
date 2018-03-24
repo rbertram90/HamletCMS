@@ -43,6 +43,8 @@ class SettingsController extends GenericController
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+
+        BlogCMS::$activeMenuLink = 'settings';
     }
     
     /**

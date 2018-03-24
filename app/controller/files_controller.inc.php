@@ -69,6 +69,7 @@ class FilesController extends GenericController
                 }
             }
         }
+        BlogCMS::$activeMenuLink = 'files';
         
         $response->setVar('blog', $blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));

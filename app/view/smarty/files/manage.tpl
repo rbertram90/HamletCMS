@@ -23,17 +23,17 @@
         background-color:#fff;
         margin:1%;
     }
-    .image {
+    .imageholder .image {
         background-size:cover;
         width:100%;
         height:100%;
         text-align:center;
         padding-top:80px;
     }
-    .image button {
+    .imageholder .image button {
         display:none;
     }
-    .image:hover button {
+    .imageholder .image:hover button {
         display:inline;
     }
     .imageholder p {

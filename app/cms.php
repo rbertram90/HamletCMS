@@ -19,6 +19,11 @@ class BlogCMS
     protected static $config = [];
     // protected static $modelManager = null;
 
+    public static $blogID = 0;
+    public static $activeMenuLink = '';
+    public static $userIsAdminContributor = false;
+    public static $userIsContributor = false;
+
     /**
      * @return array
      */

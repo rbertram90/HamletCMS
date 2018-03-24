@@ -33,6 +33,8 @@ class CommentsController extends GenericController
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+
+        BlogCMS::$activeMenuLink = 'comments';
     }
 
     /**
@@ -60,7 +62,7 @@ class CommentsController extends GenericController
         // View Current Comments
         $comments = $this->model->getCommentsByBlog($blogID);
         $blog = $this->modelBlogs->getBlogById($blogID);
-        
+
         $response->setVar('comments', $comments);
         $response->setVar('blog', $blog);
         $response->setTitle('Manage Comments - ' . $blog['name']);

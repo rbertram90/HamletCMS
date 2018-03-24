@@ -16,19 +16,16 @@ class ContributorsController extends GenericController
     protected $modelUsers;
     protected $modelBlogs;
     protected $modelPosts;
-    protected $modelContributors;
+    protected $model;
     
-    // View
-    protected $view;
-    
-    public function __construct($dbcms, $view)
+    public function __construct()
     {
-        $this->modelUsers = $GLOBALS['modelUsers'];
-        $this->modelBlogs =  new ClsBlog($dbcms);
-        $this->modelPosts = new ClsPost($dbcms);
-        $this->modelContributors = new ClsContributors($dbcms);
+        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\model\UserFactory');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
         
-        $this->view = $view;
+        BlogCMS::$activeMenuLink = 'users';
     }
         
     /**
@@ -83,29 +80,29 @@ class ContributorsController extends GenericController
     
     
     /**
-        View the manage contributors page
-    **/
-    public function manage($blog)
+     * View the manage contributors page
+     */
+    public function manage(&$request, &$response)
     {
-        // View all contributors
-        $this->view->setVar('contributors', $this->modelContributors->getBlogContributors($blog['id']));
-        
-        // Get the number of post each contributor has made
-        $this->view->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id']));
-        
-        // Set blog in view
-        $this->view->setVar('blog', $blog);
-        
-        // Set the page title
-        $this->view->setPageTitle('Manage Blog Contributors - '.$blog['name']);
-        
-        // Render the view
-        $this->view->render('contributors/manage.tpl');
+        $blogID = $request->getUrlParameter(1);
+        $blog = $this->modelBlogs->getBlogById($blogID);
+
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!$this->model->isBlogContributor($blog['id'], $currentUser['id'], 'all')) {
+            $response->redirect('/', 'Access denied', '');
+        }
+
+        $response->setVar('contributors', $this->model->getBlogContributors($blog['id']));
+        $response->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id'])); // Get the number of post each contributor has made
+        $response->setVar('blog', $blog);
+        $response->setTitle('Manage Blog Contributors - '.$blog['name']);
+        $response->write('contributors/manage.tpl');
     }    
     
     /**
-        Add a contributor to the database
-    **/
+     * Add a contributor to the database
+     */
     public function actionAdd($blogid)
     {
         if($_POST['fld_contributor'] == 0)
@@ -120,10 +117,9 @@ class ContributorsController extends GenericController
         redirect('/contributors/'.$blogid);
     }
     
-    
     /**
-        Update the permission for a contributor
-    **/
+     * Update the permission for a contributor
+     */
     public function changePermissions($userid, $blogid, $permissions)
     {
         if($this->modelContributors->changePermissions($userid, $blogid, $permissions)) setSystemMessage(ITEM_UPDATED, "Success");
@@ -131,9 +127,8 @@ class ContributorsController extends GenericController
         redirect('/contributors/'.$blogid);
     }
     
-    
     /**
-        Delete a contributor
+     * Remove a contributor
     **/
     public function actionDelete($userid, $blogid)
     {
@@ -147,4 +142,3 @@ class ContributorsController extends GenericController
     }
     
 }
-?>
