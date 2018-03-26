@@ -114,16 +114,15 @@ function openPreview() {ldelim}
             <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
             {if $mode == 'edit'}
-              <input type="hidden" id="fld_postid" name="fld_postid" value="{$post.id}" />
+              <input type="hidden" id="fld_postid" name="fld_postid" value="{$post.id}">
             {else}
-              <input type="hidden" id="fld_postid" name="fld_postid" value="0" />
+              <input type="hidden" id="fld_postid" name="fld_postid" value="0">
             {/if}
             
-            <input type="hidden" name="fld_blogid" id="fld_blogid" value="{$blog.id}" />
-            <input type="hidden" name="fld_posttype" id="fld_posttype" value="standard" />
+            <input type="hidden" name="fld_posttype" id="fld_posttype" value="standard">
             
-            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = '/posts/{$blog.id}/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; {rdelim}" class="ui button right floated" />
-            <input type="submit" name="fld_submitpost" value="{$submitLabel}" class="ui button teal right floated" />
+            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = '/posts/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; {rdelim}" class="ui button right floated">
+            <input type="submit" name="fld_submitpost" value="{$submitLabel}" class="ui button teal right floated">
         </div>
 
 
@@ -188,7 +187,7 @@ $(document).ready(function () {
                 "fld_type": $("#fld_posttype").val(),
                 "fld_allowcomments": $("#fld_allowcomment").val(),
                 "fld_tags": $("#fld_tags").val(),
-                "fld_blogid": $("#fld_blogid").val(),
+                "fld_blogid": {$blog.id},
                 "csrf_token": CSRFTOKEN
 
             }, function(data)
@@ -249,7 +248,6 @@ $(document).ready(function () {
             }
         });
 
-    console.log('b' + window.postTitleIsValid);
         return window.postTitleIsValid;
     });
 

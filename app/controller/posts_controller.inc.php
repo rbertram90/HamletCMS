@@ -16,6 +16,7 @@ use Codeliner\ArrayReader\ArrayReader;
  * Routes:
  *  /posts/manage/<blogid>
  *  /posts/create/<blogid>
+ *  /posts/create/<blogid>/standard
  *  /posts/edit/<postid>
  *  /posts/delete/<postid>
  */
@@ -33,9 +34,14 @@ class PostsController extends GenericController
      * @var \rbwebdesigns\blogcms\model\Contributors
      */
     protected $modelContributors;
-
-    protected $blog;
-    protected $post;
+    /**
+     * @var array Active blog
+     */
+    protected $blog = null;
+    /**
+     * @var array Active post
+     */
+    protected $post = null;
 
     public function __construct()
     {
@@ -110,7 +116,6 @@ class PostsController extends GenericController
     }
 
     /**
-     * View post overview page
      * Handles /posts/manage/<blogid>
      * Most of the heavy data is done in a seperate ajax call
      */
@@ -123,7 +128,7 @@ class PostsController extends GenericController
     }
     
     /**
-     * View new post form
+     * Handles POST /posts/create/<blogid>
      */
     public function create()
     {
@@ -157,7 +162,7 @@ class PostsController extends GenericController
     }
     
     /**
-     * View edit post form
+     * Handles GET /posts/edit/<postID>
      */
     public function edit()
     {
@@ -207,21 +212,7 @@ class PostsController extends GenericController
     }
     
     /**
-     * @todo Everything!
-     */
-    public function previewPost()
-    {
-        echo "Preview Post - functionality to be completed!";
-        exit;
-    }
-    
-
-    /******************************************************************
-        POST Requests (Form Submitted)
-    ******************************************************************/
-    
-    /**
-     * Create a new blog post
+     * Handles POST /posts/create/<postID>
      */
     protected function runCreatePost()
     {
@@ -271,26 +262,31 @@ class PostsController extends GenericController
         $this->response->redirect('/posts/manage/' . $blog['id'], 'Post created', 'success');
     }
     
-    // Cancel action from new post screen
-    protected function action_removeAutosave($post)
-    {        
-        // Delete from DB - isn't critical if fails
-        $this->modelPosts->removeAutosave($post['id']);
-        
-        // Check if the actual post record is an autosave
-        if($post['initialautosave'] == 1) {
-            $this->modelPosts->delete(array('id' => $post['id']));
+    /**
+     * Handles POST /posts/cancelsave/<postID>
+     * 
+     * Cancel action from post screen
+     */
+    public function cancelsave()
+    {
+        // Delete autosave
+        $this->model->removeAutosave($this->post['id']);
+
+        if ($this->post['initialautosave'] == 1) {
+            // Delete post
+            $this->model->delete(['id' => $this->post['id']]);
         }
-        
-        // Redirect back to manage posts
-        redirect('/posts/' . $post['blog_id']);
+
+        $this->response->redirect('/posts/manage/' . $this->blog['id']);
     }
     
     /**
-     *  Edit an existing blog post
-    **/
+     * Handles POST /posts/edit/<postID>
+     * 
+     * Edit an existing blog post
+     */
     public function runEditPost()
-    {        
+    {
         // Check & Format date
         $posttime = strtotime($this->request->getString('fld_postdate'));
         
@@ -333,10 +329,10 @@ class PostsController extends GenericController
     public function delete()
     {
         if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
-            $response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
+            $this->response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
         }
         else {
-            $response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
+            $this->response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
         }
     }
     
