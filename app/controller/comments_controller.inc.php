@@ -1,10 +1,16 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 
 /**
  * file /app/controller/comments_controller.inc.php
+ * 
+ * Routes:
+ *   /comments/all/<blogid>
+ *   /comments/approve/<commentid>
+ *   /comments/delete/<commentid>
  * 
  * @method all($request, $response)
  * @method deleteComment($commentID, $blog_id)
@@ -26,6 +32,22 @@ class CommentsController extends GenericController
      * @var \rbwebdesigns\blogcms\model\Contributors
      */
     protected $modelContributors;
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
+    protected $request;
+    /**
+     * @var \rbwebdesigns\core\Response
+     */
+    protected $response;
+    /**
+     * @var array Active blog
+     */
+    protected $blog = null;
+    /**
+     * @var array Active comment
+     */
+    protected $comment = null;
 
 
     public function __construct()
@@ -35,6 +57,50 @@ class CommentsController extends GenericController
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
 
         BlogCMS::$activeMenuLink = 'comments';
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
+
+        $this->setup();
+    }
+
+    /**
+     * Setup controller
+     * 
+     * 1. Gets the key records that will be used for any request to keep
+     *    the code DRY (Blog and Comment)
+     * 
+     * 2. Checks the user has permissions to run the request
+     */
+    protected function setup()
+    {
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!BlogCMS::$blogID) {
+            $commentID = $this->request->getUrlParameter(1);
+
+            if (!$this->comment = $this->model->getCommentById($commentID)) {
+                $this->response->redirect('/', 'Unable to find comment', 'error');
+            }
+
+            BlogCMS::$blogID = $this->comment['blog_id'];
+        }
+
+        $this->blog = BlogCMS::getActiveBlog();
+
+        $access = true;
+
+        // Check the user is a contributor of the blog to begin with
+        if (!$this->modelContributors->isBlogContributor($this->blog['id'], $currentUser['id'])) {
+            $access = false;
+        }
+        elseif (!$this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_MANAGE_COMMENTS)) {
+            $access = false;
+        }
+
+        if (!$access) {
+            $this->response->redirect('/', '403 Access Denied', 'error');
+        }
     }
 
     /**
@@ -42,95 +108,49 @@ class CommentsController extends GenericController
      * Won't know which blog user is referring to in this case
      * so just send them back home with an error message
      */
-    public function defaultAction(&$request, &$response)
+    public function defaultAction()
     {
-        return $response->redirect('/', 'Invalid request', 'error');
+        return $this->response->redirect('/', 'Invalid request', 'error');
     }
 
     /**
-     * Administer comments made on the blog
      * Handles /comments/all/<blogid>
      * 
      * @todo Change this view to look more like the manage posts view with a seperate
      * ajax call to get the comments themselves?
      */
-    public function all(&$request, &$response)
+    public function all()
     {
-        // Get the Blog ID
-        $blogID = $request->getUrlParameter(1);
-        
-        // View Current Comments
-        $comments = $this->model->getCommentsByBlog($blogID);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        $response->setVar('comments', $comments);
-        $response->setVar('blog', $blog);
-        $response->setTitle('Manage Comments - ' . $blog['name']);
-        $response->addScript('/resources/js/paginate.js');
-        $response->write('comments.tpl');
+        $this->response->setVar('comments', $this->model->getCommentsByBlog($this->blog['id']));
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Manage Comments - ' . $this->blog['name']);
+        $this->response->addScript('/resources/js/paginate.js');
+        $this->response->write('comments.tpl');
     }
     
     /**
-     * deleteComment
-     * remove a comment from a blog
+     * Handles /comments/delete/<commentid>
      */
-    public function delete(&$request, &$response)
+    public function delete()
     {
-        $commentID = $request->getUrlParameter(1);
-        $currentUser = BlogCMS::session()->currentUser;
-
-        if (!$comment = $this->model->getCommentById($commentID)) {
-            $response->redirect('/', 'Comment not found', 'error');
-        }
-
-        $blogID = $comment['blog_id'];
-        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
-            $response->redirect('/', 'Blog not found', 'error');
-        }
-
-        if (!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            $response->redirect('/', 'Access denied', 'error');
-        }
-
-        if($this->model->deleteComment($commentID)) {
-            $response->redirect('/comments/all/' . $blog['id'], 'Comment removed', 'success');
+        if ($this->model->deleteComment($this->comment['id'])) {
+            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Comment removed', 'success');
         }
         else {
-            $response->redirect('/comments/all/' . $blog['id'], 'Unable to remove comment', 'error');
+            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Unable to remove comment', 'error');
         }
     }
     
     /**
-     * approveComment
-     * @description set approved=1 for a comment
-     * 
-     * @todo refactor to stop repeat code
+     * Handles /comments/approve/<commentid>
      */
-    public function approve(&$request, &$response)
+    public function approve()
     {
-        /* Duplicate code! */
-        $commentID = $request->getUrlParameter(1);
-        $currentUser = BlogCMS::session()->currentUser;
-
-        if (!$comment = $this->model->getCommentById($commentID)) {
-            $response->redirect('/', 'Comment not found', 'error');
-        }
-
-        $blogID = $comment['blog_id'];
-        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
-            $response->redirect('/', 'Blog not found', 'error');
-        }
-
-        if (!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            $response->redirect('/', 'Access denied', 'error');
-        }
-        /* End Duplicate code! */
-        
-        if($this->model->approve($commentID)) {
-            $response->redirect('/comments/all/' . $blog['id'], 'Comment approved', 'success');
+        if ($this->model->approve($this->comment['id'])) {
+            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Comment approved', 'success');
         }
         else {
-            $response->redirect('/comments/all/' . $blog['id'], 'Unable to approve comment', 'error');
+            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Unable to approve comment', 'error');
         }
     }
     

@@ -19,6 +19,8 @@ use Codeliner\ArrayReader\ArrayReader;
  *  /posts/create/<blogid>/standard
  *  /posts/edit/<postid>
  *  /posts/delete/<postid>
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
 class PostsController extends GenericController
 {
@@ -35,6 +37,14 @@ class PostsController extends GenericController
      */
     protected $modelContributors;
     /**
+     * @var \rbwebdesigns\core\Request
+     */
+    protected $request;
+    /**
+     * @var \rbwebdesigns\core\Response
+     */
+    protected $response;
+    /**
      * @var array Active blog
      */
     protected $blog = null;
@@ -42,6 +52,7 @@ class PostsController extends GenericController
      * @var array Active post
      */
     protected $post = null;
+    
 
     public function __construct()
     {
