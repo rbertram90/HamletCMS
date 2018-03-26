@@ -6,7 +6,7 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
 /**
- * /app/model/mdl_user.inc.php
+ * /app/model/mdl_account.inc.php
  */
 class AccountFactory extends RBFactory
 {
@@ -58,7 +58,7 @@ class AccountFactory extends RBFactory
             return false;
         }
 
-        return $this->insert([
+        $data = [
             'name' => $details['firstname'],
             'surname' => $details['surname'],
             'username' => $details['username'],
@@ -66,7 +66,11 @@ class AccountFactory extends RBFactory
             'email' => $details['email'],
             'admin' => 0,
             'signup_date' => date('Y-m-d H:i:s')
-        ]);
+        ];
+
+        if (isset($details['gender'])) $data['gender'] = $details['gender'];
+
+        return $this->insert($data);
     }
 
     /**
@@ -74,7 +78,8 @@ class AccountFactory extends RBFactory
      * 
      * @param int $userID
      * 
-     * @return array
+     * @return array|bool
+     *   Returns false if user is not found
      */
     public function getById($userID)
     {
@@ -83,6 +88,9 @@ class AccountFactory extends RBFactory
 
     /**
      * Save account settings
+     * 
+     * @param array $fields
+     *   User data - keyed by database column names
      */
     public function saveSettings($fields)
     {        

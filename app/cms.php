@@ -20,6 +20,7 @@ class BlogCMS
     // protected static $modelManager = null;
 
     public static $blogID = 0;
+    public static $blog = null;
     public static $activeMenuLink = '';
     public static $userIsAdminContributor = false;
     public static $userIsContributor = false;
@@ -35,6 +36,20 @@ class BlogCMS
     public static function addToConfig($items)
     {
         self::$config = array_merge_recursive(self::$config, $items);
+    }
+
+    /**
+     * Get the active blog we're looking at
+     */
+    public static function getActiveBlog()
+    {
+        if (self::$blog) return self::$blog;
+        if (self::$blogID) {
+            $blogsModel = self::model('\rbwebdesigns\blogcms\model\Blogs');
+            self::$blog = $blogsModel->getBlogById(self::$blogID);
+            return self::$blog;
+        }
+        return null;
     }
 
     /**

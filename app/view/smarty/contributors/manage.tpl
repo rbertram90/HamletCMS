@@ -1,83 +1,83 @@
 <div class="ui grid">
-    <div class="one column row">
+    <div class="row">
         <div class="column">
             {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
         </div>
     </div>
-    <div class="one column row">
+    <div class="row">
         <div class="column">
             {viewPageHeader('Contributors', 'friends.png', "{$blog['name']}")}
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="column">
+            <h2>Groups</h2>
+            <p class="ui message">Groups allow you to define the set of actions that a contributor can perform on a granular level</p>
+            <div class="ui segments">
+                {foreach $groups as $group}
+                    <div class="ui segment">
+                        <div class="ui small header">
+                            {if $group.locked == 0}
+                                <a href="/contributors/editgroup/{$group['id']}" class="ui right floated button">Edit Permissions</a>
+                            {/if}
+                            <div class="content">{$group.name}</div>
+                            <div class="sub header">{$group.description}</div>
+                        </div>
+                    </div>
+                {/foreach}
+            </div>
 
-<style>
-    form { display:inline; }
-</style>
+            <div class="ui hidden divider"></div>
 
-{foreach $contributors as $contributor}{strip}
-
-    {$userPostCount = 0}
-    {$lastPost = '-'}
-
-    {foreach $postcounts as $postCount}
-
-        {if $postCount['author_id'] == $contributor['id']}
-
-            {$userPostCount = $postCount['post_count']}
-            {$lastPost = rbwebdesigns\core\dateFormatter::formatFriendlyTime($postCount['last_post'])}
-
-            {break}
-        {/if}
-
-    {/foreach}
-
-    <div class="contributor-card">
-        
-        {if $blog['user_id'] != $contributor['id']}
-        
-            <form action="/contributors/{$blog.id}/delete" id="remove-contributor-{$contributor.id}" method="POST" class="delete-contributor-form">
-                {* Delete Action *}
-                <input type="hidden" value="{$contributor.id}" name="fld_UserID" />
-                <img src="/resources/icons/64/cross.png" onclick="if(confirm('Are you sure you want to remove this contributor?')) {ldelim}document.getElementById('remove-contributor-{$contributor.id}').submit(); {rdelim}"  title="Remove Contributor" style="height:20px; cursor:pointer;" />
-            </form>
-        
-        {/if}
-
-        {if strlen({$contributor.profile_picture}) > 0 and trim({$contributor.profile_picture}) != "profile_default.jpg"}
-            <img src="/avatars/thumbs/{$contributor.profile_picture}" class="profile-photo" />
-        {else}
-            <img src="/avatars/profile_default.jpg" class="profile-photo" />
-        {/if}
-
-        <h3><a href="/account/user/{$contributor.id}">{$contributor.name} {$contributor.surname}</a>
-        {if $blog['user_id'] == $contributor['id']}&nbsp;(creator){/if}</h3>
-   
-        <p style="font-size:0.8em; margin-bottom:32px;">{$userPostCount} Posts
-        {if $userPostCount > 0}, Last posted {$lastPost}{/if}</p>
-        
-        {if $blog['user_id'] != $contributor['id']}
-
-            Permissions:<br>
-            <form action="/contributors/{$blog.id}/update" method="POST">
-                {* Change Permissions *}
-                <select name="fld_Permission" id="fld_Permission_{$contributor.id}">
-                    <option value="postonly">Add/Edit Posts Only</option>
-                    <option value="all">Full Access</option>
-                </select>
-                <input type="hidden" value="{$contributor.id}" name="fld_UserID" />&nbsp;
-                <button type="submit">Update</button>
-            </form>
-            <script>document.getElementById('fld_Permission_{$contributor.id}').value = "{$contributor.privileges}";</script>
-
-        {/if}
+            <a href="/contributors/creategroup/{$blog.id}" class="ui teal button">Add Group</a>
+        </div>
     </div>
+    <div class="row">
+        <div class="column">
+            <h2>Contributors</h2>
+            <div class="ui five cards contributors-list">
+            {foreach $contributors as $contributor}
+                <div class="card">
+                    <div class="image">
+                        {if strlen({$contributor.profile_picture}) > 0 and trim({$contributor.profile_picture}) != "profile_default.jpg"}
+                            <img src="/avatars/thumbs/{$contributor.profile_picture}">
+                        {elseif $contributor.gender == 'Female'}
+                            <img src="/avatars/default_woman.png">
+                        {else}
+                            <img src="/avatars/default_man.png">
+                        {/if}
+                    </div>
 
-{/strip}{/foreach}
+                    <div class="content">
+                        <div class="header">
+                            <a href="/account/user/{$contributor.id}">{$contributor.name} {$contributor.surname}</a>
+                            {if $blog.user_id == $contributor.id}(owner){/if}
+                        </div>
+                        <div class="meta">
+                            {$contributor.groupname}
+                        </div>
+                        <div class="description">
+                            {$contributor.description}
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <span class="right floated">
+                            {if $blog.user_id != $contributor.id}
+                                <a href="/contributors/edit/{$blog.id}/{$contributor.id}"><i class="edit icon"></i></a>
+                                <a href="/contributors/remove/{$blog.id}/{$contributor.id}"><i class="delete icon"></i></a>
+                            {/if}
+                        </span>
+                        <span>
+                            Joined in {$contributor.signup_date|date_format:'%b %Y'}
+                        </span>
+                    </div>
+                </div>
+            {/foreach}
+            </div>
 
+            <div class="ui hidden divider"></div>
 
-<div class="contributor-card" style="text-align:center;">
-    
-    <img src="/resources/icons/64/avatar-light.png" style="height:70px; margin:5px;" /><br>
-    <a href="/contributors/{$blog.id}/add" class="action_button" style="zmargin-top:40px;">Add Contributor</a>
+            <a href="/contributors/create/{$blog.id}" class="ui teal button">Add Contributor</a>
+        </div>
+    </div>
 </div>

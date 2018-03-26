@@ -21,7 +21,7 @@
                             
                             <div class="field">
                                 <label for="fld_dateformat">Date Format</label>
-                                <select id="fld_dateformat" name="fld_dateformat">
+                                <select id="fld_dateformat" name="fld_dateformat" class="ui dropdown">
                                     <option value="Y-m-d">1998-03-27 (Default)</option>
                                     <option value="d/m/Y">27/03/1998</option>
                                     <option value="d/m">27/03</option>
@@ -37,7 +37,7 @@
                             
                             <div class="field">
                                 <label for="fld_datelocation">Date Location</label>
-                                <select id="fld_datelocation" name="fld_datelocation">
+                                <select id="fld_datelocation" name="fld_datelocation" class="ui dropdown">
                                     <option value="footer">Post Footer (Default)</option>
                                     <option value="title">Above Post Title</option>
                                     <option value="hidden">Don't Show</option>
@@ -54,7 +54,7 @@
                             
                             <div class="field">
                                 <label for="fld_timeformat">Time Format</label>
-                                <select id="fld_timeformat" name="fld_timeformat">
+                                <select id="fld_timeformat" name="fld_timeformat" class="ui dropdown">
                                     <option value="H:i:s">15:21:00 (Default)</option>
                                     <option value="H:i">15:21</option>
                                     <option value="g:ia">3:21am</option>
@@ -63,7 +63,7 @@
                             
                             <div class="field">
                                 <label for="fld_timelocation">Time Location</label>
-                                <select id="fld_timelocation" name="fld_timelocation">
+                                <select id="fld_timelocation" name="fld_timelocation" class="ui dropdown">
                                     <option value="footer">Post Footer (Default)</option>
                                     <option value="title">Above Post Title</option>
                                     <option value="hidden">Don't Show</option>
@@ -74,8 +74,8 @@
                     <div class="one column row">
                         <div class="column">
                             <div class="field">
-                                <label><i>Date/Time Preview</i></label>
-                                <div id="postfooter-preview" style="background-color:#eee; border:1px solid #ccc; padding:5px; margin-bottom:16px;">Preview</div>
+                                <label><i>Preview</i></label>
+                                <div id="postfooter-preview" class="ui message">Preview</div>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         <div class="column">
                             <div class="field">
                                 <label for="fld_showtags">Show Post Tags?</label>
-                                <select id="fld_showtags" name="fld_showtags">
+                                <select id="fld_showtags" name="fld_showtags" class="ui dropdown">
                                     <option value="1">Yes</option>
                                     <option value="0">No</option>
                                 </select>
@@ -93,7 +93,7 @@
                             
                             <div class="field">
                                 <label for="fld_shownumcomments">Show Number of Comments</label>
-                                <select id="fld_shownumcomments" name="fld_shownumcomments">
+                                <select id="fld_shownumcomments" name="fld_shownumcomments" class="ui dropdown">
                                     <option value="1">Yes</option>
                                     <option value="0">No</option>
                                 </select>
@@ -108,7 +108,7 @@
                         <div class="column">
                             <div class="field">
                                 <label for="fld_showsocialicons">Show 'Share to Social Media' Icons</label>
-                                <select id="fld_showsocialicons" name="fld_showsocialicons">
+                                <select id="fld_showsocialicons" name="fld_showsocialicons" class="ui dropdown">
                                     <option value="1">Yes</option>
                                     <option value="0">No</option>
                                 </select>
@@ -282,6 +282,9 @@
                     $("#fld_datelocation").change(updatePreview);
                     $("#fld_timelocation").change(updatePreview);
                     // $("#fld_showtags").change(updatePreview);
+
+                    $('select.dropdown').dropdown();
+
                 </script>
             </form>
         </div>

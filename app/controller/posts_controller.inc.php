@@ -1,26 +1,24 @@
 <?php
 namespace rbwebdesigns\blogcms;
+
+use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
 use Codeliner\ArrayReader\ArrayReader;
 
-/**********************************************************************
-class PostsController
-
-This is the controller which acts as the intermediatory between the
-model (database) and the view. Any requests to the model are sent from
-here rather than the view.
-
-Example requests that will be handled here:
-    /posts/1298340239
-    /posts/1298340239/new
-    /posts/1298340239/new/submit
-    /posts/1298340239/edit/67
-    /posts/1298340239/edit/67/submit
-    /posts/1298340239/delete/67
-    
-**********************************************************************/
-
+/**
+ * class PostsController
+ * 
+ * This is the controller which acts as the intermediatory between the
+ * model (database) and the view. Any requests to the model are sent from
+ * here rather than the view.
+ * 
+ * Routes:
+ *  /posts/manage/<blogid>
+ *  /posts/create/<blogid>
+ *  /posts/edit/<postid>
+ *  /posts/delete/<postid>
+ */
 class PostsController extends GenericController
 {
     /**
@@ -36,6 +34,9 @@ class PostsController extends GenericController
      */
     protected $modelContributors;
 
+    protected $blog;
+    protected $post;
+
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
@@ -43,121 +44,114 @@ class PostsController extends GenericController
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
 
         BlogCMS::$activeMenuLink = 'posts';
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
+
+        $this->setup();
     }
     
     /**
-     * function: route
+     * Setup controller
      * 
-     * @param array $params
-     *   Miscellaneous inputs from the URL such as blog id accessed in an array.
+     * 1. Gets the key records that will be used for any request to keep
+     *    the code DRY (Blog and Post)
+     * 
+     * 2. Checks the user has permissions to run the request
      */
-    public function route($params)
+    protected function setup()
     {
-        // Create an easy reader for the params array
-        $paramsReader = new ArrayReader($params);
         $currentUser = BlogCMS::session()->currentUser;
+        $action = $this->request->getUrlParameter(0);
+        $access = true;
 
-        if(getType($params) == 'array' && array_key_exists(0, $params))
-        {
-            // Find and open blog
-            $blogid = Sanitize::int($params[0]);
-            $arrayblog = $this->modelBlogs->getBlogById($blogid);
-            
-            // Check we found a blog
-            if(getType($arrayblog) != 'array') return $this->throwNotFound();
-            
-            // Check that user can at least manage posts on this blog - this will be all contributors
-            if(!$this->modelContributors->isBlogContributor($arrayblog['id'], $currentUser)) return $this->throwAccessDenied();
-            
-            // Find and open post (if needed)
-            //$postid = $paramsReader->integerValue(2, false);
-            $postid = array_key_exists(2, $params) && is_numeric($params[2]) ? Sanitize::int($params[2]) : false;
-            
-            if($postid !== false)
-            {
-                $arraypost = $this->modelPosts->getPostById($postid);
-                
-                if(getType($arraypost) != 'array') $this->throwNotFound();
-                
-                // Convert gallery image list to array
-                if($arraypost['type'] == 'gallery')
-                {
-                    $arraypost['gallery_imagelist'] = explode(',', $arraypost['gallery_imagelist']);
+        if (!BlogCMS::$blogID) {
+            $postID = $this->request->getUrlParameter(1);
+            $this->post = $this->model->getPostById($postID);
+
+            BlogCMS::$blogID = $this->post['blog_id'];
+        }
+
+        $this->blog = BlogCMS::getActiveBlog();
+
+        // Check the user is a contributor of the blog to begin with
+        if (!$this->modelContributors->isBlogContributor($this->blog['id'], $currentUser['id'])) {
+            $access = false;
+        }
+
+        // Check action specific permissions
+        switch ($action) {
+            case 'edit':
+                if ($this->post['author_id'] != $currentUser['id']) {
+                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_EDIT_POSTS);
                 }
-            }
-            
-            $action = array_key_exists(1, $params) ? Sanitize::string($params[1]) : ''; // Action
-            $formsubmitted = (array_key_exists(2, $params) && $params[2] == 'submit'); // Submit
-            if (!$formsubmitted) $formsubmitted = (array_key_exists(3, $params) && $params[3] == 'submit'); // Submit
-            
-            switch($action)
-            {                                    
-                case 'delete':
-                    $this->action_deletePost($arraypost);
-                    break;
-        
-                case 'preview':
-                    $this->previewPost();
-                    break;
-        
-                case 'cancelsave':
-                    $this->action_removeAutosave($arraypost);
-                    break;
-            }
+                elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
+                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_PUBLISH_POSTS);
+                }
+                break;
+
+            case 'create':
+                if ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
+                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_PUBLISH_POSTS);
+                }
+                else {
+                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_CREATE_POSTS);
+                }
+                break;
+
+            case 'delete':
+                $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_DELETE_POSTS);
+                break;
+        }
+
+        if (!$access) {
+            $this->response->redirect('/', '403 Access Denied', 'error');
         }
     }
-        
+
     /**
      * View post overview page
      * Handles /posts/manage/<blogid>
      * Most of the heavy data is done in a seperate ajax call
      */
-    public function manage(&$request, &$response)
+    public function manage()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        $response->setVar('blog', $blog);
-        $response->setTitle('Manage Posts - ' . $blog['name']);
-        $response->addScript('/js/showUserCard.js');
-        $response->write('posts/manage.tpl');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Manage Posts - ' . $this->blog['name']);
+        $this->response->addScript('/js/showUserCard.js');
+        $this->response->write('posts/manage.tpl');
     }
     
     /**
      * View new post form
      */
-    public function create(&$request, &$response)
+    public function create()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if ($this->request->method() == 'POST') return $this->runCreatePost();
 
-        if ($request->method() == 'POST') return $this->runCreatePost($request, $response, $blog);
-
-        $response->setVar('blog', $blog);
-        $response->setTitle('New Post');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('New Post');
         
-        $response->addScript('/resources/js/rbwindow.css');
-        $response->addScript('/resources/js/rbrtf.css');
-        $response->addStylesheet('/resources/css/rbwindow.css');
-        $response->addStylesheet('/resources/css/rbrtf.css');
+        $this->response->addScript('/resources/js/rbwindow.css');
+        $this->response->addScript('/resources/js/rbrtf.css');
+        $this->response->addStylesheet('/resources/css/rbwindow.css');
+        $this->response->addStylesheet('/resources/css/rbrtf.css');
         
-        $viewtype = $request->getUrlParameter(2);
-
-        switch($viewtype) {
+        switch ($this->request->getUrlParameter(2)) {
             case 'video':
-            $response->write('posts/videopost.tpl');
+            $this->response->write('posts/videopost.tpl');
             break;
             
             case 'gallery':
-            $response->write('posts/gallerypost.tpl');
+            $this->response->write('posts/gallerypost.tpl');
             break;
             
             case 'standard':
-            $response->write('posts/standardpost.tpl');
+            $this->response->write('posts/standardpost.tpl');
             break;
             
             default:
-            $response->write('posts/newpostmenu.tpl');
+            $this->response->write('posts/newpostmenu.tpl');
             break;
         }
     }
@@ -165,67 +159,49 @@ class PostsController extends GenericController
     /**
      * View edit post form
      */
-    public function edit(&$request, &$response)
+    public function edit()
     {
-        $postid = $request->getUrlParameter(1);
-        $post = $this->model->getPostById($postid);
-
-        $blogid = $post['blog_id'];
-        $blog = $this->modelBlogs->getBlogById($blogid);
-
-        if ($request->method() == 'POST') {
-            return $this->runEditPost($request, $response, $post);
-        }
-
-        if (getType($blog) != 'array' || getType($post) != 'array') {
-            $response->redirect('/', 'Unable to load content', 'error');
-        }
+        if ($this->request->method() == 'POST') return $this->runEditPost();
         
-        if ($post['type'] == 'gallery') {
-            $post['gallery_imagelist'] = explode(',', $post['gallery_imagelist']);
+        if ($this->post['type'] == 'gallery') {
+            $this->post['gallery_imagelist'] = explode(',', $this->post['gallery_imagelist']);
         }
 
-        // Check permission
-        $currentUser = BlogCMS::session()->currentUser;
-        if (!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
-            $response->redirect('/', 'Permission denied', 'error');
-        }
-
-        if ($post['initialautosave'] == 1) {
+        if ($this->post['initialautosave'] == 1) {
             // get the most recent content from the actual autosave record
-            $autosave = $this->model->getAutosave($post['id']);
+            $autosave = $this->model->getAutosave($this->post['id']);
 
             if (getType($autosave) == 'array') {
-                $post = array_merge($post, $autosave);
+                $this->post = array_merge($this->post, $autosave);
             }
 
-            $this->model->update(['id' => $post['id']], ['initialautosave' => 0]);
+            $this->model->update(['id' => $this->post['id']], ['initialautosave' => 0]);
         }
-        elseif ($this->model->autosaveExists($post['id'])) {
+        elseif ($this->model->autosaveExists($this->post['id'])) {
             // Has been edited without being saved
-            $post['autosave'] = $this->model->getAutosave($post['id']);
+            $this->post['autosave'] = $this->model->getAutosave($this->post['id']);
         }
                 
-        $response->setVar('post', $post);
-        $response->setVar('blog', $blog);
-        $response->setTitle('Edit Post - ' . $post['title']);
+        $this->response->setVar('post', $this->post);
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Edit Post - ' . $this->post['title']);
         
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbwindow.css');
-        $response->addStylesheet('/resources/css/rbrtf.css');
+        $this->response->addScript('/resources/js/rbwindow.js');
+        $this->response->addScript('/resources/js/rbrtf.js');
+        $this->response->addStylesheet('/resources/css/rbwindow.css');
+        $this->response->addStylesheet('/resources/css/rbrtf.css');
 
-        switch($post['type']) {
+        switch ($this->post['type']) {
             case 'video':
-            $response->write('posts/videopost.tpl');
+            $this->response->write('posts/videopost.tpl');
             break;
             
             case 'gallery':
-            $response->write('posts/gallerypost.tpl');
+            $this->response->write('posts/gallerypost.tpl');
             break;
             
             default:
-            $response->write('posts/standardpost.tpl');
+            $this->response->write('posts/standardpost.tpl');
             break;
         }
     }
@@ -247,9 +223,9 @@ class PostsController extends GenericController
     /**
      * Create a new blog post
      */
-    protected function runCreatePost(&$request, &$response, $blog)
+    protected function runCreatePost()
     {
-        $posttime = strtotime($request->getString('fld_postdate'));
+        $posttime = strtotime($this->request->getString('fld_postdate'));
         
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
@@ -259,56 +235,50 @@ class PostsController extends GenericController
         }
         
         $newPost = [
-            'title'           => $request->getString('fld_posttitle'),
-            'content'         => $request->getString('fld_postcontent'),
-            'tags'            => $request->getString('fld_tags'),
-            'blog_id'         => $blog['id'],
-            'draft'           => $request->getInt('fld_draft'),
-            'allowcomments'   => $request->getInt('fld_allowcomment'),
-            'type'            => $request->getString('fld_posttype'),
+            'title'           => $this->request->getString('fld_posttitle'),
+            'content'         => $this->request->getString('fld_postcontent'),
+            'tags'            => $this->request->getString('fld_tags'),
+            'blog_id'         => $this->blog['id'],
+            'draft'           => $this->request->getInt('fld_draft'),
+            'allowcomments'   => $this->request->getInt('fld_allowcomment'),
+            'type'            => $this->request->getString('fld_posttype'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
         
         if ($newPost['type'] == 'video') {
-            $newPost['videoid'] = $request->getString('fld_postvideoID');
-            $newPost['videosource'] = $request->getString('fld_postvideosource');
+            $newPost['videoid'] = $this->request->getString('fld_postvideoID');
+            $newPost['videosource'] = $this->request->getString('fld_postvideosource');
         }
         
         if ($newPost['type'] == 'gallery') {
-            $newPost['gallery_imagelist'] = $request->get('fld_gallery_imagelist');
+            $newPost['gallery_imagelist'] = $this->request->get('fld_gallery_imagelist');
         }
 
-        if($postID = $request->getInt('fld_postid', false)) {
+        if($this->post['id'] = $this->request->getInt('fld_postid', false)) {
             // This should be the case as it should have been created when the autosave run
             if ($this->model->updatePost($postID, $newPost)) {
                 $this->model->removeAutosave($postID);
             }
             else {
-                $response->redirect('/posts/edit/' . $postID, 'Error updating post', 'error');
+                $this->response->redirect('/posts/edit/' . $postID, 'Error updating post', 'error');
             }
         }
         elseif (!$this->model->createPost($newPost)) {
-            $response->redirect('/posts/manage/' . $blog['id'], 'Error creating post', 'error');
+            $this->response->redirect('/posts/manage/' . $blog['id'], 'Error creating post', 'error');
         }
 
-        $response->redirect('/posts/manage/' . $blog['id'], 'Post created', 'success');
+        $this->response->redirect('/posts/manage/' . $blog['id'], 'Post created', 'success');
     }
     
     // Cancel action from new post screen
     protected function action_removeAutosave($post)
-    {
-        $currentUser = BlogCMS::session()->currentUser;
-
-        // Check we have permission to perform action - if the user created the post or is blog admin
-        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser, 'all') || $currentUser == $post['author_id'])) return $this->throwAccessDenied();
-        
+    {        
         // Delete from DB - isn't critical if fails
         $this->modelPosts->removeAutosave($post['id']);
         
         // Check if the actual post record is an autosave
-        if($post['initialautosave'] == 1)
-        {
+        if($post['initialautosave'] == 1) {
             $this->modelPosts->delete(array('id' => $post['id']));
         }
         
@@ -319,17 +289,10 @@ class PostsController extends GenericController
     /**
      *  Edit an existing blog post
     **/
-    public function runEditPost($request, $response, $post)
-    {
-        $currentUser = BlogCMS::session()->currentUser;
-
-        // Re-check security with heightened permissions
-        if (!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
-            $response->redirect('/posts/manage/' . $post['blog_id'], 'You do not have permission to do that', 'error');
-        }
-        
+    public function runEditPost()
+    {        
         // Check & Format date
-        $posttime = strtotime($request->getString('fld_postdate'));
+        $posttime = strtotime($this->request->getString('fld_postdate'));
         
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
@@ -339,27 +302,27 @@ class PostsController extends GenericController
         }
         
         $updates = [
-            'title'           => $request->getString('fld_posttitle'),
-            'content'         => $request->getString('fld_postcontent'),
-            'tags'            => $request->getString('fld_tags'),
-            'draft'           => $request->getInt('fld_draft'),
-            'allowcomments'   => $request->getInt('fld_allowcomment'),
+            'title'           => $this->request->getString('fld_posttitle'),
+            'content'         => $this->request->getString('fld_postcontent'),
+            'tags'            => $this->request->getString('fld_tags'),
+            'draft'           => $this->request->getInt('fld_draft'),
+            'allowcomments'   => $this->request->getInt('fld_allowcomment'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
         
-        if ($post['type'] == 'video') {
-            $updates['videoid']     = $request->getString('fld_postvideoID');
-            $updates['videosource'] = $request->getString('fld_postvideosource');
+        if ($this->post['type'] == 'video') {
+            $updates['videoid']     = $this->request->getString('fld_postvideoID');
+            $updates['videosource'] = $this->request->getString('fld_postvideosource');
         }
-        if ($post['type'] == 'gallery') {
-            $updates['gallery_imagelist'] = $request->get('fld_gallery_imagelist');
+        if ($this->post['type'] == 'gallery') {
+            $updates['gallery_imagelist'] = $this->request->get('fld_gallery_imagelist');
         }
         
-        $this->model->updatePost($post['id'], $updates);
-        $this->model->removeAutosave($post['id']);
+        $this->model->updatePost($this->post['id'], $updates);
+        $this->model->removeAutosave($this->post['id']);
         
-        $response->redirect('/posts/edit/' . $post['id'], 'Save successful', 'success');
+        $this->response->redirect('/posts/edit/' . $this->post['id'], 'Save successful', 'success');
     }
     
     /**
@@ -367,25 +330,13 @@ class PostsController extends GenericController
      * 
      * @todo make sure there are no pages with this post ID
      */
-    public function delete(&$request, &$response)
+    public function delete()
     {
-        $currentUser = BlogCMS::session()->currentUser;
-        $postID = $request->getUrlParameter(1);
-
-        if(!$post = $this->model->getPostById($postID)) {
-            $response->redirect('/', 'Could not find blog post', 'error');
-        }
-
-        // Check we have permission to perform action - if the user created the post or is blog admin
-        if(!($this->modelContributors->isBlogContributor($post['blog_id'], $currentUser['id'], 'all') || $currentUser['id'] == $post['author_id'])) {
-            $response->redirect('/', 'You do not have access to delete this blog post', 'error');
-        }
-        
-        if($delete = $this->model->delete(['id' => $post['id']]) && $this->model->removeAutosave($post['id'])) {
-            $response->redirect('/posts/manage/' . $post['blog_id'], 'Blog post deleted', 'success');
+        if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
+            $response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
         }
         else {
-            $response->redirect('/posts/manage/' . $post['blog_id'], 'Blog post deleted', 'error');
+            $response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
         }
     }
     

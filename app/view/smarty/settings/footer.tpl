@@ -12,7 +12,7 @@
 
                 <div class="field">
                     <label for="fld_numcolumns">Number of Columns</label>
-                    <select name="fld_numcolumns" id="fld_numcolumns">
+                    <select name="fld_numcolumns" id="fld_numcolumns" class="ui dropdown">
                         <option value="1">1</option>
                         <option value="2">2</option>
                     </select>
@@ -60,7 +60,7 @@
                     
                 <div class="field">
                     <label for="fld_horizontalposition">Horizontal Position</label>
-                    <select name="fld_horizontalposition" id="fld_horizontalposition">
+                    <select name="fld_horizontalposition" id="fld_horizontalposition" class="ui dropdown">
                         <option value="s">Stretch</option>
                         <option value="r">Repeat</option>
                         <option value="n">None</option>
@@ -69,7 +69,7 @@
                 
                 <div class="field">
                     <label for="fld_horizontalposition">Vertical Position</label>
-                    <select name="fld_veritcalposition" id="fld_veritcalposition">
+                    <select name="fld_veritcalposition" id="fld_veritcalposition" class="ui dropdown">
                         <option value="s">Stretch</option>
                         <option value="r">Repeat</option>
                         <option value="n">None</option>
@@ -137,4 +137,6 @@
         //$("#fld_footerbackgroundimage").val("" + newimagesrc);
         //return false;
     {rdelim});
+
+    $('select.dropdown').dropdown();
 </script>

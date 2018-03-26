@@ -1,4 +1,4 @@
-<div class="posts">
+<div class="ten wide column posts">
     <div id="messages">
     {foreach $messages as $message}
         <p class="ui message {$message.type}">{$message.text}</p>
@@ -6,8 +6,8 @@
     </div>
 
     {$body_content}
-    
-</div><div class="rightcolumn">
+</div>
+<div class="six wide column widgets-right">
     <div class="actions">
         {include file='blog/actions.tpl'}
     </div>

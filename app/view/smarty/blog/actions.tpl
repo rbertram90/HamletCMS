@@ -5,7 +5,7 @@
 
 {elseif $user_is_logged_in}
     <nav class="ui fluid vertical menu">
-        <a href="/" class="item">Dashboard</a>
+        <a href="/blog/overview/{$blog.id}" class="item">Dashboard</a>
 
     {if $is_favourite}
         <a href="#" onclick="removeFavourite({$blog.id}); return false;" class="link item" title="Click to Remove from favourites list." id="btn_favourite">Added as Favourite</a>

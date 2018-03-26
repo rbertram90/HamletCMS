@@ -8,6 +8,8 @@ use rbwebdesigns\core\model\RBFactory;
 /**
  * /app/model/mdl_blog.php
  * Access to the blogs database is done through this class
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
 class Blogs extends RBFactory
 {
@@ -21,7 +23,7 @@ class Blogs extends RBFactory
         $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
-        $this->fields = array(
+        $this->fields = [
             'id'          => 'number',
             'name'        => 'string',
             'description' => 'string',
@@ -31,7 +33,7 @@ class Blogs extends RBFactory
             'widgetJSON'  => 'string',
             'pagelist'    => 'string',
             'category'    => 'string'
-        );
+        ];
     }
     
     /**
@@ -39,9 +41,9 @@ class Blogs extends RBFactory
      *  @param int ID for Blog
      *  @return array
     **/
-    public function getBlogById($blogid)
+    public function getBlogById($blogID)
     {
-        return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), array('id' => $blogid));
+        return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), ['id' => $blogID]);
     }
     
     /**
@@ -49,9 +51,9 @@ class Blogs extends RBFactory
      *  @param int ID for User
      *  @return array Blogs for which a user contributes
     **/
-    public function getBlogsByUser($intUserid)
+    public function getBlogsByUser($userID)
     {
-        return $this->db->selectMultipleRows($this->tableName, '*', array('user_id' => $intUserid));
+        return $this->db->selectMultipleRows($this->tableName, '*', ['user_id' => $userID]);
     }
     
     /**
@@ -68,8 +70,6 @@ class Blogs extends RBFactory
     
     /**
      *  Get count of number of public blogs for each letter - explore page
-     *  IMPROVED! 20 JULY 2014 - Now uses 1 query rather than 27 to get data by making
-     *  the most of 'GROUP BY'!
      *  @return <array> Counts of blogs by letter
      */
     public function countBlogsByLetter()
@@ -198,9 +198,10 @@ class Blogs extends RBFactory
         return $blog_key;
     }
     
-    
     /**
      * Delete an existing blog
+     * 
+     * @todo finish
      */
     public function deleteBlog($blogid)
     {
@@ -220,30 +221,25 @@ class Blogs extends RBFactory
     /**
      * Update just the widget configuration JSON for a blog
      */
-    public function updateWidgetJSON($psJSON, $psBlogID)
+    public function updateWidgetJSON($config, $blogID)
     {
-        if(!$this->canWrite($psBlogID)) die("You do not have permission to edit this blog");
-        
-        // Update Database
-        return $this->db->updateRow($this->tableName,
-        array(
-            'id' => Sanitize::string($psBlogID)
-        ),
-        array(
-            'widgetJSON' => Sanitize::string($psJSON)
-        ));
+        return $this->db->updateRow($this->tableName, ['id' => $blogID], [
+            'widgetJSON' => $config
+        ]);
     }
     
     /**
      * Security functions - check Read, Write Permissions
+     * Should this be in contributors model?
      */
-    public function canWrite($blogid) {
+    public function canWrite($blogID)
+    {
         // Only allow contributors to update the blog settings
         // further 'custom restrictions' to be added
         $currentUser = BlogCMS::session()->currentUser;
 
         $rowCount = $this->db->countRows($this->tblcontributors, array(
-            'blog_id' => $blogid,
+            'blog_id' => $blogID,
             'user_id' => $currentUser['id']
         ));
         
@@ -257,10 +253,10 @@ class Blogs extends RBFactory
     /**
      * Add a blog to a users favourites list
      */
-    public function addFavourite($pUserID, $pBlogID)
+    public function addFavourite($userID, $blogID)
     {
-        if($this->isFavourite($pUserID, $pBlogID)) return "Blog already exists in users favorites list.";  
-        $query_string = "INSERT INTO ".$this->tblfavourites." (user_id,blog_id) VALUES ('$pUserID','$pBlogID')";
+        if($this->isFavourite($userID, $blogID)) return "Blog already exists in users favorites list.";  
+        $query_string = "INSERT INTO ".$this->tblfavourites." (user_id,blog_id) VALUES ('$userID','$blogID')";
         $result = $this->db->query($query_string);
         return "Blog Added to Favorites";
     }
@@ -326,7 +322,9 @@ class Blogs extends RBFactory
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    
+    /**
+     * Get Blogs by Category
+     */
     public function getByCategory($category, $num=10, $page=0)
     {
         $query = 'SELECT * ';

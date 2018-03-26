@@ -4,12 +4,10 @@ namespace rbwebdesigns\blogcms;
 use rbwebdesigns\core\Sanitize;
 
 /**
-    ContributorsController
-    
-    add(blog)
-    actionAdd(blogid)
-**/
-
+ * /app/controller/contributors_controller.inc.php
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ */
 class ContributorsController extends GenericController
 {
     // Models
@@ -17,128 +15,148 @@ class ContributorsController extends GenericController
     protected $modelBlogs;
     protected $modelPosts;
     protected $model;
+    protected $modelGroups;
+    protected $request, $response;
     
     public function __construct()
     {
-        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\model\UserFactory');
+        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\model\ContributorGroups');
         
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
+
         BlogCMS::$activeMenuLink = 'users';
     }
-        
-    /**
-        Route all requests to the correct functions
-        examples
-        /blog_cms/contributors/1734978340
-        /blog_cms/contributors/1734978340/add
-    **/
-    public function route($params)
-    {
-        // Handle Arguments
-        $blogid = Sanitize::int($params[0]);
-        
-        // Check we have permission to perform action
-        if(!$this->modelContributors->isBlogContributor($blogid, $_SESSION['userid'], 'all')) return $this->throwAccessDenied();
-        
-        $blog = $this->modelBlogs->getBlogById($blogid);
-        $action = array_key_exists(1, $params) ? strtolower($params[1]) : 'manage';
-        
-        switch($action):
-        
-            case "add":
-                // Check if form submitted
-                if(array_key_exists(2, $params) && strtolower($params[2]) == "submit")
-                {
-                    $this->actionAdd($blogid);
-                }
-                
-                // View 'add contributor page'
-                $this->view->setPageTitle('Add New Contributor - '.$blog['name']);
-                $this->view->setVar('blog', $blog);
-                // $this->view->setVar('friends', $this->modelUsers->expandedFriendsList($_SESSION['userid']));
-                $this->view->render('contributors/new.tpl');
-                break;
-        
-            case "delete":
-                if(isset($_POST['fld_UserID'])) $this->actionDelete($_POST['fld_UserID'], $blogid);
-                else $this->throwAccessDenied();
-                break;
-        
-            case "update":
-                if(isset($_POST['fld_UserID']) && isset($_POST['fld_Permission'])) $this->changePermissions($_POST['fld_UserID'], $blogid, $_POST['fld_Permission']);
-                else $this->throwAccessDenied();
-                break;
-                
-            default:
-            $this->manage($blog);
-            break;
-        
-        endswitch;
-    }
-    
     
     /**
-     * View the manage contributors page
+     * Handles /contributors/manage/<blogid>
      */
-    public function manage(&$request, &$response)
+    public function manage()
     {
-        $blogID = $request->getUrlParameter(1);
+        $blogID = $this->request->getUrlParameter(1);
         $blog = $this->modelBlogs->getBlogById($blogID);
 
         $currentUser = BlogCMS::session()->currentUser;
 
         if (!$this->model->isBlogContributor($blog['id'], $currentUser['id'], 'all')) {
-            $response->redirect('/', 'Access denied', '');
+            $this->response->redirect('/', 'Access denied', '');
         }
 
-        $response->setVar('contributors', $this->model->getBlogContributors($blog['id']));
-        $response->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id'])); // Get the number of post each contributor has made
-        $response->setVar('blog', $blog);
-        $response->setTitle('Manage Blog Contributors - '.$blog['name']);
-        $response->write('contributors/manage.tpl');
-    }    
-    
-    /**
-     * Add a contributor to the database
-     */
-    public function actionAdd($blogid)
-    {
-        if($_POST['fld_contributor'] == 0)
-        {
-            setSystemMessage("Failed to add contributor - no user selected!");
+        $groups = $this->modelGroups->get('*', ['blog_id' => $blog['id']]);
+
+        if (count($groups) == 0) {
+            $this->modelGroups->createDefaultGroups($blog['id']);
+            $groups = $this->modelGroups->get('*', ['blog_id' => $blog['id']]);
         }
-        else
-        {
-            $this->modelContributors->addBlogContributor($_POST['fld_contributor'], $_POST['fld_privileges'], $blogid);
-            setSystemMessage(ITEM_CREATED, "Success");
-        }
-        redirect('/contributors/'.$blogid);
+
+        $this->response->setVar('groups', $groups);
+        $this->response->setVar('contributors', $this->model->getBlogContributors($blog['id']));
+        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id'])); // Get the number of post each contributor has made
+        $this->response->setVar('blog', $blog);
+        $this->response->setTitle('Manage Blog Contributors - '.$blog['name']);
+        $this->response->write('contributors/manage.tpl');
     }
     
     /**
-     * Update the permission for a contributor
+     * Handles /contributors/create/<blogid>
      */
-    public function changePermissions($userid, $blogid, $permissions)
+    public function create()
     {
-        if($this->modelContributors->changePermissions($userid, $blogid, $permissions)) setSystemMessage(ITEM_UPDATED, "Success");
-        else setSystemMessage("Unable to update user", "Error");
-        redirect('/contributors/'.$blogid);
+        if ($this->request->method() == 'POST') return $this->runCreate();
+
+        $blog = BlogCMS::getActiveBlog();
+
+        $this->response->setVar('blog', $blog);
+        $this->response->setTitle('Create Contributor');
+        $this->response->write('contributors/create.tpl');
     }
-    
+
     /**
-     * Remove a contributor
-    **/
-    public function actionDelete($userid, $blogid)
+     * Handles POST /contributors/create/<blogid>
+     */
+    protected function runCreate()
     {
-        // Check this isn't the current user?!
-        if($userid == USER_ID) die('Cannot remove yourself from the blog');
+        $blog = BlogCMS::getActiveBlog();
         
-        // We are letting the model handle validation
-        if($this->modelContributors->delete(array('user_id' => $userid, 'blog_id' => $blogid))) setSystemMessage(ITEM_DELETED, "Success");       
-        else setSystemMessage("Unable to delete user", "Error");
-        redirect('/contributors/'.$blogid);
+        $accountData = [
+            'firstname'       => $this->request->getString('fld_name'),
+            'surname'         => $this->request->getString('fld_surname'),
+            'gender'          => $this->request->getString('fld_gender'),
+            'username'        => $this->request->getString('fld_username'),
+            'password'        => $this->request->getString('fld_password'),
+            'passwordConfirm' => $this->request->getString('fld_password_2'),
+            'email'           => $this->request->getString('fld_email'),
+            'emailConfirm'    => $this->request->getString('fld_email_2'),
+        ];
+
+        // Validate
+        if ($accountData['email'] != $accountData['emailConfirm']
+            || $accountData['password'] != $accountData['passwordConfirm']) {
+            $response->redirect('/contributors/manage', 'Email or passwords did not match', 'error');
+        }
+
+        $checkUser = $this->modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
+        if($checkUser && $checkUser['id']) {
+            $response->redirect('/contributors/manage', 'Username is already taken', 'error');
+        }
+
+        if ($this->modelUsers->register($accountData)) {
+            // Get the user ID of the user just created
+            $user = $this->modelUsers->get('id', ['email' => $accountData['email']], '', '', false);
+        }
+        else {
+            $this->response->redirect('/contributors/create/' . $blog['id'], 'Error creating account', 'error');
+        }
+
+        if (!$this->model->addBlogContributor($user['id'], 'p', $blog['id'])) {
+            $this->response->redirect('/contributors/create/' . $blog['id'], 'Error assigning contributor', 'error');
+        }
+
+        $this->response->redirect('/contributors/manage/' . $blog['id'], 'Contributor created', 'success');
+    }
+    
+    /**
+     * Handles /contributors/permissions/<blogid>/<userid>
+     */
+    public function permissions()
+    {
+        
+    }
+    
+    /**
+     * Handles /contributors/remove/<blogid>/<userid>
+     */
+    public function remove()
+    {
+        
+    }
+
+    //----------------------------------------------------------
+    // Groups
+    //----------------------------------------------------------
+
+    /**
+     * Handles GET /contributors/editgroup
+     */
+    public function editgroup()
+    {
+        $groupID = $this->request->getUrlParameter(1);
+        if (!$group = $this->modelGroups->getGroupById($groupID)) {
+            $this->response->redirect('/', 'Group not found', 'error');
+        }
+
+        $blog = $this->modelBlogs->getBlogById($group['blog_id']);
+
+        BlogCMS::$blogID = $blog['id'];
+
+        $this->response->setVar('blog', $blog);
+        $this->response->setVar('group', $group);
+        $this->response->setTitle('Edit Group');
+        $this->response->write('contributors/editgroup.tpl');
     }
     
 }

@@ -22,9 +22,9 @@
     <script type="text/javascript">var folder_root = "/projects/blog_cms";</script>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="ui grid container">
 
-        <div class="header">
+        <div class="sixteen wide column header">
             {if !$header_hide_title}
                 <h1><a href="/blogs/{$blog.id}">{$blog.name}</a></h1>
             {/if}
@@ -36,10 +36,10 @@
             {if isset($widget_content.header)}
                 {$widget_content.header}
             {/if}
+            
+            <div class="navigation">{$page_navigation}</div>
         </div>
         
-        <div class="navigation">{$page_navigation}</div>
-
         {$columncount = 2}
         {$postcolumn = 1}
         
@@ -66,7 +66,7 @@
             {/if}
         {/if}
 
-        <div class="footer">
+        <div class="sixteen wide column footer">
 
             {if isset($widget_content.footer)}
                 {$widget_content.footer}

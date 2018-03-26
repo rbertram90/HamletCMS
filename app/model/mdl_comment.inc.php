@@ -12,7 +12,7 @@ use rbwebdesigns\core\Sanitize;
  */
 class Comments extends RBFactory
 {
-    protected $db, $dbc, $tableName;
+    protected $db, $tableName;
 
     /**
      * @param \rbwebdesigns\core\model\ModelManager $modelFactory
@@ -102,10 +102,5 @@ class Comments extends RBFactory
     {
         return $this->update(['id' => $commentID], ['approved' => 1]);
     }
-    
-    // Update a comment
-    public function updateComment()
-    {
-        
-    }
+
 }

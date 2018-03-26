@@ -49,6 +49,7 @@ use rbwebdesigns\core\Database;
     require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_comment.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
+    require_once SERVER_ROOT.'/app/model/mdl_contributorgroups.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_account.inc.php';
     
     // Generic controller class
