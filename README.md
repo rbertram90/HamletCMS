@@ -28,6 +28,15 @@ Blog data is stored both in MySQL database and within files defaulted to /app/pu
  * images folder
  * blog_config.json - any other configuration changes made through settings menu
 
+### Installation
+1. Clone repository
+2. Create database (default name = blog_cms)
+3. Import tables from database_install.sql
+4. Copy app/config/config_default.json -> app/config/config.json
+5. Change database connection details in config.json
+6. Change root_directory in config.json
+7. Run composer update from /app directory
+8. Check everything is working - if not please raise a ticket with details!
 
 ### Dependencies
 

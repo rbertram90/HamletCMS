@@ -1,7 +1,6 @@
 {
     "database":
     {
-        // these are all required
         "server": "localhost",
         "name": "blog_cms",
         "user": "root",
@@ -9,7 +8,6 @@
     },
     "environment":
     {
-        // these are all required
         "development_mode": false,
         "root_directory": "/var/www/blog_cms",
         "timezone": "Europe/London"

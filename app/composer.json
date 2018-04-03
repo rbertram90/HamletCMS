@@ -3,7 +3,7 @@
   [
     {
       "type": "vcs",
-      "url": "C:/xampp_5.6.24/htdocs/core"
+      "url": "https://github.com/rbertram90/core"
     }
   ],
   "require": {
