@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\AppSecurity;
@@ -34,6 +35,18 @@ class SettingsController extends GenericController
      * @var \rbwebdesigns\blogcms\model\Contributors
      */
     protected $modelContributors;
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
+    protected $request;
+    /**
+     * @var \rbwebdesigns\core\Response
+     */
+    protected $response;
+    /**
+     * @var array Active blog
+     */
+    protected $blog = null;
     
     public function __construct()
     {
@@ -45,65 +58,89 @@ class SettingsController extends GenericController
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
 
         BlogCMS::$activeMenuLink = 'settings';
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
+
+        $this->setup();
+    }
+
+    /**
+     * Setup controller
+     * 
+     * 1. Gets the key records that will be used for any request to keep
+     *    the code DRY (Blog)
+     * 
+     * 2. Checks the user has permissions to run the request
+     */
+    protected function setup()
+    {
+        $currentUser = BlogCMS::session()->currentUser;
+        $this->blog = BlogCMS::getActiveBlog();
+
+        $access = true;
+
+        // Check the user is a contributor of the blog to begin with
+        if (!$this->modelContributors->isBlogContributor($this->blog['id'], $currentUser['id'])) {
+            $access = false;
+        }
+        elseif (!$this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_CHANGE_SETTINGS)) {
+            $access = false;
+        }
+
+        if (!$access) {
+            $this->response->redirect('/', '403 Access Denied', 'error');
+        }
     }
     
     /**
      * Handles /settings/menu
      */
-    public function menu(&$request, &$response)
+    public function menu()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        $response->setVar('blog', $blog);
-        $response->setTitle('Blog Settings - ' . $blog['name']);
-        $response->write('settings/menu.tpl');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Blog Settings - ' . $this->blog['name']);
+        $this->response->write('settings/menu.tpl');
     }
 
     /**
      * Handles /settings/general/<blogid>
      * Edit blog name, description etc.
      */
-    public function general(&$request, &$response)
+    public function general()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if ($this->request->method() == 'POST') return $this->action_updateBlogGeneral();
 
-        if ($request->method() == 'POST') return $this->action_updateBlogGeneral($request, $response, $blog);
-
-        $response->setVar('blog', $blog);
-        $response->setTitle('General Settings - ' . $blog['name']);
-        $response->setVar('categorylist', BlogCMS::config()['blogcategories']);
-        $response->write('settings/general.tpl');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('General Settings - ' . $this->blog['name']);
+        $this->response->setVar('categorylist', BlogCMS::config()['blogcategories']);
+        $this->response->write('settings/general.tpl');
     }
 
     /**
      * Handles /settings/posts/<blogid>
      * Edit post display settings
      */
-    public function posts(&$request, &$response)
+    public function posts()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if ($this->request->method() == 'POST') return $this->action_updatePostsSettings();
 
-        if ($request->method() == 'POST') return $this->action_updatePostsSettings($request, $response, $blog);
-
-        $postConfig = $this->getBlogConfig($blog['id']);
+        $postConfig = $this->getBlogConfig($this->blog['id']);
 
         if (isset($postConfig['posts'])) {
             // Default values where needed
             if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
             if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
-            $response->setVar('postConfig', $postConfig['posts']);
+            $this->response->setVar('postConfig', $postConfig['posts']);
         }
         else {
             // No posts config exists - send defaults
-            $response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
+            $this->response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
         }
 
-        $response->setVar('blog', $blog);
-        $response->setTitle('Post Settings - ' . $blog['name']);
-        $response->write('settings/posts.tpl');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Post Settings - ' . $this->blog['name']);
+        $this->response->write('settings/posts.tpl');
     }
 
     /**
@@ -238,36 +275,33 @@ class SettingsController extends GenericController
     /**
      * Handles /settings/blogdesigner/<blogid>
      * 
-     * @todo find a way to run a non-smarty template
+     * @todo update to use smarty template
      */
-    public function blogdesigner(&$request, &$response)
+    public function blogdesigner()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if ($this->request->method() == 'POST') return $this->action_updateBlogDisplaySettings();
 
-        if ($request->method() == 'POST') return $this->action_updateBlogDisplaySettings($blog);
+        // Create custom response as dealing with legacy code
+        $response = new \rbwebdesigns\core\Response();
 
-        $response->setVar('blog', $blog);
-        $response->setTitle('Blog Designer - ' . $blog['name']);
+        $response->setVar('blog', $this->blog);
+        $response->setTitle('Blog Designer - ' . $this->blog['name']);
         $response->addScript('/resources/colorpicker/jscolor.js');
-        $response->write(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $blog, 'cms_db' => $this->db));
+        $response->write(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $this->blog));
     }
         
     /**
      * Handles /settings/widgets/<blogid>
      */
-    public function widgets(&$request, &$response)
+    public function widgets()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        if ($request->method() == 'POST') return $this->action_updateWidgets($blog);
+        if ($this->request->method() == 'POST') return $this->action_updateWidgets($blog);
         
-        $response->setTitle('Customise Widgets - ' . $blog['name']);
-        $response->setVar('blog', $blog);
-        $response->setVar('widgetconfig', $this->getWidgetConfig($blog['id']));
-        $response->setVar('installedwidgets', $this->getInstalledWidgets());
-        $response->write('settings/widgets3.tpl');
+        $this->response->setTitle('Customise Widgets - ' . $this->blog['name']);
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setVar('widgetconfig', $this->getWidgetConfig($this->blog['id']));
+        $this->response->setVar('installedwidgets', $this->getInstalledWidgets());
+        $this->response->write('settings/widgets3.tpl');
     }
     
     /******************************************************************
@@ -287,52 +321,51 @@ class SettingsController extends GenericController
     
     /**
      * Run update for name and description of a blog
-     * @param array $blog
      */
-    public function action_updateBlogGeneral($request, $response, $blog)
+    public function action_updateBlogGeneral()
     {
-        $update = $this->modelBlogs->update(['id' => $blog['id']], [
-            'name'        => $request->getString('fld_blogname'),
-            'description' => $request->getString('fld_blogdesc'),
-            'visibility'  => $request->getString('fld_blogsecurity'),
-            'category'    => $request->getString('fld_category')
+        $update = $this->modelBlogs->update(['id' => $this->blog['id']], [
+            'name'        => $this->request->getString('fld_blogname'),
+            'description' => $this->request->getString('fld_blogdesc'),
+            'visibility'  => $this->request->getString('fld_blogsecurity'),
+            'category'    => $this->request->getString('fld_category')
         ]);
 
         if($update) {
-            $response->redirect('/settings/general/' . $blog['id'], "Blog settings updated", "success");
+            $this->response->redirect('/settings/general/' . $this->blog['id'], "Blog settings updated", "success");
         }
         else {
-            $response->redirect('/settings/general/' . $blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/settings/general/' . $this->blog['id'], "Error saving to database", "error");
         }
     }
     
     /**
      *  Update how posts are displayed on the blog
      */
-    public function action_updatePostsSettings($request, $response, $blog)
+    public function action_updatePostsSettings()
     {
-        $update = $this->updateBlogConfig($blog['id'], [
+        $update = $this->updateBlogConfig($this->blog['id'], [
             'posts' => [
-                'dateformat'        => $request->getString('fld_dateformat'),
-                'timeformat'        => $request->getString('fld_timeformat'),
-                'postsperpage'      => $request->getInt('fld_postsperpage'),
-                'allowcomments'     => $request->getInt('fld_commentapprove'),
-                'postsummarylength' => $request->getInt('fld_postsummarylength'),
-                'showtags'          => $request->getString('fld_showtags'),
-                'dateprefix'        => $request->getString('fld_dateprefix'),
-                'dateseperator'     => $request->getString('fld_dateseperator'),
-                'datelocation'      => $request->getString('fld_datelocation'),
-                'timelocation'      => $request->getString('fld_timelocation'),
-                'showsocialicons'   => $request->getString('fld_showsocialicons'),
-                'shownumcomments'   => $request->getString('fld_shownumcomments')
+                'dateformat'        => $this->request->getString('fld_dateformat'),
+                'timeformat'        => $this->request->getString('fld_timeformat'),
+                'postsperpage'      => $this->request->getInt('fld_postsperpage'),
+                'allowcomments'     => $this->request->getInt('fld_commentapprove'),
+                'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
+                'showtags'          => $this->request->getString('fld_showtags'),
+                'dateprefix'        => $this->request->getString('fld_dateprefix'),
+                'dateseperator'     => $this->request->getString('fld_dateseperator'),
+                'datelocation'      => $this->request->getString('fld_datelocation'),
+                'timelocation'      => $this->request->getString('fld_timelocation'),
+                'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
+                'shownumcomments'   => $this->request->getString('fld_shownumcomments')
             ]
         ]);
         
         if($update) {
-            $response->redirect('/settings/posts/' . $blog['id'], "Post settings updated", "success");
+            $this->response->redirect('/settings/posts/' . $this->blog['id'], "Post settings updated", "success");
         }
         else {
-            $response->redirect('/settings/posts/' . $blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/settings/posts/' . $this->blog['id'], "Error saving to database", "error");
         }
     }
     
@@ -543,85 +576,74 @@ class SettingsController extends GenericController
     }
     
     /**
-     * New - works in reverse of previous version
-     * This is becuase we want to have values in JSON
-     * that we don't want to send to the browser
-     *  
-     * The previous version literally re-generated the
-     * whole JSON every time the blog designer form
-     * was submitted...
-     *  
-     * This one loops through the JSON stored on the
+     * Save template settings
+     * 
+     * Loops through the JSON stored on the
      * server and looks for the corresponding value
      * in $_POST
-    **/
-    private function action_updateBlogDisplaySettings($blog)
+     */
+    private function action_updateBlogDisplaySettings()
     {
         $log = "";
         
-        $arraySettings = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
+        $settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/template_config.json');
         // Loop through JSON array
         // $log.= "looping through saved JSON<br>";
         
-        foreach($arraySettings as $group => $groupdata)
-        {        
-            if(strtolower($group) == 'layout') continue;
+        foreach ($settings as $group => $groupdata) {
+            if (strtolower($group) == 'layout' || strtolower($group) == 'includes') continue;
             
+            $displayfields = $this->request->get('displayfield');
+
             // $log.= "<b>processing {$group}</b><br>";
             // $log.= "looking for [displayfield][{$group}] in POST<br>";
-            $postdata = $_POST['displayfield'][$group];
+            $postdata = $displayfields[$group];
             
             // Check fields supplied in POST
-            if(is_array($postdata))
-            {
-                // $log.= "found in post<br>";
-                // $log.= "looping through [displayfield][{$group}] in POST<br>";
+            if (!is_array($postdata)) continue;
+
+            // $log.= "found in post<br>";
+            // $log.= "looping through [displayfield][{$group}] in POST<br>";
+            
+            for ($i = 1; $i < count($groupdata); $i++) {
+                // Check that the name from the config is in $_POST
+                // echo array_key_exists('label', $groupdata[$i]);
+                $fieldname = str_replace(' ', '_', $groupdata[$i]['label']);
                 
-                for($i = 1; $i < count($groupdata); $i++)
-                {
-                    // Check that the name from the config is in $_POST
-                    // echo array_key_exists('label', $groupdata[$i]);
-                    $fieldname = str_replace(' ', '_', $groupdata[$i]['label']);
-                    
-                    // $log.= "checking for ".$fieldname."(json) in POST<br>";
-                    
-                    if(array_key_exists($fieldname, $postdata))
-                    {
-                        // $log.= "found ".$fieldname."<br>";
-                        
-                        // Yes!
-                        if(array_key_exists('defaultfield', $_POST) && array_key_exists($group, $_POST['defaultfield']) && array_key_exists($fieldname, $_POST['defaultfield'][$group]))
-                        {
-                            $defaultdata = $_POST['defaultfield'][$group][$fieldname];
-                        }
-                        else
-                        {
-                            $defaultdata = "off"; // may not be sent
-                        }
-                        
-                        if(strtolower($defaultdata) == "on")
-                        {
-                            // Value is default
-                            // echo "Reverting {$group} {$i} to default<br>";
-                            $arraySettings[$group][$i]['current'] = $arraySettings[$group][$i]['default'];
-                        }
-                        else
-                        {
-                            // echo "setting {$group} {$i} current -> {$postdata[$fieldname]}<br>";
-                            $arraySettings[$group][$i]['current'] = $postdata[$fieldname];
-                        }
-                    }
-                } // inner loop
+                // $log.= "checking for ".$fieldname."(json) in POST<br>";
+                
+                if (!array_key_exists($fieldname, $postdata)) continue;
+
+                // $log.= "found ".$fieldname."<br>";
+                
+                // Yes!
+                if (array_key_exists('defaultfield', $_POST) &&
+                    array_key_exists($group, $_POST['defaultfield']) &&
+                    array_key_exists($fieldname, $_POST['defaultfield'][$group])) {
+                    $defaultdata = $_POST['defaultfield'][$group][$fieldname];
+                }
+                else {
+                    $defaultdata = "off"; // may not be sent
+                }
+                
+                if (strtolower($defaultdata) == "on") {
+                    // Value is default
+                    // echo "Reverting {$group} {$i} to default<br>";
+                    $settings[$group][$i]['current'] = $settings[$group][$i]['default'];
+                }
+                else {
+                    // echo "setting {$group} {$i} current -> {$postdata[$fieldname]}<br>";
+                    $settings[$group][$i]['current'] = $postdata[$fieldname];
+                }
             }
-        } // outer loop
+        }
         
         // die($log);
         
         // Save the config file back
-        file_put_contents(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json', json_encode($arraySettings));
-        
-        setSystemMessage(ITEM_UPDATED, "Success");
-        redirect('/config/'.$blog['id']);
+        file_put_contents(SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/template_config.json', json_encode($settings));
+
+        $this->response->redirect('/settings/blogdesigner/' . $this->blog['id'], 'Settings Updated', 'Success');
     }
         
     /**

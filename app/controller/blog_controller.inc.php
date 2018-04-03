@@ -182,10 +182,10 @@ class BlogController extends GenericController
 
         // Validation
         if(strlen($blogID) == 0) {
-            redirect('/');
+            $response->redirect('/');
         }
         elseif(!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            redirect('/', 'You do not contribute to this blog', 'error');
+            $response->redirect('/', 'You do not contribute to this blog', 'error');
         }
 
         $blog = $this->modelBlogs->getBlogById($blogID);

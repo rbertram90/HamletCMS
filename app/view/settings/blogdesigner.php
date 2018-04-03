@@ -121,10 +121,11 @@ EOD;
 ?>
 
 <div class="crumbtrail">
-    <a href="/">Home</a><a href="/overview/<?=$blog['id'] ?>"><?=$blog['name']?></a><a href="/config/<?=$blog['id'] ?>">Settings</a><a>Blog Design</a>
+    <a href="/">Home</a><a href="/blog/overview/<?=$blog['id'] ?>"><?=$blog['name']?></a><a href="/settings/menu/<?=$blog['id'] ?>">Settings</a><a>Blog Design</a>
 </div>
 
-<img src="/resources/icons/64/paintbrush.png" class="settings-icon" /><h1 class="settings-title">Customise Blog Design</h1>
+<img src="/resources/icons/64/paintbrush.png" class="settings-icon" /><h1 class="settings-title">Customise Blog Design<br><span class="subtitle" style="color: red;">Incomplete feature</span></h1>
+
 
 <style>
     .default_check { font-size:14px; }
@@ -173,7 +174,7 @@ $(document).ready(function() {
     foreach($design_settings as $key => $section):
 
         // Special Case
-        if(strtolower($key) == 'layout') continue;
+        if(strtolower($key) == 'layout' || strtolower($key) == 'includes') continue;
 
         echo "<h3>".$key."</h3>";
 
