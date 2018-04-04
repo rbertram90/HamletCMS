@@ -64,7 +64,7 @@
                         <span class="right floated">
                             {if $blog.user_id != $contributor.id}
                                 <a href="/contributors/edit/{$blog.id}/{$contributor.id}"><i class="edit icon"></i></a>
-                                <a href="/contributors/remove/{$blog.id}/{$contributor.id}"><i class="delete icon"></i></a>
+                                <a href="/contributors/remove/{$blog.id}/{$contributor.id}" onclick="return confirm('Are you sure you want to remove this contributor from the blog?');"><i class="delete icon"></i></a>
                             {/if}
                         </span>
                         <span>

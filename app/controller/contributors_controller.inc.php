@@ -1,6 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 
 /**
@@ -17,6 +18,7 @@ class ContributorsController extends GenericController
     protected $model;
     protected $modelGroups;
     protected $request, $response;
+    protected $blog;
     
     public function __construct()
     {
@@ -30,6 +32,28 @@ class ContributorsController extends GenericController
         $this->response = BlogCMS::response();
 
         BlogCMS::$activeMenuLink = 'users';
+
+        $this->setup();
+    }
+
+    /**
+     * Setup common objects
+     * Checks the user has permissions to run the request
+     */
+    protected function setup()
+    {
+        $currentUser = BlogCMS::session()->currentUser;
+        $this->blog = BlogCMS::getActiveBlog();
+
+        $access = true;
+
+        if(!$this->model->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_MANAGE_CONTRIBUTORS)) {
+            $access = false;
+        }
+
+        if (!$access) {
+            $this->response->redirect('/', '403 Access Denied', 'error');
+        }
     }
     
     /**
@@ -37,27 +61,18 @@ class ContributorsController extends GenericController
      */
     public function manage()
     {
-        $blogID = $this->request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        $currentUser = BlogCMS::session()->currentUser;
-
-        if (!$this->model->isBlogContributor($blog['id'], $currentUser['id'], 'all')) {
-            $this->response->redirect('/', 'Access denied', '');
-        }
-
-        $groups = $this->modelGroups->get('*', ['blog_id' => $blog['id']]);
+        $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]);
 
         if (count($groups) == 0) {
-            $this->modelGroups->createDefaultGroups($blog['id']);
-            $groups = $this->modelGroups->get('*', ['blog_id' => $blog['id']]);
+            $this->modelGroups->createDefaultGroups($this->blog['id']);
+            $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]);
         }
 
         $this->response->setVar('groups', $groups);
-        $this->response->setVar('contributors', $this->model->getBlogContributors($blog['id']));
-        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($blog['id'])); // Get the number of post each contributor has made
-        $this->response->setVar('blog', $blog);
-        $this->response->setTitle('Manage Blog Contributors - '.$blog['name']);
+        $this->response->setVar('contributors', $this->model->getBlogContributors($this->blog['id']));
+        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog['id'])); // Get the number of post each contributor has made
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Manage Blog Contributors - '.$this->blog['name']);
         $this->response->write('contributors/manage.tpl');
     }
     
@@ -120,19 +135,44 @@ class ContributorsController extends GenericController
     }
     
     /**
-     * Handles /contributors/permissions/<blogid>/<userid>
+     * Handles /contributors/edit/<blogid>/<userid>
      */
-    public function permissions()
+    public function edit()
     {
-        
+        $contributorID = $this->request->getUrlParameter(2);
+
+        if (!$user = $this->modelUsers->getById($contributorID)) {
+            $this->response->redirect('/', 'Unable to find contributor', 'error');
+        }
+
+        if ($this->request->method() == 'POST') {
+            return $this->runUpdateContributor($user);
+        }
+
+        $this->response->setVar('contributor', $user);
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setVar('groups', $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]));
+        $this->response->write('contributors/edit.tpl');
     }
     
     /**
      * Handles /contributors/remove/<blogid>/<userid>
+     * Confirmation happened client side
      */
     public function remove()
     {
-        
+        $contributorID = $this->request->getUrlParameter(2);
+
+        if (!$user = $this->modelUsers->getById($contributorID)) {
+            $this->response->redirect('/', 'Unable to find contributor', 'error');
+        }
+
+        if ($this->model->delete(['blog_id' => $this->blog['id'], 'user_id' => $contributorID])) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Contributor removed', 'success');
+        }
+        else {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Unable to remove contributor', 'error');
+        }
     }
 
     //----------------------------------------------------------
@@ -158,5 +198,28 @@ class ContributorsController extends GenericController
         $this->response->setTitle('Edit Group');
         $this->response->write('contributors/editgroup.tpl');
     }
-    
+
+    /**
+     * Handles POST /contributors/edit/<blogid>/<userid>
+     * (via. edit)
+     */
+    protected function runUpdateContributor($contributor)
+    {
+        $groupID = $this->request->getInt('fld_group');
+
+        // Check group exists and belongs to this blog
+        if (!$group = $this->modelGroups->getGroupById($groupID)) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+        }
+        if ($group['blog_id'] != $this->blog['id']) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+        }
+
+        if($this->model->update(['user_id' => $contributor['id']], ['group_id' => $group['id']])) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
+        }
+        else {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
+        }
+    }
 }
