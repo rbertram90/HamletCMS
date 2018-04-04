@@ -55,8 +55,5 @@ use rbwebdesigns\core\Database;
     // Generic controller class
     require_once SERVER_ROOT.'/app/controller/generic_controller.inc.php';
     
-    // Generic view
-    require_once SERVER_ROOT.'/app/view/view.php';
-    
     // Import view functions
     require_once SERVER_ROOT.'/app/view/page_header.php';

@@ -1,16 +1,16 @@
 <?php
 /**
-    Helpful function to keep the title consistant accross the website
-    @param $title - required - text to show as title
-    @param $icon - required - name of icon in resources/icons/64 folder
-    @param $subtitle - optional - string to show as subtitle
-    
-    @return - string - HTML to echo
-    
-    @author R.Bertram
-    @date 13/09/2014
-**/
-
+ * Helper function to keep the title consistant accross the website
+ * 
+ * @param string $title
+ *   required - text to show as title
+ * @param string $icon
+ *   required - name of icon in resources/icons/64 folder
+ * @param string $subtitle
+ *   optional - string to show as subtitle
+ * 
+ * @return - string - HTML to echo
+ */
 function viewPageHeader($title, $icon, $subtitle='') {
 
     if($subtitle==''):
@@ -25,21 +25,31 @@ EOD;
     endif;
 }
 
-
-function viewCrumbtrail($arraypath, $stringcurrentpage) {
+/**
+ * Helper function to keep crumbtrail consistant
+ * 
+ * @param array $path
+ *   array with alternating url and name values for each link in the crumbtrail
+ * @param string $currentPage
+ *   label for the current page
+ * 
+ * @return string
+ *   HTML for crumbtrail
+ */
+function viewCrumbtrail($path, $currentpage) {
 
     $output = <<<EOD
         <div class="ui breadcrumb"><a href="/" class="section">Home</a>
 EOD;
 
-    for($i = 0; $i < count($arraypath) - 1; $i=$i+2):
+    for($i = 0; $i < count($path) - 1; $i=$i+2):
     
         $output.= <<<EOD
         <i class="right angle icon divider"></i>
-<a href="{$arraypath[$i]}" class="section">{$arraypath[$i+1]}</a>
+<a href="{$path[$i]}" class="section">{$path[$i+1]}</a>
 EOD;
         
     endfor;
     
-    return $output.'<i class="right angle icon divider"></i><div class="active section">'.$stringcurrentpage.'</div></div>';
+    return $output.'<i class="right angle icon divider"></i><div class="active section">'.$currentpage.'</div></div>';
 }
