@@ -1,7 +1,10 @@
 # Blog CMS
 
 ## About
-This is a blogger style content management system for writing articles to blogs
+This is a blogger style content management system for writing articles to blogs. A hobby project, it is not in use in the real world as yet.
+
+### Current status
+In development: dev-master has known issues
 
 ### Current functionality
  * Create multiple blogs
@@ -15,14 +18,11 @@ This is a blogger style content management system for writing articles to blogs
  * Add tags to posts
  
 ## Technical
-Front end utilises Semantic UI (https://semantic-ui.com/) to give it a modern look and feel (this update is still ongoing!)
+Front end utilises Semantic UI (https://semantic-ui.com/)
 
-Back end is all vanilla PHP other than the views which are now mainly all using the Smarty templating engine
+Back end is all vanilla PHP other than views which are now largely all using the Smarty templating engine. The code is heavily dependant on the rbwebdesigns\core library.
 
-The core part of the system was originally seperate under rbwebdesigns but has now been included as part of
-blog cms - still uses original namespace (need to change?)
-
-Blog data is stored both in MySQL database and within files defaulted to /app/public/blogdata
+Data is stored both in MySQL database and within the file system (defaulted to /app/public/blogdata)
  * default.php - one line file which includes the blog setup script
  * default.css - stylesheet from templates
  * images folder
@@ -39,8 +39,6 @@ Blog data is stored both in MySQL database and within files defaulted to /app/pu
 8. Check everything is working - if not please raise a ticket with details!
 
 ### Dependencies
-
  * codeliner/array-reader" : "~1.0",
  * smarty/smarty": "~3.1",
  * michelf/php-markdown": "1.4.1"
- 
