@@ -3,6 +3,7 @@ namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\JSONHelper;
 
 /**
  * /app/controller/contributors_controller.inc.php
@@ -42,12 +43,26 @@ class ContributorsController extends GenericController
      */
     protected function setup()
     {
-        $currentUser = BlogCMS::session()->currentUser;
-        $this->blog = BlogCMS::getActiveBlog();
+        if (!$this->blog = BlogCMS::getActiveBlog()) {
+            // Danger - need to handle permissions seperately!
+            return;
+        }
 
+        $this->checkUserAccess();
+    }
+
+    /**
+     * Check the user has access to view/change the contributors of the blog
+     * Requires $this->blog to be set, redirects if not got permission
+     */
+    protected function checkUserAccess()
+    {
+        $currentUser = BlogCMS::session()->currentUser;
         $access = true;
 
-        if(!$this->model->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_MANAGE_CONTRIBUTORS)) {
+        if (!$this->blog) $access = false;
+
+        elseif (!$this->model->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_MANAGE_CONTRIBUTORS)) {
             $access = false;
         }
 
@@ -180,23 +195,125 @@ class ContributorsController extends GenericController
     //----------------------------------------------------------
 
     /**
+     * Handles GET /contributrs/creategroup/<blogid>
+     */
+    public function creategroup()
+    {
+        if ($this->request->method() == 'POST') {
+            return $this->runCreateGroup();
+        }
+
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Add contributors group');
+        $this->response->write('contributors/creategroup.tpl');
+    }
+
+    /**
+     * Handles GET /contributrs/creategroup/<blogid>
+     */
+    protected function runCreateGroup()
+    {
+        $permissions = $this->request->get('fld_permission');
+
+        if (gettype($permissions) != 'array') {
+            $this->response->redirect('/', 'Data error', 'error');
+        }
+
+        $systemPermissions = [
+            "create_posts","publish_posts","edit_all_posts","delete_posts",
+            "manage_comments","delete_files","change_settings","manage_contributors"
+        ];
+
+        $data = [];
+
+        foreach ($systemPermissions as $permission) {
+            if (array_key_exists($permission, $permissions) && $permissions[$permission] == 'on') {
+                $data[$permission] = 1;
+            }
+            else {
+                $data[$permission] = 0;
+            }
+        }
+
+        $insert = $this->modelGroups->insert([
+            'blog_id'     => $this->blog['id'],
+            'name'        => $this->request->getString('fld_name'),
+            'description' => $this->request->getString('fld_description'),
+            'data'        => JSONHelper::arrayToJSON($data),
+            'locked'      => 0
+        ]);
+
+        if ($insert) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group created', 'success');
+        }
+        else {
+            $this->response->redirect('/', 'Could not insert to database', 'error');
+        }
+    }
+
+    /**
      * Handles GET /contributors/editgroup
      */
     public function editgroup()
     {
         $groupID = $this->request->getUrlParameter(1);
+
         if (!$group = $this->modelGroups->getGroupById($groupID)) {
             $this->response->redirect('/', 'Group not found', 'error');
         }
 
-        $blog = $this->modelBlogs->getBlogById($group['blog_id']);
+        $this->blog = $this->modelBlogs->getBlogById($group['blog_id']);
 
-        BlogCMS::$blogID = $blog['id'];
+        $this->checkUserAccess();
 
-        $this->response->setVar('blog', $blog);
+        BlogCMS::$blogID = $this->blog['id'];
+
+        if ($this->request->method() == 'POST') {
+            return $this->runEditGroup($group);
+        }
+
+        $this->response->setVar('blog', $this->blog);
         $this->response->setVar('group', $group);
-        $this->response->setTitle('Edit Group');
+        $this->response->setTitle('Edit contributors group');
         $this->response->write('contributors/editgroup.tpl');
+    }
+
+    protected function runEditGroup($group)
+    {
+        $permissions = $this->request->get('fld_permission');
+
+        if (gettype($permissions) != 'array') {
+            $this->response->redirect('/', 'Data error', 'error');
+        }
+
+        $systemPermissions = [
+            "create_posts","publish_posts","edit_all_posts","delete_posts",
+            "manage_comments","delete_files","change_settings","manage_contributors"
+        ];
+
+        $data = [];
+
+        foreach ($systemPermissions as $permission) {
+            if (array_key_exists($permission, $permissions) && $permissions[$permission] == 'on') {
+                $data[$permission] = 1;
+            }
+            else {
+                $data[$permission] = 0;
+            }
+        }
+
+        $update = $this->modelGroups->update(['id' => $group['id']], [
+            'name'        => $this->request->getString('fld_name'),
+            'description' => $this->request->getString('fld_description'),
+            'data'        => JSONHelper::arrayToJSON($data)
+        ]);
+
+        if ($update) {
+            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group updated', 'success');
+        }
+        else {
+            $this->response->redirect('/', 'Could not update database', 'error');
+        }
     }
 
     /**

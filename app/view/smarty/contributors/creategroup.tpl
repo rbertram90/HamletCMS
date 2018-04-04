@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/blog/overview/{$blog['id']}", "{$blog['name']}", "/contributors/manage/{$blog['id']}", "Contributors"], 'Edit Group')}
+            {viewCrumbtrail(["/blog/overview/{$blog['id']}", "{$blog['name']}", "/contributors/manage/{$blog['id']}", "Contributors"], 'Add Group')}
         </div>
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Edit Group", 'friends.png', "{$group['name']} - {$blog['name']}")}
+            {viewPageHeader("Add Group", 'friends.png', "{$blog['name']}")}
         </div>
     </div>
     <div class="row">
@@ -15,12 +15,12 @@
                 <h2>Basic Information</h2>
                 <div class="field">
                     <label for="fld_name">Group Name</label>
-                    <input type="text" value="{$group.name}" name="fld_name" id="fld_name">
+                    <input type="text" value="" name="fld_name" id="fld_name">
                 </div>
 
                 <div class="field">
                     <label for="fld_description">Description</label>
-                    <input type="text" value="{$group.description}" name="fld_description" id="fld_description">
+                    <input type="text" value="" name="fld_description" id="fld_description">
                 </div>
 
                 <div class="ui divider hidden"></div>
@@ -88,37 +88,4 @@
 
 <script>
     $('.ui.checkbox').checkbox();
-
-    // Apply defaults
-    {if $group.permissions.create_posts}
-        $('#perm_create_posts').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.publish_posts}
-        $('#perm_publish_posts').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.edit_all_posts}
-        $('#perm_edit_all_posts').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.delete_posts}
-        $('#perm_delete_posts').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.manage_comments}
-        $('#perm_manage_comments').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.delete_files}
-        $('#perm_delete_files').attr("checked", "checked");
-    {/if}
-
-    {if $group.permissions.change_settings}
-        $('#perm_change_settings').attr("checked", "checked");
-    {/if}
-    
-    {if $group.permissions.manage_contributors}
-        $('#perm_manage_contributors').attr("checked", "checked");
-    {/if}
 </script>
