@@ -5,8 +5,8 @@
 /docs
 /app/vendor
 /app/public/blogdata
-/app/public/templates_c
 /app/public/avatars
+templates_c/
 
 /app/config/config.json
 
