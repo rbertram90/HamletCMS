@@ -26,7 +26,7 @@ class AccountController extends GenericController
                 // Found user
             }
             else {
-                $this->response->redirect('/', 'User not found', 'error');
+                $this->response->redirect('/cms', 'User not found', 'error');
             }
         }
         else {
@@ -70,14 +70,14 @@ class AccountController extends GenericController
         $password = $request->getString('fld_password');
 
         if (strlen($username) == 0 || strlen($password) == 0) {
-            $response->redirect('/account/login', 'Please complete all fields', 'error');
+            $response->redirect('/cms/account/login', 'Please complete all fields', 'error');
         }
 
         if ($this->model->login($username, $password)) {
-            $response->redirect('/', 'Welcome back', 'success');
+            $response->redirect('/cms', 'Welcome back', 'success');
         }
         else {
-            $response->redirect('/account/login', 'No match found for username and password', 'error');
+            $response->redirect('/cms/account/login', 'No match found for username and password', 'error');
         }
     }
 
@@ -99,21 +99,21 @@ class AccountController extends GenericController
         // Check all fields complete
         foreach ($details as $value) {
             if (strlen($value) == 0) {
-                $response->redirect('/account/login', 'Please complete all fields', 'error');
+                $response->redirect('/cms/account/login', 'Please complete all fields', 'error');
                 break;
             }
         }
 
         // Validate
         if ($details['email'] != $details['emailConfirm'] || $details['password'] != $details['passwordConfirm']) {
-            $response->redirect('/account/register', 'Email or passwords did not match', 'error');
+            $response->redirect('/cms/account/register', 'Email or passwords did not match', 'error');
         }
 
         if ($this->model->register($details)) {
-            $response->redirect('/account/login', 'Account created', 'success');
+            $response->redirect('/cms/account/login', 'Account created', 'success');
         }
         else {
-            $response->redirect('/account/login', 'Unable to create account right now - please try again later', 'error');
+            $response->redirect('/cms/account/login', 'Unable to create account right now - please try again later', 'error');
         }
     }
 
@@ -165,14 +165,14 @@ class AccountController extends GenericController
             $details['dob'] = date("Y-m-d", strtotime($in_dob_year."-".$in_dob_month."-".$in_dob_day));
         }
         else {
-            $this->response->redirect('/account/settings', 'Invalid date of birth', 'error');
+            $this->response->redirect('/cms/account/settings', 'Invalid date of birth', 'error');
         }
         
         if ($this->model->saveSettings($details)) {
-            $this->response->redirect('/account/settings', 'Account updated', 'success');
+            $this->response->redirect('/cms/account/settings', 'Account updated', 'success');
         }
         else {
-            $this->response->redirect('/account/settings', 'Unable to save profile', 'error');
+            $this->response->redirect('/cms/account/settings', 'Unable to save profile', 'error');
         }
     }
 

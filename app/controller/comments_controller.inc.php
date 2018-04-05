@@ -80,7 +80,7 @@ class CommentsController extends GenericController
             $commentID = $this->request->getUrlParameter(1);
 
             if (!$this->comment = $this->model->getCommentById($commentID)) {
-                $this->response->redirect('/', 'Unable to find comment', 'error');
+                $this->response->redirect('/cms', 'Unable to find comment', 'error');
             }
 
             BlogCMS::$blogID = $this->comment['blog_id'];
@@ -99,7 +99,7 @@ class CommentsController extends GenericController
         }
 
         if (!$access) {
-            $this->response->redirect('/', '403 Access Denied', 'error');
+            $this->response->redirect('/cms', '403 Access Denied', 'error');
         }
     }
 
@@ -110,7 +110,7 @@ class CommentsController extends GenericController
      */
     public function defaultAction()
     {
-        return $this->response->redirect('/', 'Invalid request', 'error');
+        return $this->response->redirect('/cms', 'Invalid request', 'error');
     }
 
     /**
@@ -134,10 +134,10 @@ class CommentsController extends GenericController
     public function delete()
     {
         if ($this->model->deleteComment($this->comment['id'])) {
-            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Comment removed', 'success');
+            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Comment removed', 'success');
         }
         else {
-            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Unable to remove comment', 'error');
+            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Unable to remove comment', 'error');
         }
     }
     
@@ -147,10 +147,10 @@ class CommentsController extends GenericController
     public function approve()
     {
         if ($this->model->approve($this->comment['id'])) {
-            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Comment approved', 'success');
+            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Comment approved', 'success');
         }
         else {
-            $this->response->redirect('/comments/all/' . $this->blog['id'], 'Unable to approve comment', 'error');
+            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Unable to approve comment', 'error');
         }
     }
     

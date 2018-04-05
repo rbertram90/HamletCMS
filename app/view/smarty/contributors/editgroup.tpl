@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/blog/overview/{$blog['id']}", "{$blog['name']}", "/contributors/manage/{$blog['id']}", "Contributors"], 'Edit Group')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/contributors/manage/{$blog['id']}", "Contributors"], 'Edit Group')}
         </div>
     </div>
     <div class="row">

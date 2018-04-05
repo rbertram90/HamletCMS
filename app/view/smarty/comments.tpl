@@ -3,7 +3,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}), 'Comments')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}), 'Comments')}
         </div>
     </div>
 
@@ -39,7 +39,7 @@
                 {formatdate($comment.timestamp)}
             </td>
             <td>
-                <a href="/account/user/{$comment.userid}">{$comment.username}</a>
+                <a href="/cms/account/user/{$comment.userid}">{$comment.username}</a>
             </td>
             <td>
                 <a href="/blogs/{$comment.blog_id}/posts/{$comment.link}">{$comment.title}</a>

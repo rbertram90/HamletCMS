@@ -1,12 +1,38 @@
+<?php
+/* Smarty version 3.1.31, created on 2018-04-05 23:09:21
+  from "C:\xampp_5.6.24\htdocs\rbwebdesigns\projects\blog_cms\app\view\smarty\contributors\creategroup.tpl" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.31',
+  'unifunc' => 'content_5ac69e9181e422_73495166',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    '2df6883ccecd6d1983f9b9c7251a3dc610f44233' => 
+    array (
+      0 => 'C:\\xampp_5.6.24\\htdocs\\rbwebdesigns\\projects\\blog_cms\\app\\view\\smarty\\contributors\\creategroup.tpl',
+      1 => 1522958764,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+  ),
+),false)) {
+function content_5ac69e9181e422_73495166 (Smarty_Internal_Template $_smarty_tpl) {
+?>
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/contributors/manage/{$blog['id']}", "Contributors"], 'Add Group')}
+            <?php echo viewCrumbtrail(array("/cms/blog/overview/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),((string)$_smarty_tpl->tpl_vars['blog']->value['name']),"/cms/contributors/manage/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),"Contributors"),'Add Group');?>
+
         </div>
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Add Group", 'friends.png', "{$blog['name']}")}
+            <?php echo viewPageHeader("Add Group",'friends.png',((string)$_smarty_tpl->tpl_vars['blog']->value['name']));?>
+
         </div>
     </div>
     <div class="row">
@@ -86,6 +112,9 @@
     </div>
 </div>
 
-<script>
+<?php echo '<script'; ?>
+>
     $('.ui.checkbox').checkbox();
-</script>
+<?php echo '</script'; ?>
+><?php }
+}

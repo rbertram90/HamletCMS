@@ -67,7 +67,7 @@ class ContributorsController extends GenericController
         }
 
         if (!$access) {
-            $this->response->redirect('/', '403 Access Denied', 'error');
+            $this->response->redirect('/cms', '403 Access Denied', 'error');
         }
     }
     
@@ -126,12 +126,12 @@ class ContributorsController extends GenericController
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
-            $response->redirect('/contributors/manage', 'Email or passwords did not match', 'error');
+            $response->redirect('/cms/contributors/manage', 'Email or passwords did not match', 'error');
         }
 
         $checkUser = $this->modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
         if($checkUser && $checkUser['id']) {
-            $response->redirect('/contributors/manage', 'Username is already taken', 'error');
+            $response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
         }
 
         if ($this->modelUsers->register($accountData)) {
@@ -139,14 +139,14 @@ class ContributorsController extends GenericController
             $user = $this->modelUsers->get('id', ['email' => $accountData['email']], '', '', false);
         }
         else {
-            $this->response->redirect('/contributors/create/' . $blog['id'], 'Error creating account', 'error');
+            $this->response->redirect('/cms/contributors/create/' . $blog['id'], 'Error creating account', 'error');
         }
 
         if (!$this->model->addBlogContributor($user['id'], 'p', $blog['id'])) {
-            $this->response->redirect('/contributors/create/' . $blog['id'], 'Error assigning contributor', 'error');
+            $this->response->redirect('/cms/contributors/create/' . $blog['id'], 'Error assigning contributor', 'error');
         }
 
-        $this->response->redirect('/contributors/manage/' . $blog['id'], 'Contributor created', 'success');
+        $this->response->redirect('/cms/contributors/manage/' . $blog['id'], 'Contributor created', 'success');
     }
     
     /**
@@ -157,7 +157,7 @@ class ContributorsController extends GenericController
         $contributorID = $this->request->getUrlParameter(2);
 
         if (!$user = $this->modelUsers->getById($contributorID)) {
-            $this->response->redirect('/', 'Unable to find contributor', 'error');
+            $this->response->redirect('/cms', 'Unable to find contributor', 'error');
         }
 
         if ($this->request->method() == 'POST') {
@@ -179,14 +179,14 @@ class ContributorsController extends GenericController
         $contributorID = $this->request->getUrlParameter(2);
 
         if (!$user = $this->modelUsers->getById($contributorID)) {
-            $this->response->redirect('/', 'Unable to find contributor', 'error');
+            $this->response->redirect('/cms', 'Unable to find contributor', 'error');
         }
 
         if ($this->model->delete(['blog_id' => $this->blog['id'], 'user_id' => $contributorID])) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Contributor removed', 'success');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Contributor removed', 'success');
         }
         else {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Unable to remove contributor', 'error');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Unable to remove contributor', 'error');
         }
     }
 
@@ -216,7 +216,7 @@ class ContributorsController extends GenericController
         $permissions = $this->request->get('fld_permission');
 
         if (gettype($permissions) != 'array') {
-            $this->response->redirect('/', 'Data error', 'error');
+            $this->response->redirect('/cms', 'Data error', 'error');
         }
 
         $systemPermissions = [
@@ -244,10 +244,10 @@ class ContributorsController extends GenericController
         ]);
 
         if ($insert) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group created', 'success');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group created', 'success');
         }
         else {
-            $this->response->redirect('/', 'Could not insert to database', 'error');
+            $this->response->redirect('/cms', 'Could not insert to database', 'error');
         }
     }
 
@@ -259,7 +259,7 @@ class ContributorsController extends GenericController
         $groupID = $this->request->getUrlParameter(1);
 
         if (!$group = $this->modelGroups->getGroupById($groupID)) {
-            $this->response->redirect('/', 'Group not found', 'error');
+            $this->response->redirect('/cms', 'Group not found', 'error');
         }
 
         $this->blog = $this->modelBlogs->getBlogById($group['blog_id']);
@@ -283,7 +283,7 @@ class ContributorsController extends GenericController
         $permissions = $this->request->get('fld_permission');
 
         if (gettype($permissions) != 'array') {
-            $this->response->redirect('/', 'Data error', 'error');
+            $this->response->redirect('/cms', 'Data error', 'error');
         }
 
         $systemPermissions = [
@@ -309,10 +309,10 @@ class ContributorsController extends GenericController
         ]);
 
         if ($update) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group updated', 'success');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group updated', 'success');
         }
         else {
-            $this->response->redirect('/', 'Could not update database', 'error');
+            $this->response->redirect('/cms', 'Could not update database', 'error');
         }
     }
 
@@ -326,17 +326,17 @@ class ContributorsController extends GenericController
 
         // Check group exists and belongs to this blog
         if (!$group = $this->modelGroups->getGroupById($groupID)) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
         }
         if ($group['blog_id'] != $this->blog['id']) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
         }
 
         if($this->model->update(['user_id' => $contributor['id']], ['group_id' => $group['id']])) {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
         }
         else {
-            $this->response->redirect('/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
         }
     }
 }

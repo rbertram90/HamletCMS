@@ -1,14 +1,14 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", $blog['name'], "/settings/menu/{$blog['id']}", 'Settings'), 'Edit Stylesheet')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Edit Stylesheet')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
             {viewPageHeader('Edit Stylesheet', 'css.png', $blog['name'])}
             
-            <form action="/settings/stylesheet/{$blog.id}" method="POST" class="ui form">
+            <form method="POST" class="ui form">
 
                 <div class="field">
                     <label for="fld_css">CSS</label>

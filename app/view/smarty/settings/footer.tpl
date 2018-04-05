@@ -1,14 +1,14 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", $blog['name'], "/settings/menu/{$blog['id']}", 'Settings'), 'Customise Footer')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Customise Footer')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
             {viewPageHeader('Customise Footer', 'footer.png', $blog['name'])}
 
-            <form action="/settings/footer/{$blog.id}" method="post" id="frm_updatefooter" class="ui form">
+            <form method="post" id="frm_updatefooter" class="ui form">
 
                 <div class="field">
                     <label for="fld_numcolumns">Number of Columns</label>

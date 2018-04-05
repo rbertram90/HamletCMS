@@ -20,7 +20,7 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
     $links = [
         [
             'key' => 'dashboard',
-            'url' => '/',
+            'url' => '/cms',
             'icon' => 'list ul',
             'label' => 'My Blogs',
         ],
@@ -33,25 +33,25 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
             ],
             [
                 'key' => 'overview',
-                'url' => '/blog/overview/'. $blogid,
+                'url' => '/cms/blog/overview/'. $blogid,
                 'icon' => 'chart bar',
                 'label' => 'Dashboard',
             ],
             [
                 'key' => 'posts',
-                'url' => '/posts/manage/'. $blogid,
+                'url' => '/cms/posts/manage/'. $blogid,
                 'icon' => 'copy outline',
                 'label' => 'Posts',
             ],
             [
                 'key' => 'comments',
-                'url' => '/comments/all/'. $blogid,
+                'url' => '/cms/comments/all/'. $blogid,
                 'icon' => 'comments outline',
                 'label' => 'Comments',
             ],
             [
                 'key' => 'files',
-                'url' => '/files/manage/'. $blogid,
+                'url' => '/cms/files/manage/'. $blogid,
                 'icon' => 'image outline',
                 'label' => 'Files',
             ],
@@ -61,13 +61,13 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
             $links = array_merge($links, [
                 [
                 'key' => 'settings',
-                'url' => '/settings/menu/'. $blogid,
+                'url' => '/cms/settings/menu/'. $blogid,
                 'icon' => 'cogs',
                 'label' => 'Settings',
                 ],
                 [
                     'key' => 'users',
-                    'url' => '/contributors/manage/'. $blogid,
+                    'url' => '/cms/contributors/manage/'. $blogid,
                     'icon' => 'users',
                     'label' => 'Contributors',
                 ]
@@ -88,19 +88,19 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
         ],
         [
             'key' => 'profile',
-            'url' => '/account/user',
+            'url' => '/cms/account/user',
             'icon' => 'user',
             'label' => 'View Profile',
         ],
         [
             'key' => 'profile',
-            'url' => '/account/settings',
+            'url' => '/cms/account/settings',
             'icon' => 'cogs',
             'label' => 'Settings',
         ],
         [
             'key' => 'logout',
-            'url' => '/account/logout',
+            'url' => '/cms/account/logout',
             'icon' => 'arrow left',
             'label' => 'Logout',
         ]

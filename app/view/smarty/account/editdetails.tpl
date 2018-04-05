@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/account/user", 'Account'), 'Edit')}
+            {viewCrumbtrail(array("/cms/account/user", 'Account'), 'Edit')}
         </div>
     </div>
     <div class="one column row">
@@ -12,14 +12,14 @@
 </div>
 
 <div class="ui three item menu">
-  <a href="/account/settings" class="active item">Settings</a>
-  <a href="/account/password" class="item">Change Password</a>
-  <a href="/account/avatar" class="item">Upload Avatar</a>
+  <a href="/cms/account/settings" class="active item">Settings</a>
+  <a href="/cms/account/password" class="item">Change Password</a>
+  <a href="/cms/account/avatar" class="item">Upload Avatar</a>
 </div>
 
 <p class="ui message info">Information provided is not passed on to third parties</p>
 
-<form action="/account/settings" method="POST" class="ui form">
+<form action="/cms/account/settings" method="POST" class="ui form">
 
     <div class="two fields">
         <div class="field">

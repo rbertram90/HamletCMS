@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}, "/settings/menu/{$blog.id}", 'Settings'), 'Configure Pages')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}, "/settings/menu/{$blog.id}", 'Settings'), 'Configure Pages')}
         </div>
     </div>
     <div class="one column row">
@@ -24,17 +24,17 @@
                         {if getType($page) == 'string'}
                             {substr($page,2)}
                 
-                            <form action="/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">Remove</button>
                             </form>
                             
-                            <form action="/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">&#x25BC;</button>
                             </form>
                             
-                            <form action="/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page}" />
                                 <button class="ui button right floated" type="submit">&#x25B2;</button>
                             </form>
@@ -42,17 +42,17 @@
                         {else}
                             <a href="/blogs/{$blog.id}/posts/{$page.link}" target="_blank">{$page.title}</a>
 
-                            <form action="/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/remove" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">Remove</button>
                             </form>
                             
-                            <form action="/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/down" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">&#x25BC;</button>
                             </form>
 
-                            <form action="/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
+                            <form action="/cms/settings/pages/{$blog.id}/up" method="POST" style="display:inline">
                                 <input type="hidden" name="fld_postid" value="{$page.id}" />
                                 <button class="ui button right floated" type="submit">&#x25B2;</button>
                             </form>
@@ -70,7 +70,7 @@
             </div>
 
 
-            <form action="/settings/pages/{$blog.id}/add" method="POST" class="ui form">
+            <form action="/cms/settings/pages/{$blog.id}/add" method="POST" class="ui form">
                 <div id="pagetype" class="field">
                     <label for="fld_pagetype">Page Type</label>
                     <select name="fld_pagetype" id="fld_pagetype" class="semantic-dropdown">

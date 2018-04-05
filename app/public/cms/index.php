@@ -7,15 +7,15 @@ use rbwebdesigns\core\Sanitize;
 /****************************************************************
   Blog CMS Start Point
 ****************************************************************/
-    
     // Load JSON config file
     // Note: cannot use core function to do this as hasn't been loaded
     // at this stage - chicken and egg situation
-    $config = json_decode(file_get_contents(dirname(__file__) . '/../config/config.json'), true);
+    $config = json_decode(file_get_contents(dirname(__file__) . '/../../config/config.json'), true);
     
     define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
     
     define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
+    define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
     define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
     define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
@@ -68,16 +68,67 @@ use rbwebdesigns\core\Sanitize;
         exit;
     }
 
+    if ($controllerName == 'account') {
+        $action = $request->getUrlParameter(0, 'login');
+
+        if ($action == 'login' || $action == 'register') {
+            require SERVER_ROOT . '/app/controller/account_controller.inc.php';
+            $controller = new \rbwebdesigns\blogcms\AccountController();
+            $controller->$action($request, $response);
+            exit;
+        }
+    }
+
+    // User must be logged in to do anything in the CMS
+    if (!USER_AUTHENTICATED) {
+        $response->redirect('/cms/account/login', 'Login required', 'warning');
+    }
+    else {
+        // Check the user has access to view/edit this blog
+        $blogID = $request->getUrlParameter(1);
+        if(strlen($blogID) == 10 && is_numeric($blogID)) {
+            BlogCMS::$blogID = $blogID;
+
+            // Surely must be an ID for a blog
+            // Check the user has edit permissions
+            $user = BlogCMS::session()->currentUser;
+            $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+
+            BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
+            BlogCMS::$userIsAdminContributor = $modelContributors->isBlogContributor($blogID, $user['id'], 'all');
+
+            if (!BlogCMS::$userIsContributor) {
+                redirect('/', 'You\'re not a contributor for that blog!', 'error');
+            }
+            elseif ($controllerName == 'settings') {
+                if(!BlogCMS::$userIsAdminContributor) {
+                    redirect('/', 'You haven\'t got sufficient permissions to access that page', 'error');
+                }
+            }
+        }
+    }
+
+    // Check form submissions for CSRF token
+    CSRF::init();
+
+
 /****************************************************************
   Setup controller
 ****************************************************************/
+    
+    // Check if we've got a valid controller
+    $controllerFilePath = SERVER_ROOT . '/app/controller/' . $controllerName . '_controller.inc.php';
 
+    if(!file_exists($controllerFilePath)) {
+        $response->redirect('/cms', 'Page not found', 'error');
+    }
+    
     // Get controller class file
-    require_once SERVER_ROOT . '/app/controller/public_controller.inc.php';
+    require_once $controllerFilePath;
     
     // Dynamically instantiate new class
-    $controllerClassName = '\rbwebdesigns\blogcms\\PublicController';
-    $controller = new $controllerClassName($request, $response);
+    $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
+    $controller = new $controllerClassName();
 
 /****************************************************************
   Get body content
@@ -85,7 +136,9 @@ use rbwebdesigns\core\Sanitize;
 
     // Add default stylesheet(s)
     $response->addStylesheet('/css/semantic.css');
+    // $this->addStylesheet('/resources/css/core');
     $response->addStylesheet('/resources/css/header.css');
+    // $this->addStylesheet('/resources/css/forms');
     $response->addStylesheet('/css/blogs_stylesheet.css');
 
     // Add default script(s)
@@ -94,20 +147,41 @@ use rbwebdesigns\core\Sanitize;
     $response->addScript('/resources/js/core-functions.js');
     $response->addScript('/resources/js/validate.js');
     $response->addScript('/resources/js/ajax.js');
+    $response->addScript('/js/sidemenu.js');
 
     $response->setTitle('Default title');
     $response->setDescription('Default page description');
 
     // Call the requested function
-    $action = $request->getUrlParameter(0, 'home');
+    $action = $request->getUrlParameter(0, 'defaultAction');
     ob_start();
     $controller->$action($request, $response);
     $response->setBody(ob_get_contents());
     ob_end_clean();
+
+    // Cases where template not required
+    if ($controllerName == 'ajax' || $controllerName == 'api' || $request->isAjax) {
+        $response->writeBody();
+        exit;
+    }
+
     
 /****************************************************************
   Output Template
 ****************************************************************/
 
+    // Set the side menu content
+    // $view->setSideMenu($controller->getSideMenu($queryParams, $action));
+
+    require SERVER_ROOT . '/app/view/sidemenu.php';
+
+    if (BlogCMS::$blogID) {
+        $sideMenu = getCMSSideMenu(BlogCMS::$blogID, BlogCMS::$userIsAdminContributor, BlogCMS::$activeMenuLink);
+    }
+    else {
+        $sideMenu = getCMSSideMenu(0, 0, BlogCMS::$activeMenuLink);
+    }
+    $response->setVar('page_sidemenu', $sideMenu);
+
     // Run Template here
-    $response->writeTemplate('public/wrapper.tpl');
+    $response->writeTemplate('template.tpl');

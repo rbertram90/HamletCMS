@@ -182,10 +182,10 @@ class BlogController extends GenericController
 
         // Validation
         if(strlen($blogID) == 0) {
-            $response->redirect('/');
+            $response->redirect('/cms');
         }
         elseif(!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            $response->redirect('/', 'You do not contribute to this blog', 'error');
+            $response->redirect('/cms', 'You do not contribute to this blog', 'error');
         }
 
         $blog = $this->modelBlogs->getBlogById($blogID);
@@ -233,20 +233,20 @@ class BlogController extends GenericController
         $currentUser = BlogCMS::session()->currentUser;
 
         if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
-            $response->redirect('/', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
+            $response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
         }
         else {
             $newblogkey = $this->modelBlogs->createBlog($request->getString('fld_blogname'), $request->getString('fld_blogdesc'));
 
             if (!$newblogkey) {
-                $response->redirect('/', 'Error creating blog please try again later', 'error');
+                $response->redirect('/cms', 'Error creating blog please try again later', 'error');
             }
 
             if (!$this->modelContributors->addBlogContributor($currentUser['id'], 'a', $newblogkey)) {
-                $response->redirect('/', 'Error adding to contributor please try again later', 'error');
+                $response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             }
 
-            $response->redirect('/blog/overview/' . $newblogkey, 'Blog created', 'Success');
+            $response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
         }
     }
 }

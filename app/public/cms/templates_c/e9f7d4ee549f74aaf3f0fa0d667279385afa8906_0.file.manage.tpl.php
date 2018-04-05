@@ -1,16 +1,42 @@
-{* Manage Posts *}
+<?php
+/* Smarty version 3.1.31, created on 2018-04-05 23:09:03
+  from "C:\xampp_5.6.24\htdocs\rbwebdesigns\projects\blog_cms\app\view\smarty\posts\manage.tpl" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.31',
+  'unifunc' => 'content_5ac69e7f064321_49926810',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    'e9f7d4ee549f74aaf3f0fa0d667279385afa8906' => 
+    array (
+      0 => 'C:\\xampp_5.6.24\\htdocs\\rbwebdesigns\\projects\\blog_cms\\app\\view\\smarty\\posts\\manage.tpl',
+      1 => 1522966141,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+  ),
+),false)) {
+function content_5ac69e7f064321_49926810 (Smarty_Internal_Template $_smarty_tpl) {
+?>
+
 
 <div class="ui grid">
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog.name}"), 'Manage Posts')}
+            <?php echo viewCrumbtrail(array("/blog/overview/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),((string)$_smarty_tpl->tpl_vars['blog']->value['name'])),'Manage Posts');?>
+
         </div>
     </div>
     
     <div class="two column row">
         <div class="column">
-            {viewPageHeader('Manage Posts', 'papers.png', "{$blog.name}")}
+            <?php echo viewPageHeader('Manage Posts','papers.png',((string)$_smarty_tpl->tpl_vars['blog']->value['name']));?>
+
         </div>
         <div class="column">
             <div class="ui form">
@@ -61,7 +87,9 @@
                     </div>
                 </div>
             </div>
-            <script>$('.ui.checkbox').checkbox();</script>
+            <?php echo '<script'; ?>
+>$('.ui.checkbox').checkbox();<?php echo '</script'; ?>
+>
         </div>
     </div>
     
@@ -73,7 +101,8 @@
     
 </div>
     
-<script>
+<?php echo '<script'; ?>
+>
     // E.g. 3:11, 22nd Aug 2015
     function formatDate(date) {
         var d = new Date(date);
@@ -105,7 +134,8 @@
 
         $.get("/cms/api/posts",
             {
-                blogID:         {$blog.id},
+                blogID:         <?php echo $_smarty_tpl->tpl_vars['blog']->value['id'];?>
+,
                 start:          pagenum,
                 limit:          numtoshow,
                 sort:           sortby,
@@ -239,9 +269,10 @@
             
                 output += '<a href="/posts/create/' + data.blog.id + '" class="ui button teal right floated">New Post</a>';
                 
-                output += '<script>';
-                output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';
-                output += '  $(".user-link").mouseleave(function() {ldelim} hideUserProfile($(this)) {rdelim});';
+                output += '<?php echo '<script'; ?>
+>';
+                output += '  $(".user-link").mouseenter(function() { showUserProfile($(this), "/", "/") });';
+                output += '  $(".user-link").mouseleave(function() { hideUserProfile($(this)) });';
                 output += '<\/script>';
             
                 $("#posts_display").html(output);
@@ -258,4 +289,6 @@
     // Init
     refreshData(1);
 
-</script>
+<?php echo '</script'; ?>
+><?php }
+}

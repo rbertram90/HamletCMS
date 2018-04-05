@@ -122,7 +122,7 @@ class PostsController extends GenericController
         }
 
         if (!$access) {
-            $this->response->redirect('/', '403 Access Denied', 'error');
+            $this->response->redirect('/cms', '403 Access Denied', 'error');
         }
     }
 
@@ -263,14 +263,14 @@ class PostsController extends GenericController
                 $this->model->removeAutosave($postID);
             }
             else {
-                $this->response->redirect('/posts/edit/' . $postID, 'Error updating post', 'error');
+                $this->response->redirect('/cms/posts/edit/' . $postID, 'Error updating post', 'error');
             }
         }
         elseif (!$this->model->createPost($newPost)) {
-            $this->response->redirect('/posts/manage/' . $blog['id'], 'Error creating post', 'error');
+            $this->response->redirect('/cms/posts/manage/' . $blog['id'], 'Error creating post', 'error');
         }
 
-        $this->response->redirect('/posts/manage/' . $blog['id'], 'Post created', 'success');
+        $this->response->redirect('/cms/posts/manage/' . $blog['id'], 'Post created', 'success');
     }
     
     /**
@@ -288,7 +288,7 @@ class PostsController extends GenericController
             $this->model->delete(['id' => $this->post['id']]);
         }
 
-        $this->response->redirect('/posts/manage/' . $this->blog['id']);
+        $this->response->redirect('/cms/posts/manage/' . $this->blog['id']);
     }
     
     /**
@@ -329,7 +329,7 @@ class PostsController extends GenericController
         $this->model->updatePost($this->post['id'], $updates);
         $this->model->removeAutosave($this->post['id']);
         
-        $this->response->redirect('/posts/edit/' . $this->post['id'], 'Save successful', 'success');
+        $this->response->redirect('/cms/posts/edit/' . $this->post['id'], 'Save successful', 'success');
     }
     
     /**
@@ -340,10 +340,10 @@ class PostsController extends GenericController
     public function delete()
     {
         if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
-            $this->response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
+            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
         }
         else {
-            $this->response->redirect('/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
+            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
         }
     }
     

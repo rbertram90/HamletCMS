@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/overview/{$blog['id']}", $blog['name'], "/config/{$blog['id']}", 'Settings'), 'Widgets')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Widgets')}
         </div>
     </div>
     <div class="one column row">
@@ -13,7 +13,7 @@
 
 <div class="ui secondary segment">Drag and drop widgets to re-order and change where on the page they are displayed. Widgets can be added to each section using the 'Add' buttons.</div>
 
-<form action="/config/{$blog.id}/widgets/submit" method="POST">
+<form method="POST">
 
     {foreach from=$widgetconfig key=section item=sectionwidgets}<div class="dropwrapper" id="{$section}dropwrapper">
             <div id="{$section}widgetlist" class="droparea" sectionname="{$section}">

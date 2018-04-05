@@ -17,13 +17,13 @@
         {foreach from=$blogs item=blog}
             <tr>
                 <td>
-                    <a href="/blog/overview/{$blog.id}" title="{$blog.name}" style="font-size:120%;">{$blog.name}</a>
+                    <a href="/cms/blog/overview/{$blog.id}" title="{$blog.name}" style="font-size:120%;">{$blog.name}</a>
                     <br><span class="date">{$blog.latestpost.timestamp}</span>
                 </td>
                 <td>
                     {foreach from=$blog.contributors item=contributor name=contributors}
                         
-                        <a href="/account/user/{$contributor.id}" class="user-link">
+                        <a href="/cms/account/user/{$contributor.id}" class="user-link">
                         {* Remove whitespace after name *}
                         {strip}
                             {if $contributor.id == $smarty.session.user}
@@ -50,11 +50,11 @@
                             - Actions -
                             <i class="dropdown icon"></i>
                             <div class="menu">
-                                <a href="/posts/manage/{$blog.id}" class="item">Manage Current Posts</a>
-                                <a href="/posts/create/{$blog.id}" class="item">Create New Post</a>
-                                <a href="/contributors/{$blog.id}" class="item">Contributors</a>
-                                <a href="/settings/menu/{$blog.id}" class="item">Blog Settings</a>
-                                <a href="/files/{$blog.id}" class="item">Files</a>
+                                <a href="/cms/posts/manage/{$blog.id}" class="item">Manage Current Posts</a>
+                                <a href="/cms/posts/create/{$blog.id}" class="item">Create New Post</a>
+                                <a href="/cms/contributors/{$blog.id}" class="item">Contributors</a>
+                                <a href="/cms/settings/menu/{$blog.id}" class="item">Blog Settings</a>
+                                <a href="/cms/files/{$blog.id}" class="item">Files</a>
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
 {* This user doesn't have any blogs *}
 {else}
 
-    <p class="ui message info">You're not contributing to any blogs, why not <a href="/blog/create">create your first blog</a>?</p>
+    <p class="ui message info">You're not contributing to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
 
 {/if}
 

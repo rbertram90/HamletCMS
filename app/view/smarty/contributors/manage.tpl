@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog['name']}"), 'Contributors')}
         </div>
     </div>
     <div class="row">
@@ -18,7 +18,7 @@
                     <div class="ui segment">
                         <div class="ui small header">
                             {if $group.locked == 0}
-                                <a href="/contributors/editgroup/{$group['id']}" class="ui right floated button">Edit Permissions</a>
+                                <a href="/cms/contributors/editgroup/{$group['id']}" class="ui right floated button">Edit Permissions</a>
                             {/if}
                             <div class="content">{$group.name}</div>
                             <div class="sub header">{$group.description}</div>
@@ -29,7 +29,7 @@
 
             <div class="ui hidden divider"></div>
 
-            <a href="/contributors/creategroup/{$blog.id}" class="ui teal button">Add Group</a>
+            <a href="/cms/contributors/creategroup/{$blog.id}" class="ui teal button">Add Group</a>
         </div>
     </div>
     <div class="row">
@@ -50,7 +50,7 @@
 
                     <div class="content">
                         <div class="header">
-                            <a href="/account/user/{$contributor.id}">{$contributor.name} {$contributor.surname}</a>
+                            <a href="/cms/account/user/{$contributor.id}">{$contributor.name} {$contributor.surname}</a>
                             {if $blog.user_id == $contributor.id}(owner){/if}
                         </div>
                         <div class="meta">
@@ -63,8 +63,8 @@
                     <div class="extra content">
                         <span class="right floated">
                             {if $blog.user_id != $contributor.id}
-                                <a href="/contributors/edit/{$blog.id}/{$contributor.id}"><i class="edit icon"></i></a>
-                                <a href="/contributors/remove/{$blog.id}/{$contributor.id}" onclick="return confirm('Are you sure you want to remove this contributor from the blog?');"><i class="delete icon"></i></a>
+                                <a href="/cms/contributors/edit/{$blog.id}/{$contributor.id}"><i class="edit icon"></i></a>
+                                <a href="/cms/contributors/remove/{$blog.id}/{$contributor.id}" onclick="return confirm('Are you sure you want to remove this contributor from the blog?');"><i class="delete icon"></i></a>
                             {/if}
                         </span>
                         <span>
@@ -77,7 +77,7 @@
 
             <div class="ui hidden divider"></div>
 
-            <a href="/contributors/create/{$blog.id}" class="ui teal button">Add Contributor</a>
+            <a href="/cms/contributors/create/{$blog.id}" class="ui teal button">Add Contributor</a>
         </div>
     </div>
 </div>

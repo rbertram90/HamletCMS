@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(["/blog/overview/{$blog['id']}", "{$blog['name']}", "/blog/contributors", "Contributors"], 'Create Contributor')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/blog/contributors", "Contributors"], 'Create Contributor')}
         </div>
     </div>
     <div class="one column row">
@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<form action="/contributors/create/{$blog.id}" method="POST" class="ui form">
+<form action="/cms/contributors/create/{$blog.id}" method="POST" class="ui form">
                     
     <h2 class="ui header">Basic Details</h2>
     <div class="two fields">

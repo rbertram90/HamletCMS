@@ -3,8 +3,8 @@
 
 <div>
 
-<a href="/account/edit">Edit your details</a> | 
-<a href="/account/changepassword">Change your password</a> | 
-<a href="/account/changeprofilephoto">Upload profile photo</a>
+<a href="/cms/account/edit">Edit your details</a> | 
+<a href="/cms/account/changepassword">Change your password</a> | 
+<a href="/cms/account/changeprofilephoto">Upload profile photo</a>
 
 </div>

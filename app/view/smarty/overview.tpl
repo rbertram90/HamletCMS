@@ -15,28 +15,28 @@
     <div class="four column row">
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/posts/manage/{$blog.id}" title="Manage Posts">
+                <a href="/cms/posts/manage/{$blog.id}" title="Manage Posts">
                     <span class="ui header huge">{$counts.posts}</span><br><span>Posts</span>
                 </a>
             </div>
         </div>
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/comments/all/{$blog.id}" title="View Comments">
+                <a href="/cms/comments/all/{$blog.id}" title="View Comments">
                     <span class="ui header huge">{$counts.comments}</span><br><span>Comments</span>
                 </a>
             </div>
         </div>
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/contributors/{$blog.id}" title="Manage Contributors">
+                <a href="/cms/contributors/manage/{$blog.id}" title="Manage Contributors">
                     <span class="ui header huge">{$counts.contributors}</span><br><span>Contributors</span>
                 </a>
             </div>
         </div>
         <div class="center aligned column">
             <div class="ui teal segment">
-                <a href="/posts/manage/{$blog.id}" title="Manage Posts">
+                <a href="/cms/posts/manage/{$blog.id}" title="Manage Posts">
                     <span class="ui header huge">{$counts.totalviews}</span><br><span>Total Post Views</span>
                 </a>
             </div>
@@ -51,7 +51,7 @@
                 <div class="ui segments">
                 {foreach from=$posts item=post}
                     <div class="ui segment">
-                        <a href='/blogs/{$blog.id}/posts/{$post['link']}'>{$post.title}</a>
+                        <a href='/cms/blogs/{$blog.id}/posts/{$post['link']}'>{$post.title}</a>
                         
                         {* Label for drafts *}
                         {if $post.draft == 1}<i>(draft)</i>{/if}
@@ -71,8 +71,8 @@
             {else}
                 <p class="ui message info">Nothing has been posted on this blog, why not <a href="/posts/create/{$blog.id}">make a start</a>?</p>
             {/if}
-            <a href='/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
-            <a href='/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>
+            <a href='/cms/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
+            <a href='/cms/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>
         </div>
         <div class="column">
         <h3 class="ui header">Recent Comments</h3>
@@ -86,12 +86,12 @@
                         {formatdate($comment.timestamp)}
                     </div>
                     <div class="comment-info">
-                        Added by <a href="/account/user/{$comment.userid}">{$comment.name}</a> on <a href="/blogs/{$blog.id}/posts/{$comment.link}">{$comment.title}</a>
+                        Added by <a href="/cms/account/user/{$comment.userid}">{$comment.name}</a> on <a href="/blogs/{$blog.id}/posts/{$comment.link}">{$comment.title}</a>
                     </div>
                 </div>
             {/foreach}
         </div>
-            <a href='/comments/all/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
+            <a href='/cms/comments/all/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
 
         {else}
             <p class="ui message info">No comments have been made on your posts on this blog :(</p>

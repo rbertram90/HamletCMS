@@ -1,12 +1,38 @@
+<?php
+/* Smarty version 3.1.31, created on 2018-04-05 23:09:23
+  from "C:\xampp_5.6.24\htdocs\rbwebdesigns\projects\blog_cms\app\view\smarty\contributors\editgroup.tpl" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.31',
+  'unifunc' => 'content_5ac69e93e53c36_09335890',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    '21f9d1eddfcf63040e9fbe292bd097c90ce5bd1a' => 
+    array (
+      0 => 'C:\\xampp_5.6.24\\htdocs\\rbwebdesigns\\projects\\blog_cms\\app\\view\\smarty\\contributors\\editgroup.tpl',
+      1 => 1522958805,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+  ),
+),false)) {
+function content_5ac69e93e53c36_09335890 (Smarty_Internal_Template $_smarty_tpl) {
+?>
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/contributors/manage/{$blog['id']}", "Contributors"], 'Add Group')}
+            <?php echo viewCrumbtrail(array("/cms/blog/overview/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),((string)$_smarty_tpl->tpl_vars['blog']->value['name']),"/cms/contributors/manage/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),"Contributors"),'Edit Group');?>
+
         </div>
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Add Group", 'friends.png', "{$blog['name']}")}
+            <?php echo viewPageHeader("Edit Group",'friends.png',((string)$_smarty_tpl->tpl_vars['group']->value['name'])." - ".((string)$_smarty_tpl->tpl_vars['blog']->value['name']));?>
+
         </div>
     </div>
     <div class="row">
@@ -15,12 +41,14 @@
                 <h2>Basic Information</h2>
                 <div class="field">
                     <label for="fld_name">Group Name</label>
-                    <input type="text" value="" name="fld_name" id="fld_name">
+                    <input type="text" value="<?php echo $_smarty_tpl->tpl_vars['group']->value['name'];?>
+" name="fld_name" id="fld_name">
                 </div>
 
                 <div class="field">
                     <label for="fld_description">Description</label>
-                    <input type="text" value="" name="fld_description" id="fld_description">
+                    <input type="text" value="<?php echo $_smarty_tpl->tpl_vars['group']->value['description'];?>
+" name="fld_description" id="fld_description">
                 </div>
 
                 <div class="ui divider hidden"></div>
@@ -86,6 +114,42 @@
     </div>
 </div>
 
-<script>
+<?php echo '<script'; ?>
+>
     $('.ui.checkbox').checkbox();
-</script>
+
+    // Apply defaults
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['create_posts']) {?>
+        $('#perm_create_posts').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['publish_posts']) {?>
+        $('#perm_publish_posts').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['edit_all_posts']) {?>
+        $('#perm_edit_all_posts').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['delete_posts']) {?>
+        $('#perm_delete_posts').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['manage_comments']) {?>
+        $('#perm_manage_comments').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['delete_files']) {?>
+        $('#perm_delete_files').attr("checked", "checked");
+    <?php }?>
+
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['change_settings']) {?>
+        $('#perm_change_settings').attr("checked", "checked");
+    <?php }?>
+    
+    <?php if ($_smarty_tpl->tpl_vars['group']->value['permissions']['manage_contributors']) {?>
+        $('#perm_manage_contributors').attr("checked", "checked");
+    <?php }
+echo '</script'; ?>
+><?php }
+}

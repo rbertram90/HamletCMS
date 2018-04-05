@@ -45,10 +45,10 @@ class FilesController extends GenericController
         $blog = $this->modelBlogs->getBlogById($blogid);
         
         if(!is_array($blog)) {
-            $response->redirect('/', 'Could not find blog', 'error');
+            $response->redirect('/cms', 'Could not find blog', 'error');
         }
         elseif(!$this->modelBlogs->canWrite($blog['id'])) {
-            $response->redirect('/', 'Access denied', 'error');
+            $response->redirect('/cms', 'Access denied', 'error');
         }
 
         $imagesDirectory = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/images';
@@ -94,22 +94,22 @@ class FilesController extends GenericController
         $blog = $this->modelBlogs->getBlogById($blogid);
         
         if(!is_array($blog)) {
-            $response->redirect('/', 'Could not find blog', 'error');
+            $response->redirect('/cms', 'Could not find blog', 'error');
         }
         elseif(!$this->modelBlogs->canWrite($blogid)) {
-            $response->redirect('/', 'Access denied', 'error');
+            $response->redirect('/cms', 'Access denied', 'error');
         }
 
         $imagesDirectory = SERVER_PATH_BLOGS.'/' . $blogid . '/images';
         $filename = str_replace('_', '.', $request->getUrlParameter(2));
         
         if(!file_exists($imagesDirectory . '/' . $filename)) {
-            $response->redirect('/files/manage' . $blog['id'], 'Could not find blog', 'error');
+            $response->redirect('/cms/files/manage' . $blog['id'], 'Could not find blog', 'error');
         }
         
         unlink($imagesDirectory . '/' . $filename);
         
-        $response->redirect('/files/manage/' . $blog['id'], 'File deleted', 'success');
+        $response->redirect('/cms/files/manage/' . $blog['id'], 'File deleted', 'success');
     }
 
     /**
@@ -137,7 +137,7 @@ class FilesController extends GenericController
             $blog = $this->modelBlogs->getBlogById($blogID);
         }
         if(!$blog) {
-            $response->redirect('/', 'Blog not found', 'error');
+            $response->redirect('/cms', 'Blog not found', 'error');
         }
         if(!isset($_FILES) || !array_key_exists('file', $_FILES)) {
             die("You need to select a file. Please reopen link to upload!");

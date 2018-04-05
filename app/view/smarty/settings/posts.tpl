@@ -1,14 +1,14 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/blog/overview/{$blog.id}", {$blog.name}, "/settings/menu/{$blog.id}", 'Settings'), 'Post Settings')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}, "/cms/settings/menu/{$blog.id}", 'Settings'), 'Post Settings')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
             {viewPageHeader('Post Settings', 'pages_gear.png', {$blog.name})}
 
-            <form action="/settings/posts/{$blog.id}" method="POST" class="ui form">
+            <form method="POST" class="ui form">
                 
                 <div class="ui grid">
                     <div class="two column row">

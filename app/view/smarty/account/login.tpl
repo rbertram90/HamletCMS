@@ -22,7 +22,7 @@
                 <div class="ui message {$message.type}">{$message.text}</div>
             {/foreach}
             
-            <form action="/account/login" method="POST" class="ui form">
+            <form action="/cms/account/login" method="POST" class="ui form">
                 <div class="field">
                     <label for="fld_username">Username</label>
                     <input type="text" name="fld_username" value="" required>
@@ -33,7 +33,7 @@
                     <input type="password" name="fld_password" required>
                 </div>
 
-                <a href="/account/register">Register new account</a>
+                <a href="/cms/account/register">Register new account</a>
                 
                 <button class="ui right floated teal button">Login &nbsp;&#10095;</button>
                 <div class="clear"></div>

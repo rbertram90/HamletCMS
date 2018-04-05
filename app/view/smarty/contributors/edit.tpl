@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(["/blog/overview/{$blog.id}", "{$blog.name}", "/contributors/manage/{$blog.id}", "Contributors"], 'Edit Contributor')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog.id}", "{$blog.name}", "/cms/contributors/manage/{$blog.id}", "Contributors"], 'Edit Contributor')}
         </div>
     </div>
     <div class="one column row">
@@ -14,7 +14,7 @@
         <div class="column">
             <h2>Change group</h2>
 
-            <form class="ui form" action="/contributors/edit/{$blog.id}/{$contributor.id}" method="POST">
+            <form class="ui form" method="POST">
                 <select class="ui dropdown" name="fld_group">
                 {foreach $groups as $group}
                     <option value="{$group.id}">{$group.name}</option>

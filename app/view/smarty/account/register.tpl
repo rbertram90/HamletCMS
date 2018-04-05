@@ -20,7 +20,7 @@
                 <img src="/images/logo.png" alt="Blog CMS" />
             </div>
             
-            <form action="/account/register" method="POST" class="ui form">
+            <form action="/cms/account/register" method="POST" class="ui form">
                 <h2 class="ui header">Create an Account</h2>
                 <p>Complete the following fields to get access to Blog CMS. The account is free for life!</p>
                 

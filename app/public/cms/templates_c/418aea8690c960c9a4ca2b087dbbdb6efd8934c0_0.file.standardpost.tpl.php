@@ -1,58 +1,100 @@
-{if isset($post)}
+<?php
+/* Smarty version 3.1.31, created on 2018-04-05 23:09:08
+  from "C:\xampp_5.6.24\htdocs\rbwebdesigns\projects\blog_cms\app\view\smarty\posts\standardpost.tpl" */
 
-    {* We are editing the post *}
-    {$formAction = "/cms/posts/edit/{$post['id']}"}
-    {$fieldTitle = $post['title']}
-    {$fieldContent = $post['content']}
-    {$fieldTags = str_replace("+"," ",$post['tags'])}
-    {$submitLabel = 'Update'}
-    {$mode = 'edit'}
-    {$postdate = date('m/d/Y g:ia', strtotime($post['timestamp']))}
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.31',
+  'unifunc' => 'content_5ac69e8463f003_88723902',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    '418aea8690c960c9a4ca2b087dbbdb6efd8934c0' => 
+    array (
+      0 => 'C:\\xampp_5.6.24\\htdocs\\rbwebdesigns\\projects\\blog_cms\\app\\view\\smarty\\posts\\standardpost.tpl',
+      1 => 1522958903,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+  ),
+),false)) {
+function content_5ac69e8463f003_88723902 (Smarty_Internal_Template $_smarty_tpl) {
+if (isset($_smarty_tpl->tpl_vars['post']->value)) {?>
 
-{else}
-    {* This must be a new post *}
-    {$formAction = "/cms/posts/create/{$blog['id']}/standard"}
-    {$fieldTitle = ''}
-    {$fieldContent = ''}
-    {$fieldTags = ''}
-    {$submitLabel = 'Create'}
-    {$mode = 'create'}
-    {$postdate = date('m/d/Y g:ia')}
-{/if}
+    
+    <?php $_smarty_tpl->_assignInScope('formAction', "/cms/posts/edit/".((string)$_smarty_tpl->tpl_vars['post']->value['id']));
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldTitle', $_smarty_tpl->tpl_vars['post']->value['title']);
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldContent', $_smarty_tpl->tpl_vars['post']->value['content']);
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldTags', str_replace("+"," ",$_smarty_tpl->tpl_vars['post']->value['tags']));
+?>
+    <?php $_smarty_tpl->_assignInScope('submitLabel', 'Update');
+?>
+    <?php $_smarty_tpl->_assignInScope('mode', 'edit');
+?>
+    <?php $_smarty_tpl->_assignInScope('postdate', date('m/d/Y g:ia',strtotime($_smarty_tpl->tpl_vars['post']->value['timestamp'])));
+?>
 
-<script type="text/javascript">
+<?php } else { ?>
+    
+    <?php $_smarty_tpl->_assignInScope('formAction', "/cms/posts/create/".((string)$_smarty_tpl->tpl_vars['blog']->value['id'])."/standard");
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldTitle', '');
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldContent', '');
+?>
+    <?php $_smarty_tpl->_assignInScope('fieldTags', '');
+?>
+    <?php $_smarty_tpl->_assignInScope('submitLabel', 'Create');
+?>
+    <?php $_smarty_tpl->_assignInScope('mode', 'create');
+?>
+    <?php $_smarty_tpl->_assignInScope('postdate', date('m/d/Y g:ia'));
+}?>
+
+<?php echo '<script'; ?>
+ type="text/javascript">
 // this is now out of date as we have the rtf editor
 // handy little script however...
-function displayHTML() {ldelim}
+function displayHTML() {
     var inf = document.upload_data.fld_postcontent.value;
     win = window.open(", ", 'popup', 'toolbar = no, status = no, width = 600, height = 400');
     win.document.write("" + inf + "");
-{rdelim}
+}
 
 // This is also not used... but was an interesting concept
-function openPreview() {ldelim}
-    var previewWin = window.open("/blogs/{$blog.id}/posts/post.link","_blank","height=600,width=800");
-    $(previewWin).load(function() {ldelim}
+function openPreview() {
+    var previewWin = window.open("/blogs/<?php echo $_smarty_tpl->tpl_vars['blog']->value['id'];?>
+/posts/post.link","_blank","height=600,width=800");
+    $(previewWin).load(function() {
         alert(typeof previewWin.document);
         previewWin.document.getElementById('comments').innerHTML = '';
-    {rdelim});
-{rdelim}
-</script>
+    });
+}
+<?php echo '</script'; ?>
+>
 
 <div class="ui grid">
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
+            <?php echo viewCrumbtrail(array("/cms/blog/overview/".((string)$_smarty_tpl->tpl_vars['blog']->value['id']),((string)$_smarty_tpl->tpl_vars['blog']->value['name'])),'New Post');?>
+
         </div>
     </div>
     
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'add_doc.png', "{$blog['name']}")}
+            <?php echo viewPageHeader(((string)$_smarty_tpl->tpl_vars['submitLabel']->value)." Blog Post",'add_doc.png',((string)$_smarty_tpl->tpl_vars['blog']->value['name']));?>
 
-            {if $mode=='edit' and array_key_exists('autosave', $post)}
-            <script>
+
+            <?php if ($_smarty_tpl->tpl_vars['mode']->value == 'edit' && array_key_exists('autosave',$_smarty_tpl->tpl_vars['post']->value)) {?>
+            <?php echo '<script'; ?>
+>
                 function replaceContent() {
                     $("#fld_posttitle").val($("#fld_autosave_title").val());
                     $("#fld_postcontent").val($("#fld_autosave_content").val());
@@ -60,7 +102,8 @@ function openPreview() {ldelim}
                     $("#autosave_data").hide();
                     $("#autosave_exists_message").hide();
                  }
-            </script>
+            <?php echo '</script'; ?>
+>
 
             <div id="autosave_exists_message" class="ui yellow segment clearing">
                 <p>You have an autosaved draft for this post, do you want to continue with this edit?
@@ -74,55 +117,65 @@ function openPreview() {ldelim}
                     <h2 class="ui heading">Autosaved Post</h2>
                     <div class="field">
                         <label for="fld_autosave_title">Title</label>
-                        <input disabled class="" type="text" id="fld_autosave_title" name="fld_autosave_title" value="{$post.autosave.title}" />
+                        <input disabled class="" type="text" id="fld_autosave_title" name="fld_autosave_title" value="<?php echo $_smarty_tpl->tpl_vars['post']->value['autosave']['title'];?>
+" />
                     </div>
                     <div class="field">
                         <label for="fld_autosave_content">Content</label>
-                        <textarea disabled id="fld_autosave_content" name="fld_autosave_content">{$post.autosave.content}</textarea>
+                        <textarea disabled id="fld_autosave_content" name="fld_autosave_content"><?php echo $_smarty_tpl->tpl_vars['post']->value['autosave']['content'];?>
+</textarea>
                     </div>
                     <div class="field">
                         <label for="fld_autosave_tags">Tags</label>
-                        <input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="{$post.autosave.tags}" />
+                        <input disabled type="text" id="fld_autosave_tags" name="fld_autosave_tags" value="<?php echo $_smarty_tpl->tpl_vars['post']->value['autosave']['tags'];?>
+" />
                     </div>
                 </div>
             </div>
-            {/if}
+            <?php }?>
         </div>
     </div>
 
-    <form action="{$formAction}" method="post" name="frm_createpost" id="frm_createpost" class="two column row ui form">
+    <form action="<?php echo $_smarty_tpl->tpl_vars['formAction']->value;?>
+" method="post" name="frm_createpost" id="frm_createpost" class="two column row ui form">
         
         <div class="ten wide column">
             
             <div class="field">
                 <label for="fld_posttitle">Title</label>
-                <input type="text" name="fld_posttitle" id="fld_posttitle" size="50" autocomplete="off" value="{$fieldTitle}" />
+                <input type="text" name="fld_posttitle" id="fld_posttitle" size="50" autocomplete="off" value="<?php echo $_smarty_tpl->tpl_vars['fieldTitle']->value;?>
+" />
             </div>
             
             <div class="field">
                 <label for="fld_postcontent">Content</label>
-                <button type="button" onclick="rbrtf_showWindow('/ajax/add_image?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
+                <button type="button" onclick="rbrtf_showWindow('/ajax/add_image?blogid=<?php echo $_smarty_tpl->tpl_vars['blog']->value['id'];?>
+')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="fld_postcontent" id="fld_postcontent" style="height:30vh;">{$fieldContent}</textarea>
+                <textarea name="fld_postcontent" id="fld_postcontent" style="height:30vh;"><?php echo $_smarty_tpl->tpl_vars['fieldContent']->value;?>
+</textarea>
             </div>
             
             <div class="field">
                 <label for="fld_tags">Tags</label>
-                <input type="text" name="fld_tags" id="fld_tags" placeholder="Enter as a Comma Seperated List" autocomplete="off" value="{$fieldTags}" />
+                <input type="text" name="fld_tags" id="fld_tags" placeholder="Enter as a Comma Seperated List" autocomplete="off" value="<?php echo $_smarty_tpl->tpl_vars['fieldTags']->value;?>
+" />
             </div>
             
             <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
-            {if $mode == 'edit'}
-              <input type="hidden" id="fld_postid" name="fld_postid" value="{$post.id}">
-            {else}
+            <?php if ($_smarty_tpl->tpl_vars['mode']->value == 'edit') {?>
+              <input type="hidden" id="fld_postid" name="fld_postid" value="<?php echo $_smarty_tpl->tpl_vars['post']->value['id'];?>
+">
+            <?php } else { ?>
               <input type="hidden" id="fld_postid" name="fld_postid" value="0">
-            {/if}
+            <?php }?>
             
             <input type="hidden" name="fld_posttype" id="fld_posttype" value="standard">
             
-            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = '/posts/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; {rdelim}" class="ui button right floated">
-            <input type="submit" name="fld_submitpost" value="{$submitLabel}" class="ui button teal right floated">
+            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) { window.location = '/posts/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; }" class="ui button right floated">
+            <input type="submit" name="fld_submitpost" value="<?php echo $_smarty_tpl->tpl_vars['submitLabel']->value;?>
+" class="ui button teal right floated">
         </div>
 
 
@@ -134,10 +187,13 @@ function openPreview() {ldelim}
                 <div class="ui calendar" id="postdate">
                     <div class="ui input left icon">
                         <i class="calendar icon"></i>
-                        <input type="text" name="fld_postdate" placeholder="Date/Time" value="{$postdate}">
+                        <input type="text" name="fld_postdate" placeholder="Date/Time" value="<?php echo $_smarty_tpl->tpl_vars['postdate']->value;?>
+">
                     </div>
                 </div>
-                <script>$('#postdate').calendar();</script>
+                <?php echo '<script'; ?>
+>$('#postdate').calendar();<?php echo '</script'; ?>
+>
             </div>
  
             <div class="field">
@@ -160,19 +216,20 @@ function openPreview() {ldelim}
     </form>
 
 
-<script type="text/javascript">
+<?php echo '<script'; ?>
+ type="text/javascript">
 var content_changed = false;
 window.postTitleIsValid = false;
     
 $(document).ready(function () {
 
     $(window).on('beforeunload', function()
-    {ldelim}
+    {
         if(content_changed && !confirm('Are you sure you want to leave this page - you may lose changes?'))
-        {ldelim}
+        {
             return false;
-        {rdelim}
-    {rdelim});
+        }
+    });
     
     // Auto save
     var runsave = function()
@@ -187,7 +244,8 @@ $(document).ready(function () {
                 "fld_type": $("#fld_posttype").val(),
                 "fld_allowcomments": $("#fld_allowcomment").val(),
                 "fld_tags": $("#fld_tags").val(),
-                "fld_blogid": {$blog.id},
+                "fld_blogid": <?php echo $_smarty_tpl->tpl_vars['blog']->value['id'];?>
+,
                 "csrf_token": CSRFTOKEN
 
             }, function(data)
@@ -225,18 +283,20 @@ $(document).ready(function () {
 
         // Check that the post title is unique
         var post_title = document.getElementById('fld_posttitle').value;
-        var blog_id = {$blog.id};
+        var blog_id = <?php echo $_smarty_tpl->tpl_vars['blog']->value['id'];?>
+;
 
         if (post_title.length == 0) {
             alert("Please enter a title");
             return false;
         }
 
-        {if isset($post)}
-            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
-        {else}
+        <?php if (isset($_smarty_tpl->tpl_vars['post']->value)) {?>
+            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id=<?php echo $_smarty_tpl->tpl_vars['post']->value['id'];?>
+";
+        <?php } else { ?>
             var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
-        {/if}
+        <?php }?>
 
         $.ajax({ url: url, async: false }).done(function(data) {
             if(data.trim() !== "false") {
@@ -251,12 +311,16 @@ $(document).ready(function () {
         return window.postTitleIsValid;
     });
 
-    {if $mode == 'edit'}
+    <?php if ($_smarty_tpl->tpl_vars['mode']->value == 'edit') {?>
         // Apply Defaults
-        $("#fld_draft").val({$post.draft});
-        $("#fld_allowcomment").val({$post.allowcomments});
-    {/if}
+        $("#fld_draft").val(<?php echo $_smarty_tpl->tpl_vars['post']->value['draft'];?>
+);
+        $("#fld_allowcomment").val(<?php echo $_smarty_tpl->tpl_vars['post']->value['allowcomments'];?>
+);
+    <?php }?>
 
 });
-</script>
-</div>
+<?php echo '</script'; ?>
+>
+</div><?php }
+}
