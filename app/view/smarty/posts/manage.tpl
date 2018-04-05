@@ -237,7 +237,7 @@
             
                 output += '</div>';
             
-                output += '<a href="/posts/create/' + data.blog.id + '" class="ui button teal right floated">New Post</a>';
+                output += '<a href="/cms/posts/create/' + data.blog.id + '" class="ui button teal right floated">New Post</a>';
                 
                 output += '<script>';
                 output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';

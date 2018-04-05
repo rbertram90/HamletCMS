@@ -51,7 +51,7 @@
                 <div class="ui segments">
                 {foreach from=$posts item=post}
                     <div class="ui segment">
-                        <a href='/cms/blogs/{$blog.id}/posts/{$post['link']}'>{$post.title}</a>
+                        <a href='/blogs/{$blog.id}/posts/{$post['link']}'>{$post.title}</a>
                         
                         {* Label for drafts *}
                         {if $post.draft == 1}<i>(draft)</i>{/if}
@@ -63,7 +63,7 @@
                             {formatDate($post.timestamp)}
                         </div>
                         <div class="comment-info">
-                            Added by <a href="/account/user/{$post.author_id}">{$post.username}</a>
+                            Added by <a href="/cms/account/user/{$post.author_id}">{$post.username}</a>
                         </div>
                     </div>
                 {/foreach}
