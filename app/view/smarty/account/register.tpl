@@ -20,7 +20,7 @@
                 <img src="/images/logo.png" alt="Blog CMS" />
             </div>
             
-            <form action="/cms/account/register" method="POST" class="ui form">
+            <form method="POST" class="ui form">
                 <h2 class="ui header">Create an Account</h2>
                 <p>Complete the following fields to get access to Blog CMS. The account is free for life!</p>
                 
@@ -60,8 +60,8 @@
                     <input type="password" name="fld_password_2" />
                 </div>
 
-                <input type="button" name="fld_cancel_registration" value="Cancel" class="ui button right floated" onclick="document.location = '/';" />
-                <input type="submit" name="fld_submit_registration" value="Submit" class="ui button teal right floated" style='font-weight:bold;' />
+                <input type="button" name="fld_cancel_registration" value="Cancel" class="ui button right floated" onclick="window.history.back();">
+                <input type="submit" name="fld_submit_registration" value="Submit" class="ui button teal right floated">
             </form>
             
             <p>All Fields Required</p>

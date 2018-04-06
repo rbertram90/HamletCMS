@@ -6,6 +6,10 @@ use rbwebdesigns\core\JSONhelper;
 
 /**
  * ApiController
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ * 
+ * @todo decide on where data is coming from for cms vs public facing api!
  */
 class ApiController extends GenericController
 {
@@ -17,11 +21,22 @@ class ApiController extends GenericController
      * @var \rbwebdesigns\blogcms\model\Blogs
      */
     protected $modelPosts;
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
+    protected $request;
+    /**
+     * @var \rbwebdesigns\core\Response;
+     */
+    protected $response;
     
-    public function __construct()
+    public function __construct(&$request, &$response)
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+
+        $this->request = $request;
+        $this->response = $response;
     }
     
     /**
@@ -29,9 +44,15 @@ class ApiController extends GenericController
      * Currently nothing implemented - would be helpful to redirect to some
      * sort of documentation page
      */
-    public function defaultAction(&$request, &$response)
+    public function defaultAction()
     {
-        return $response->redirect('/', 'Invalid request', 'error');
+        $result = [
+            'error' => 'Unknown API method'
+        ];
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->code(404);
+        $this->response->setBody(JSONhelper::arrayToJSON($result));
+        $this->response->writeBody();
     }
 
     /**
@@ -52,21 +73,21 @@ class ApiController extends GenericController
      *  showdrafts (optional) - include draft posts (true / false)
      *  showscheduled (optional) - include scheduled posts (true / false)
      */
-    public function posts(&$request, &$response)
+    public function posts()
     {
-        $blogID = $request->getInt('blogID', -1);
-        $start  = $request->getInt('start', 1);
-        $limit  = $request->getInt('limit', 10);
-        $sort   = $request->getString('sort', 'name ASC');
+        $blogID = $this->request->getInt('blogID', -1);
+        $start  = $this->request->getInt('start', 1);
+        $limit  = $this->request->getInt('limit', 10);
+        $sort   = $this->request->getString('sort', 'name ASC');
 
-        $showDrafts = $request->getString('showdrafts', 'true');
+        $showDrafts = $this->request->getString('showdrafts', 'true');
         $showDrafts = ($showDrafts == 'true') ? 1 : 0;
 
-        $showScheduled = $request->getString('showscheduled', 'true');
+        $showScheduled = $this->request->getString('showscheduled', 'true');
         $showScheduled = ($showScheduled == 'true') ? 1 : 0;
 
         if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
-            die('Error: Unable to find blog - ' . $blogID);
+            die("{ 'error': 'Unable to find blog' }");
         }
         
         $result = [
@@ -75,8 +96,9 @@ class ApiController extends GenericController
             'posts'     => $this->modelPosts->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
 
-        header('Content-Type: application/json');
-        echo JSONhelper::ArrayToJSON($result);
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->setBody(JSONhelper::arrayToJSON($result));
+        $this->response->writeBody();
     }
     
 }

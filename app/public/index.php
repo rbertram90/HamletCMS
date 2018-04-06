@@ -1,59 +1,34 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use Codeliner;
+
 use Athens\CSRF;
-use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\core\Request;
+use rbwebdesigns\blogcms\BlogCMSResponse;
 
 /****************************************************************
-  Blog CMS Start Point
+  Website Start point
 ****************************************************************/
-    
-    // Load JSON config file
-    // Note: cannot use core function to do this as hasn't been loaded
-    // at this stage - chicken and egg situation
-    $config = json_decode(file_get_contents(dirname(__file__) . '/../config/config.json'), true);
-    
-    define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
-    
-    define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
-    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
-    define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
-    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
-    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');  // Path to the folder containing user avatars
-    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');      // Path to installed widgets
 
     // Include cms setup script
-    require_once SERVER_ROOT.'/app/setup.inc.php';
-
-    // Make sure we're in the right timezone
-    date_default_timezone_set($config['environment']['timezone']);
-
-    // Store the configuration
-    BlogCMS::addToConfig($config);
+    require_once __DIR__ . '/../setup.inc.php';
 
 
 /****************************************************************
   Route request
 ****************************************************************/
     
-    $request = BlogCMS::request();
-    $response = BlogCMS::response();
+    $request = new Request([
+        'defaultControllerName' => 'home'
+    ]);
+    $response = new BlogCMSResponse();
+
+    // Usually this would be the controller name
+    // In this case we're keeping it simple with
+    // single level urls e.g /about, /contact
+    $action = $request->getControllerName();
     
-    // Controller naming is important!
-    // For simplicity, the code makes the following assumptions:
-    //
-    // For pages within the CMS Url path should be structured as:
-    //   <controllerName>/<actionName>/<parameters>
-    //
-    // The url structure for blogs is slightly different
-    //   /blogs/<blog_id>/<action>
-    //
-    // Controller file is created under /app/controller folder named:
-    //   <controllerName>_controller.inc.php
-    $controllerName = $request->getControllerName();
-    
-    // Check if we are in the CMS or viewing a blog
-    if($controllerName == 'blogs') {
+    // Check if we are viewing a blog
+    if($action == 'blogs') {
         // Viewing a blog
         
         // Get the ID from the URL (& remove)
@@ -98,8 +73,6 @@ use rbwebdesigns\core\Sanitize;
     $response->setTitle('Default title');
     $response->setDescription('Default page description');
 
-    // Call the requested function
-    $action = $request->getUrlParameter(0, 'home');
     ob_start();
     $controller->$action($request, $response);
     $response->setBody(ob_get_contents());

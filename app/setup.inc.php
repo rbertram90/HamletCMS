@@ -1,7 +1,9 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns;
-use rbwebdesigns\core;
+
+use rbwebdesigns\core\Router;
+use rbwebdesigns\core\JSONhelper;
+use rbwebdesigns\core\model\UserFactory;
 
 /**
  * app/setup.php
@@ -13,55 +15,47 @@ use rbwebdesigns\core;
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
 
-// Composer setup
-require_once SERVER_ROOT . '/app/vendor/autoload.php';
+    // Composer setup
+    require_once __DIR__ . '/vendor/autoload.php';
 
-// Setup common between cms and blog front-end
-require_once SERVER_ROOT . '/app/envsetup.inc.php';
+    // Load JSON config file
+    // Note: cannot use core function to do this as hasn't been loaded
+    // at this stage - chicken and egg situation
+    $config = JSONhelper::JSONFileToArray(__DIR__ . '/config/config.json');
 
+    define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
+    
+    define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
+    define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
+    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
+    define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
+    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
+    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');  // Path to the folder containing user avatars
+    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');      // Path to installed widgets
 
-/****************************************************************
-  Router
-****************************************************************/
+    // Make sure we're in the right timezone
+    date_default_timezone_set($config['environment']['timezone']);
 
-    $pagelist = rbwebdesigns\core\JSONHelper::JSONFileToArray(SERVER_ROOT . '/app/config/routes.json');
-    $router = new rbwebdesigns\core\Router($pagelist);
+    // Setup common between cms and blog front-end
+    require_once SERVER_ROOT . '/app/envsetup.inc.php';
 
+    // Store the configuration
+    BlogCMS::addToConfig($config);
 
 /****************************************************************
   Set-Up Users Model & Auth flags
 ****************************************************************/    
     
     // Connect to users model
-    $modelUsers = new rbwebdesigns\core\model\UserFactory($cms_db);
+    $modelUsers = new UserFactory($cms_db);
   
     $session = BlogCMS::session();
 
     // Check if we are logged in
-    if($session->currentUser) {
+    if(gettype($session->currentUser) == 'array') {
         define('USER_AUTHENTICATED', true);
     }
     else {
         define('USER_AUTHENTICATED', false);
     }
     
-        
-/****************************************************************
-  Stylesheets - not used?
-****************************************************************/
-
-    $global_css_includes = array(
-        '/resources/css/core',
-        '/resources/css/forms',
-    );
-
-/****************************************************************
-  JavaScript - not used?
-****************************************************************/
-
-    $global_js_includes = array(
-        '/resources/js/jquery-1.8.0.min',
-        '/resources/js/core-functions',
-        '/resources/js/validate',
-        '/resources/js/ajax'
-    );

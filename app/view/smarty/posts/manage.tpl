@@ -103,7 +103,7 @@
         var filterdrafts = $("#filterdrafts").is(':checked');
         var filterscheduled = $("#filterscheduled").is(':checked');
 
-        $.get("/cms/api/posts",
+        $.get("/api/posts",
             {
                 blogID:         {$blog.id},
                 start:          pagenum,
