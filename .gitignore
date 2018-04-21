@@ -7,9 +7,6 @@
 /app/public/blogdata
 /app/public/avatars
 templates_c/
-/app/view/smarty/public
-!/app/view/smarty/public/home.tpl
-!/app/view/smarty/public/wrapper.tpl
 
 /app/config/config.json
 

@@ -128,20 +128,6 @@ class BlogController extends GenericController
         
         switch(Sanitize::string($params[0]))
         {
-            case 'blogsbyletter':
-                $this->view->setVar('counts', $this->modelBlogs->countBlogsByLetter());
-                $this->view->setVar('alphabet', array('0','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'));
-
-                if(array_key_exists(1, $params)) {
-                    // Get Target Letter
-                    $currentletter = strlen($params[1]) == 1 ? Sanitize::string($params[1]) : 'A';
-                    $this->view->setVar('letter', $currentletter);
-                    $this->view->setVar('blogs', $this->modelBlogs->getBlogsByLetter($currentletter));
-                }
-                $this->view->setPageTitle('Explore Blogs - Browse Blogs By Letter');
-                $this->view->render('explore/browse.tpl');
-                break;
-
             case 'popular':
                 // Get most favourited blogs
                 $this->view->setVar('topblogs', $this->modelBlogs->getTopFavourites());

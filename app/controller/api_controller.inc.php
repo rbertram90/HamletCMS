@@ -9,7 +9,7 @@ use rbwebdesigns\core\JSONhelper;
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  * 
- * @todo decide on where data is coming from for cms vs public facing api!
+ * @todo decide on where data is coming from for cms vs public facing api
  */
 class ApiController extends GenericController
 {
@@ -100,5 +100,53 @@ class ApiController extends GenericController
         $this->response->setBody(JSONhelper::arrayToJSON($result));
         $this->response->writeBody();
     }
+
+
+    public function blog()
+    {
+        $blogID = $this->request->getInt('blogID', -1);
+
+        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            die("{ 'error': 'Unable to find blog' }");
+        }
+
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->setBody(JSONhelper::arrayToJSON($blog));
+        $this->response->writeBody();
+    }
+    
+    public function blogCount()
+    {
+        $blogCount = $this->modelBlogs->count();
+        return false;
+    }
+
+    public function countByLetter()
+    {
+        $counts = $this->modelBlogs->countBlogsByLetter();
+
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->setBody(JSONhelper::arrayToJSON($counts));
+        $this->response->writeBody();
+    }
+    
+    public function blogsByLetter()
+    {
+        $letter = $this->request->getString('letter', false);
+
+        if ($letter) {
+            $blogs = $this->modelBlogs->getBlogsByLetter($letter);
+        }
+        else {
+            $blogs = [];
+        }
+
+        
+
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->setBody(JSONhelper::arrayToJSON($blogs));
+        $this->response->writeBody();
+    }
+
     
 }

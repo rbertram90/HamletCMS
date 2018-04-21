@@ -17,4 +17,57 @@
     </ol>
 </div>
 
+
+<div class="ui segment">
+    <h2>Blogs on this website</h2>
+    <div class="ui segments">
+        <div class="ui segment">
+            <div class="ui compact menu">
+                <div class="ui simple dropdown item">
+                    Browse by title
+                    <i class="dropdown icon"></i>
+                    <div class="menu browse-by-letter">
+                        {foreach from=$lettercounts key=letter item=count}
+                            {if $count == 0}
+                                <a class="item disabled">{$letter}</a>
+                            {else}
+                                <a class="item">{$letter}</a>
+                            {/if}
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment" id="browse-results">
+            <!-- Browse results loaded here -->
+            Select a letter from the dropdown to discover more blogs
+        </div>
+    </div>
+</div>
+
+<script>
+    // API call to get blog data
+    var loadBlogsByLetter = function (letter) {
+        $.get('/api/blogsByLetter', { 'letter': letter }, function(data) {
+            if (!data.length) return;
+            var list = "";
+            for (var i = 0; i < data.length; i++) {
+                blog = data[i];
+                list += '<div class="item"><div class="content">';
+                list += '<div class="header"><a href="/blogs/' + blog.id + '">' + blog.name + '</a></div>';
+                list += '<div class="description">' + blog.description + '</div></div></div>';
+            }
+            $('#browse-results').html('<div class="ui relaxed divided list">' + list + "</div>");
+        });
+    };
+
+    // Add event listener to dropdown
+    $(".browse-by-letter > a").click(function() {
+        loadBlogsByLetter($(this).html());
+    });
+
+    // Init
+    loadBlogsByLetter('0');
+</script>
+
 <a href="/cms" class="ui teal button">Login to CMS</a>

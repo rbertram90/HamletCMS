@@ -65,7 +65,8 @@ class Blogs extends RBFactory
     {
         if(!ctype_alpha($letter)) $letter = "[^A-Za-z]"; // search all numbers at once
         $qs = 'SELECT * FROM '.$this->tableName.' WHERE LEFT(name, 1) REGEXP "'.$letter.'" and visibility="anon"';
-        return $this->db->select_multi($qs);
+        $statement = $this->db->query($qs);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -75,15 +76,16 @@ class Blogs extends RBFactory
     public function countBlogsByLetter()
     {
         $res = array('0' => 0);
-        foreach(range('A', 'Z') as $letter) $res[$letter] = 0;
+        foreach (range('A', 'Z') as $letter) $res[$letter] = 0;
         
         $sql = 'SELECT UCASE(LEFT(name, 1)) as letter, count(*) as count FROM '.$this->tableName.' Where visibility = "anon" Group By UCASE(LEFT(name, 1))';
-        $results = $this->db->select_multi($sql);
+        $statement = $this->db->query($sql);
+        $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
         
-        foreach($results as $value) {
-            if(ctype_alpha($value['letter'])) {
+        foreach ($results as $value) {
+            if (ctype_alpha($value['letter'])) {
                 // Letter
-                $res[$value['letter']] = $value['count'];
+                $res[$value['letter']] = (int) $value['count'];
             }
             else {
                 // Number (or other)
