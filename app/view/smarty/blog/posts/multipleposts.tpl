@@ -1,17 +1,20 @@
-<h1>Posts tagged with '{$tagName}'</h1>
-
 {if count($posts) == 0}
-    <p class="info">There are no posts tagged with <i>'{$tagName}'</i> on this blog</p>
+    <p class="info">There are no posts on this blog</p>
 {/if}
-    
+
+<div class="ui divided very relaxed link items">
+
 {foreach $posts as $post}
 
-    <div class="post">
+    <div class="item post">
+    <div class="content">
         {$post.headerDate}
         
-        <h3 class="post-title"><a href="/blogs/{$blog.id}/posts/{$post.link}">{$post.title}</a></h3>
+        <div class="header">
+            <a href="/blogs/{$blog.id}/posts/{$post.link}">{$post.title}</a>
+        </div>
         
-        <div class="post-content">
+        <div class="description">
         
             {if $post.type == 'video'}
                 {if $post.videosource == 'youtube'}
@@ -38,47 +41,56 @@
         
         </div>
         
-        <div class="post-footer">
+        <div class="meta">
             <!-- Post Date -->
-            {$post.footerDate}
+            <span class="post-date">{$post.footerDate}</span>
+                        
+            {if $shownumcomments}
+                <span class="post-comment-count">{$post.numcomments} comments</span>
+            {/if}
             
             <!-- Post Tags -->
             {if count($post.tags) > 0 and $showtags}
-                <p class="post-tags">Tags: 
+                <span class="post-tags">
                     {foreach $post.tags as $tag}
                         {$caption = str_replace("+", " ", $tag)}
-                        <a href="/blogs/{$blog.id}/tags/{$tag}" class="tag">{$caption}</a>
+                        <a href="/blogs/{$blog.id}/tags/{$tag}" class="ui tag label">{$caption}</a>
                     {/foreach}
-                </p>
+                </span>
             {/if}
-            
-            {if $shownumcomments}
-                <p class="post-comment-count">{$post.numcomments} comments</p>
-            {/if}
-            
+        </div>
+
+        <div class="ui hidden divider"></div>
+
+        <div class="extra">
+        
             <!-- Add / Edit Options -->
             {if $userIsContributor}
-                <a href="/cms/posts/edit/{$post.id}">Edit</a> | 
-                <a href="/cms/posts/delete/{$post.id}" onclick='return confirm(\"Are you sure?\");'>Delete</a>
+                <a href="/cms/posts/delete/{$post.id}" onclick="return confirm('Are you sure?');" class="ui basic right floated button">Delete</a>
+                <a href="/cms/posts/edit/{$post.id}" class="ui basic right floated button">Edit</a>
             {/if}
-            
+
             <!-- Social Media -->
             {if $showsocialicons}
                 {$encodedTitle = rawurlencode($post.title)}
                 {$encodedUrl   = rawurlencode("/blog/{$blog['id']}/posts/{$post['link']}")}
                 {$unencodedUrl = "/blog/{$blog['id']}/posts/{$post['link']}"}
-                <style>.social-icons img { width:30px; height:30px; }</style>
                 <div class="social-icons">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;"><img src="/resources/icons/social/facebook256.png" /></a>
-                    <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank"><img src="/resources/icons/social/twitter256.png" /></a>
-                    <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank"><img src="/resources/icons/social/googleplus256.png" /></a>
-                    <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}"><img src="/resources/icons/social/email256.png" /></a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;" class="ui icon facebook button"><i class="facebook icon"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank" class="ui icon twitter button"><i class="twitter icon"></i></a>
+                    <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank" class="ui icon google plus button"><i class="google plus icon"></i></a>
+                    <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}" class="ui icon grey button"><i class="mail icon"></i></a>
                 </div>
             {/if}
+
+
         </div>
+    </div>
     </div>
         
 {/foreach}
+
+</div>
 
 {$numPages = ceil($totalnumposts / $postsperpage)}
 {$paginator->showPagination($numPages, $currentPage)}

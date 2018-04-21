@@ -113,31 +113,67 @@ class BlogContentController
      */
     public function viewHome(&$request, &$response)
     {
-        // Include the view posts functions
-        include SERVER_ROOT.'/app/view/view_posts.php';
-        
-        // Check blog post count
-        $numPosts = $this->getPostCount();
-        
-        // Set page title
-        $response->setTitle('page_title', $this->blog['name']);
-        
-        if($numPosts === 0) {
-            // No Posts
-            echo showInfo("There are no posts to show on this blog right now");
-            return $DATA;
+        $pageNum = $request->getInt('s', 1);
+
+        $isContributor = false;
+        if ($currentUser = BlogCMS::session()->currentUser) {
+            $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
         }
-        
-        $pageNum = (isset($_GET['s']) && $_GET['s'] > 0) ? Sanitize::int($_GET['s']) : 1;
-        // $pageNum = Request::GetNumberVariable('s');
+
         $blogConfig = $this->getBlogConfig($this->blogID);
-        $postsperpage = getNumPostsToView($blogConfig);
-        
-        // Fetch Posts from the Database
-        $arrayPosts = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
-        
-        // View Posts
-        viewMultiplePosts($arrayPosts, $this->blogID, $blogConfig, $numPosts, $pageNum);
+        $postConfig = null;
+        $showTags = 1;
+        $shownumcomments = 1;
+        $showsocialicons = 1;
+        $summarylength = 150;
+        $postsperpage = 5;
+
+        if (isset($blogConfig['posts'])) {
+            $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['showtags']))     $showtags = $postConfig['showtags'];
+            if (isset($postConfig['shownumcomments'])) $shownumcomments = $postConfig['shownumcomments'];
+            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
+            if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
+            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+        }
+
+        $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
+
+        $response->setVar('showtags', $showTags);
+        $response->setVar('shownumcomments', $shownumcomments);
+        $response->setVar('showsocialicons', $showsocialicons);
+        $response->setVar('postsperpage', $postsperpage);
+        $response->setVar('currentPage', $pageNum);
+
+        $response->setVar('totalnumposts', count($postlist));
+
+        // Format content
+        for ($p = 0; $p < count($postlist); $p++) {
+            $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+            $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
+
+            if (strlen($postlist[$p]['tags']) > 0) {
+                $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
+            }
+            else {
+                $postlist[$p]['tags'] = [];
+            }
+            
+            $postlist[$p]['headerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'title');
+            $postlist[$p]['footerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'footer');
+
+            if ($postlist[$p]['type'] == 'gallery') {
+                $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
+            }
+        }
+
+        $response->setTitle($this->blog['name']);
+        $response->setVar('userIsContributor', $isContributor);
+        $response->setVar('posts', $postlist);
+        $response->setVar('paginator', new Pagination());
+        $response->setVar('blog', $this->blog);
+        $response->write('blog/posts/multipleposts.tpl');
+
     }
 
     /**

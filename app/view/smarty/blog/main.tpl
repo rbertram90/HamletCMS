@@ -22,22 +22,25 @@
     <script type="text/javascript">var folder_root = "/projects/blog_cms";</script>
 </head>
 <body>
-    <div class="ui grid container">
+    <div class="ui grid container page-wrapper">
+        <div class="row">
+            <div class="sixteen wide column page-header">
 
-        <div class="sixteen wide column header">
-            {if !$header_hide_title}
-                <h1><a href="/blogs/{$blog.id}">{$blog.name}</a></h1>
-            {/if}
-            
-            {if !$header_hide_description}
-                <h2>{$blog.description}</h2>
-            {/if}
-            
-            {if isset($widget_content.header)}
-                {$widget_content.header}
-            {/if}
-            
-            <div class="navigation">{$page_navigation}</div>
+                {if !$header_hide_title}
+                    <h1><a href="/blogs/{$blog.id}">{$blog.name}</a></h1>
+                {/if}
+                
+                {if !$header_hide_description}
+                    <h2>{$blog.description}</h2>
+                {/if}
+                
+                {if isset($widget_content.header)}
+                    {$widget_content.header}
+                {/if}
+                
+                <div class="navigation">{$page_navigation}</div>
+
+            </div>
         </div>
         
         {$columncount = 2}
@@ -66,14 +69,16 @@
             {/if}
         {/if}
 
-        <div class="sixteen wide column footer">
+        <div class="row">
+            <div class="sixteen wide column page-footer">
 
-            {if isset($widget_content.footer)}
-                {$widget_content.footer}
-            {/if}
+                {if isset($widget_content.footer)}
+                    {$widget_content.footer}
+                {/if}
 
-            <div class="custom_footer_content">{$page_footercontent}</div>
-            2012 - {'Y'|date} <a href="http://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a>
+                <div class="custom_footer_content">{$page_footercontent}</div>
+                Powered by Blog CMS by <a href="http://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a>
+            </div>
         </div>
     </div>
 </body>
