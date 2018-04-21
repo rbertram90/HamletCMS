@@ -121,7 +121,7 @@ function openPreview() {ldelim}
             
             <input type="hidden" name="fld_posttype" id="fld_posttype" value="standard">
             
-            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = '/posts/cancelsave/' + $('#fld_postid').val(); window.content_changed = false; {rdelim}" class="ui button right floated">
+            <input type="button" value="Cancel" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = getCancelLocation(); window.content_changed = false; {rdelim}" class="ui button right floated">
             <input type="submit" name="fld_submitpost" value="{$submitLabel}" class="ui button teal right floated">
         </div>
 
@@ -160,6 +160,21 @@ function openPreview() {ldelim}
     </form>
 
 
+<script>
+    // Get where to redirect to when the cancel
+    // button is pressed. Will be different depending
+    // on if the autosave has run
+    var getCancelLocation = function () {
+        var postID = $('#fld_postid').val();
+
+        if (postID > 0)
+            return '/cms/posts/cancelsave/' + postID;
+        else {
+            return '/cms/blog/overview/{$blog.id}';
+        }
+    };
+</script>
+
 <script type="text/javascript">
 var content_changed = false;
 window.postTitleIsValid = false;
@@ -179,7 +194,7 @@ $(document).ready(function () {
     {
         if(content_changed)
         {
-            jQuery.post("/ajax/autosave",
+            jQuery.post("/cms/ajax/autosave",
             {
                 "fld_postid": $("#fld_postid").val(),
                 "fld_content": $("#fld_postcontent").val(),
@@ -233,9 +248,9 @@ $(document).ready(function () {
         }
 
         {if isset($post)}
-            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
+            var url = "/cms/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
         {else}
-            var url = "/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
+            var url = "/cms/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
         {/if}
 
         $.ajax({ url: url, async: false }).done(function(data) {

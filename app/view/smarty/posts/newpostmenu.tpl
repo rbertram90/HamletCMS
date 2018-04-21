@@ -22,13 +22,16 @@
                 <p><a href="/cms/posts/create/{$blog.id}/standard">Standard Post</a></p>
                 <p>Add text and images in a normal blog style editor.</p>
             </div>
+            <!--
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/camera2.png" class="ui left floated image">
                 <p><a href="/cms/posts/create/{$blog.id}/gallery">Gallery Post</a></p>        
                 <p>Add multiple images in a gallery to your blog.</p>
             </div>
+            -->
         </div>
         
+        <!--
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/film.png" class="ui left floated image">
@@ -36,6 +39,7 @@
                 <p>Feature a video in your blog post can still add text and title.</p>
             </div>
         </div>
+        -->
         
     </div>
             
