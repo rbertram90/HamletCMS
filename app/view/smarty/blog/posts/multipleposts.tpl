@@ -8,7 +8,9 @@
 
     <div class="item post">
     <div class="content">
-        {$post.headerDate}
+        <div class="meta">
+            <span class="date">{$post.headerDate}</span>
+        </div>
         
         <div class="header">
             <a href="/blogs/{$blog.id}/posts/{$post.link}">{$post.title}</a>

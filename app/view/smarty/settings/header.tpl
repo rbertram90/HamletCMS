@@ -19,11 +19,8 @@
                 </div>
 
                 <div style="margin-bottom:20px;">
-
-                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/ajax/add_image?blogid={$blog.id}&format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
-
+                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog.id}?format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
                     <button onclick="return removeImage();" class="ui button">Remove Image</button>
-
                 </div>
 
                 <input type="hidden" name="fld_headerbackgroundimage" id="fld_headerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}" />
@@ -110,19 +107,15 @@
         return false;
     {rdelim}
     
-    $("#frm_updateheader").submit(function()
-    {ldelim}
+    $("#frm_updateheader").submit(function() {
         // add the new image location to the hidden field
-        if(typeof $("#current-profile-image > img").attr("src") == "string")
-        {ldelim}
+        if(typeof $("#current-profile-image > img").attr("src") == "string") {
             var text = $("#current-profile-image > img").attr("src");
             $("#fld_headerbackgroundimage").attr("value", text);
-            
-        {rdelim}
-        else if($("#current-profile-image").html() == '')
-        {ldelim}
+        }
+        else if($("#current-profile-image").html() == '') {
             // Make sure it is actually removed
             $("#fld_headerbackgroundimage").attr("value", "");
-        {rdelim}
-    {rdelim});
+        }
+    });
 </script>

@@ -79,8 +79,8 @@
         <!-- Add / Edit Options -->
         {if $userIsContributor}
             <div class="ui buttons">
-                <a href="/posts/edit/{$post.id}" class="ui button">Edit</a>
-                <a href="/posts/delete/{$post.id}" onclick='return confirm(\"Are you sure?\");' class="ui button">Delete</a>
+                <a href="/cms/posts/edit/{$post.id}" class="ui button">Edit</a>
+                <a href="/cms/posts/delete/{$post.id}" onclick='return confirm(\"Are you sure?\");' class="ui button">Delete</a>
             </div>
             <div class="ui hidden divider"></div>
         {/if}

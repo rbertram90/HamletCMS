@@ -12,6 +12,8 @@ class FilesController extends GenericController
     public function __construct()
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+
+        $this->blog = BlogCMS::getActiveBlog();
     }
 
     /* Get the size in bytes of a folder */
@@ -40,18 +42,15 @@ class FilesController extends GenericController
      * Setup and run the manage files page
      */
     public function manage(&$request, &$response)
-    {
-        $blogid = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogid);
-        
-        if(!is_array($blog)) {
+    {        
+        if(!is_array($this->blog)) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelBlogs->canWrite($blog['id'])) {
+        elseif(!$this->modelBlogs->canWrite($this->blog['id'])) {
             $response->redirect('/cms', 'Access denied', 'error');
         }
 
-        $imagesDirectory = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/images';
+        $imagesDirectory = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/images';
         $images = array();
         
         if(is_dir($imagesDirectory)) {
@@ -71,7 +70,7 @@ class FilesController extends GenericController
         }
         BlogCMS::$activeMenuLink = 'files';
         
-        $response->setVar('blog', $blog);
+        $response->setVar('blog', $this->blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));
         $response->setVar('images', $images);
 
@@ -80,7 +79,7 @@ class FilesController extends GenericController
         $response->addStylesheet('/resources/css/rbwindow.css');
         $response->addStylesheet('/resources/css/rbrtf.css');
         
-        $response->setTitle('Manage Files - ' . $blog['name']);
+        $response->setTitle('Manage Files - ' . $this->blog['name']);
         $response->write('files/manage.tpl');
     }
 
@@ -181,5 +180,41 @@ class FilesController extends GenericController
         move_uploaded_file($_FILES["file"]["tmp_name"], $filepath . '/images/' . $filename);
 
         print "success";
+    }
+
+    /**
+     * Handles /files/select/<blogid>
+     */
+    public function fileselect(&$request, &$response)
+    {
+        // Return Type
+        $returnFormat = $request->getString('format', 'markdown');
+        // Element ID
+        $returnElementID = $request->getString('elemid', 'fld_postcontent');
+        // Append or replace
+        $returnReplace = $request->getInt('replace', 0);
+
+        $path = SERVER_ROOT."/app/public/blogdata/{$this->blog['id']}/images";
+
+        $request->isAjax = true;
+        $response->setVar('showExisiting', is_dir($path));
+        $response->setVar('returnReplace', $returnReplace);
+        $response->setVar('returnElementID', $returnElementID);
+        $response->setVar('returnFormat', $returnFormat);
+
+        $imagesHTML = "";
+        if ($handle = opendir($path)) {
+            while (false !== ($file = readdir($handle))) {
+                $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
+    
+                if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
+                    $imagesHTML .= '<img src="/blogdata/'.$this->blog['id'].'/images/'.$file.'" height="100" width="" class="selectableimage" />';
+                }
+            }
+            closedir($handle);
+        }
+        $response->setVar('imagesOutput', $imagesHTML);
+
+        $response->write('files/select.tpl');
     }
 }

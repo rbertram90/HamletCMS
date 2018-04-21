@@ -360,7 +360,7 @@ class BlogContentController
             elseif($h == 'n' && $ha == 'l') $br.= " background-position: left center;";
             
             $headerContent = '<style type="text/css">
-                .header {
+                .page-header {
                     background-image:url("'.$backgroundImage.'");
                     '.$br.'
                 }

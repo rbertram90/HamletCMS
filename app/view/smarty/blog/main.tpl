@@ -77,7 +77,7 @@
                 {/if}
 
                 <div class="custom_footer_content">{$page_footercontent}</div>
-                Powered by Blog CMS by <a href="http://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a>
+                Powered by Blog CMS from <a href="http://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a>
             </div>
         </div>
     </div>

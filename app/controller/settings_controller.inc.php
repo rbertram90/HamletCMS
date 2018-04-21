@@ -158,10 +158,10 @@ class SettingsController extends GenericController
         else $response->setVar('blogconfig', []);
 
         $response->setVar('blog', $blog);
-        $response->addScript('/resources/js/rbwindow');
-        $response->addScript('/resources/js/rbrtf');
-        $response->addStylesheet('/resources/css/rbrtf');
-        $response->addStylesheet('/resources/css/rbwindow');
+        $response->addScript('/resources/js/rbwindow.js');
+        $response->addScript('/resources/js/rbrtf.js');
+        $response->addStylesheet('/resources/css/rbrtf.css');
+        $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Header - ' . $blog['name']);
         $response->write('settings/header.tpl');        
     }
@@ -332,10 +332,10 @@ class SettingsController extends GenericController
         ]);
 
         if($update) {
-            $this->response->redirect('/settings/general/' . $this->blog['id'], "Blog settings updated", "success");
+            $this->response->redirect('/cms/settings/general/' . $this->blog['id'], "Blog settings updated", "success");
         }
         else {
-            $this->response->redirect('/settings/general/' . $this->blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/general/' . $this->blog['id'], "Error saving to database", "error");
         }
     }
     
@@ -362,10 +362,10 @@ class SettingsController extends GenericController
         ]);
         
         if($update) {
-            $this->response->redirect('/settings/posts/' . $this->blog['id'], "Post settings updated", "success");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog['id'], "Post settings updated", "success");
         }
         else {
-            $this->response->redirect('/settings/posts/' . $this->blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog['id'], "Error saving to database", "error");
         }
     }
     
@@ -423,9 +423,9 @@ class SettingsController extends GenericController
             ]
         ]);
 
-        if(!$update) $response->redirect('/settings/footer/' . $blog['id'], 'Updated failed', 'error');
+        if(!$update) $response->redirect('/cms/settings/footer/' . $blog['id'], 'Updated failed', 'error');
         
-        $response->redirect('/settings/footer/' . $blog['id'], 'Footer updated', 'success');
+        $response->redirect('/cms/settings/footer/' . $blog['id'], 'Footer updated', 'success');
     }
     
     /**
@@ -442,9 +442,9 @@ class SettingsController extends GenericController
             'hide_description'          => $request->getString('fld_hidedescription')
         ]]);
 
-        if(!$update) $response->redirect('/settings/header/' . $blog['id'], 'Updated failed', 'error');
+        if(!$update) $response->redirect('/cms/settings/header/' . $blog['id'], 'Updated failed', 'error');
         
-        $response->redirect('/settings/header/' . $blog['id'], 'Header updated', 'success');
+        $response->redirect('/cms/settings/header/' . $blog['id'], 'Header updated', 'success');
     }
     
     /**
@@ -643,7 +643,7 @@ class SettingsController extends GenericController
         // Save the config file back
         file_put_contents(SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/template_config.json', json_encode($settings));
 
-        $this->response->redirect('/settings/blogdesigner/' . $this->blog['id'], 'Settings Updated', 'Success');
+        $this->response->redirect('/cms/settings/blogdesigner/' . $this->blog['id'], 'Settings Updated', 'Success');
     }
         
     /**
@@ -665,7 +665,7 @@ class SettingsController extends GenericController
         $new_json  = SERVER_PATH_BLOGS . "/{$blog['id']}/template_config.json";
         if (!copy($copy_json, $new_json)) die(showError('failed to copy '.$template_id.'.json'));
 
-        $response->redirect('/settings/template/' . $blog['id'], 'Template changed', 'success');
+        $response->redirect('/cms/settings/template/' . $blog['id'], 'Template changed', 'success');
     }
     
     /**
@@ -681,7 +681,7 @@ class SettingsController extends GenericController
             $response->redirect("/settings/stylesheet/{$blog_id}", "Stylesheet updated", "success");
         }
         else {
-            $response->redirect("/settings/stylesheet/{$blog_id}", "Update failed", "error");
+            $response->redirect("/cms/settings/stylesheet/{$blog_id}", "Update failed", "error");
         }
     }
     
