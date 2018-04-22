@@ -38,7 +38,7 @@
                     {$widgets.header}
                 {/if}
                 
-                <div class="navigation">{$page_navigation}</div>
+                <div class="ui menu">{$page_navigation}</div>
 
             </div>
         </div>

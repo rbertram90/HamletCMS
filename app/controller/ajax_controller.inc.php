@@ -135,7 +135,7 @@ class AjaxController extends GenericController
 
         $link = $this->modelPosts->createSafePostUrl($title);
         
-        $matchingPosts = $this->modelPosts->count(['link' => $link]);
+        $matchingPosts = $this->modelPosts->count(['blog_id' => $blogID, 'link' => $link]);
         if ($matchingPosts == 0) {
             print "false";
             return;

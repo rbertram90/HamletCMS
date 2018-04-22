@@ -220,11 +220,11 @@ class BlogContentController
             if (is_numeric($postid)) {
                 $arrayPosts = $this->modelPosts->get('*', array('id' => $postid));
                 $arrayPost = $arrayPosts[0];
-                $navigation.= '<a href="/blogs/'.$arrayPost['blog_id'].'/posts/'.$arrayPost['link'].'">'.$arrayPost['title'].'</a>';
+                $navigation.= '<a href="/blogs/'.$arrayPost['blog_id'].'/posts/'.$arrayPost['link'].'" class="item">'.$arrayPost['title'].'</a>';
             }
             elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
-                $navigation.= '<a href="/blogs/'.$this->blog['id'].'/tags/'.$tag.'">'.$tag.'</a>';
+                $navigation.= '<a href="/blogs/'.$this->blog['id'].'/tags/'.$tag.'" class="item">'.ucfirst($tag).'</a>';
             }
         }
         return $navigation;

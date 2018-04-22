@@ -63,17 +63,15 @@
         {/if}
 
         {if $showsocialicons}
-            {$encodedTitle = rawurlencode($post.title)}
-            {$encodedUrl   = rawurlencode("/blog/{$blog['id']}/posts/{$post['link']}")}
-            {$unencodedUrl = "/blog/{$blog['id']}/posts/{$post['link']}"}
-            <style>.social-icons img { width:30px; height:30px; }</style>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;"><img src="/resources/icons/social/facebook256.png" /></a>
-                <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank"><img src="/resources/icons/social/twitter256.png" /></a>
-                <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank"><img src="/resources/icons/social/googleplus256.png" /></a>
-                <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}"><img src="/resources/icons/social/email256.png" /></a>
-            </div>
-            <div class="ui hidden divider"></div>
+                {$encodedTitle = rawurlencode($post.title)}
+                {$encodedUrl   = rawurlencode("/blog/{$blog['id']}/posts/{$post['link']}")}
+                {$unencodedUrl = "/blog/{$blog['id']}/posts/{$post['link']}"}
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;" class="ui icon facebook button"><i class="facebook icon"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank" class="ui icon twitter button"><i class="twitter icon"></i></a>
+                    <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank" class="ui icon google plus button"><i class="google plus icon"></i></a>
+                    <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}" class="ui icon grey button"><i class="mail icon"></i></a>
+                </div>
         {/if}
         
         <!-- Add / Edit Options -->
@@ -103,6 +101,7 @@
         <div class="ui hidden divider"></div>
     </footer>
 
+    {if $post.allowcomments}
     <div>
         {include file='blog/comments/postcomments.tpl'}
     </div>
@@ -112,5 +111,6 @@
     <div>
         {include file='blog/comments/newcommentform.tpl'}
     </div>
+    {/if}
 
 </article>

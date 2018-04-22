@@ -68,7 +68,7 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/oven_gear.png" class="ui left floated image">
-                <p><a href="/cms/settings/widgets/{$blog.id}">Configure Widgets <em>(OUT OF ACTION!)</em></a></p>
+                <p><a href="/cms/settings/widgets/{$blog.id}">Configure Widgets</a></p>
                 <p>Change what is shown on the sidebar of your blog</p>
             </div>
             <div class="ui segment clearing">
