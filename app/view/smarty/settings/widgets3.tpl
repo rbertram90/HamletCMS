@@ -171,7 +171,7 @@ function runConfigureWidgetForm(buttonElement) {
     var widgetName = $(buttonParent).data('widgetname');
     var widgetSection = $(buttonParent).data('widgetsection');
     
-    $.get('/ajax/configure_widget', { blogid: "{$blog['id']}", widget: widgetName }, function(data) {
+    $.get('/cms/settings/configurewidget/{$blog['id']}', { widget: widgetName }, function(data) {
         $('#editWidgetPopup .content').html(data);
         
         var editForm = $('#editWidgetPopup .content form');
@@ -179,8 +179,6 @@ function runConfigureWidgetForm(buttonElement) {
         editForm.data('widgetsection', widgetSection);
         
         var currentValues = JSON.parse($(buttonElement).siblings(".widgetconfigjson").val());
-        
-        console.log(currentValues);
         
         for(var item in currentValues) {
             $('#editWidgetPopup .content form #widget\\[' + item + '\\]').val(currentValues[item]);

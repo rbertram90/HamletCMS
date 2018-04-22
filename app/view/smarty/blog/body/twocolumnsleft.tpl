@@ -11,7 +11,7 @@
     <div class="actions">
         {include file='blog/actions.tpl'}
     </div>
-    {if isset($widget_content.rightpanel)}
-        {$widget_content.rightpanel}
+    {if isset($widgets.rightpanel)}
+        {$widgets.rightpanel}
     {/if}
 </div>

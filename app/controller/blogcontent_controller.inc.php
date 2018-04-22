@@ -5,6 +5,7 @@ use Codeliner;
 use Michelf\Markdown;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\Pagination;
+use rbwebdesigns\core\JSONhelper;
 
 /**
  * blog_content_controller
@@ -256,10 +257,29 @@ class BlogContentController
     public function generateWidgets2()
     {
         $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
-        
+        $widgets = [];
+
         if(!file_exists($widgetConfigPath)) return '';
         
-        $widgetConfig = rbwebdesigns\JSONhelper::jsonToArray($widgetConfigPath);
+        $widgetsConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
+
+        $widgetSmarty = new \Smarty;
+        $widgetSmarty->setTemplateDir(SERVER_PATH_WIDGETS);
+
+        foreach ($widgetsConfig as $section => $childWidgets) {
+            $section = strtolower($section);
+            $widgets[$section] = '';
+            foreach ($childWidgets as $name => $widget) {
+                $widgetSmarty->clearAllAssign();
+                foreach ($widget as $settingkey => $settingvalue) {
+                    $widgetSmarty->assign($settingkey, $settingvalue);
+                }
+                $widgetSmarty->assign('blog', $this->blog);
+                $widgets[$section] .= $widgetSmarty->fetch($name . '/view.tpl');
+            }
+        }
+
+        return $widgets;
     }
     
     /**

@@ -52,7 +52,7 @@ use rbwebdesigns\core\Sanitize;
     $response->setDescription('Default Page Description');
     $response->setVar('custom_css', $page_controller->getBlogCustomCSS(BLOG_KEY));
 
-    $response->setVar('widget_content', $page_controller->generateWidgets());
+    $response->setVar('widgets', $page_controller->generateWidgets2());
     $response->setVar('user_is_contributor', $page_controller->userIsContributor()); // @todo this is broken...
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('is_favourite', $page_controller->blogIsFavourite());

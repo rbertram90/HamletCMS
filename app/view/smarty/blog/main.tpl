@@ -34,8 +34,8 @@
                     <h2>{$blog.description}</h2>
                 {/if}
                 
-                {if isset($widget_content.header)}
-                    {$widget_content.header}
+                {if isset($widgets.header)}
+                    {$widgets.header}
                 {/if}
                 
                 <div class="navigation">{$page_navigation}</div>
@@ -72,8 +72,8 @@
         <div class="row">
             <div class="sixteen wide column page-footer">
 
-                {if isset($widget_content.footer)}
-                    {$widget_content.footer}
+                {if isset($widgets.footer)}
+                    {$widgets.footer}
                 {/if}
 
                 <div class="custom_footer_content">{$page_footercontent}</div>

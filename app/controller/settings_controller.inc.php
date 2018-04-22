@@ -4,7 +4,9 @@ namespace rbwebdesigns\blogcms;
 use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\core\HTMLFormTools;
 use rbwebdesigns\core\AppSecurity;
+use Codeliner\ArrayReader\ArrayReader;
 
 /**
  * class SettingsController
@@ -295,7 +297,7 @@ class SettingsController extends GenericController
      */
     public function widgets()
     {
-        if ($this->request->method() == 'POST') return $this->action_updateWidgets($blog);
+        if ($this->request->method() == 'POST') return $this->action_updateWidgets();
         
         $this->response->setTitle('Customise Widgets - ' . $this->blog['name']);
         $this->response->setVar('blog', $this->blog);
@@ -740,7 +742,7 @@ class SettingsController extends GenericController
     {
         $widgetSettingsFilePath = SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json';
         
-        if(file_exists($widgetSettingsFilePath)) {
+        if(file_exists($widgetSettingsFilePath) && filesize($widgetSettingsFilePath) > 0) {
             return JSONHelper::JSONFileToArray($widgetSettingsFilePath);
         }
         
@@ -757,18 +759,19 @@ class SettingsController extends GenericController
         if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
         {
             $defaultWidgetConfig = array('Header' => []);
-            $templateConfig = rbwebdesigns\JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
-            
-            if(multiarray_key_exists($templateConfig, 'Layout.ColumnCount')) {
-                switch($templateConfig['Layout']['ColumnCount']) {
+            $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            $arrayReader = new ArrayReader($templateConfig);
+
+            if($columnCount = $arrayReader->integerValue('Layout.ColumnCount')) {
+                switch($columnCount) {
                     case 3:
                         $defaultWidgetConfig['RightPanel'] = [];
                         $defaultWidgetConfig['LeftPanel'] = [];
                         break;
                         
                     case 2:
-                        if(multiarray_key_exists($templateConfig, 'Layout.PostsColumn')) {
-                            if($templateConfig['Layout']['PostsColumn'] == 2) $defaultWidgetConfig['LeftPanel'] = [];
+                        if($postsColumn = $arrayReader->integerValue('Layout.PostsColumn')) {
+                            if($postsColumn == 2) $defaultWidgetConfig['LeftPanel'] = [];
                             else $defaultWidgetConfig['RightPanel'] = [];
                         }
                         break;
@@ -804,37 +807,98 @@ class SettingsController extends GenericController
         return $folders;
     }
     
-    protected function action_updateWidgets($blog) {
+    protected function action_updateWidgets() {
            
-        $configPath = SERVER_PATH_BLOGS . '/' . $blog['id'] . '/widgets.json';
-        if(!file_exists($configPath)) die('Cannot find widget config file');
-        $config = JSONhelper::jsonToArray($configPath);
+        $configPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
+        if (!file_exists($configPath)) die('Cannot find widget config file');
+        $config = JSONhelper::JSONFileToArray($configPath);
         
         // Clear all existing widgets
         foreach ($config as $sectionName => $section) {
             $config[$sectionName] = [];
         }
 
-        foreach($_POST['widgets'] as $sectionName => $section) {
-            foreach($section as $widgettype => $widgetconfig) {
-                $config[$sectionName][$widgettype] = json_decode($widgetconfig, true);;
+        foreach ($_POST['widgets'] as $sectionName => $section) {
+            foreach ($section as $widgettype => $widgetconfig) {
+                $config[$sectionName][$widgettype] = JSONhelper::jsonToArray($widgetconfig);
             }
         }
         
         // Save JSON back to config file
         file_put_contents($configPath, JSONhelper::arrayToJSON($config));
         
-        // Say it worked
-        setSystemMessage(ITEM_UPDATED, "Success");
-        
         // View the widgets page
-        redirect('/config/' . $blog['id'] . '/widgets');
+        $this->response->redirect('/cms/settings/widgets/' . $this->blog['id'], 'Widgets updated', 'success');
     }
     
     
     /**
-        Save Changes to the display of items in the widget bar
-    **/
+     * Handles /settings/configurewidget/<blogid>
+     */
+    public function configurewidget()
+    {
+        if(!$widgetname = $this->request->getString('widget', false)) {
+            die('Unable to continue - no widget found');
+        }
+        
+        // if(!isset($_POST['location']) || strlen($_POST['location']) == 0) die('Unable to continue - no location found');
+        // $location = sanitize_string($_POST['location']);
+        
+        // Get config
+        // $config = sanitize_string($_POST['config']);
+        
+        // Split to array
+        // $config = str_replace('&#34;', '"', $config);
+        // $arrayConfig = json_decode($config, true);
+        
+        // Find widget type
+        // $fieldtype = $arrayConfig['type'];
+        
+        // Get the definition
+        $formhelper = new HTMLFormTools(null);
+        
+        $widgetConfigPath = SERVER_PATH_WIDGETS . '/' . $widgetname . '/config.json';
+        
+        // Get form definition
+        if(!file_exists($widgetConfigPath)) die('Widget definition not found');
+        
+        $widgetConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
+        
+        // Add the action to the form
+        // $arrayDef = json_decode($json, true);
+        // $arrayDef['action'] = '/config/'.$blogid.'/widgets/'.$fieldtype.'/submit';
+        // $arrayDef['formname'] = 'frm'.$fieldtype.'Settings';
+        
+        // Add a field for the location
+        // $arrayDef['fields'][] = array(
+        //    'type'  => 'hidden',
+        //    'current' => $location,
+        //    'name'  => 'sys_widget_location'
+        //);
+        
+        // Add a field for the id
+        //$arrayDef['fields'][] = array(
+        //    'type'    => 'hidden',
+        //    'name'    => 'sys_widget_id',
+        //    'current' => '[!data.id]'
+        //);
+        
+        // Add a field for the type
+        //$arrayDef['fields'][] = array(
+        //    'type'    => 'hidden',
+        //    'name'    => 'sys_widget_type',
+        //    'current' => '[!data.type]'
+        //);
+        
+        // Output form
+        echo $formhelper->generateFromJSON($widgetConfig['form-configuration'], $widgetConfig['defaults']);
+        
+        $this->request->isAjax = true;
+    }
+
+    /**
+     * Save Changes to the display of items in the widget bar
+     */
     public function action_saveWidgetConfig($blog)
     {
         // Get the current widgets as array
