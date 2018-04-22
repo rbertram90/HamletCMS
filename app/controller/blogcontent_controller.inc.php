@@ -172,7 +172,7 @@ class BlogContentController
         $response->setVar('posts', $postlist);
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
-        $response->write('blog/posts/multipleposts.tpl');
+        $response->write('blog/posts/postshome.tpl');
 
     }
 

@@ -1,7 +1,3 @@
-{if count($posts) == 0}
-    <p class="info">There are no posts on this blog</p>
-{/if}
-
 <div class="ui divided very relaxed link items">
 
 {foreach $posts as $post}
