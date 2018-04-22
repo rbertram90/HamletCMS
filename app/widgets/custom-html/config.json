@@ -1,11 +1,9 @@
 {
-    "name": "Post timeline",
-    "description": "Lists recent posts",
+    "name": "Custom HTML",
+    "description": "Display a simple block of HTML",
     "version": 1.0,
     "defaults":
     {
-        "heading": "Recent Posts",
-        "maxposts": 10
     },
     "form-configuration":
     {
@@ -16,14 +14,14 @@
             {
                 "type": "text",
                 "name": "widget[heading]",
-                "label": "Widget Heading",
+                "label": "Heading",
                 "current": "[!data.heading]"
             },
             {
-                "type": "text",
-                "name": "widget[maxposts]",
-                "label": "Maximum number of posts to display",
-                "current": "[!data.maxposts]"
+                "type": "memo",
+                "name": "widget[content]",
+                "label": "Content",
+                "current": "[!data.content]"
             }
         ]
     }
