@@ -13,6 +13,11 @@
         "root_directory": "/var/www/blog_cms",
         "timezone": "Europe/London"
     },
+    "files":
+    {
+        "upload_bytes_limit": 50000000,
+        "single_upload_limit": 2000000
+    },
     "blogcategories":
     [
         "general",

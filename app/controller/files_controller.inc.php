@@ -74,6 +74,9 @@ class FilesController extends GenericController
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));
         $response->setVar('images', $images);
 
+        $config = BlogCMS::config();
+        $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);
+
         $response->addScript('/resources/js/rbwindow.js');
         $response->addScript('/resources/js/rbrtf.js');
         $response->addStylesheet('/resources/css/rbwindow.css');
@@ -131,8 +134,10 @@ class FilesController extends GenericController
     public function uploadimages(&$request, &$response)
     {
         $request->isAjax = true;
-
         $blog = $this->blog;
+        $config = BlogCMS::config();
+        $maxDirectorySize = $config['files']['upload_bytes_limit'];
+        $maxUploadSize = $config['files']['single_upload_limit'];
 
         if(!$blog && $blogID = $request->getInt('blogid')) {
             $blog = $this->modelBlogs->getBlogById($blogID);
@@ -149,8 +154,8 @@ class FilesController extends GenericController
         if (!($filetype == "image/gif" || $filetype == "image/jpg" || $filetype == "image/jpeg" || $filetype == "image/pjpeg" || $filetype == "image/png")) {
             die("Unable to continue with upload: Unrecognised file type - $filetype");
         }
-        if($_FILES["file"]["size"] > 2000000) { // 1KB = 1000
-            die("Unable to continue with upload: File too large - max size = 2MB");
+        if($_FILES["file"]["size"] > $maxUploadSize) {
+            die("Unable to continue with upload: file size too large");
         }
         if ($_FILES["file"]["error"] > 0) {
             die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
@@ -171,8 +176,8 @@ class FilesController extends GenericController
         
         $totalfoldersize = $this->getDirectorySize($filepath . '/images');
         
-        if($totalfoldersize + $_FILES["file"]["size"] > 50000000) {
-            die("Unable to continue with upload: 50 MB total upload limit exceeded!");
+        if($totalfoldersize + $_FILES["file"]["size"] > $maxDirectorySize) {
+            die("Unable to continue with upload: total upload limit exceeded!");
         }
         
         $ext = strtoupper(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
