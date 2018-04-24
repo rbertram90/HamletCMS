@@ -12,7 +12,7 @@
     // Galleria.run('.galleria');
     </script>
 
-    <link rel="stylesheet" href="/blogdata/{$blog.id}/default.css" type="text/css">
+    <link rel="stylesheet" href="{$blog_file_dir}/default.css" type="text/css">
 
     <!-- Custom CSS -->
     <style type="text/css" id="customcss">{$custom_css}</style>
@@ -27,7 +27,7 @@
             <div class="sixteen wide column page-header">
 
                 {if !$header_hide_title}
-                    <h1><a href="/blogs/{$blog.id}">{$blog.name}</a></h1>
+                    <h1><a href="{$blog_root_url}">{$blog.name}</a></h1>
                 {/if}
                 
                 {if !$header_hide_description}

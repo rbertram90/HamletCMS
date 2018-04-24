@@ -2,7 +2,6 @@
 #upload_area {
     margin:10px;
     padding:10px;
-    background-color:#eee;
     height:90%;
     overflow:auto;
 }
@@ -15,9 +14,13 @@
 
     {if $showExisiting}
 
-    <button id="linkShowNew" type="button">Upload New</button> | <button id="linkShowExisting" type="button">Choose Existing</button>
+    <div class="ui buttons">
+        <button id="linkShowNew" type="button" class="ui button">Upload New</button>
+        <div class="or"></div>
+        <button id="linkShowExisting" type="button" class="ui button">Choose Existing</button>
+    </div>
     
-    <div id="showExisting">
+    <div id="showExisting" class="ui segment">
         <h3>Choose from Existing Photos</h3>
         <form id='frm_chooseExistingImage'>
         
@@ -58,28 +61,32 @@
     
     {/if}
     
-    <div id="showNew">
+    <div id="showNew" class="ui segment">
         <h3>Upload an image</h3>
-        <form id='frm_chooseNewImage' method='post' enctype='multipart/form-data'>
-            <label for='file'>Filename:</label>
-            <input type='file' name='file' id='file' accept="image/png, image/gif, image/jpeg"/>
+        <form id='frm_chooseNewImage' method='post' enctype='multipart/form-data' class="ui form">
+            <div class="field">
+                <label for='file'>Filename</label>
+                <input type='file' name='file' id='file' accept="image/png, image/gif, image/jpeg"/>
+            </div>
             <div class="push-right">
-                <input type='submit' name='image_submit' value='submit' />
+                <input type='submit' name='image_submit' value='Upload' class="ui button teal">
             </div>
         </form>
     </div>
     
     <script type="text/javascript">
         // Upload a new image (will redirect to a confirmation screen)
-        $("#frm_chooseNewImage").submit(function() {
-          
+        $("#frm_chooseNewImage").submit(function(e) {
             // Make it so that the file can be passed using ajax
-            var formData = new FormData();            
+            var formData = new FormData();
             formData.append("file", document.getElementById('file').files[0]);
+            formData.append("csrf_token", CSRFTOKEN);
             
             // Make the ajax call
-            ajax_PostFile("/ajax/submit_image_upload?blogid=<?=$lsBlogID?>&replace=1", formData, "showNew");
+            ajax_PostFile("/cms/files/uploadimages/{$blog.id}?replace=1", formData, "showNew");
             
+            e.preventDefault();
+
             // Don't redirect
             return false;
         });

@@ -9,6 +9,7 @@
     "environment":
     {
         "development_mode": false,
+        "canonical_domain": "http://blogcms.localhost",
         "root_directory": "/var/www/blog_cms",
         "timezone": "Europe/London"
     },

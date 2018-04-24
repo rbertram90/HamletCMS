@@ -9,7 +9,7 @@
         </div>
         
         <div class="header">
-            <a href="/blogs/{$blog.id}/posts/{$post.link}">{$post.title}</a>
+            <a href="{$blog_root_url}/posts/{$post.link}">{$post.title}</a>
         </div>
         
         <div class="description">
@@ -52,7 +52,7 @@
                 <span class="post-tags">
                     {foreach $post.tags as $tag}
                         {$caption = str_replace("+", " ", $tag)}
-                        <a href="/blogs/{$blog.id}/tags/{$tag}" class="ui tag label">{$caption}</a>
+                        <a href="{$blog_root_url}/tags/{$tag}" class="ui tag label">{$caption}</a>
                     {/foreach}
                 </span>
             {/if}

@@ -39,18 +39,35 @@ use rbwebdesigns\core\Sanitize;
 
     $response->addStylesheet('/resources/css/core.css');
 
-    $response->addScript('/resources/js/jquery-1.8.0.min.js');
-    $response->addScript('/resources/js/core-functions.js');
-    $response->addScript('/resources/js/validate.js');
-    $response->addScript('/resources/js/galleria-1.4.2.min.js');
-    $response->addScript('/resources/js/galleria.classic.min.js');
-    $response->addScript('/projects/blog_cms/js/addFavourite.js');
+    $config = BlogCMS::config();
+    
+    if (CUSTOM_DOMAIN) {
+        $host = $config['environment']['canonical_domain'];
+        $action = $request->getControllerName();
+        $pathPrefix = $blogDir = '';
+    }
+    else {
+        $host = '';
+        $action = strtolower($request->getUrlParameter(1));
+        $pathPrefix = "/blogs/{$blog['id']}";
+        $blogDir = "/blogdata/{$blog['id']}";
+    }
+
+    $response->addScript($host . '/resources/js/jquery-1.8.0.min.js');
+    $response->addScript($host . '/resources/js/core-functions.js');
+    $response->addScript($host . '/resources/js/validate.js');
+    $response->addScript($host . '/resources/js/galleria-1.4.2.min.js');
+    $response->addScript($host . '/resources/js/galleria.classic.min.js');
+    $response->addScript($host . '/projects/blog_cms/js/addFavourite.js');
     
     $response->setVar('blog', $blog);
     $response->setVar('blog_key', BLOG_KEY);
+    $response->setVar('blog_root_url', $pathPrefix);
+    $response->setVar('blog_file_dir', $blogDir);
+    $response->setVar('custom_domain', CUSTOM_DOMAIN);
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
-    $response->setVar('custom_css', $page_controller->getBlogCustomCSS(BLOG_KEY));
+    $response->setVar('custom_css', $page_controller->getBlogCustomCSS());
 
     $response->setVar('widgets', $page_controller->generateWidgets2());
     $response->setVar('user_is_contributor', $page_controller->userIsContributor()); // @todo this is broken...
@@ -68,15 +85,15 @@ use rbwebdesigns\core\Sanitize;
     if (isset($templateConfig['Includes'])) {
         $includes = $templateConfig['Includes'];
         if (isset($includes['semantic-ui']) && $includes['semantic-ui']) {
-            $response->addStylesheet('/css/semantic.css');
-            $response->addScript('/js/semantic.js');
+            $response->addStylesheet($host . '/css/semantic.css');
+            $response->addScript($host . '/js/semantic.js');
         }
     }
 
     // Store any output in a buffer
     ob_start();
 
-    switch (strtolower($request->getUrlParameter(1))) {
+    switch ($action) {
         case "posts":
             $page_controller->viewPost($request, $response);
             break;

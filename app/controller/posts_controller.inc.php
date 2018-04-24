@@ -247,6 +247,10 @@ class PostsController extends GenericController
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
+
+        if (strlen($newPost['title']) == 0) {
+            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Please provide a title', 'error');
+        }
         
         if ($newPost['type'] == 'video') {
             $newPost['videoid'] = $this->request->getString('fld_postvideoID');
@@ -257,7 +261,7 @@ class PostsController extends GenericController
             $newPost['gallery_imagelist'] = $this->request->get('fld_gallery_imagelist');
         }
 
-        if($this->post['id'] = $this->request->getInt('fld_postid', false)) {
+        if($postID = $this->request->getInt('fld_postid', false)) {
             // This should be the case as it should have been created when the autosave run
             if ($this->model->updatePost($postID, $newPost)) {
                 $this->model->removeAutosave($postID);
@@ -267,10 +271,10 @@ class PostsController extends GenericController
             }
         }
         elseif (!$this->model->createPost($newPost)) {
-            $this->response->redirect('/cms/posts/manage/' . $blog['id'], 'Error creating post', 'error');
+            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Error creating post', 'error');
         }
 
-        $this->response->redirect('/cms/posts/manage/' . $blog['id'], 'Post created', 'success');
+        $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Post created', 'success');
     }
     
     /**
@@ -317,6 +321,10 @@ class PostsController extends GenericController
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
+
+        if (strlen($updates['title']) == 0) {
+            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Please provide a title', 'error');
+        }
         
         if ($this->post['type'] == 'video') {
             $updates['videoid']     = $this->request->getString('fld_postvideoID');

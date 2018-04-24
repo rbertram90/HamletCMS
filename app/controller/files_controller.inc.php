@@ -132,7 +132,9 @@ class FilesController extends GenericController
     {
         $request->isAjax = true;
 
-        if($blogID = $request->getInt('blogid')) {
+        $blog = $this->blog;
+
+        if(!$blog && $blogID = $request->getInt('blogid')) {
             $blog = $this->modelBlogs->getBlogById($blogID);
         }
         if(!$blog) {
@@ -197,6 +199,7 @@ class FilesController extends GenericController
         $path = SERVER_ROOT."/app/public/blogdata/{$this->blog['id']}/images";
 
         $request->isAjax = true;
+        $response->setVar('blog', $this->blog);
         $response->setVar('showExisiting', is_dir($path));
         $response->setVar('returnReplace', $returnReplace);
         $response->setVar('returnElementID', $returnElementID);

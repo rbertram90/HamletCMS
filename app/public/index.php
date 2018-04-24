@@ -30,7 +30,8 @@ use rbwebdesigns\blogcms\BlogCMSResponse;
     // Check if we are viewing a blog
     if($action == 'blogs') {
         // Viewing a blog
-        
+        define('CUSTOM_DOMAIN', false);
+
         // Get the ID from the URL (& remove)
         define('BLOG_KEY', $request->getUrlParameter(0));
         

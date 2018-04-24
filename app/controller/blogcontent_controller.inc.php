@@ -43,6 +43,13 @@ class BlogContentController
         $this->blogID        = $blog_key;
         $this->blogConfig    = null;
         $this->blogPostCount = null;
+
+        if (CUSTOM_DOMAIN) {
+            $this->pathPrefix = '';
+        }
+        else {
+            $this->pathPrefix = "/blogs/{$this->blogID}";
+        }
         
         if ($this->modelContributors->isBlogContributor($blog_key, $currentUser, 'all')) {
             $this->userPermissionsLevel = 2;
@@ -220,11 +227,11 @@ class BlogContentController
             if (is_numeric($postid)) {
                 $arrayPosts = $this->modelPosts->get('*', array('id' => $postid));
                 $arrayPost = $arrayPosts[0];
-                $navigation.= '<a href="/blogs/'.$arrayPost['blog_id'].'/posts/'.$arrayPost['link'].'" class="item">'.$arrayPost['title'].'</a>';
+                $navigation.= '<a href="'.$this->pathPrefix.'/posts/'.$arrayPost['link'].'" class="item">'.$arrayPost['title'].'</a>';
             }
             elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
-                $navigation.= '<a href="/blogs/'.$this->blog['id'].'/tags/'.$tag.'" class="item">'.ucfirst($tag).'</a>';
+                $navigation.= '<a href="'.$this->pathPrefix.'/tags/'.$tag.'" class="item">'.ucfirst($tag).'</a>';
             }
         }
         return $navigation;
@@ -506,7 +513,7 @@ class BlogContentController
      * Generates the CSS for a blog specified in the JSON file 'template_config.json'
      * which should exist under the $pblogid folder
      */
-    public function getBlogCustomCSS($pblogid)
+    public function getBlogCustomCSS()
     {
         $lobjSettings = $this->getTemplateConfig();
         $css = "";
@@ -575,7 +582,12 @@ class BlogContentController
      */
     public function viewPost(&$request, &$response)
     {
-        $postUrl = $request->getUrlParameter(2);
+        if (CUSTOM_DOMAIN) {
+            $postUrl = $request->getUrlParameter(0);
+        }
+        else {
+            $postUrl = $request->getUrlParameter(2);
+        }
 
         // Check conditions in which the user is not allowed to view the post
         if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
@@ -585,11 +597,11 @@ class BlogContentController
                 $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
             }
             if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
-                $response->redirect("/blogs/{$this->blogID}", 'Cannot view this post', 'error');
+                $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
             }
         }
         else {
-            $response->redirect("/blogs/{$this->blogID}", 'Cannot find this post', 'error');
+            $response->redirect($this->pathPrefix, 'Cannot find this post', 'error');
         }
         
         // Get all data required
