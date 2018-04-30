@@ -270,6 +270,16 @@ class BlogContentController
         
         $widgetsConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
 
+        $config = BlogCMS::config();
+        if (CUSTOM_DOMAIN) {
+            $cmsDomain = $config['environment']['canonical_domain'];
+            $pathPrefix = '';
+        }
+        else {
+            $cmsDomain = '';
+            $pathPrefix = "/blogs/{$this->blog['id']}";
+        }
+
         $widgetSmarty = new \Smarty;
         $widgetSmarty->setTemplateDir(SERVER_PATH_WIDGETS);
 
@@ -282,6 +292,8 @@ class BlogContentController
                     $widgetSmarty->assign($settingkey, $settingvalue);
                 }
                 $widgetSmarty->assign('blog', $this->blog);
+                $widgetSmarty->assign('cms_url', $cmsDomain);
+                $widgetSmarty->assign('blog_root_url', $pathPrefix);
                 $widgets[$section] .= $widgetSmarty->fetch($name . '/view.tpl');
             }
         }

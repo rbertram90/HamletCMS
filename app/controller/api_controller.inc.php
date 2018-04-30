@@ -10,6 +10,7 @@ use rbwebdesigns\core\JSONhelper;
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  * 
  * @todo decide on where data is coming from for cms vs public facing api
+ * @todo cross origin domain restrictions
  */
 class ApiController extends GenericController
 {
@@ -96,6 +97,7 @@ class ApiController extends GenericController
             'posts'     => $this->modelPosts->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
 
+        $this->response->addHeader('Access-Control-Allow-Origin', '*');
         $this->response->addHeader('Content-Type', 'application/json');
         $this->response->setBody(JSONhelper::arrayToJSON($result));
         $this->response->writeBody();

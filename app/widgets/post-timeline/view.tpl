@@ -6,8 +6,10 @@
     </div>
 </div>
 
+{* Important note - if we're using custom domains then will need to allow CORS headers to access this /api/posts route *}
+
 <script>
-$.get('/api/posts', { blogID: {$blog.id}, limit: {$maxposts} }, function(data) {
+$.get('{$cms_url}/api/posts', { blogID: {$blog.id}, limit: {$maxposts} }, function(data) {
     var list = "";
 
     for (var i = 0; i < data.postcount; i++) {

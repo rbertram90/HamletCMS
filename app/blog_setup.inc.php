@@ -37,8 +37,6 @@ use rbwebdesigns\core\Sanitize;
     $page_controller = new BlogContentController(BLOG_KEY);
     $blog = $page_controller->getBlogInfo();
 
-    $response->addStylesheet('/resources/css/core.css');
-
     $config = BlogCMS::config();
     
     if (CUSTOM_DOMAIN) {
@@ -53,13 +51,16 @@ use rbwebdesigns\core\Sanitize;
         $blogDir = "/blogdata/{$blog['id']}";
     }
 
+    $response->addStylesheet($host . '/resources/css/core.css');
+
     $response->addScript($host . '/resources/js/jquery-1.8.0.min.js');
     $response->addScript($host . '/resources/js/core-functions.js');
     $response->addScript($host . '/resources/js/validate.js');
     $response->addScript($host . '/resources/js/galleria-1.4.2.min.js');
     $response->addScript($host . '/resources/js/galleria.classic.min.js');
-    $response->addScript($host . '/projects/blog_cms/js/addFavourite.js');
+    $response->addScript($host . '/js/addFavourite.js');
     
+    $response->setVar('cms_url', $host);
     $response->setVar('blog', $blog);
     $response->setVar('blog_key', BLOG_KEY);
     $response->setVar('blog_root_url', $pathPrefix);

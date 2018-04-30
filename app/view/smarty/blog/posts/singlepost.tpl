@@ -85,14 +85,14 @@
 
         <div class="ui buttons">
             {if gettype($previousPost) == "array"}
-                <a href="/blogs/{$post.blog_id}/posts/{$previousPost.link}" class="ui labeled icon button">
+                <a href="{$blog_root_url}/posts/{$previousPost.link}" class="ui labeled icon button">
                     <i class="left chevron icon"></i>
                     Previous Post: {$previousPost.title}
                 </a>
             {/if}
 
             {if gettype($nextPost) == "array"}
-                <a href="/blogs/{$post.blog_id}/posts/{$nextPost.link}" style="float:right;" class="ui right labeled icon button">
+                <a href="{$blog_root_url}/posts/{$nextPost.link}" style="float:right;" class="ui right labeled icon button">
                     <i class="right chevron icon"></i>
                     Next Post: {$nextPost.title}
                 </a>

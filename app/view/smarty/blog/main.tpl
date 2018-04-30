@@ -8,7 +8,7 @@
     {$scripts}
     
     <script>
-    Galleria.loadTheme('/resources/js/galleria.classic.min.js');
+    Galleria.loadTheme('{$cms_url}/resources/js/galleria.classic.min.js');
     // Galleria.run('.galleria');
     </script>
 
