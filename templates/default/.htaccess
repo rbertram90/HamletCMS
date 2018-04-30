@@ -1,2 +1,9 @@
-RewriteEngine On
-RewriteRule ^([a-zA-Z0-9\-_]+)/?([a-zA-Z0-9\-\+/]*)$ default.php?p=$1&query=$2 [L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^blogdata/([0-9]{10})/(.*)$ /$2 [L,R=301]
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([a-zA-Z0-9\-_]+)/?([a-zA-Z0-9\-\+/]*)$ default.php?p=$1&query=$2 [L]
+</IfModule>
