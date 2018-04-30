@@ -8,7 +8,7 @@
     {$body_content}
 </div>
 <div class="six wide column widgets-right">
-    <div class="actions">
+    <div class="ui fluid vertical menu actions">
         {include file='blog/actions.tpl'}
     </div>
     {if isset($widgets.leftpanel)}

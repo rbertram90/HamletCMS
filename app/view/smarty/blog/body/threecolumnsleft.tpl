@@ -9,7 +9,7 @@
     
 </div>
 <div class="four wide column widgets-left">
-    <div class="actions">
+    <div class="ui fluid vertical menu actions">
         {include file='blog/actions.tpl'}
     </div>
     {if isset($widgets.leftpanel)}

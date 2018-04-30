@@ -1,7 +1,7 @@
 {if $user_is_contributor}
-    <a href="/cms" class="action_button">Dashboard</a>
-    <a href="/cms/posts/create/{$blog.id}" class="action_button">Create New Post</a>
-    <a href="/cms/posts/manage/{$blog.id}" class="action_button">Manage Posts</a>
+    <a href="/cms/blog/overview/{$blog.id}" class="item">Dashboard</a>
+    <a href="/cms/posts/create/{$blog.id}" class="item">Create New Post</a>
+    <a href="/cms/posts/manage/{$blog.id}" class="item">Manage Posts</a>
 
 {elseif $user_is_logged_in}
     <nav class="ui fluid vertical menu">
