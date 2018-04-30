@@ -26,19 +26,17 @@
 
             <nav class="ui fluid vertical pointing menu">
                 {$page_sidemenu}
-
-                {*
-                <a id="hidesidemenu" onclick="window.hideSideMenu(); return false;" class="item"><span class="left floated"><i class="arrow alternate circle left outline icon"></i></span> Minimise</a>
-                <a id="showsidemenu" onclick="window.showSideMenu(); return false;" class="item"><span class="left floated"><i class="arrow alternate circle right outline icon"></i></span> Maximise</a>
-                *}
             </nav>
         </div>
         <div class="twelve wide tablet thirteen wide computer column">
-            <div id="messages">
-                {foreach from=$messages item=$message}                
-                    <p class="ui message {$message.type}">{$message.text}</p>
-                {/foreach}
-            </div>
+
+            {if count($messages) > 0}
+                <div id="messages">
+                    {foreach from=$messages item=$message}                
+                        <p class="ui message {$message.type}">{$message.text}</p>
+                    {/foreach}
+                </div>
+            {/if}
             
             {* Output main content *}
             {$body_content}

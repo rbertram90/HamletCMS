@@ -24,7 +24,7 @@ Click the browse button to locate a file to use as your profile picture. Rude an
 
 <p></p>
 
-<form action='/cms/account/changeprofilephoto' method='POST' enctype='multipart/form-data' class="ui form">
+<form method='POST' enctype='multipart/form-data' class="ui form">
     <div class="field">
         <input type="file" name="avatar" id="file">
     </div>

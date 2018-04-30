@@ -240,51 +240,49 @@ class AccountController extends GenericController
         ($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
         RESTRICTED TO JPG
         */
-        if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000))
-        {
-            setSystemMessage('Unsuitable Photo - file must be a JPEG image under 20KB', 'Error');
-            redirect('/account/uploadprofilephoto');
+        $userID = BlogCMS::session()->currentUser['id'];
+        // $user = $this->model->getById($userID);
+
+        if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000)) {
+            $this->response->redirect('/cms/account/avatar', 'Unsuitable Photo - file must be a JPEG image under 20KB', 'error');
         }
         
         // file has upload error then return error
-        if ($_FILES['avatar']['error'] > 0)
-        {
-            setSystemMessage('Unable to upload - ' . $_FILES['avatar']['error'], 'Error');
-            redirect('/account/uploadprofilephoto');
+        if ($_FILES['avatar']['error'] > 0) {
+            $this->response->redirect('/cms/account/avatar', 'Unable to upload - ' . $_FILES['avatar']['error'], 'error');
         }
         
         // Make a new file name (to hopefully avoid duplicates)
         $_FILES['avatar']['name'] = $this->generateProfilePhotoName();
         
         move_uploaded_file($_FILES['avatar']['tmp_name'], SERVER_AVATAR_FOLDER . '/' . $_FILES['avatar']['name']);
-
-        $this->db->runQuery('UPDATE ' . TBL_USERS . ' SET profile_picture = "'.$_FILES['avatar']["name"].'" WHERE id = "' . USER_ID . '"');
         
+        $this->model->update(['id' => $userID], [
+            'profile_picture' => $_FILES['avatar']["name"]
+        ]);
+
         // Make a thumbnail image
         $imagePath = SERVER_AVATAR_FOLDER . '/' . $_FILES["avatar"]["name"];
         $srcImage = imagecreatefromjpeg($imagePath);
         list($imageHeight,$imageWidth) = getimagesize($imagePath);
 
-        $min = min(array($imageHeight,$imageWidth));
+        $min = min([$imageHeight, $imageWidth]);
 
-        if( $min == $imageWidth )
-        {
-            $startX = floor( ($imageHeight - $imageWidth) / 2 );
+        if($min == $imageWidth) {
+            $startX = floor(($imageHeight - $imageWidth) / 2);
             $startY = 0;
         }
-        else
-        {
+        else {
             $startX = 0;
-            $startY = floor( ($imageWidth - $imageHeight) / 2 );
+            $startY = floor(($imageWidth - $imageHeight) / 2);
         }
 
-        $destImage = imagecreatetruecolor( $min , $min );
+        $destImage = imagecreatetruecolor($min , $min);
         $destLoc = SERVER_AVATAR_FOLDER . '/thumbs/' . $_FILES["avatar"]["name"];
-        imagecopy($destImage , $srcImage , 0 , 0 , $startX , $startY , $min , $min);
-        imagejpeg($destImage,$destLoc);
+        imagecopy($destImage, $srcImage , 0 , 0 , $startX , $startY , $min , $min);
+        imagejpeg($destImage, $destLoc);
         
-        setSystemMessage('Upload Successful', 'Success');
-        redirect('/account');
+        $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
 }
 
