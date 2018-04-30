@@ -66,6 +66,17 @@ class Comments extends RBFactory
 
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    // Get all the comments from $post
+    public function getCommentsByUser($userID, $includeApprovals=true)
+    {
+        $query_string = 'SELECT c.*, u.name, u.username, p.title, p.link, CONCAT(u.name, \'\', u.surname) as fullname FROM ' . $this->tableName . ' as c, users as u, posts as p WHERE c.user_id = u.id AND p.id = c.post_id AND u.id = ' . $userID;
+
+        if(!$includeApprovals) $query_string .= ' AND approved = 1';
+        $statement = $this->db->query($query_string);
+
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
     
     // Count the number of comments for this post
     function countPostComments($postid)

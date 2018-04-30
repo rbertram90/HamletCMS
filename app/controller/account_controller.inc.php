@@ -7,10 +7,12 @@ class AccountController extends GenericController
 {
     protected $model;
     protected $request, $response;
+    protected $modelComments;
     
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
 
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
@@ -33,6 +35,8 @@ class AccountController extends GenericController
             $userID = BlogCMS::session()->currentUser['id'];
             $user = $this->model->getById($userID);
         }
+
+        $this->response->setVar('comments', $this->modelComments->getCommentsByUser($userID, 0));
         
         $this->response->setVar('user', $user);
         $this->response->setTitle($user['username'] . '\'s profile');
