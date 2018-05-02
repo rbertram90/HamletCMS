@@ -25,7 +25,6 @@
     <div class="ui grid container page-wrapper">
         <div class="row">
             <div class="sixteen wide column page-header">
-
                 {if !$header_hide_title}
                     <h1><a href="{$blog_root_url}">{$blog.name}</a></h1>
                 {/if}
@@ -38,8 +37,9 @@
                     {$widgets.header}
                 {/if}
                 
-                <div class="ui menu">{$page_navigation}</div>
-
+                {if strlen($page_navigation) > 0}
+                    <div class="ui menu">{$page_navigation}</div>
+                {/if}
             </div>
         </div>
         
@@ -71,7 +71,6 @@
 
         <div class="row">
             <div class="sixteen wide column page-footer">
-
                 {if isset($widgets.footer)}
                     {$widgets.footer}
                 {/if}

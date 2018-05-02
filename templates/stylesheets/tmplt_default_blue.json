@@ -1,4 +1,15 @@
 {
+    "Layout":
+    {
+        "ColumnCount": 2,
+        "PostsColumn": 1
+    },
+
+    "Includes":
+    {
+        "semantic-ui": true
+    },
+
     "Heading":
     [
         "header",

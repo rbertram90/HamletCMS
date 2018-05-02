@@ -48,6 +48,7 @@ class BlogController extends GenericController
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
@@ -223,12 +224,21 @@ class BlogController extends GenericController
         }
         else {
             $newblogkey = $this->modelBlogs->createBlog($request->getString('fld_blogname'), $request->getString('fld_blogdesc'));
-
+            // var_dump($newblogkey);
+            // die();
             if (!$newblogkey) {
                 $response->redirect('/cms', 'Error creating blog please try again later', 'error');
             }
 
-            if (!$this->modelContributors->addBlogContributor($currentUser['id'], 'a', $newblogkey)) {
+            if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
+                $response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
+            }
+
+            $adminGroup = $this->modelContributorGroups->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
+
+            if (!$adminGroup) die('No admin found' . $newblogkey);
+
+            if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup['id'])) {
                 $response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             }
 

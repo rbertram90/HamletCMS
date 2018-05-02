@@ -68,6 +68,8 @@
     </tbody>
 </table>
 
+<a href="/cms/blog/create" class="ui right floated teal button">Create Blog</a>
+
 {* This user doesn't have any blogs *}
 {else}
 

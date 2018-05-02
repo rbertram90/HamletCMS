@@ -69,7 +69,7 @@
                 {/foreach}
                 </div>
             {else}
-                <p class="ui message info">Nothing has been posted on this blog, why not <a href="/posts/create/{$blog.id}">make a start</a>?</p>
+                <p class="ui message info">Nothing has been posted on this blog, why not <a href="/cms/posts/create/{$blog.id}">make a start</a>?</p>
             {/if}
             <a href='/cms/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
             <a href='/cms/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>

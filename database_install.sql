@@ -102,7 +102,6 @@ CREATE TABLE `contributorgroups` (
 CREATE TABLE `contributors` (
   `user_id` int(10) NOT NULL,
   `blog_id` bigint(10) NOT NULL,
-  `privileges` enum('postonly','all') NOT NULL DEFAULT 'postonly',
   `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

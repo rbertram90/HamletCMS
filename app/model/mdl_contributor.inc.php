@@ -101,24 +101,13 @@ class Contributors extends RBFactory
      * 
      * @return bool Was the insert successful
      */
-    public function addBlogContributor($userID, $access, $blogID)
+    public function addBlogContributor($userID, $blogID, $groupID)
     {
         return $this->insert([
-            'user_id'    => $userID,
-            'privileges' => (strtolower($access) == "a") ? "all" : "postonly",
-            'blog_id'    => $blogID,
+            'user_id'  => $userID,
+            'group_id' => $groupID,
+            'blog_id'  => $blogID,
         ]);
     }
     
-    /**
-     * Update (11/08/2014)
-     */
-    public function changePermissions($userid, $blogid, $permission) {
-        $blogid = Sanitize::int($blogid);
-        $userid = Sanitize::int($userid);
-        if($permission !== 'all' && $permission !== 'postonly') return false;        
-        if(!$this->isBlogContributor($blogid, $_SESSION['userid'], 'all') || $this->isBlogOwner($userid, $blogid)) return false;        
-        return $this->db->updateRow($this->tableName, array('user_id' => $userid, 'blog_id' => $blogid), array('privileges' => $permission));
-    }
-
 }
