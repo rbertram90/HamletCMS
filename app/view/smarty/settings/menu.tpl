@@ -76,6 +76,11 @@
                 <p><a href="/cms/settings/stylesheet/{$blog.id}">Edit Stylesheet</a></p>
                 <p>Ideal for advanced users</p>
             </div>
+            <div class="ui segment clearing">
+                <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
+                <p><a href="/cms/blog/delete/{$blog.id}">Delete Blog</a></p>
+                <p>Completely erase this blog</p>
+            </div>
         </div>
         
     </div>

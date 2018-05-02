@@ -43,6 +43,9 @@ class BlogController extends GenericController
      */
     protected $modelUsers;
 
+    protected $request;
+    protected $response;
+
 
     public function __construct()
     {
@@ -52,6 +55,9 @@ class BlogController extends GenericController
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
     }
 
     public function logout($params)
@@ -244,5 +250,69 @@ class BlogController extends GenericController
 
             $response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
         }
+    }
+
+    /**
+     * Confirm delete page
+     */
+    public function delete()
+    {
+        $currentUser = BlogCMS::session()->currentUser;
+        $blogID = $this->request->getUrlParameter(1);
+
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            $this->response->redirect('/cms', 'Blog not found', 'error');
+        }
+
+        // Only the owner can delete the blog
+        if ($blog['user_id'] != $currentUser['id']) {
+            $this->response->redirect('/cms', 'Access denied', 'error');
+        }
+
+        if ($this->request->method() == 'POST') return $this->runDeleteBlog($blog);
+
+        $this->response->setTitle('Delete New Blog');
+        $this->response->write('deleteblog.tpl');
+    }
+
+
+    protected function runDeleteBlog($blog)
+    {
+        // Delete posts
+        $this->modelContributors->delete(['blog_id' => $blog['id']]);
+        $this->modelContributorGroups->delete(['blog_id' => $blog['id']]);
+        $this->modelPosts->delete(['blog_id' => $blog['id']]);
+        $this->modelComments->delete(['blog_id' => $blog['id']]);
+        $this->modelBlogs->delete(['id' => $blog['id']]);
+
+        $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog['id']);
+
+        $this->response->redirect('/cms', 'Blog deleted', 'success');
+
+        // What's not deleted
+        // postviews
+        // favourites (not implemented anyhow)
+    }
+
+    /**
+     * This could be moved into a core function
+     * Source: https://stackoverflow.com/a/3349792
+     */
+    protected function deleteDir($dirPath) {
+        if (!is_dir($dirPath)) {
+            throw new InvalidArgumentException("$dirPath must be a directory");
+        }
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                self::deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
     }
 }

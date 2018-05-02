@@ -201,26 +201,6 @@ class Blogs extends RBFactory
     }
     
     /**
-     * Delete an existing blog
-     * 
-     * @todo finish
-     */
-    public function deleteBlog($blogid)
-    {
-        // Sanitize Input
-        $blogid = safeNumber($blogid);
-        // Remove from Database...
-        
-        // Delete Files and Folders...
-        
-        // Remove Contributors...
-        
-        // Remove Posts...
-        
-        // Remove Comments...
-    }
-        
-    /**
      * Update just the widget configuration JSON for a blog
      */
     public function updateWidgetJSON($config, $blogID)
