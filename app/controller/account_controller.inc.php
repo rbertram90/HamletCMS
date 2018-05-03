@@ -66,6 +66,52 @@ class AccountController extends GenericController
     }
 
     /**
+     * GET /account/resetpassword
+     */
+    public function resetpassword()
+    {
+        if($this->request->method() == 'POST') return $this->runResetPassword();
+
+        $this->response->setTitle('Reset your password');
+        $this->response->writeTemplate('account/resetpassword.tpl');
+    }
+
+    /**
+     * POST /account/resetpassword
+     */
+    protected function runResetPassword()
+    {
+        $username = $this->request->getString('fld_username');
+        $email = $this->request->getString('fld_email');
+        $firstname = $this->request->getString('fld_firstname');
+        $surname = $this->request->getString('fld_surname');
+        $newpassword = $this->request->getString('fld_password');
+        $newpasswordrpt = $this->request->getString('fld_password_rpt');
+
+        $user = $this->model->get('*', [
+            'username' => $username,
+            'email' => $email,
+            'name' => $firstname,
+            'surname' => $surname
+        ], '', '', false);
+
+        if ($newpassword !== $newpasswordrpt) {
+            $this->response->redirect('/cms/account/resetpassword', 'Passwords did not match', 'error');
+        }
+        if (!$user) {
+            $this->response->redirect('/cms/account/resetpassword', 'Account details incorrect', 'error');
+        }
+
+        $hashpassword = password_hash($newpassword, PASSWORD_DEFAULT);
+
+        if (!$this->model->update(['id' => $user['id']], ['password' => $hashpassword])) {
+            $this->response->redirect('/cms/account/resetpassword', 'Failed to save new password', 'error');
+        }
+
+        $this->response->redirect('/cms/account/login', 'Password updated', 'success');
+    }
+
+    /**
      * Handles POST /account/login
      */
     protected function runLogin(&$request, &$response)
@@ -198,17 +244,30 @@ class AccountController extends GenericController
     protected function updatePassword()
     {
         // Change Password
-        $details = array(
-            "current_password" => Sanitize::string($_POST['fld_current_password']),
-            "new_password" => Sanitize::string($_POST['fld_new_password']),
-            "new_password_rpt" => Sanitize::string($_POST['fld_new_password_rpt'])
-        );
+        $details = [
+            "current_password" => $this->request->getString('fld_current_password'),
+            "new_password" => $this->request->getString('fld_new_password'),
+            "new_password_rpt" => $this->request->getString('fld_new_password_rpt')
+        ];
         
-        // Update DB
-        if($this->mdlUsers->updatePassword($details)) setSystemMessage("Password changed", "Success");
-        else setSystemMessage("Failed to change password", "Error");
-            
-        redirect('/account/changepassword');
+        if ($details['new_password'] !== $details['new_password_rpt']) {
+            $this->response->redirect('/cms/account/password', 'Passwords did not match', 'error');
+        }
+
+        $user = BlogCMS::session()->currentUser;
+        $current = $this->model->get('password', ['id' => $user['id']], '', '', false);
+
+        if (!$user || !password_verify($details['current_password'], $current['password'])) {
+            $this->response->redirect('/cms/account/password', 'Unable to verify current password', 'error');
+        }
+
+        $newPassword = password_hash($details['new_password'], PASSWORD_DEFAULT);
+
+        if (!$this->model->update(['id' => $user['id']], ['password' => $newPassword])) {
+            $this->response->redirect('/cms/account/password', 'Failed to save new password', 'error');
+        }
+        
+        $this->response->redirect('/cms/account/password', 'Password changed', 'success');
     }
     
     protected function generateProfilePhotoName()

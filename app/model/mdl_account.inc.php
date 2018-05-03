@@ -14,6 +14,8 @@ class AccountFactory extends RBFactory
      * @var string Database table name for this model
      */
     protected $tableName = 'users';
+
+    protected $passwordHash = '';
     
     /**
      * Check username and password are a match in database
@@ -24,14 +26,20 @@ class AccountFactory extends RBFactory
      * 
      * @return bool
      *  Was the login successful?
-     * 
-     * @todo Stop using md5 hashing for passwords
      */
     public function login($username, $password)
     {
-        $user = $this->get(['id', 'password', 'admin'], ['username' => $username ,'password' => md5($password)], '', '', false);
+        $user = $this->get(['id', 'password', 'admin'], ['username' => $username], '', '', false);
 
-        if($user) {
+        if($user && password_verify($password, $user['password'])) {
+
+            if (password_needs_rehash($user['password'], PASSWORD_DEFAULT)) {
+                // If so, create a new hash, and replace the old one
+                $newHash = password_hash($user['password'], PASSWORD_DEFAULT);
+
+                $this->update(['id' => $user['id']], ['password' => $newHash]);
+            }
+
             // Log the user in
             BlogCMS::session()->setCurrentUser([
                 'id' => $user['id'],
@@ -50,7 +58,6 @@ class AccountFactory extends RBFactory
      * @param array $details
      * 
      * @todo throw exception if username is already taken
-     * @todo not use md5 for hashing
      */
     public function register($details)
     {
@@ -62,7 +69,7 @@ class AccountFactory extends RBFactory
             'name' => $details['firstname'],
             'surname' => $details['surname'],
             'username' => $details['username'],
-            'password' => md5($details['password']),
+            'password' => password_hash($details['password'], PASSWORD_DEFAULT),
             'email' => $details['email'],
             'admin' => 0,
             'signup_date' => date('Y-m-d H:i:s')

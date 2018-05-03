@@ -14,9 +14,6 @@ use rbwebdesigns\core\DateFormatter;
  * The content generated here is then passed through the template. Any
  * pages which are expected to return content will be passed the parameters
  * $request and $response where:
- *
- * $request \rbwebdesigns\core\Request
- * $response \rbwebdesigns\core\Response
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
@@ -42,10 +39,14 @@ class BlogController extends GenericController
      * @var \rbwebdesigns\blogcms\model\AccountFactory
      */
     protected $modelUsers;
-
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
     protected $request;
+    /**
+     * @var \rbwebdesigns\blogcms\BlogCMSResponse
+     */
     protected $response;
-
 
     public function __construct()
     {
@@ -60,24 +61,15 @@ class BlogController extends GenericController
         $this->response = BlogCMS::response();
     }
 
-    public function logout($params)
+    public function defaultAction()
     {
-        session_start();
-        session_destroy();
-
-        // Navigate to homepage
-        header("location: /");
-    }
-
-    public function defaultAction(&$request, &$response)
-    {
-        return $this->home($request, $response);
+        return $this->home();
     }
     
     /**
      * View the blog cms main dashboard which shows all blogs that the user contributes to
      */
-    public function home(&$request, &$response)
+    public function home()
     {
         $user = BlogCMS::session()->currentUser;
         $blogs = $this->modelContributors->getContributedBlogs($user['id']);
@@ -103,86 +95,47 @@ class BlogController extends GenericController
         BlogCMS::$activeMenuLink = 'dashboard';
 
         // Add to template
-        $response->setVar('blogs', $blogs);
+        $this->response->setVar('blogs', $blogs);
         
         // Get the current users favourite blogs
         $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);
-        $response->setVar('favoriteblogs', $arrayFavoriteBlogs);
-        $response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
+        $this->response->setVar('favoriteblogs', $arrayFavoriteBlogs);
+        $this->response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
         
-        $response->addScript('/js/showUserCard');
-        $response->setTitle('My Blogs');
-        $response->write('index.tpl');
+        $this->response->addScript('/js/showUserCard');
+        $this->response->setTitle('My Blogs');
+        $this->response->write('index.tpl');
     }
     
     /**
      * View the new blog form
      */
-    public function create(&$request, &$response)
+    public function create()
     {
-        if ($request->method() == 'POST') return $this->runCreateBlog($request, $response);
+        if ($this->request->method() == 'POST') return $this->runCreateBlog();
 
-        $response->setTitle('Create New Blog');
-        $response->write('newblog.tpl');
+        $this->response->setTitle('Create New Blog');
+        $this->response->write('newblog.tpl');
     }
-
-    /**
-     * Explore Pages
-    **/
-    public function explore($params)
-    {
-        if(strlen($params[0]) == 0) $params[0] = 'blogsbyletter';
         
-        switch(Sanitize::string($params[0]))
-        {
-            case 'popular':
-                // Get most favourited blogs
-                $this->view->setVar('topblogs', $this->modelBlogs->getTopFavourites());
-                $this->view->setPageTitle('Explore Blogs - Top Favourites');
-                $this->view->render('explore/popular.tpl');
-                break;
-                
-            case 'category':
-                $category = 'general';
-                if(array_key_exists(1, $params)) $category = Sanitize::string($params[1]);
-                
-                $this->view->setVar('currentcategory', $category);
-                $this->view->setVar('categories', $GLOBALS['config']['blogcategories']);
-                $this->view->setVar('blogs', $this->modelBlogs->getByCategory($category));
-                $this->view->setPageTitle('Explore Blogs by Category');
-                $this->view->render('explore/category.tpl');
-                break;
-        }
-    }
-    
-    /**
-     * View the Documentation Page (Admin Link Only)
-     */
-    public function viewDocs($params)
-    {
-        $this->view->setPageTitle('Developer Documentation');
-        $this->view->addStylesheet('/css/docs');
-        $this->view->render('documentation.tpl');
-    }
-    
     /**
      * View overview/ summary of a single blog
      */
-    public function overview(&$request, &$response)
+    public function overview()
     {
-        $blogID = $request->getUrlParameter(1);
+        $blogID = $this->request->getUrlParameter(1);
         $currentUser = BlogCMS::session()->currentUser;
 
         // Validation
         if(strlen($blogID) == 0) {
-            $response->redirect('/cms');
+            $this->response->redirect('/cms');
         }
         elseif(!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
-            $response->redirect('/cms', 'You do not contribute to this blog', 'error');
+            $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
         }
 
         $blog = $this->modelBlogs->getBlogById($blogID);
-        $response->setVar('blog', $blog);
+        $this->response->setVar('blog', $blog);
         
         // Get latest 5 comments
         $latestcomments = $this->modelComments->getCommentsByBlog($blogID, 5);
@@ -194,13 +147,13 @@ class BlogController extends GenericController
             $latestcomments[$key]['userid'] = $comment['user_id'];
             $latestcomments[$key]['name'] = $username;
         }
-        $response->setVar('comments', $latestcomments);
+        $this->response->setVar('comments', $latestcomments);
         
         // Get latest 5 posts
-        $response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
+        $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
         
         // Get count statistics
-        $response->setVar('counts', array(
+        $this->response->setVar('counts', array(
             'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
             'comments' => $this->modelComments->getCount(array('blog_id' => $blogID)),
             'contributors' => $this->modelContributors->getCount(array('blog_id' => $blogID)),
@@ -208,36 +161,32 @@ class BlogController extends GenericController
         ));
         
         BlogCMS::$activeMenuLink = 'overview';
-        $response->setTitle('Dashboard - '.$blog['name']);
-        $response->write('overview.tpl');
+        $this->response->setTitle('Dashboard - '.$blog['name']);
+        $this->response->write('overview.tpl');
     }
-            
-    /******************************************************************
-        POST - Blogs
-    ******************************************************************/
     
     /**
      * Create a new blog
      * 
      * @todo add blog limit into config
      */
-    public function runCreateBlog(&$request, &$response)
+    public function runCreateBlog()
     {
         $currentUser = BlogCMS::session()->currentUser;
 
         if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
-            $response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
+            $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
         }
         else {
-            $newblogkey = $this->modelBlogs->createBlog($request->getString('fld_blogname'), $request->getString('fld_blogdesc'));
+            $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
             // var_dump($newblogkey);
             // die();
             if (!$newblogkey) {
-                $response->redirect('/cms', 'Error creating blog please try again later', 'error');
+                $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
             }
 
             if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
-                $response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
+                $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
             }
 
             $adminGroup = $this->modelContributorGroups->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
@@ -245,10 +194,10 @@ class BlogController extends GenericController
             if (!$adminGroup) die('No admin found' . $newblogkey);
 
             if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup['id'])) {
-                $response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
+                $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             }
 
-            $response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
+            $this->response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
         }
     }
 
@@ -275,7 +224,9 @@ class BlogController extends GenericController
         $this->response->write('deleteblog.tpl');
     }
 
-
+    /**
+     * Action the delete blog
+     */
     protected function runDeleteBlog($blog)
     {
         // Delete posts

@@ -18,10 +18,10 @@
 </div>
 
 
-<form action="/cms/account/password" method="POST" class="ui form">
+<form method="POST" class="ui form">
     <div class="field">
         <label for="fld_password">Current Password</label>
-        <input type="password" name="fld_current_password" onkeyup="validate(this,{ldelim}password:true{rdelim})" />            
+        <input type="password" name="fld_current_password">            
     </div>
     <div class="field">
         <label for="fld_new_password">Create New Password</label>

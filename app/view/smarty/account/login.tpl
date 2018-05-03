@@ -33,7 +33,8 @@
                     <input type="password" name="fld_password" required>
                 </div>
 
-                <a href="/cms/account/register">Register new account</a>
+                <a href="/cms/account/register">Register new account</a> | 
+                <a href="/cms/account/resetpassword">Reset password</a>
                 
                 <button class="ui right floated teal button">Login &nbsp;&#10095;</button>
                 <div class="clear"></div>
