@@ -40,8 +40,13 @@
                     {/foreach}
 
                     <script>
-                      $(".user-link").mouseenter(function() {ldelim}showUserProfile($(this), "{$smarty.const.CLIENT_ROOT_ABS}", "{$clientroot_blogcms}"){rdelim});
-                      $(".user-link").mouseleave(function() {ldelim}hideUserProfile($(this)){rdelim});
+                        $(".user-link").mouseenter(function() {
+                            showUserProfile($(this));
+                        });
+
+                        $(".user-link").mouseleave(function() {
+                            hideUserProfile($(this));
+                        });
                     </script>
                 </td>
                 <td>

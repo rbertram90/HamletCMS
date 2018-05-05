@@ -351,7 +351,7 @@ class BlogContentController
             elseif($v == 's') $br.= 'background-size:auto 100%;';
             
             $footerContent.= '<style type="text/css">
-                .footer {
+                .page-footer {
                     background-image:url("'.$backgroundImage.'");
                     '.$br.'
                 }

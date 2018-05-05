@@ -1,13 +1,13 @@
-function showUserProfile(elem, clientroot, clientrootblogcms)
+function showUserProfile(elem)
 {
     if(elem.children("span").children(".user-profile").length == 0)
     {
     
         var userid = elem.children("span").attr("data-userid");
         
-        elem.children("span").prepend("<div class='user-profile'><center><img src='" + clientrootblogcms + "/images/ajax-loader.gif' alt='Loading...'/></center></div>");
+        elem.children("span").prepend("<div class='user-profile'><center><img src='/images/ajax-loader.gif' alt='Loading...'></center></div>");
         
-        elem.children("span").children(".user-profile").load("/ajax/usercard/" + userid);
+        elem.children("span").children(".user-profile").load("/cms/account/card/" + userid);
         
     }
     else

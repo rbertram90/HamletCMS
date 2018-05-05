@@ -347,5 +347,20 @@ class AccountController extends GenericController
         
         $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
+
+    public function card()
+    {
+        $userID = $this->request->getUrlParameter(1);
+
+        if (!$user = $this->model->getById($userID)) {
+            $this->response->write('No user found');
+            die();
+        }
+
+        $this->response->setVar('user', $user);
+
+        $this->request->isAjax = true;
+        $this->response->write('account/usercard.tpl');
+    }
 }
 

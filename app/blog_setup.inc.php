@@ -68,7 +68,7 @@ use rbwebdesigns\core\Sanitize;
     $response->setVar('custom_domain', CUSTOM_DOMAIN);
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
-    $response->setVar('custom_css', $page_controller->getBlogCustomCSS());
+    $response->setVar('custom_css', ''); // $page_controller->getBlogCustomCSS()
 
     $response->setVar('widgets', $page_controller->generateWidgets2());
     $response->setVar('user_is_contributor', $page_controller->userIsContributor()); // @todo this is broken...

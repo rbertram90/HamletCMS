@@ -102,7 +102,7 @@ class BlogController extends GenericController
         $this->response->setVar('favoriteblogs', $arrayFavoriteBlogs);
         $this->response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
         
-        $this->response->addScript('/js/showUserCard');
+        $this->response->addScript('/js/showUserCard.js');
         $this->response->setTitle('My Blogs');
         $this->response->write('index.tpl');
     }

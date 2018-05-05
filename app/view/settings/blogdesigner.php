@@ -165,7 +165,7 @@ $(document).ready(function() {
 <div style="clear:right;"></div>
 
 <div id="designoptions">
-    <form action="/cms/settings/<?=$blog['id']?>/blogdesigner/submit" method="post">
+    <form action="/cms/settings/blogdesigner/<?=$blog['id']?>" method="post">
 <?php
     // Open JSON file here
     (array) $design_settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $blog['id'] . '/template_config.json');

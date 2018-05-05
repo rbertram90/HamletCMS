@@ -23,7 +23,7 @@
                     <button onclick="return removeImage();" class="ui button">Remove Image</button>
                 </div>
 
-                <input type="hidden" name="fld_headerbackgroundimage" id="fld_headerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}" />
+                <input type="hidden" name="fld_headerbackgroundimage" id="fld_headerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}">
 
                 <label for="fld_horizontalposition">Horizontal Position</label>
                 <select name="fld_horizontalposition" id="fld_horizontalposition">

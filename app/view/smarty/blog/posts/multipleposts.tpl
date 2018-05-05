@@ -4,12 +4,12 @@
 
     <div class="item post">
     <div class="content">
-        <div class="meta">
+        <div class="meta top">
             <span class="date">{$post.headerDate}</span>
         </div>
         
         <div class="header">
-            <a href="{$blog_root_url}/posts/{$post.link}">{$post.title}</a>
+            <h2><a href="{$blog_root_url}/posts/{$post.link}">{$post.title}</a></h2>
         </div>
         
         <div class="description">
@@ -39,7 +39,7 @@
         
         </div>
         
-        <div class="meta">
+        <div class="meta bottom">
             <!-- Post Date -->
             <span class="post-date">{$post.footerDate}</span>
                         

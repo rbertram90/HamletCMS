@@ -46,18 +46,14 @@
                     {/if}
                     </div>
                 </div>
-
-            <!--
-                <button type="button" title="Insert Image" onclick="rbrtf_addImage('<?=$arrayBlog['id']?>'); return false;">Select New Image</button>
-            -->
+                
                 <div class="field">
-                    <button type="button" class="ui button" title="Insert Image" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog.id}&format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog.id}?format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+                    <button onclick="return removeImage();" class="ui button">Remove Image</button>
 
-                    <button type="button" class="ui button" onclick="removeImage();">Remove Image</button>
-
-                    <input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}" />
+                    <input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}">
                 </div>
-                    
+
                 <div class="field">
                     <label for="fld_horizontalposition">Horizontal Position</label>
                     <select name="fld_horizontalposition" id="fld_horizontalposition" class="ui dropdown">
