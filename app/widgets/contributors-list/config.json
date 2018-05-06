@@ -1,0 +1,39 @@
+{
+    "name": "Contributors list",
+    "description": "Lists recent posts",
+    "version": 1.0,
+    "defaults":
+    {
+        "heading": "Blog contributors",
+        "columns": "3"
+    },
+    "form-configuration":
+    {
+        "onsubmitaction": "return submitConfigureWidgetForm(this);",
+        "addfooter": false,
+        "fields":
+        [
+            {
+                "type": "text",
+                "name": "widget[heading]",
+                "label": "Widget Heading",
+                "current": "[!data.heading]"
+            },
+            {
+                "type": "dropdown",
+                "values":
+                {
+                    "1": "one",
+                    "2": "two",
+                    "3": "three",
+                    "4": "four",
+                    "5": "five",
+                    "6": "six"
+                },
+                "name": "widget[columns]",
+                "label": "Number of columns",
+                "current": "[!data.columns]"
+            }
+        ]
+    }
+}

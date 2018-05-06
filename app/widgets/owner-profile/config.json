@@ -1,0 +1,23 @@
+{
+    "name": "Owner profile",
+    "description": "Lists recent posts",
+    "version": 1.0,
+    "defaults":
+    {
+        "heading": "Author"
+    },
+    "form-configuration":
+    {
+        "onsubmitaction": "return submitConfigureWidgetForm(this);",
+        "addfooter": false,
+        "fields":
+        [
+            {
+                "type": "text",
+                "name": "widget[heading]",
+                "label": "Widget Heading",
+                "current": "[!data.heading]"
+            }
+        ]
+    }
+}

@@ -687,7 +687,7 @@ class SettingsController extends GenericController
 
         if (is_dir(SERVER_PATH_BLOGS . "/{$blog['id']}") &&
             file_put_contents(SERVER_PATH_BLOGS. "/{$blog['id']}/default.css", $css_string)) {
-            $response->redirect("/settings/stylesheet/{$blog_id}", "Stylesheet updated", "success");
+            $response->redirect("/cms/settings/stylesheet/{$blog_id}", "Stylesheet updated", "success");
         }
         else {
             $response->redirect("/cms/settings/stylesheet/{$blog_id}", "Update failed", "error");

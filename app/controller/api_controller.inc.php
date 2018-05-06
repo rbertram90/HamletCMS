@@ -35,6 +35,8 @@ class ApiController extends GenericController
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
 
         $this->request = $request;
         $this->response = $response;
@@ -103,6 +105,28 @@ class ApiController extends GenericController
         $this->response->writeBody();
     }
 
+
+    /**
+     * GET /api/tags
+     */
+    public function tags()
+    {
+        $blogID = $this->request->getInt('blogID', -1);
+
+        $sort = $this->request->getString('sort', 'text'); // text or count
+
+        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            die("{ 'error': 'Unable to find blog' }");
+        }
+
+        $tags = $this->modelPosts->countAllTagsByBlog($blog['id'], $sort);
+
+        $this->response->addHeader('Access-Control-Allow-Origin', '*');
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->setBody(JSONhelper::arrayToJSON($tags));
+        $this->response->writeBody();
+    }
+
     /**
      * GET /api/blogs
      * GET /api/blogs/count
@@ -130,6 +154,62 @@ class ApiController extends GenericController
 
         $this->response->addHeader('Content-Type', 'application/json');
         $this->response->writeBody();
+    }
+
+    /**
+     * GET /api/contributors
+     * GET /api/contributors/owner
+     */
+    public function contributors()
+    {
+        $blogID = $this->request->getInt('blogID', false);
+
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
+            die("{ 'error': 'Unable to find blog' }");
+        }
+
+        switch ($this->request->getUrlParameter(0)) {
+            case 'owner':
+                $this->blogOwner($blog);
+                break;
+            default:
+                $this->blogContributors($blog);
+                break;
+        }
+
+        $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->writeBody();
+    }
+
+    /**
+     * GET /api/contributors
+     */
+    protected function blogContributors($blog)
+    {
+        $contributors = $this->modelContributors->getBlogContributors($blog['id']);
+
+        // Remove potentially sensitive data
+        for ($i = 0; $i < count($contributors); $i++) {
+            unset($contributors[$i]['password']);
+            unset($contributors[$i]['security_q']);
+            unset($contributors[$i]['security_a']);
+        }
+
+        $this->response->setBody(JSONhelper::arrayToJSON($contributors));
+    }
+
+    /**
+     * GET /api/contributors/owner
+     */
+    protected function blogOwner($blog)
+    {
+        $owner = $this->modelUsers->getById($blog['user_id']);
+
+        unset($owner['password']);
+        unset($owner['security_q']);
+        unset($owner['security_a']);
+
+        $this->response->setBody(JSONhelper::arrayToJSON($owner));
     }
 
     /**

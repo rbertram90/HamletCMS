@@ -9,7 +9,5 @@
 
     {$body_content}
 
-    <div class="ui fluid vertical menu actions">
-        {include file='blog/actions.tpl'}
-    </div>
+    {include file='blog/actions.tpl'}
 </div>

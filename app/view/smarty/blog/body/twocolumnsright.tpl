@@ -10,9 +10,7 @@
     {$body_content}
 </div>
 <div class="six wide column widgets-right">
-    <div class="ui fluid vertical menu actions">
-        {include file='blog/actions.tpl'}
-    </div>
+    {include file='blog/actions.tpl'}
     {if isset($widgets.leftpanel)}
         {$widgets.leftpanel}
     {/if}

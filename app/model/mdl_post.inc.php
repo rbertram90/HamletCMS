@@ -398,14 +398,14 @@ class Posts extends RBFactory
      * @param <int> $blogid - blog to get counts
      * @return <array> of tuples - array[tagname,count]
      */
-    public function countAllTagsByBlog($blogid)
+    public function countAllTagsByBlog($blogid, $sortby='text')
     {
         // Get the posts from this blog
-        $lobjPosts = $this->getAllPostsOnBlog($blogid);
+        $posts = $this->getAllPostsOnBlog($blogid);
         $res = array();
         
         // Loop through the posts
-        foreach ($lobjPosts as $post) {
+        foreach ($posts as $post) {
             // Create array from CSV string
             $tags = explode(",", $post['tags']);
             // Check this post has tags
@@ -418,14 +418,15 @@ class Posts extends RBFactory
                 // Is this tag already part of the array?
                 $countadded = $this->searchForTag($res, $tag);
                 // Increment count depending on if it key already exists
-                if($countadded === false) $res[] = array(strtolower($tag),1);
-                else $res[$countadded][1] += 1;
+                if($countadded === false) $res[] = [
+                    'text' => strtolower($tag),
+                    'count' => 1
+                ];
+                else $res[$countadded]['count'] += 1;
             }
         }
         
-        // Sort by name
-        sksort($res, 0, true);
-        
+        sksort($res, $sortby, true);
         return $res;
     }
 
@@ -435,30 +436,22 @@ class Posts extends RBFactory
     **/
     public function getAllTagsByBlog($blogId)
     {
-        // Get the posts from this blog
         $posts = $this->getAllPostsOnBlog($blogId);
-        $allTags = array();
+        $allTags = [];
         
         // Loop through the posts
-        foreach($posts as $post):
-        
-            // Create array from CSV string
+        foreach ($posts as $post) {
             $tags = explode(",", $post['tags']);
-            
-            // Check this post has tags
             if(count($tags) === 0) continue;
-        
-            foreach($tags as $tag):
+            
+            foreach ($tags as $tag) {
                 $tag = trim($tag);
-                
-                // Check tag is not empty
                 if(strlen($tag) === 0) continue;
                 
                 // Add to array if not already there
                 if(!in_array($tag, $allTags)) $allTags[] = strtolower($tag);
-                
-            endforeach;
-        endforeach;
+            }
+        }
         
         // Sort by name
         sort($allTags);
@@ -475,7 +468,7 @@ class Posts extends RBFactory
     private function searchForTag($tags, $tag)
     {
         for ($i = 0; $i < count($tags); $i++) {
-            if($pArray[$i][0] == strtolower($tag)) return $i;
+            if($tags[$i]['text'] == strtolower($tag)) return $i;
         }
         return false;
     }

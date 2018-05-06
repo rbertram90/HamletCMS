@@ -1,7 +1,5 @@
 <div class="four wide column widgets-left">
-    <div class="ui fluid vertical menu actions">
-        {include file='blog/actions.tpl'}
-    </div>
+    {include file='blog/actions.tpl'}
     {if isset($widgets.leftpanel)}
         {$widgets.leftpanel}
     {/if}

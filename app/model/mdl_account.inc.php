@@ -94,6 +94,14 @@ class AccountFactory extends RBFactory
     }
 
     /**
+     * Get multiple records by ID
+     */
+    public function getByIds($userIDs)
+    {
+        return $this->db->query("SELECT * FROM {$this->tablename} WHERE id IN " . implode(',', $userIDs));
+    }
+
+    /**
      * Save account settings
      * 
      * @param array $fields
