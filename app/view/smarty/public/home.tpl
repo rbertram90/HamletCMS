@@ -48,7 +48,7 @@
 <script>
     // API call to get blog data
     var loadBlogsByLetter = function (letter) {
-        $.get('/api/blogsByLetter', { 'letter': letter }, function(data) {
+        $.get('/api/blogs/byLetter', { 'letter': letter }, function(data) {
             if (!data.length) return;
             var list = "";
             for (var i = 0; i < data.length; i++) {

@@ -40,15 +40,15 @@ function encapsulateForm(form)
     return querystring;
 }
 
-function ajax_PostFile(url, request, elem) {
+function ajax_PostFile(url, data, callback) {
     // code for IE7+, Firefox, Chrome, Opera, Safari
     if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
     // code for IE6, IE5
     else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    
+
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-           document.getElementById(elem).innerHTML = xmlhttp.responseText;
+            callback(xmlhttp);
         }
     };
 
@@ -58,7 +58,7 @@ function ajax_PostFile(url, request, elem) {
     //xmlhttp.setRequestHeader("Content-type", "multipart/form-data"); 
     
     //alert(typeof request);
-    xmlhttp.send(request);
+    xmlhttp.send(data);
 }
 
 

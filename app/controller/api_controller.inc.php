@@ -58,7 +58,7 @@ class ApiController extends GenericController
 
     /**
      * Get data for posts in JSON format
-     * Handles /api/posts
+     * Handles GET /api/posts
      *
      * Request Parameters:
      *  blogID (required) - ID of the blog e.g. 1983749328
@@ -81,10 +81,10 @@ class ApiController extends GenericController
         $limit  = $this->request->getInt('limit', 10);
         $sort   = $this->request->getString('sort', 'name ASC');
 
-        $showDrafts = $this->request->getString('showdrafts', 'true');
+        $showDrafts = $this->request->getString('showdrafts', 'false');
         $showDrafts = ($showDrafts == 'true') ? 1 : 0;
 
-        $showScheduled = $this->request->getString('showscheduled', 'true');
+        $showScheduled = $this->request->getString('showscheduled', 'false');
         $showScheduled = ($showScheduled == 'true') ? 1 : 0;
 
         if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
@@ -93,7 +93,7 @@ class ApiController extends GenericController
         
         $result = [
             'blog'      => $blog,
-            'postcount' => $this->modelPosts->countPostsOnBlog($blogID, true, true),
+            'postcount' => $this->modelPosts->countPostsOnBlog($blogID, $showDrafts, $showScheduled),
             'posts'     => $this->modelPosts->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
 
@@ -103,36 +103,71 @@ class ApiController extends GenericController
         $this->response->writeBody();
     }
 
-
-    public function blog()
+    /**
+     * GET /api/blogs
+     * GET /api/blogs/count
+     */
+    public function blogs()
     {
-        $blogID = $this->request->getInt('blogID', -1);
+        if ($blogID = $this->request->getInt('blogID', false)) {
 
-        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
-            die("{ 'error': 'Unable to find blog' }");
+            if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+                die("{ 'error': 'Unable to find blog' }");
+            }
+        }
+
+        switch ($this->request->getUrlParameter(0)) {
+            case 'byLetter':
+                $this->blogsByLetter();
+                break;
+            case 'count':
+                $this->blogsCount();
+                break;
+            default:
+                $this->blogsById($blog);
+                break;
         }
 
         $this->response->addHeader('Content-Type', 'application/json');
+        $this->response->writeBody();
+    }
+
+    /**
+     * GET /api/blogs
+     * 
+     * $_GET Parameters:
+     * blogID
+     */
+    protected function blogsById($blog)
+    {
         $this->response->setBody(JSONhelper::arrayToJSON($blog));
-        $this->response->writeBody();
     }
     
-    public function blogCount()
+    /**
+     * GET /api/blogs/count
+     * GET /api/blogs/count/byLetter
+     * 
+     * $_GET Parameters:
+     * letter optional
+     */
+    protected function blogsCount()
     {
+        $method = $this->request->getUrlParameter(1);
+
+        if ($method == 'byLetter') {
+            $counts = $this->modelBlogs->countBlogsByLetter();
+            $this->response->setBody(JSONhelper::arrayToJSON($counts));
+            return;
+        }
+
         $blogCount = $this->modelBlogs->count();
-        return false;
+        $this->response->setBody(JSONhelper::arrayToJSON($blogCount));
     }
 
-    public function countByLetter()
-    {
-        $counts = $this->modelBlogs->countBlogsByLetter();
-
-        $this->response->addHeader('Content-Type', 'application/json');
-        $this->response->setBody(JSONhelper::arrayToJSON($counts));
-        $this->response->writeBody();
-    }
-    
-    public function blogsByLetter()
+    /**
+     * GET /api/blogs/byLetter?letter=<letter>
+     */
+    protected function blogsByLetter()
     {
         $letter = $this->request->getString('letter', false);
 
@@ -143,11 +178,7 @@ class ApiController extends GenericController
             $blogs = [];
         }
 
-        
-
-        $this->response->addHeader('Content-Type', 'application/json');
         $this->response->setBody(JSONhelper::arrayToJSON($blogs));
-        $this->response->writeBody();
     }
 
     

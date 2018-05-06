@@ -186,7 +186,7 @@ class FilesController extends GenericController
         // Save in correct location
         move_uploaded_file($_FILES["file"]["tmp_name"], $filepath . '/images/' . $filename);
 
-        print "success";
+        print $filename;
     }
 
     /**
@@ -211,16 +211,20 @@ class FilesController extends GenericController
         $response->setVar('returnFormat', $returnFormat);
 
         $imagesHTML = "";
-        if ($handle = opendir($path)) {
-            while (false !== ($file = readdir($handle))) {
-                $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
-    
-                if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                    $imagesHTML .= '<img src="/blogdata/'.$this->blog['id'].'/images/'.$file.'" height="100" width="" class="selectableimage" />';
+
+        if (is_dir($path)) {
+            if ($handle = opendir($path)) {
+                while (false !== ($file = readdir($handle))) {
+                    $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
+        
+                    if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
+                        $imagesHTML .= '<img src="/blogdata/'.$this->blog['id'].'/images/'.$file.'" height="100" width="" class="selectableimage" />';
+                    }
                 }
+                closedir($handle);
             }
-            closedir($handle);
         }
+
         $response->setVar('imagesOutput', $imagesHTML);
 
         $response->write('files/select.tpl');

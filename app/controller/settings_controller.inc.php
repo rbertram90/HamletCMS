@@ -405,7 +405,14 @@ class SettingsController extends GenericController
     protected function updateBlogConfig($blogid, $data)
     {
         $settings = $this->getBlogConfig($blogid);
-        $settings = array_replace_recursive($settings, $data);
+        
+        if (is_null($settings)) {
+            $settings = $data;
+        }
+        else {
+            $settings = array_replace_recursive($settings, $data);
+        }
+        
         return $this->saveBlogConfig($blogid, $settings);
     }
     

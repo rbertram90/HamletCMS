@@ -83,7 +83,9 @@
             formData.append("csrf_token", CSRFTOKEN);
             
             // Make the ajax call
-            ajax_PostFile("/cms/files/uploadimages/{$blog.id}?replace=1", formData, "showNew");
+            ajax_PostFile("/cms/files/uploadimages/{$blog.id}?replace=1", formData, function(xmlhttp) {
+                closeUploadWindow('/blogdata/{$blog.id}/images/' + xmlhttp.responseText.trim());
+            });
             
             e.preventDefault();
 
@@ -129,7 +131,9 @@
                {/if}
 
             // Close window - have no reference to the original object - is it possible to pass it through?
-            $(".rbwindow_screen").remove();
+            // $(".rbwindow_screen").remove();
+            $('.ui.modal').modal('hide');
+
             $("html").css("overflow","visible");
             $("body").css("overflow","visible");
             

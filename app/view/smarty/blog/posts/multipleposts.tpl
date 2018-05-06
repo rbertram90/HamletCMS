@@ -35,6 +35,14 @@
                 <script>Galleria.run("#galleria_{$post.id}");</script>
             {/if}
 
+            {if $post.teaser_image}
+                <div class="teaser-image">
+                    <a href="{$blog_root_url}/posts/{$post.link}">
+                        <img src="/blogdata/{$blog.id}/images/{$post.teaser_image}" class="ui fluid image">
+                    </a>
+                </div>
+            {/if}
+
             {$post.trimmedContent}
         
         </div>

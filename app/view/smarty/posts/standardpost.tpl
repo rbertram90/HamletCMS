@@ -4,6 +4,7 @@
     {$formAction = "/cms/posts/edit/{$post['id']}"}
     {$fieldTitle = $post['title']}
     {$fieldContent = $post['content']}
+    {$teaserImage = $post['teaser_image']}
     {$fieldTags = str_replace("+"," ",$post['tags'])}
     {$submitLabel = 'Update'}
     {$mode = 'edit'}
@@ -14,6 +15,7 @@
     {$formAction = "/cms/posts/create/{$blog['id']}/standard"}
     {$fieldTitle = ''}
     {$fieldContent = ''}
+    {$teaserImage = ''}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
     {$mode = 'create'}
@@ -101,7 +103,9 @@ function openPreview() {ldelim}
             
             <div class="field">
                 <label for="fld_postcontent">Content</label>
-                <button type="button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
+                <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image">
+                    <i class="camera icon"></i>
+                </button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
                 <textarea name="fld_postcontent" id="fld_postcontent" style="height:30vh;">{$fieldContent}</textarea>
             </div>
@@ -129,7 +133,7 @@ function openPreview() {ldelim}
         <div class="six wide column">
             
             <div class="field">
-                <label for="fld_postdate">Schedule Post
+                <label for="fld_postdate">Schedule post
                     <a href="/" onclick="alert('Set the date and time for this post to show on your blog.'); return false;">[?]</a></label>
                 <div class="ui calendar" id="postdate">
                     <div class="ui input left icon">
@@ -141,7 +145,7 @@ function openPreview() {ldelim}
             </div>
  
             <div class="field">
-                <label for="fld_allowcomment">Allow Comments <a href="/" onclick="alert('This option will allow logged in users to post comments on your blog posts. You can control whether these are shown automatically in the blog settings.'); return false;">[?]</a></label>
+                <label for="fld_allowcomment">Allow comments <a href="/" onclick="alert('This option will allow logged in users to post comments on your blog posts. You can control whether these are shown automatically in the blog settings.'); return false;">[?]</a></label>
                 <select name="fld_allowcomment" id="fld_allowcomment">
                     <option value="1">Yes</option>
                     <option value="0">No</option>
@@ -156,9 +160,27 @@ function openPreview() {ldelim}
                 </select>
             </div>
 
+            <div class="field">
+                <label for="fld_teaserimage">Teaser image</label>
+                <style>#teaser_image_image img { max-height: 200px; max-width: 200px; }</style>
+                <div id="teaser_image_image">
+                {if $teaserImage != ''}
+                    <img src="/blogdata/{$blog.id}/images/{$teaserImage}">
+                {/if}
+                </div>
+                <button type="button" id="teaser_image_select" title="Select Image" class="ui icon button">
+                    <i class="camera icon"></i>
+                </button>
+                <button type="button" id="remove_teaser_image" class="ui icon button">
+                    <i class="remove icon"></i>
+                </button>
+                <input type="hidden" name="fld_teaserimage" value="{$teaserImage}">
+            </div>
+
         </div>
     </form>
 
+<div class="ui modal upload_image_modal"></div>
 
 <script>
     // Get where to redirect to when the cancel
@@ -181,13 +203,28 @@ window.postTitleIsValid = false;
     
 $(document).ready(function () {
 
-    $(window).on('beforeunload', function()
-    {ldelim}
-        if(content_changed && !confirm('Are you sure you want to leave this page - you may lose changes?'))
-        {ldelim}
+    $("#upload_post_image").click(function() {
+        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN }, function() {
+            $(this).modal('show');
+        });
+    });
+
+    $('#teaser_image_select').click(function() {
+        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN, 'elemid': 'teaser_image_image', 'format': 'html', 'replace': 1 }, function() {
+            $(this).modal('show');
+        });
+    });
+
+    $("#remove_teaser_image").click(function() {
+        $("#teaser_image_image").html('');
+        $("input[name='fld_teaserimage']").val('');
+    });
+
+    $(window).on('beforeunload', function() {
+        if(content_changed && !confirm('Are you sure you want to leave this page - you may lose changes?')) {
             return false;
-        {rdelim}
-    {rdelim});
+        }
+    });
     
     // Auto save
     var runsave = function()
@@ -247,6 +284,12 @@ $(document).ready(function () {
             return false;
         }
 
+        if ($("#teaser_image_image img")) {
+            var imageSrc = $("#teaser_image_image img").attr('src');
+            srcSplit = imageSrc.split('/');
+            $("input[name='fld_teaserimage']").val(srcSplit.pop());
+        }
+
         {if isset($post)}
             var url = "/cms/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
         {else}
@@ -258,7 +301,6 @@ $(document).ready(function () {
                 alert("Validation Failed - Title needs to be unique for this blog!");
             }
             else {
-                console.log('a');
                 window.postTitleIsValid = true;
             }
         });
