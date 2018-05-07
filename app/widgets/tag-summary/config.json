@@ -6,7 +6,7 @@
     {
         "heading": "Tags",
         "numtoshow": 10,
-        "lowerlimit": 3,
+        "lowerlimit": 1,
         "display": "list",
         "sort": "count"
     },

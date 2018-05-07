@@ -21,7 +21,7 @@ $.get('{$cms_url}/api/tags', { blogID: {$blog.id}, sort: '{$sort}' }, function(d
         if (tag.count < {$lowerlimit}) continue;
 
         if ('{$display}' == 'list') {
-            list += '<div class="item"><a href="/blogs/{$blog.id}/' + tag.text + '">' + tag.text  +'</a></div>';
+            list += '<div class="item"><a href="/blogs/{$blog.id}/tags/' + tag.text + '">' + tag.text  +'</a></div>';
         }
         else {
             list += '<a href="/blogs/{$blog.id}/tags/' + tag.text + '" class="ui label">' + tag.text + '<div class="detail">' + tag.count +'</div></a>';

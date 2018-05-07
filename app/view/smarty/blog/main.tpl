@@ -48,12 +48,12 @@
         
         {if isset($template_config.Layout)}
             {$columncount = $template_config.Layout.ColumnCount}
-            {$postcolumn = $template_config.Layout.PostsColumn}
         {/if}
         
         {if $columncount == 1}
             {include file='blog/body/onecolumn.tpl'}
         {elseif $columncount == 3}
+            {$postcolumn = $template_config.Layout.PostsColumn}
             {if $postcolumn == 1}
                 {include file='blog/body/threecolumnsleft.tpl'}
             {elseif $postcolumn == 2}
@@ -62,6 +62,7 @@
                 {include file='blog/body/threecolumnsright.tpl'}
             {/if}
         {else}
+            {$postcolumn = $template_config.Layout.PostsColumn}
             {if $postcolumn == 1}
                 {include file='blog/body/twocolumnsleft.tpl'}
             {else}

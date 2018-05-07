@@ -654,25 +654,36 @@ class SettingsController extends GenericController
 
         $this->response->redirect('/cms/settings/blogdesigner/' . $this->blog['id'], 'Settings Updated', 'Success');
     }
-        
+    
     /**
      * Apply a completely new template from the predefined templates
      */
     public function action_applyNewTemplate($request, $response, $blog)
     {
-        if(!$template_id = $request->getString('template_id', false)) {
+        if (!$template_id = $request->getString('template_id', false)) {
+            $response->redirect('/settings/template/' . $blog['id'], 'Template not found', 'error');
+        }
+
+        $templateDirectory = SERVER_PATH_TEMPLATES . "/" . $template_id;
+        if (!is_dir($templateDirectory)) {
             $response->redirect('/settings/template/' . $blog['id'], 'Template not found', 'error');
         }
 
         // Update default.css
-        $copy_css = SERVER_PATH_TEMPLATES . "/stylesheets/{$template_id}.css";
+        $copy_css = $templateDirectory . "/stylesheet.css";
         $new_css  = SERVER_PATH_BLOGS . "/{$blog['id']}/default.css";
-        if (!copy($copy_css, $new_css)) die(showError('failed to copy '.$template_id.'.css'));
+        if (!copy($copy_css, $new_css)) die(showError('failed to copy stylesheet.css'));
         
         // Update template_config.json
-        $copy_json = SERVER_PATH_TEMPLATES . "/stylesheets/{$template_id}.json";
+        $copy_json = $templateDirectory . "/config.json";
         $new_json  = SERVER_PATH_BLOGS . "/{$blog['id']}/template_config.json";
-        if (!copy($copy_json, $new_json)) die(showError('failed to copy '.$template_id.'.json'));
+        if (!copy($copy_json, $new_json)) die(showError('failed to copy config.json'));
+
+        // Delete the widgets.json (as columns may have changed and no way to tell what current template is)
+        // maybe do this differently in future updates
+        if (file_exists(SERVER_PATH_BLOGS . "/{$blog['id']}/widgets.json")) {
+            unlink(SERVER_PATH_BLOGS . "/{$blog['id']}/widgets.json");
+        }
 
         $response->redirect('/cms/settings/template/' . $blog['id'], 'Template changed', 'success');
     }

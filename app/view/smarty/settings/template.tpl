@@ -12,40 +12,140 @@
 </div>
 
 
-<div class="ui segment secondary"><strong>Notice</strong>: Applying a new Template will overwrite any changes you have made using the blog designer!</div>
-
-<style>
-    .template_wrapper { border:1px solid #ddd; float:left; width:49%; padding:10px; border-radius:4px; box-sizing:border-box; background-color:#fff; margin-right:2%; margin-bottom:2%; }
-    .template_wrapper:nth-child(even) { margin-right:0; }
-    .template_wrapper img { width:100%; }
-</style>
-
-<div class="template_wrapper">
-    <h3>Default Blue</h3>
-    <img src="/images/template_screenshots/defaultblue.png" alt="Default Blue Template" width="300" />
-    <p>Classic blog design</p>
-    <form method="post">
-        <input type="hidden" value="tmplt_default_blue" name="template_id" />
-        <div class="push-right">
-            <input type="submit" class="ui button teal" value="Apply to Blog" />
-        </div>
-    </form>
+<div class="ui warning message">
+    <p><strong>Important</strong>: Applying a new Template will <strong>overwrite</strong> any changes you have made using the blog designer or stylesheet editor.</p>
+    <p>Widgets will also be cleared and will need re-adding through the widgets section.</p>
 </div>
 
+<h2>Default</h2>
 
-<div class="template_wrapper">
-    <h3>Default Blue - Menu Aligned Left</h3>
-    <img src="/images/template_screenshots/template_menu_align_left.png" alt="Blue Template with menu aligning left" width="300" />
-    <p>Classic blog design with a slight tweak</p>
-    <form method="post">
-        <input type="hidden" value="tmplt_blue_rmenu" name="template_id" />
-        <div class="push-right">
-            <input type="submit" class="ui button teal" value="Apply to Blog" />
+
+<div class="ui three cards">
+    <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_1col.png" alt="Default Blue Template" width="300">
         </div>
-    </form>
+        <div class="content">
+            <div class="header">
+                <h3>One column</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_1column">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+    <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue.png" alt="Default Blue Template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Two columns - posts on left</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_2columns_left">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+    <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_2cols_right.png" alt="Default Blue Template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Two columns - posts on right</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_2columns_right">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+        <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_3cols_left.png" alt="Default Blue Template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Three columns - posts on left</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_left">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+        <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_3cols_centre.png" alt="Default Blue Template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Three columns - posts in centre</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_centre">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+        <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Default Blue Template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Three columns - posts on right</h3>
+            </div>
+            <div class="description">
+                <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_right">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
 </div>
 
+<form method="POST" action="/cms/settings/template/{$blog.id}" id="updateTemplateForm">
+    <input type="hidden" name="template_id" value="">
+</form>
 
+</form>
+
+<script>
+$(".js-apply-template").click(function() {
+    var templateName = $(this).data('template-name');
+    $("#updateTemplateForm input[name='template_id']").val(templateName);
+    $("#updateTemplateForm").submit();
+});
+</script>
+
+{*
 <div class="template_wrapper">
     <h3>Black and Yellow</h3>
     <img src="/images/template_screenshots/black_and_yellow.png" alt="Black Template with yellow sub-colour" width="300" />
@@ -70,5 +170,6 @@
         </div>
     </form>
 </div>
+*}
 
     <input type="button" value="Cancel" class="ui button" name="goback" onclick="window.history.back()" />

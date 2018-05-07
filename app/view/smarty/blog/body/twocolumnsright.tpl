@@ -1,3 +1,9 @@
+<div class="six wide column widgets-left">
+    {include file='blog/actions.tpl'}
+    {if isset($widgets.leftpanel)}
+        {$widgets.leftpanel}
+    {/if}
+</div>
 <div class="ten wide column posts">
     {if count($messages) > 0}
         <div class="messages">
@@ -8,10 +14,4 @@
     {/if}
 
     {$body_content}
-</div>
-<div class="six wide column widgets-right">
-    {include file='blog/actions.tpl'}
-    {if isset($widgets.leftpanel)}
-        {$widgets.leftpanel}
-    {/if}
 </div>
