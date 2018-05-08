@@ -43,6 +43,22 @@ use rbwebdesigns\core\model\UserFactory;
     BlogCMS::addToConfig($config);
 
 /****************************************************************
+  Set-Up Hooks
+****************************************************************/    
+
+    // Import all addons
+    $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/addons');
+
+    foreach ($directoryListing as $file) {
+        if ($file->getExtension() == 'php') {
+            require_once SERVER_ROOT . '/app/addons/' . $file->getFilename();
+
+            $className = $file->getBasename('.php');
+            BlogCMS::registerAddon($className);
+        }
+    }
+
+/****************************************************************
   Set-Up Users Model & Auth flags
 ****************************************************************/    
     

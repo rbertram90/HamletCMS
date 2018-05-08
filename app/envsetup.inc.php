@@ -1,4 +1,6 @@
 <?php
+namespace rbwebdesigns\blogcms;
+
 use rbwebdesigns\core\Database;
 
 /****************************************************************
@@ -45,6 +47,7 @@ use rbwebdesigns\core\Database;
     require_once SERVER_ROOT.'/app/vendor/smarty/smarty/libs/Smarty.class.php';
     
     // Import model
+    require_once SERVER_ROOT.'/app/model/mdl_eventlog.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_blog.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_comment.inc.php';

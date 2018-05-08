@@ -17,6 +17,7 @@ class BlogCMS
     protected static $request = null;
     protected static $response = null;
     protected static $config = [];
+    protected static $addons = [];
     // protected static $modelManager = null;
 
     public static $blogID = 0;
@@ -106,5 +107,29 @@ class BlogCMS
         }
 
         return $modelManager->get($modelName);
+    }
+
+    
+    /**
+     * Include a class in the addons
+     */
+    public static function registerAddon($className) {
+        if (array_key_exists($className, self::$addons)) {
+            // don't duplicate entries
+            return;
+        }
+        $className = "\\rbwebdesigns\\blogcms\\$className";
+        self::$addons[$className] = new $className();
+    }
+
+    /**
+     * Run a hook
+     */
+    public static function runHook($hookName, $parameters) {
+        foreach (self::$addons as $class) {
+            if (method_exists($class, $hookName)) {
+                $class->$hookName($parameters);
+            }
+        }
     }
 }

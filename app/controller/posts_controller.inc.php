@@ -275,6 +275,7 @@ class PostsController extends GenericController
             $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Error creating post', 'error');
         }
 
+        BlogCMS::runHook('onPostCreated', ['post' => $newPost]);
         $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Post created', 'success');
     }
     
@@ -339,6 +340,7 @@ class PostsController extends GenericController
         $this->model->updatePost($this->post['id'], $updates);
         $this->model->removeAutosave($this->post['id']);
         
+        BlogCMS::runHook('onPostUpdated', ['post' => array_merge($this->post, $updates)]);
         $this->response->redirect('/cms/posts/edit/' . $this->post['id'], 'Save successful', 'success');
     }
     
@@ -350,6 +352,7 @@ class PostsController extends GenericController
     public function delete()
     {
         if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
+            BlogCMS::runHook('onPostDeleted', ['post' => $this->post]);
             $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
         }
         else {

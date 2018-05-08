@@ -56,6 +56,7 @@ class BlogController extends GenericController
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\model\EventLog');
 
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
@@ -152,6 +153,8 @@ class BlogController extends GenericController
         // Get latest 5 posts
         $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
         
+        $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
+
         // Get count statistics
         $this->response->setVar('counts', array(
             'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
