@@ -1,4 +1,5 @@
 <?php
+
 function addView($postModel, $postid) {
 
     $arrayVisitors = $postModel->getViewsByPost($postid);
@@ -21,4 +22,3 @@ function addView($postModel, $postid) {
         $postModel->recordUserView($postid, $userip);
     }
 }
-?>

@@ -10,7 +10,7 @@
     
     <div class="two column row">
         <div class="column">
-            {viewPageHeader('Manage Posts', 'papers.png', "{$blog.name}")}
+            {viewPageHeader('Manage Posts', 'copy outline', "{$blog.name}")}
         </div>
         <div class="column">
             <div class="ui form">
@@ -93,8 +93,15 @@
                 break;
         }
         
+        if (d.getMinutes() < 10) {
+            minutes = '0' + d.getMinutes();
+        }
+        else {
+            minutes = d.getMinutes()
+        }
+
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        return d.getHours() + ':' + d.getMinutes() + ', ' + d.getDate() + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        return d.getHours() + ':' + minutes + ', ' + d.getDate() + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     }
     
     var refreshData = function(pagenum) {

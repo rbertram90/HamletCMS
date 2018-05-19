@@ -153,7 +153,7 @@ class BlogContentController
         $response->setVar('postsperpage', $postsperpage);
         $response->setVar('currentPage', $pageNum);
 
-        $response->setVar('totalnumposts', count($postlist));
+        $response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
         // Format content
         for ($p = 0; $p < count($postlist); $p++) {

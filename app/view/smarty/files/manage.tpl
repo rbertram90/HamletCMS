@@ -7,7 +7,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Files', 'landscape.png', {$blog.name})}
+            {viewPageHeader('Files', 'file image outline', {$blog.name})}
         </div>
     </div>
 </div>

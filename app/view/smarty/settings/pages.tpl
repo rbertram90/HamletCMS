@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}, "/settings/menu/{$blog.id}", 'Settings'), 'Configure Pages')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}, "/cms/settings/menu/{$blog.id}", 'Settings'), 'Configure pages')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Configure Pages', 'pages_gear.png', {$blog.name})}
+            {viewPageHeader('Configure pages', 'sliders horizontal', {$blog.name})}
 
 
             <h3 class="ui header">Current Pages</h3>

@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Edit Group", 'friends.png', "{$group['name']} - {$blog['name']}")}
+            {viewPageHeader("Edit Group", 'users', "{$group['name']} - {$blog['name']}")}
         </div>
     </div>
     <div class="row">

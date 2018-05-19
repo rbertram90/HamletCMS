@@ -8,7 +8,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$blog.name}", 'bargraph.png')}
+            {viewPageHeader("{$blog.name}", 'book')}
         </div>
     </div>
 
@@ -99,7 +99,7 @@
             {foreach $activitylog as $activity}
                 <div class="ui segment">
                     <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
-                    <div class="comment-info">{$activity.timestamp|date_format:"jS F Y"}</div>
+                    <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
                 </div>
             {foreachelse}
                 <p>No activity has been recorded for this blog</p>

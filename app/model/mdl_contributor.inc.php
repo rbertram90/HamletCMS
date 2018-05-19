@@ -70,6 +70,37 @@ class Contributors extends RBFactory
     }
 
     /**
+     * @return array|boolean
+     *  All permissions for a user on a blog e.g
+     *   create_posts => 1
+     *   publish_posts => 0
+     *   edit_all_posts => 0
+     *   delete_posts => 0
+     *   manage_comments => 0
+     *   delete_files => 0
+     *   change_settings => 0
+     *   manage_contributors => 0
+     *  Returns false if failed to get permissions
+     */
+    public function getUserPermissions($userID, $blogID)
+    {
+        $groupQuery = $this->get('group_id', [
+            'user_id' => $userID,
+            'blog_id' => $blogID,
+        ], '', '', false);
+
+        if (!$groupQuery) return false;
+
+        $groupQuery = $this->db->query("SELECT `data` FROM {$this->tableGroups} WHERE id={$groupQuery['group_id']}");
+
+        if($group = $groupQuery->fetch(\PDO::FETCH_ASSOC)) {
+            return JSONHelper::JSONtoArray($group['data']);
+        }
+
+        return false;
+    }
+
+    /**
      * @param int    $blogID
      * @param int    $userID
      * @param string $permissionName

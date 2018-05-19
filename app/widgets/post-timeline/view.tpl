@@ -12,7 +12,7 @@
 $.get('{$cms_url}/api/posts', { blogID: {$blog.id}, limit: {$maxposts} }, function(data) {
     var list = "";
 
-    for (var i = 0; i < data.postcount; i++) {
+    for (var i = 0; i < data.posts.length; i++) {
         var post = data.posts[i];
         list += '<div class="item"><a href="/blogs/' + post.blog_id + '/posts/' + post.link + '">' + post.title  +'</a></div>';
     }

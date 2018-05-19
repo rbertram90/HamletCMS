@@ -6,7 +6,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Customise Header', 'header.png', $blog['name'])}
+            {viewPageHeader('Customise Header', 'sliders horizontal', $blog['name'])}
 
             <form method="post" id="frm_updateheader">
 

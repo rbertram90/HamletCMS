@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Template Gallery')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Template gallery')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Template Gallery', 'star_doc.png', $blog['name'])}
+            {viewPageHeader('Template gallery', 'sliders horizontal', $blog['name'])}
         </div>
     </div>
 </div>

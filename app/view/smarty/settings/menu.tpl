@@ -6,9 +6,9 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Settings', 'gear.png', {$blog.name})}
+            {viewPageHeader('Settings', 'sliders horizontal', {$blog.name})}
             <div class="ui secondary segment">
-                This section allows you to change the look and feel of the blog. These can only be changed by blog administrators.</p>
+                This section allows you to change the look and feel of the blog.</p>
             </div>
             <h3 class="ui header">General</h3>
         </div>
@@ -18,32 +18,52 @@
         
         <div class="column">
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/id.png" class="ui left floated image">
-                <p><a href="/cms/settings/general/{$blog.id}">Name &amp; Description</a></p>
-                <p>Update the identity of your blog</p>
+                <h4 class="ui header">
+                    <i class="wrench icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/general/{$blog.id}">Name &amp; Description</a>
+                        <div class="sub header">Update the identity of your blog</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/header.png" class="ui left floated image">
-                <p><a href="/cms/settings/header/{$blog.id}">Header</a></p>
-                <p>Settings for your blog header</p>
+                <h4 class="ui header">
+                    <i class="table icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/header/{$blog.id}">Header</a>
+                        <div class="sub header">Settings for your blog header</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
-                <p><a href="/cms/settings/pages/{$blog.id}">Pages</a></p>
-                <p>Add posts to the blog menu</p>
+                <h4 class="ui header">
+                    <i class="sitemap icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/pages/{$blog.id}">Pages</a>
+                        <div class="sub header">Add posts to the blog menu</div>
+                    </div>
+                </h4>
             </div>
         </div>
         
         <div class="column">
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
-                <p><a href="/cms/settings/posts/{$blog.id}">Posts</a></p>
-                <p>Change how posts are displayed</p>
+                <h4 class="ui header">
+                    <i class="copy outline icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/posts/{$blog.id}">Posts</a>
+                        <div class="sub header">Change how posts are displayed</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/footer.png" class="ui left floated image">
-                <p><a href="/cms/settings/footer/{$blog.id}">Footer</a></p>
-                <p>Settings for your blog footer</p>
+                <h4 class="ui header">
+                    <i class="table icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/footer/{$blog.id}">Footer</a>
+                        <div class="sub header">Settings for your blog footer</div>
+                    </div>
+                </h4>
             </div>
         </div>
     </div>
@@ -54,32 +74,52 @@
         
         <div class="column">
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/paintbrush.png" class="ui left floated image">
-                <p><a href="/cms/settings/blogdesigner/{$blog.id}">Customise Design <em>(OUT OF ACTION!)</em></a></p>
-                <p>Fine tune the look of your blog</p>
+                <h4 class="ui header">
+                    <i class="paint brush icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/blogdesigner/{$blog.id}">Customise Design <em>(OUT OF ACTION!)</em></a>
+                        <div class="sub header">Fine tune the look of your blog</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/star_doc.png" class="ui left floated image">
-                <p><a href="/cms/settings/template/{$blog.id}">Change Template</a></p>
-                <p>Choose from our pre-made designs</p>
+                <h4 class="ui header">
+                    <i class="columns icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/template/{$blog.id}">Change Template</a>
+                        <div class="sub header">Choose from our pre-made designs</div>
+                    </div>
+                </h4>
             </div>
         </div>
         
         <div class="column">
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/oven_gear.png" class="ui left floated image">
-                <p><a href="/cms/settings/widgets/{$blog.id}">Configure Widgets</a></p>
-                <p>Change what is shown on the sidebar of your blog</p>
+                <h4 class="ui header">
+                    <i class="calculator icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/widgets/{$blog.id}">Configure Widgets</a>
+                        <div class="sub header">Change what is shown on the sidebar of your blog</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/css.png" class="ui left floated image">
-                <p><a href="/cms/settings/stylesheet/{$blog.id}">Edit Stylesheet</a></p>
-                <p>Ideal for advanced users</p>
+                <h4 class="ui header">
+                    <i class="code icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/stylesheet/{$blog.id}">Edit Stylesheet</a>
+                        <div class="sub header">Ideal for advanced users</div>
+                    </div>
+                </h4>
             </div>
             <div class="ui segment clearing">
-                <img src="/resources/icons/64/pages_gear.png" class="ui left floated image">
-                <p><a href="/cms/blog/delete/{$blog.id}">Delete Blog</a></p>
-                <p>Completely erase this blog</p>
+                <h4 class="ui header">
+                    <i class="trash alternate icon"></i>
+                    <div class="content">
+                        <a href="/cms/blog/delete/{$blog.id}">Delete Blog</a>
+                        <div class="sub header">Completely erase this blog</div>
+                    </div>
+                </h4>
             </div>
         </div>
         

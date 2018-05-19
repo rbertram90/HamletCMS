@@ -51,7 +51,7 @@ function openPreview() {ldelim}
     
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'add_doc.png', "{$blog['name']}")}
+            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog['name']}")}
 
             {if $mode=='edit' and array_key_exists('autosave', $post)}
             <script>

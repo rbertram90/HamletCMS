@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Customise Footer')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Footer')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Customise Footer', 'footer.png', $blog['name'])}
+            {viewPageHeader('Customise footer', 'sliders horizontal', $blog['name'])}
 
             <form method="post" id="frm_updatefooter" class="ui form">
 

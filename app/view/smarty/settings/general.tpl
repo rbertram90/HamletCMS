@@ -6,7 +6,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('General Settings', 'id.png', "{$blog.name}")}
+            {viewPageHeader('General settings', 'sliders horizontal', "{$blog.name}")}
 
             <form method="POST" class="ui form">
                 

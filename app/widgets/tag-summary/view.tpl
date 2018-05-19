@@ -17,7 +17,7 @@ $.get('{$cms_url}/api/tags', { blogID: {$blog.id}, sort: '{$sort}' }, function(d
     for (var i = 0; i < data.length; i++) {
         var tag = data[i];
 
-        if (i > {$numtoshow}) break;
+        if (i >= {$numtoshow}) break;
         if (tag.count < {$lowerlimit}) continue;
 
         if ('{$display}' == 'list') {

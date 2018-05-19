@@ -29,7 +29,7 @@ class EventLog extends RBFactory
      */
     public function byBlog($blogID, $entries = 20)
     {
-        return $this->db->query("SELECT eventlog.*, CONCAT(users.name, ' ', users.surname) as username FROM eventlog, users WHERE eventlog.blog_id = {$blogID} AND eventlog.user_id = users.id");
+        return $this->db->query("SELECT eventlog.*, CONCAT(users.name, ' ', users.surname) as username FROM eventlog, users WHERE eventlog.blog_id = {$blogID} AND eventlog.user_id = users.id ORDER BY eventlog.timestamp DESC");
     }
 
     /**
@@ -37,8 +37,7 @@ class EventLog extends RBFactory
      */
     public function byUser($userID, $entries = 20)
     {
-        return $this->db->query("SELECT eventlog.*, CONCAT(users.name, ' ', users.surname) as username FROM eventlog, users WHERE eventlog.user_id = {$userID} AND eventlog.user_id = users.id");
-        // return $this->get('*', ['user_id' => $userID], 'id DESC', $entries);
+        return $this->db->query("SELECT eventlog.*, CONCAT(users.name, ' ', users.surname) as username FROM eventlog, users WHERE eventlog.user_id = {$userID} AND eventlog.user_id = users.id ORDER BY eventlog.timestamp DESC");
     }
 
     /**

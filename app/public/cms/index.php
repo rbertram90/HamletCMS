@@ -48,28 +48,21 @@ use rbwebdesigns\core\Sanitize;
     if (!USER_AUTHENTICATED) {
         $response->redirect('/cms/account/login', 'Login required', 'warning');
     }
-    else {
-        // Check the user has access to view/edit this blog
-        $blogID = $request->getUrlParameter(1);
-        if(strlen($blogID) == 10 && is_numeric($blogID)) {
-            BlogCMS::$blogID = $blogID;
 
-            // Surely must be an ID for a blog
-            // Check the user has edit permissions
-            $user = BlogCMS::session()->currentUser;
-            $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+    $user = BlogCMS::session()->currentUser;
+    $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+    
+    // Check the user has access to view/edit this blog
+    $blogID = $request->getUrlParameter(1);
+    if (strlen($blogID) == 10 && is_numeric($blogID)) {
+        BlogCMS::$blogID = $blogID;
 
-            BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
-            BlogCMS::$userIsAdminContributor = $modelContributors->isBlogContributor($blogID, $user['id'], 'all');
+        // Surely must be an ID for a blog
+        // Check the user has edit permissions
+        BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
 
-            if (!BlogCMS::$userIsContributor) {
-                redirect('/', 'You\'re not a contributor for that blog!', 'error');
-            }
-            elseif ($controllerName == 'settings') {
-                if(!BlogCMS::$userIsAdminContributor) {
-                    redirect('/', 'You haven\'t got sufficient permissions to access that page', 'error');
-                }
-            }
+        if (!BlogCMS::$userIsContributor) {
+            $response->redirect('/', 'You\'re not a contributor for that blog!', 'error');
         }
     }
 
@@ -141,10 +134,11 @@ use rbwebdesigns\core\Sanitize;
     require SERVER_ROOT . '/app/view/sidemenu.php';
 
     if (BlogCMS::$blogID) {
-        $sideMenu = getCMSSideMenu(BlogCMS::$blogID, BlogCMS::$userIsAdminContributor, BlogCMS::$activeMenuLink);
+        $userPermissions = $modelContributors->getUserPermissions($user['id'], BlogCMS::$blogID);
+        $sideMenu = getCMSSideMenu(BlogCMS::$blogID, BlogCMS::$activeMenuLink, $userPermissions);
     }
     else {
-        $sideMenu = getCMSSideMenu(0, 0, BlogCMS::$activeMenuLink);
+        $sideMenu = getCMSSideMenu(0, BlogCMS::$activeMenuLink);
     }
     $response->setVar('page_sidemenu', $sideMenu);
 

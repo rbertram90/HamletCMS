@@ -9,7 +9,7 @@
 
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Comments', 'comment.png', {$blog.name})}
+            {viewPageHeader('Comments', 'comment outline', {$blog.name})}
         </div>
     </div>
 </div>

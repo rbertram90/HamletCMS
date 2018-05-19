@@ -426,7 +426,12 @@ class Posts extends RBFactory
             }
         }
         
-        sksort($res, $sortby, true);
+        if ($sortby == 'count') {
+            sksort($res, $sortby, false);
+        }
+        else {
+            sksort($res, $sortby, true);
+        }
         return $res;
     }
 

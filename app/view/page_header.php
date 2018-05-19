@@ -13,16 +13,19 @@
  */
 function viewPageHeader($title, $icon, $subtitle='') {
 
-    if($subtitle==''):
-        return <<<EOD
-     <img src="/resources/icons/64/{$icon}" class="settings-icon" /><h1 class="settings-title">{$title}</h1>
-EOD;
+    if (strlen($subtitle) > 0) {
+        $subtitle = '<div class="sub header">' . $subtitle . '</div>';
+    }
 
-    else:
-        return <<<EOD
-     <img src="/resources/icons/64/{$icon}" class="settings-icon" /><h1 class="settings-title" style="margin-top:0px; line-height:32px; margin-bottom:16px;">{$title}<br/><span class="subtitle">{$subtitle}</span></h1>
-EOD;
-    endif;
+    return <<<HTML
+        <h1 class="ui header">
+            <i class="{$icon} icon"></i>
+            <div class="content">
+                {$title}
+                {$subtitle}
+            </div>
+        </h1>
+HTML;
 }
 
 /**

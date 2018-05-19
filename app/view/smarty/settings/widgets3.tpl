@@ -31,7 +31,7 @@
     <div class="one column row">
         <div class="column">
             {* Header *}
-            {viewPageHeader('Widgets', 'oven_gear.png', $blog['name'])}
+            {viewPageHeader('Widgets', 'sliders horizontal', $blog['name'])}
     
             <form method="post" id="configureWidgetsMainForm">
             

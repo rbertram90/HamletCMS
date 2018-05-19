@@ -1,4 +1,11 @@
-{viewPageHeader('Your Blogs', 'book.png')}
+<div class="ui grid">
+    <div class="one column row">
+        <div class="column">
+            {viewPageHeader('Your Blogs', 'book')}
+        </div>
+    </div>
+    <div class="one column row">
+        <div class="column">
 
 {* Check if this user contributes/ owns to at least 1 blog *}
 {if count($blogs) > 0}
@@ -81,6 +88,8 @@
     <p class="ui message info">You're not contributing to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
 
 {/if}
-
+        </div>
+    </div>
+</div>
 
 {* todo: recent updates from blogs the user has subscribed to - see: /app/views/favorite_blogs_summary.php *}

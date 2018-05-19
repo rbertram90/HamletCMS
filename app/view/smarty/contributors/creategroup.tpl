@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Add Group", 'friends.png', "{$blog['name']}")}
+            {viewPageHeader("Add Group", 'user plus', "{$blog['name']}")}
         </div>
     </div>
     <div class="row">

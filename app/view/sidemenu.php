@@ -14,7 +14,7 @@
  * 
  * @todo not show the settings menu option to users who do not have permission to perform the actions
  */
-function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
+function getCMSSideMenu($blogid=0, $activeItem=null, $userPermissions=[])
 {
     $output = "";
     $links = [
@@ -42,37 +42,45 @@ function getCMSSideMenu($blogid=0, $admin=false, $activeItem=null)
                 'url' => '/cms/posts/manage/'. $blogid,
                 'icon' => 'copy outline',
                 'label' => 'Posts',
-            ],
-            [
+            ]
+        ]);
+
+        if (isset($userPermissions['manage_comments']) && $userPermissions['manage_comments'] == 1) {
+            $links[] = [
                 'key' => 'comments',
                 'url' => '/cms/comments/all/'. $blogid,
                 'icon' => 'comments outline',
                 'label' => 'Comments',
-            ],
-            [
+            ];
+        }
+
+        if (isset($userPermissions['delete_files']) && $userPermissions['delete_files'] == 1) {
+            $links[] = [
                 'key' => 'files',
                 'url' => '/cms/files/manage/'. $blogid,
                 'icon' => 'image outline',
                 'label' => 'Files',
-            ],
-        ]);
+            ];
+        }
 
-        if ($admin) {
-            $links = array_merge($links, [
-                [
+        if (isset($userPermissions['change_settings']) && $userPermissions['change_settings'] == 1) {
+            $links[] = [
                 'key' => 'settings',
                 'url' => '/cms/settings/menu/'. $blogid,
                 'icon' => 'cogs',
                 'label' => 'Settings',
-                ],
-                [
-                    'key' => 'users',
-                    'url' => '/cms/contributors/manage/'. $blogid,
-                    'icon' => 'users',
-                    'label' => 'Contributors',
-                ]
-            ]);
+            ];
         }
+
+        if (isset($userPermissions['manage_contributors']) && $userPermissions['manage_contributors'] == 1) {
+            $links[] = [
+                'key' => 'users',
+                'url' => '/cms/contributors/manage/'. $blogid,
+                'icon' => 'users',
+                'label' => 'Contributors',
+            ];
+        }
+            
 
         $links[] = [
             'key' => 'blog',
