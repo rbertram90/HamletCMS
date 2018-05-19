@@ -6,7 +6,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Your Information', 'id.png')}
+            {viewPageHeader('Your Information', 'sliders horizontal')}
         </div>
     </div>
 </div>

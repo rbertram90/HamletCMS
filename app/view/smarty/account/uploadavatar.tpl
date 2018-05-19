@@ -6,7 +6,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Change profile photo', 'id.png')}
+            {viewPageHeader('Change profile photo', 'camera')}
         </div>
     </div>
 </div>

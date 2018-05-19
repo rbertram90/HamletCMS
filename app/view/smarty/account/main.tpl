@@ -1,5 +1,5 @@
 {viewCrumbtrail(array(), 'Account')}
-{viewPageHeader('Your Account', 'id.png')}
+{viewPageHeader('Your Account', 'address card')}
 
 <div>
 

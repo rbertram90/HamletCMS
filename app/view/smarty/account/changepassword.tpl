@@ -6,7 +6,7 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Change Password', 'lock.png')}
+            {viewPageHeader('Change Password', 'lock')}
         </div>
     </div>
 </div>
