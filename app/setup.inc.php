@@ -21,6 +21,10 @@ use rbwebdesigns\core\model\UserFactory;
     // Load JSON config file
     // Note: cannot use core function to do this as hasn't been loaded
     // at this stage - chicken and egg situation
+    if (!file_exists(__DIR__ . '/config/config.json')) {
+        die('Site not configured - please create file /app/config/config.json');
+    }
+
     $config = JSONhelper::JSONFileToArray(__DIR__ . '/config/config.json');
 
     define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development

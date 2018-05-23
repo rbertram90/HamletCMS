@@ -163,7 +163,7 @@ class Blogs extends RBFactory
             if(!copy($copy_default, $new_default)) die(showError("failed to copy $new_default"));
             
             // Create Default.css
-            $copy_css = SERVER_PATH_TEMPLATES.'/stylesheets/tmplt_default_blue.css';
+            $copy_css = SERVER_PATH_TEMPLATES.'/default_blue_2columns_left/stylesheet.css';
             $new_css = SERVER_PATH_BLOGS.'/'.$blog_key.'/default.css';
             if(!copy($copy_css, $new_css)) die(showError("failed to copy $new_css"));
             
@@ -178,7 +178,7 @@ class Blogs extends RBFactory
             if(!copy($copy_config, $new_config)) die(showError("failed to copy $new_config"));
             
             // Create default json for blog design settings
-            $copy_design = SERVER_PATH_TEMPLATES.'/stylesheets/tmplt_default_blue.json';
+            $copy_design = SERVER_PATH_TEMPLATES.'/default_blue_2columns_left/config.json';
             $new_design = SERVER_PATH_BLOGS.'/'.$blog_key.'/template_config.json';
             if(!copy($copy_design, $new_design)) die(showError("failed to copy $new_design"));
         }

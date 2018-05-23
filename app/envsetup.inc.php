@@ -8,8 +8,13 @@ use rbwebdesigns\core\Database;
 ****************************************************************/
     
     // Start Session if not already started
-    if(!isset($_SESSION)) session_start();
-        
+    if (!isset($_SESSION)) session_start();
+    
+    if (IS_DEVELOPMENT) {
+        error_reporting(E_STRICT);
+        ini_set('display_errors', 1);
+    }
+
 /****************************************************************
   Database Constants
 ****************************************************************/

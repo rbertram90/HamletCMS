@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2018 at 12:35 AM
+-- Generation Time: May 20, 2018 at 10:34 AM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.6.24
 
@@ -24,7 +24,7 @@ DELIMITER $$
 --
 -- Functions
 --
-CREATE DEFINER=`root`@`localhost` FUNCTION `wordcount` (`str` TEXT) RETURNS INT(11) NO SQL
+CREATE DEFINER=CURRENT_USER FUNCTION `wordcount` (`str` TEXT) RETURNS INT(11) NO SQL
     DETERMINISTIC
     SQL SECURITY INVOKER
 BEGIN
@@ -86,7 +86,7 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `contributorgroups` (
   `id` int(11) NOT NULL,
-  `blog_id` int(11) NOT NULL,
+  `blog_id` bigint(15) NOT NULL,
   `name` varchar(50) NOT NULL,
   `description` varchar(500) NOT NULL,
   `data` text NOT NULL,
@@ -103,6 +103,21 @@ CREATE TABLE `contributors` (
   `user_id` int(10) NOT NULL,
   `blog_id` bigint(10) NOT NULL,
   `group_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eventlog`
+--
+
+CREATE TABLE `eventlog` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `activity_id` int(11) NOT NULL,
+  `blog_id` bigint(12) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -152,7 +167,8 @@ CREATE TABLE `posts` (
   `videoid` varchar(20) NOT NULL,
   `videosource` enum('youtube','vimeo') NOT NULL,
   `gallery_imagelist` text NOT NULL,
-  `initialautosave` tinyint(1) NOT NULL DEFAULT '0'
+  `initialautosave` tinyint(1) NOT NULL DEFAULT '0',
+  `teaser_image` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -221,6 +237,14 @@ ALTER TABLE `contributors`
   ADD PRIMARY KEY (`user_id`,`blog_id`);
 
 --
+-- Indexes for table `eventlog`
+--
+ALTER TABLE `eventlog`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `blog_id` (`blog_id`);
+
+--
 -- Indexes for table `favourites`
 --
 ALTER TABLE `favourites`
@@ -259,22 +283,27 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `contributorgroups`
 --
 ALTER TABLE `contributorgroups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `eventlog`
+--
+ALTER TABLE `eventlog`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

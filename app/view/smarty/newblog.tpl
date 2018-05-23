@@ -2,7 +2,12 @@
     
     <div class="one column row">
         <div class="column">
-            <img src="/resources/icons/64/add_doc.png" class="settings-icon" /><h1 class="settings-title">Create a new blog</h1>
+            <h1 class="ui header">
+                <i class="book icon"></i>
+                <div class="content">
+                    Create a new blog
+                </div>
+            </h1>
         </div>
     </div>
     
