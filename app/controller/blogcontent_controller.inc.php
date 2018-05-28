@@ -763,6 +763,10 @@ class BlogContentController
         $commentText = $request->getString('fld_comment');
         $currentUser = BlogCMS::session()->currentUser;
 
+        if (!$currentUser) {
+            $response->redirect("/blogs/{$this->blogID}", 'You must be logged in to add a comment', 'error');
+        }
+
         if (!$post) {
             $response->redirect("/blogs/{$this->blogID}", 'Post not found', 'error');
         }
