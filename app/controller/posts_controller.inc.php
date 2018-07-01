@@ -147,12 +147,7 @@ class PostsController extends GenericController
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('New Post');
-        
-        $this->response->addScript('/resources/js/rbwindow.css');
-        $this->response->addScript('/resources/js/rbrtf.css');
-        $this->response->addStylesheet('/resources/css/rbwindow.css');
-        $this->response->addStylesheet('/resources/css/rbrtf.css');
-        
+                
         switch ($this->request->getUrlParameter(2)) {
             case 'video':
             $this->response->write('posts/videopost.tpl');
@@ -164,6 +159,12 @@ class PostsController extends GenericController
             
             case 'standard':
             $this->response->write('posts/standardpost.tpl');
+            break;
+
+            case 'layout':
+            $this->response->addScript('/js/layoutPost.js');
+            $this->response->addStylesheet('/css/layoutPost.css');
+            $this->response->write('posts/layoutpost.tpl');
             break;
             
             default:
@@ -197,16 +198,11 @@ class PostsController extends GenericController
             // Has been edited without being saved
             $this->post['autosave'] = $this->model->getAutosave($this->post['id']);
         }
-                
+        
         $this->response->setVar('post', $this->post);
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Edit Post - ' . $this->post['title']);
         
-        $this->response->addScript('/resources/js/rbwindow.js');
-        $this->response->addScript('/resources/js/rbrtf.js');
-        $this->response->addStylesheet('/resources/css/rbwindow.css');
-        $this->response->addStylesheet('/resources/css/rbrtf.css');
-
         switch ($this->post['type']) {
             case 'video':
             $this->response->write('posts/videopost.tpl');
@@ -216,6 +212,12 @@ class PostsController extends GenericController
             $this->response->write('posts/gallerypost.tpl');
             break;
             
+            case 'layout':
+            $this->response->addScript('/js/layoutPost.js');
+            $this->response->addStylesheet('/css/layoutPost.css');
+            $this->response->write('posts/layoutpost.tpl');
+            break;
+
             default:
             $this->response->write('posts/standardpost.tpl');
             break;
@@ -238,7 +240,7 @@ class PostsController extends GenericController
         
         $newPost = [
             'title'           => $this->request->getString('fld_posttitle'),
-            'content'         => $this->request->getString('fld_postcontent'),
+            'content'         => $this->request->get('fld_postcontent'),
             'tags'            => $this->request->getString('fld_tags'),
             'teaser_image'    => $this->request->getString('fld_teaserimage'),
             'blog_id'         => $this->blog['id'],
@@ -316,7 +318,7 @@ class PostsController extends GenericController
         
         $updates = [
             'title'           => $this->request->getString('fld_posttitle'),
-            'content'         => $this->request->getString('fld_postcontent'),
+            'content'         => $this->request->get('fld_postcontent'),
             'tags'            => $this->request->getString('fld_tags'),
             'teaser_image'    => $this->request->getString('fld_teaserimage'),
             'draft'           => $this->request->getInt('fld_draft'),

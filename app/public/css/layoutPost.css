@@ -1,0 +1,22 @@
+#postContentEditView {
+    margin: 1em 0;
+}
+
+#postContentEditView .row {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    background-color: #fff;
+    cursor: pointer;
+}
+#postContentEditView .row:hover {
+    background-color: #a9a5df;
+}
+#postContentEditView .column-inner:hover {
+    background-color: #5bb1d3;
+}
+
+#postContentEditView .column-inner {
+    border: 1px solid #ccc;
+    background-color: #aaffff;
+    padding: 5px;
+}

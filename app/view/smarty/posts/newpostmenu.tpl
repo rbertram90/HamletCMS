@@ -19,8 +19,13 @@
         <div class="column">
             <div class="ui segment clearing">
                 <img src="/resources/icons/64/pages.png" class="ui left floated image">
-                <p><a href="/cms/posts/create/{$blog.id}/standard">Standard Post</a></p>
-                <p>Add text and images in a normal blog style editor.</p>
+                <p><a href="/cms/posts/create/{$blog.id}/standard">Markdown Post</a></p>
+                <p>Create a post using markdown code to add formatting.</p>
+            </div>
+            <div class="ui segment clearing">
+                <img src="/resources/icons/64/pages.png" class="ui left floated image">
+                <p><a href="/cms/posts/create/{$blog.id}/layout">Layout Post</a></p>
+                <p>Create a post using a layout editor to create a structured post.</p>
             </div>
             <!--
             <div class="ui segment clearing">

@@ -8,9 +8,7 @@
         <h1 class="post-title">{$post.title}</h1>
     </header>
 
-    <!-- Note we won't always want to use wiki language! need to either ask user or 
-    programmatically determine if the post uses wiki -->
-    <main class="ui text container">
+    <main class="ui container">
 
         {if $post.type == 'video'}
             {if $post.videosource == 'youtube'}

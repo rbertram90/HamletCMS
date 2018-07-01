@@ -157,7 +157,15 @@ class BlogContentController
 
         // Format content
         for ($p = 0; $p < count($postlist); $p++) {
-            $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+
+            if ($postlist[$p]['type'] == 'layout') {
+                $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
+                $mdContent = $this->generateLayoutMarkup($layout);
+            }
+            else {
+                $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+            }
+
             $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
 
             if (strlen($postlist[$p]['tags']) > 0) {
@@ -459,7 +467,15 @@ class BlogContentController
 
         // Format content
         for ($p = 0; $p < count($postlist); $p++) {
-            $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+
+            if ($postlist[$p]['type'] == 'layout') {
+                $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
+                $mdContent = $this->generateLayoutMarkup($layout);
+            }
+            else {
+                $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+            }
+
             $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
             $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
 
@@ -645,7 +661,16 @@ class BlogContentController
         $response->setVar('showsocialicons', $showsocialicons);
         $response->setVar('userAuthenticated', getType($currentUser) == 'array');
         $response->setVar('userIsContributor', $isContributor);
-        $response->setVar('mdContent', Markdown::defaultTransform($post['content']));
+
+        if ($post['type'] == 'layout') {
+            $layout = JSONHelper::JSONtoArray($post['content']);
+            $mdContent = $this->generateLayoutMarkup($layout);
+        }
+        else {
+            $mdContent = Markdown::defaultTransform($post['content']);
+        }
+
+        $response->setVar('mdContent', $mdContent);
         $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
         $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
         $response->setTitle($post['title']);
@@ -748,6 +773,83 @@ class BlogContentController
         
         // Remove Whitespace and return answer
         return trim($trimmedContent);
+    }
+
+    /**
+     * generateLayoutMarkup
+     */
+    protected function generateLayoutMarkup($array)
+    {
+        $out = "<div class='ui grid'>";
+
+        foreach ($array['rows'] as $row) {
+            $rowClasses = "";
+            $rOut = "";
+            $columnWidths = null;
+
+            switch ($row['columnLayout']) {
+                case "twoColumns_50":
+                    $rowClasses = "two column";
+                    break;
+
+                case "twoColumns_75":
+                    $columnWidths = [75, 25];
+                    break;
+
+                case "twoColumns_75":
+                    $columnWidths = [25, 75];
+                    break;
+
+                case "twoColumns_66":
+                    $columnWidths = [66, 33];
+                    break;
+
+                case "twoColumns_66":
+                    $columnWidths = [33, 66];
+                    break;
+
+                case "threeColumns":
+                    $rowClasses = "three column";
+                    break;
+
+                case "fourColumns":
+                    $rowClasses = "four column";
+                    break;
+
+                default:
+                case "singleColumn":
+                    $columnWidths = [100];
+                    break;
+            }
+
+            foreach ($row['columns'] as $c => $column) {
+
+                $classes = "column";
+                if ($columnWidths) {
+                    switch ($columnWidths[$c]) {
+                        case 100: $classes = "sixteen wide column"; break;
+                        case 75: $classes = "twelve wide column"; break;
+                        case 66: $classes = "ten wide column"; break;
+                        case 33: $classes = "six wide column"; break;
+                        case 25: $classes = "four wide column"; break;
+                    }
+                }
+            
+                $rOut.= "<div class='" . $classes . "'>";
+
+                if ($column['textContent']) {
+                    $rOut.= $column['textContent'];
+                }
+
+                $rOut.= "</div>";
+            }
+
+            $out .= "<div class='" . $rowClasses . " row'>" . $rOut . "</div>";
+        }
+
+        $out .= '</div>';
+
+        return $out;
     }
 
     /**
