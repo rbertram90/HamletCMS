@@ -161,12 +161,12 @@ class BlogContentController
             if ($postlist[$p]['type'] == 'layout') {
                 $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
                 $mdContent = $this->generateLayoutMarkup($layout);
+                $postlist[$p]['trimmedContent'] = $mdContent;
             }
             else {
                 $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+                $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
             }
-
-            $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
 
             if (strlen($postlist[$p]['tags']) > 0) {
                 $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
@@ -471,9 +471,12 @@ class BlogContentController
             if ($postlist[$p]['type'] == 'layout') {
                 $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
                 $mdContent = $this->generateLayoutMarkup($layout);
+                $postlist[$p]['trimmedContent'] = $mdContent;
+
             }
             else {
                 $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
+                $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
             }
 
             $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
