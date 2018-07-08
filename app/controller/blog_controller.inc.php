@@ -99,9 +99,9 @@ class BlogController extends GenericController
         $this->response->setVar('blogs', $blogs);
         
         // Get the current users favourite blogs
-        $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);
-        $this->response->setVar('favoriteblogs', $arrayFavoriteBlogs);
-        $this->response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
+        // $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);
+        // $this->response->setVar('favoriteblogs', $arrayFavoriteBlogs);
+        // $this->response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
         
         $this->response->addScript('/js/showUserCard.js');
         $this->response->setTitle('My Blogs');

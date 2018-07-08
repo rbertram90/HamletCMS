@@ -6,17 +6,37 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
 /**
- * /app/model/mdl_blog.php
- * Access to the blogs database is done through this class
+ * Provides access to the blogs database table.
  * 
- * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ * Any simple queries to the blogs table is done through this class the table
+ * will likely be accessed elsewhere with complex queries but the common simple
+ * ones are handled here.
+ * 
+ * @package Blog CMS
+ * 
+ * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
 class Blogs extends RBFactory
 {
-    protected $db;
-    protected $tableName;
-    private $tblbloguser, $dbfields;
 
+    /**
+     * @var \rbwebdesigns\core\Database Database ORM object
+     */
+    protected $db;
+    /**
+     * @var string Database table name this model directly relates to
+     */
+    protected $tableName;
+    /**
+     * @var array Keyed with field names and datatype as value to match database definition
+     */
+    protected $fields;
+
+    /**
+     * Instantiate the Factory passing in access to the database.
+     * 
+     * @param \rbwebdesigns\core\model\ModelManager $modelManager
+     */
     function __construct($modelManager)
     {
         $this->db = $modelManager->getDatabaseConnection();
@@ -37,30 +57,33 @@ class Blogs extends RBFactory
     }
     
     /**
-     *  Get all information stored for a blog
-     *  @param int ID for Blog
-     *  @return array
-    **/
+     * Get all information stored for a blog.
+     * 
+     * @param  int   $blogID  ID of Blog
+     * @return array          Query results
+     */
     public function getBlogById($blogID)
     {
         return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), ['id' => $blogID]);
     }
     
     /**
-     *  Get all the blogs created by a user
-     *  @param int ID for User
-     *  @return array Blogs for which a user contributes
-    **/
+     * Get all the blogs created by a user.
+     * 
+     * @param  int   $userID  Foreign key from users table
+     * @return array          Query results
+     */
     public function getBlogsByUser($userID)
     {
         return $this->db->selectMultipleRows($this->tableName, '*', ['user_id' => $userID]);
     }
     
     /**
-     *  Get public blogs starting with @param0
-     *  @param string Starting letter
-     *  @return array Matching Blogs
-    **/
+     * Get public blogs starting with $letter.
+     * 
+     * @param  string  $letter  Starting letter
+     * @return array            Blogs that have names that begin with $letter
+     */
     public function getBlogsByLetter($letter)
     {
         if(!ctype_alpha($letter)) $letter = "[^A-Za-z]"; // search all numbers at once
@@ -70,8 +93,9 @@ class Blogs extends RBFactory
     }
     
     /**
-     *  Get count of number of public blogs for each letter - explore page
-     *  @return <array> Counts of blogs by letter
+     * Count the number of public blogs beginning with each letter of the alphabet.
+     * 
+     * @return array  Counts of blogs by letter
      */
     public function countBlogsByLetter()
     {
@@ -96,8 +120,9 @@ class Blogs extends RBFactory
     }
     
     /**
-     *  Get number of blogs a user contributes to
-     *  @param <int>
+     *  Get number of blogs a user contributes to.
+     * 
+     *  @param int $userid
      */
     public function countBlogsByUser($userid)
     {
@@ -105,8 +130,10 @@ class Blogs extends RBFactory
     }
     
     /**
-     *  Create a new blog id number (random)
-     *  @return string 10 digit string
+     * Generates a new blog id number.
+     * 
+     * @return string
+     *  Unique random 10 digit string
      */
     private function generateBlogKey()
     {
@@ -122,11 +149,13 @@ class Blogs extends RBFactory
     }
     
     /**
-     * Check if a blog key already exists in the database
-     * @param string
-     *   10 Digit Blog ID
+     * Check if a blog key already exists in the database.
+     * 
+     * @param string $key
+     *  10 Digit Blog ID
+     * 
      * @return boolean
-     *   True if found, False Otherwise
+     *  True if found, False Otherwise
      */
     private function blogKeyExists($key)
     {
@@ -136,19 +165,14 @@ class Blogs extends RBFactory
     /**
      * Create a new blog
      * 
-     * @param string
-     *   name for the blog
-     * @param string
-     *   description for the blog
-     * @param string
-     *   key for the blog (optional)
-     * 
-     * @return string
-     *   key used for the blog
+     * @param  string  $name  name for the blog
+     * @param  string  $desc  description for the blog
+     * @param  string  $key   key for the blog (optional)
+     * @return string         key used for the blog
      */
-    public function createBlog($name, $desc, $pkey='')
+    public function createBlog($name, $desc, $key='')
     {
-        if(strlen($pkey) == 0) {
+        if(strlen($key) == 0) {
             // Generate a new blog key
             $blog_key = $this->generateBlogKey();
             
@@ -185,7 +209,7 @@ class Blogs extends RBFactory
         else {
             // Just assigning an exisiting folder into the blog_cms
             // (not something that anyone other than dev would/need want to do)
-            $blog_key = Sanitize::int($pkey);
+            $blog_key = Sanitize::int($key);
         }
         
         $insert = $this->insert([
@@ -201,7 +225,11 @@ class Blogs extends RBFactory
     }
     
     /**
-     * Update just the widget configuration JSON for a blog
+     * Update just the widget configuration JSON for a blog.
+     * 
+     * @param string $config
+     * 
+     * @param int $blogID
      */
     public function updateWidgetJSON($config, $blogID)
     {
@@ -213,6 +241,8 @@ class Blogs extends RBFactory
     /**
      * Security functions - check Read, Write Permissions
      * Should this be in contributors model?
+     * 
+     * @param int $blogID
      */
     public function canWrite($blogID)
     {
@@ -228,82 +258,6 @@ class Blogs extends RBFactory
         return $rowCount > 0;
     }
 
-    //--------------------------------------------------------
-    //    FAVOURITES
-    //--------------------------------------------------------
-   
-    /**
-     * Add a blog to a users favourites list
-     */
-    public function addFavourite($userID, $blogID)
-    {
-        if($this->isFavourite($userID, $blogID)) return "Blog already exists in users favorites list.";  
-        $query_string = "INSERT INTO ".$this->tblfavourites." (user_id,blog_id) VALUES ('$userID','$blogID')";
-        $result = $this->db->query($query_string);
-        return "Blog Added to Favorites";
-    }
-
-    /**
-     * Remove a blog to a users favourites list
-     */
-    public function removeFavourite($pUserID, $pBlogID)
-    {
-        if(!$this->isFavourite($pUserID, $pBlogID)) return "Blog is not in your favorites list";
-        $query_string = "DELETE FROM ".$this->tblfavourites." WHERE user_id='$pUserID' AND blog_id='$pBlogID'";
-        $result = $this->db->query($query_string);
-        return "Blog Removed from Favorites";
-    }
-
-    /**
-     * Check if a blog is already a users favourite
-     */
-    public function isFavourite($pUserID, $pBlogID)
-    {
-        $arrWhere = array(
-            'user_id' => Sanitize::int($pUserID),
-            'blog_id' => Sanitize::int($pBlogID)
-        );
-        $result = $this->db->selectSingleRow($this->tblfavourites, 'count(*) as count', $arrWhere);
-        return ($result['count'] != 0);
-    }
-    
-    /**
-     * Get all the favourite blogs for a user
-     */
-    public function getAllFavourites($pUserID)
-    {
-        $UserID = Sanitize::int($pUserID);
-        $query_string = "SELECT a.blog_id, b.* FROM ".$this->tblfavourites." AS a, ".$this->tableName." AS b ";
-        $query_string.= "WHERE b.id = a.blog_id AND a.user_id = '$UserID'";
-        $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * Get all the users that have favourited blog
-     */
-    public function getAllFavouritesByBlog($pBlogID)
-    {
-        $liBlogID = Sanitize::int($pBlogID);
-        $query_string = "SELECT b.* FROM ".$this->tblfavourites." AS a, ".TBL_USERS." as b";
-        $query_string.= "WHERE a.user_id = b.id AND a.blog_id = '$liBlogID'";
-        $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Get counts for the top favourited blogs (ever)
-     * - only a matter of time before this becomes a performance issue?
-     */
-    public function getTopFavourites($num=10, $page=0)
-    {
-        $query_string = 'SELECT fav.blog_id, count(DISTINCT fav.blog_id) as fav_count, blogs.* ';
-        $query_string.= 'FROM '.$this->tblfavourites.' AS fav LEFT JOIN '.$this->tableName.' AS blogs ON fav.blog_id = blogs.id WHERE blogs.visibility = "anon" ';
-        $query_string.= 'GROUP BY fav.blog_id ORDER BY fav_count DESC LIMIT '.$page.','.$num;
-        $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
     /**
      * Get Blogs by Category
      */
@@ -316,4 +270,5 @@ class Blogs extends RBFactory
         $statement = $this->db->query($query);
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
+
 }

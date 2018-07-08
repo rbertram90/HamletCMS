@@ -13,17 +13,43 @@ use rbwebdesigns\core\model\ModelManager;
  */
 class BlogCMS
 {
+    /**
+     * @var \rbwebdesigns\core\Session
+     */
     protected static $session = null;
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
     protected static $request = null;
+    /**
+     * @var \rbwebdesigns\core\Response
+     */
     protected static $response = null;
+    /**
+     * @var array  parsed config files
+     */
     protected static $config = [];
+    /**
+     * @var array  enabled addons
+     */
     protected static $addons = [];
     // protected static $modelManager = null;
 
+    /**
+     * @var int  id field for the blog for which we are managing
+     */
     public static $blogID = 0;
+    /**
+     * @var array|null  cache for the database row for the blog we're managing in the CMS
+     */
     public static $blog = null;
+    /**
+     * @var string  key for which sub-menu link should be highlighted within the CMS
+     */
     public static $activeMenuLink = '';
-    public static $userIsAdminContributor = false;
+    /**
+     * @var boolean  flag for if the user a contributor to the active blog
+     */
     public static $userIsContributor = false;
 
     /**
@@ -54,7 +80,7 @@ class BlogCMS
     }
 
     /**
-     * @return rbwebdesigns\core\Session
+     * @return \rbwebdesigns\core\Session
      */
     public static function session()
     {
@@ -65,7 +91,7 @@ class BlogCMS
     }
 
     /**
-     * @return rbwebdesigns\core\Request
+     * @return \rbwebdesigns\core\Request
      */
     public static function request()
     {
@@ -78,7 +104,7 @@ class BlogCMS
     }
 
     /**
-     * @return rbwebdesigns\blogcms\BlogCMSResponse
+     * @return \rbwebdesigns\blogcms\BlogCMSResponse
      */
     public static function response()
     {
@@ -89,7 +115,9 @@ class BlogCMS
     }
 
     /**
-     * @return rbwebdesigns\core\model\ModelManager
+     * @param string $modelName
+     * 
+     * @return \rbwebdesigns\core\model\ModelManager
      */
     public static function model($modelName)
     {
@@ -111,7 +139,9 @@ class BlogCMS
 
     
     /**
-     * Include a class in the addons
+     * Include a class in the addons.
+     * 
+     * @param string $className
      */
     public static function registerAddon($className) {
         if (array_key_exists($className, self::$addons)) {
@@ -124,6 +154,9 @@ class BlogCMS
 
     /**
      * Run a hook
+     * 
+     * @param string $hookName
+     * @param array  $parameters
      */
     public static function runHook($hookName, $parameters) {
         foreach (self::$addons as $class) {

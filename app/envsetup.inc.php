@@ -11,7 +11,7 @@ use rbwebdesigns\core\Database;
     if (!isset($_SESSION)) session_start();
     
     if (IS_DEVELOPMENT) {
-        error_reporting(E_STRICT);
+        error_reporting(E_STRICT && E_ALL);
         ini_set('display_errors', 1);
     }
 

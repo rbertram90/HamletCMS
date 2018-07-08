@@ -12,5 +12,8 @@
       "michelf/php-markdown": "1.4.1",
       "athens/csrf": "1.*",
       "rbertram90/core": "dev-master"
+  },
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "2.*"
   }
 }
