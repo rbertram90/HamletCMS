@@ -115,7 +115,7 @@ LayoutEditor.prototype.generateHTML = function() {
             rOut += "<div class='" + classes + " column'><div class='column-inner' data-column-index='" + c + "' data-row-index='" + r + "'>"
 
             if (column.textContent) {
-                rOut += column.textContent;
+                rOut += column.textContent.replace(/(?:\r\n|\r|\n)/g, '<br>');;
             }
             if (column.image) {
                 rOut += '<img src="/blogdata/' + this.blogID + '/images/' + column.image + '.jpg" alt="' + column.image + '">';

@@ -852,7 +852,7 @@ class BlogContentController
                 $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);
 
                 if ($column['textContent']) {
-                    $rOut.= $column['textContent'];
+                    $rOut.= nl2br($column['textContent']);
                 }
 
                 $rOut.= "</div>";
