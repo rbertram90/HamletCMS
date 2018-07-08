@@ -219,6 +219,10 @@
                 {$imagesOutput}
                 <input type="hidden" id="selected_image">
             </div>
+            <div class="field">
+                <label for="min_height">Minimum height</label>
+                <input type="text" id="min_height" placeholder="auto">
+            </div>
 
             <div class="field">
                 <label for="text_content">Text</label>
@@ -296,7 +300,9 @@
     $('#edit_column_form .selectableimage').click(function() {
         $('#edit_column_form .selectableimage').css('border-width', '0');
         $(this).css('border', '3px solid #0c0');
-        $('#edit_column_form #selected_image').val($(this).data('name'));
+        var splitUrl = $(this).attr("src").split("/");
+        filename = splitUrl[splitUrl.length - 1];
+        $('#edit_column_form #selected_image').val(filename);
     });
 </script>
 

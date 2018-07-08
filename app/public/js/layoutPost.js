@@ -118,7 +118,7 @@ LayoutEditor.prototype.generateHTML = function() {
                 rOut += column.textContent.replace(/(?:\r\n|\r|\n)/g, '<br>');;
             }
             if (column.image) {
-                rOut += '<img src="/blogdata/' + this.blogID + '/images/' + column.image + '.jpg" alt="' + column.image + '">';
+                rOut += '<img src="/blogdata/' + this.blogID + '/images/' + column.image + '" alt="' + column.image + '">';
             }
 
             rOut += "</div></div>"
@@ -165,6 +165,7 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
     switch (definition.contentType) {
         case 'text':
             modal.find("#selected_image").parent().hide();
+            modal.find("#min_height").parent().hide();
 
             modal.find('#text_content').val(definition.textContent);
             modal.find('#background_colour').val(definition.backgroundColour);
@@ -177,6 +178,7 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
             modal.find("#font_colour").parent().hide();
 
             modal.find('#selected_image').val(definition.image);
+            modal.find('#min_height').val(definition.minimumHeight);
             modal.find('.selectableimage[data-name="' + definition.image + '"]').css('border', '3px solid #0c0');
         break;
         case '':
@@ -212,7 +214,8 @@ LayoutEditor.prototype.saveColumnData = function(event) {
         case 'image':
             window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
                 'contentType': form.find('#type').val(),
-                'image': form.find('#selected_image').val()
+                'image': form.find('#selected_image').val(),
+                'minimumHeight': form.find('#min_height').val()
             };
         break;
     }

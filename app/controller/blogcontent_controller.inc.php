@@ -846,7 +846,10 @@ class BlogContentController
 
                 if ($column['image']) {
                     $classes .= ' black image-column';
-                    $style.= 'background-image: url(/blogdata/' . $this->blogID . '/images/' . $column['image'] . '.jpg);';
+                    $style.= 'background-image: url(/blogdata/' . $this->blogID . '/images/' . $column['image'] . ');';
+                }
+                if ($column['minimumHeight']) {
+                    $style.= 'min-height: '. $column['minimumHeight'] .';';
                 }
 
                 $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);

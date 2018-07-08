@@ -1,33 +1,6 @@
-.right {
-    text-align:right;
-}
-
 /* Position an element in the bottom corner (15px padding) */
 .bottom15 {
     position:absolute; right:15px; bottom:15px;
-}
-
-
-/* System Notifications */
-.error {
-    background-color:#D64952;
-    padding:6px;
-    border:1px solid #B3222C;
-    margin-bottom:15px;
-}
-.info, .warning {
-    background-color:#FCF19D;
-    padding:6px;
-    border:1px solid #EDE080;
-    margin-bottom:15px;
-    color:#000;
-}
-.success {
-    background-color:#9FE3C4;
-    padding:6px;
-    border:1px solid #32B379;
-    margin-bottom:15px;
-    color:#0A7846;
 }
 
 /* Pagination Control */
