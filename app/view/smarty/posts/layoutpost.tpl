@@ -91,7 +91,7 @@
                 var layouteditor = null;
 
                 $(document).ready(function() {
-                    layouteditor = new LayoutEditor();
+                    layouteditor = new LayoutEditor({$blog.id});
                     layouteditor.setJSONElement(document.getElementById('fld_postcontent'));
                     layouteditor.setOutputElement(document.getElementById('postContentEditView'));
                     layouteditor.generateHTML();
@@ -215,8 +215,38 @@
             </div>
 
             <div class="field">
+                <label>Select image:</label>
+                {$imagesOutput}
+                <input type="hidden" id="selected_image">
+            </div>
+
+            <div class="field">
                 <label for="text_content">Text</label>
                 <textarea id="text_content"></textarea>
+            </div>
+
+            <div class="field">
+                <label for="background_colour">Background colour</label>
+                <select id="background_colour">
+                    <option value="">None</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="olive">Olive</option>
+                    <option value="green">Green</option>
+                    <option value="teal">Teal</option>
+                    <option value="blue">Blue</option>
+                    <option value="violet">Violet</option>
+                    <option value="purple">Purple</option>
+                    <option value="pink">Pink</option>
+                    <option value="brown">Brown</option>
+                    <option value="grey">Grey</option>
+                    <option value="black">Black</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="font_colour">Font colour</label>
+                <input type="text" id="font_colour" placeholder="#000000">
             </div>
 
             <input type="hidden" id="row_index" value="">
@@ -243,6 +273,31 @@
             return '/cms/blog/overview/{$blog.id}';
         }
     };
+
+    $('#edit_column_form #type').change(function() {
+        $('#edit_column_form .field').show();
+        switch ($(this).val()) {
+            case 'text':
+                $("#selected_image").parent().hide();
+            break;
+            case 'image':
+                $("#text_content").parent().hide();
+                $("#background_colour").parent().hide();
+                $("#font_colour").parent().hide();
+            break;
+            case '':
+            $('#edit_column_form .field').hide();
+            $(this).parent().show();
+            break;
+        }
+
+    });
+
+    $('#edit_column_form .selectableimage').click(function() {
+        $('#edit_column_form .selectableimage').css('border-width', '0');
+        $(this).css('border', '3px solid #0c0');
+        $('#edit_column_form #selected_image').val($(this).data('name'));
+    });
 </script>
 
 <script type="text/javascript">

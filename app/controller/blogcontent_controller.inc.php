@@ -112,7 +112,7 @@ class BlogContentController
     {
         $currentUser = BlogCMS::session()->currentUser;
         if(!isset($currentUser)) return false;
-        return $this->modelBlogs->isFavourite($currentUser, $this->blogID);
+        return false; // $this->modelBlogs->isFavourite($currentUser, $this->blogID);
     }
     
     /**
@@ -824,18 +824,32 @@ class BlogContentController
 
             foreach ($row['columns'] as $c => $column) {
 
-                $classes = "column";
+                $classes = "";
                 if ($columnWidths) {
                     switch ($columnWidths[$c]) {
-                        case 100: $classes = "sixteen wide column"; break;
-                        case 75: $classes = "twelve wide column"; break;
-                        case 66: $classes = "ten wide column"; break;
-                        case 33: $classes = "six wide column"; break;
-                        case 25: $classes = "four wide column"; break;
+                        case 100: $classes = "sixteen wide"; break;
+                        case 75: $classes = "twelve wide"; break;
+                        case 66: $classes = "ten wide"; break;
+                        case 33: $classes = "six wide"; break;
+                        case 25: $classes = "four wide"; break;
                     }
                 }
-            
-                $rOut.= "<div class='" . $classes . "'>";
+
+                $style = '';
+                if (isset($column['backgroundColour'])) {
+                    $classes .= ' ' . $column['backgroundColour'];
+                }
+
+                if (isset($column['fontColour'])) {
+                    $style .= sprintf('color: %s;', $column['fontColour']);
+                }
+
+                if ($column['image']) {
+                    $classes .= ' black image-column';
+                    $style.= 'background-image: url(/blogdata/' . $this->blogID . '/images/' . $column['image'] . '.jpg);';
+                }
+
+                $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);
 
                 if ($column['textContent']) {
                     $rOut.= $column['textContent'];
@@ -844,7 +858,7 @@ class BlogContentController
                 $rOut.= "</div>";
             }
 
-            $out .= "<div class='" . $rowClasses . " row'>" . $rOut . "</div>";
+            $out .= sprintf("<div class='%s row'>%s</div>", $rowClasses, $rOut);
         }
 
         $out .= '</div>';

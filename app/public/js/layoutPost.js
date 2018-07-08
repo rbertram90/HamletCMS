@@ -1,4 +1,5 @@
-var LayoutEditor = function() {
+var LayoutEditor = function(blogID) {
+    this.blogID = blogID;
     this.definition = null;
     this.outputElement = null;
     this.jsonElement = null;
@@ -100,21 +101,24 @@ LayoutEditor.prototype.generateHTML = function() {
         for (var c = 0; c < row.columns.length; c++) {
 
             var column = row.columns[c];
-            var classes = "column";
+            var classes = "";
             if (columnWidths) {
                 switch (columnWidths[c]) {
-                    case 100: classes = "sixteen wide column"; break;
-                    case 75: classes = "twelve wide column"; break;
-                    case 66: classes = "ten wide column"; break;
-                    case 33: classes = "six wide column"; break;
-                    case 25: classes = "four wide column"; break;
+                    case 100: classes = "sixteen wide"; break;
+                    case 75: classes = "twelve wide"; break;
+                    case 66: classes = "ten wide"; break;
+                    case 33: classes = "six wide"; break;
+                    case 25: classes = "four wide"; break;
                 }
             }
-            
-            rOut += "<div class='" + classes + "'><div class='column-inner' data-column-index='" + c + "' data-row-index='" + r + "'>"
+
+            rOut += "<div class='" + classes + " column'><div class='column-inner' data-column-index='" + c + "' data-row-index='" + r + "'>"
 
             if (column.textContent) {
                 rOut += column.textContent;
+            }
+            if (column.image) {
+                rOut += '<img src="/blogdata/' + this.blogID + '/images/' + column.image + '.jpg" alt="' + column.image + '">';
             }
 
             rOut += "</div></div>"
@@ -156,8 +160,32 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
     var definition = window.layouteditor.definition.rows[rowIndex].columns[columnIndex];
 
     var modal = $('#edit_column_form');
-    modal.find('#type').val(definition.contentType);
-    modal.find('#text_content').val(definition.textContent);
+    
+    modal.find('.field').show();
+    switch (definition.contentType) {
+        case 'text':
+            modal.find("#selected_image").parent().hide();
+
+            modal.find('#text_content').val(definition.textContent);
+            modal.find('#background_colour').val(definition.backgroundColour);
+            modal.find('#font_colour').val(definition.fontColour);
+
+        break;
+        case 'image':
+            modal.find("#text_content").parent().hide();
+            modal.find("#background_colour").parent().hide();
+            modal.find("#font_colour").parent().hide();
+
+            modal.find('#selected_image').val(definition.image);
+            modal.find('.selectableimage[data-name="' + definition.image + '"]').css('border', '3px solid #0c0');
+        break;
+        case '':
+            modal.find('.field').hide();
+        break;
+    }
+
+    modal.find('#type').val(definition.contentType).parent().show();
+
     modal.find('#row_index').val(rowIndex);
     modal.find('#column_index').val(columnIndex);
     modal.modal('show');
@@ -168,16 +196,27 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
 LayoutEditor.prototype.saveColumnData = function(event) {
 
     var form = $('#edit_column_form');
-
     var rowIndex = form.find('#row_index').val();
     var columnIndex = form.find('#column_index').val();
 
-    window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
-        'contentType': form.find('#type').val(),
-        'textContent': form.find('#text_content').val()
-    };
+    switch (form.find('#type').val()) {
+        case 'text': 
+            window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
+                'contentType': form.find('#type').val(),
+                'textContent': form.find('#text_content').val(),
+                'backgroundColour': form.find('#background_colour').val(),
+                'fontColour': form.find('#font_colour').val()
+            };
+        break;
 
-    console.log('saved');
+        case 'image':
+            window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
+                'contentType': form.find('#type').val(),
+                'image': form.find('#selected_image').val()
+            };
+        break;
+    }
+
 
     window.layouteditor.generateHTML();
 };
