@@ -3,12 +3,33 @@ namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Sanitize;
 
+/**
+ * Handles requests relating to user accounts.
+ * 
+ * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
+ */
 class AccountController extends GenericController
 {
+    /**
+     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     */
     protected $model;
-    protected $request, $response;
+    /**
+     * @var \rbwebdesigns\core\Request
+     */
+    protected $request;
+    /**
+     * @var \rbwebdesigns\blogcms\Response
+     */
+    protected $response;
+    /**
+     * @var \rbwebdesigns\blogcms\model\Comments
+     */
     protected $modelComments;
     
+    /**
+     * Create an account controller instance
+     */
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
@@ -19,24 +40,24 @@ class AccountController extends GenericController
     }
     
     /**
-     * Handles /account/user/[<userid>]
+     * View a users profile.
+     * 
+     * GET /account/user/[userid]
      */
     public function user()
     {
         if ($userID = $this->request->getUrlParameter(1)) {
-            if($user = $this->model->getById($userID)) {
-                // Found user
-            }
-            else {
-                $this->response->redirect('/cms', 'User not found', 'error');
-            }
-        }
-        else {
-            $userID = BlogCMS::session()->currentUser['id'];
             $user = $this->model->getById($userID);
         }
+        else {
+            $user = BlogCMS::session()->currentUser;
+        }
 
-        $this->response->setVar('comments', $this->modelComments->getCommentsByUser($userID, 0));
+        if (!$user) {
+            $this->response->redirect('/cms', 'User not found', 'error');
+        }
+
+        $this->response->setVar('comments', $this->modelComments->getCommentsByUser($user['id'], 0));
         
         $this->response->setVar('user', $user);
         $this->response->setTitle($user['username'] . '\'s profile');
@@ -44,25 +65,29 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles GET /account/login
+     * View the login form.
+     * 
+     * GET /account/login
      */
-    public function login(&$request, &$response)
+    public function login()
     {
-        if($request->method() == 'POST') return $this->runLogin($request, $response);
+        if ($this->request->method() == 'POST') return $this->runLogin();
 
-        $response->setTitle('Login required');
-        $response->writeTemplate('account/login.tpl');
+        $this->response->setTitle('Login required');
+        $this->response->writeTemplate('account/login.tpl');
     }
 
     /**
-     * Handles GET /account/register
+     * View the user registration form.
+     * 
+     * GET /account/register
      */
-    public function register(&$request, &$response)
+    public function register()
     {
-        if($request->method() == 'POST') return $this->runRegister($request, $response);
+        if($this->request->method() == 'POST') return $this->runRegister();
 
-        $response->setTitle('Create a new account');
-        $response->writeTemplate('account/register.tpl');
+        $this->response->setTitle('Create a new account');
+        $this->response->writeTemplate('account/register.tpl');
     }
 
     /**
@@ -77,6 +102,8 @@ class AccountController extends GenericController
     }
 
     /**
+     * Process the reset password form.
+     * 
      * POST /account/resetpassword
      */
     protected function runResetPassword()
@@ -112,75 +139,82 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles POST /account/login
+     * Process the login form
+     * 
+     * POST /account/login
      */
-    protected function runLogin(&$request, &$response)
+    protected function runLogin()
     {
-        $username = $request->getString('fld_username');
-        $password = $request->getString('fld_password');
+        $username = $this->request->getString('fld_username');
+        $password = $this->request->getString('fld_password');
 
         if (strlen($username) == 0 || strlen($password) == 0) {
-            $response->redirect('/cms/account/login', 'Please complete all fields', 'error');
+            $this->response->redirect('/cms/account/login', 'Please complete all fields', 'error');
         }
 
         if ($this->model->login($username, $password)) {
-            $response->redirect('/cms', 'Welcome back', 'success');
+            $this->response->redirect('/cms', 'Welcome back', 'success');
         }
         else {
-            $response->redirect('/cms/account/login', 'No match found for username and password', 'error');
+            $this->response->redirect('/cms/account/login', 'No match found for username and password', 'error');
         }
     }
 
     /**
-     * Handles POST /account/register
+     * Process the register user form.
+     * 
+     * POST /account/register
      */
-    protected function runRegister(&$request, &$response)
+    protected function runRegister()
     {
         $details = [
-            'firstname' => $request->getString('fld_name'),
-            'surname' => $request->getString('fld_surname'),
-            'email' => $request->getString('fld_email'),
-            'emailConfirm' => $request->getString('fld_email_2'),
-            'username' => $request->getString('fld_username'),
-            'password' => $request->getString('fld_password'),
-            'passwordConfirm' => $request->getString('fld_password_2')
+            'firstname'       => $this->request->getString('fld_name'),
+            'surname'         => $this->request->getString('fld_surname'),
+            'email'           => $this->request->getString('fld_email'),
+            'emailConfirm'    => $this->request->getString('fld_email_2'),
+            'username'        => $this->request->getString('fld_username'),
+            'password'        => $this->request->getString('fld_password'),
+            'passwordConfirm' => $this->request->getString('fld_password_2')
         ];
 
         // Check all fields complete
         foreach ($details as $value) {
             if (strlen($value) == 0) {
-                $response->redirect('/cms/account/login', 'Please complete all fields', 'error');
-                break;
+                $this->response->redirect('/cms/account/login', 'Please complete all fields', 'error');
             }
         }
 
         // Validate
         if ($details['email'] != $details['emailConfirm'] || $details['password'] != $details['passwordConfirm']) {
-            $response->redirect('/cms/account/register', 'Email or passwords did not match', 'error');
+            $this->response->redirect('/cms/account/register', 'Email or passwords did not match', 'error');
         }
 
         if ($this->model->register($details)) {
-            $response->redirect('/cms/account/login', 'Account created', 'success');
+            $this->response->redirect('/cms/account/login', 'Account created', 'success');
         }
         else {
-            $response->redirect('/cms/account/login', 'Unable to create account right now - please try again later', 'error');
+            $this->response->redirect('/cms/account/login', 'Unable to create account right now - please try again later', 'error');
         }
     }
 
     /**
-     * Handles GET /account/logout
+     * Run session logout.
+     * 
+     * GET /account/logout
      */
-    public function logout(&$request, &$response)
+    public function logout()
     {
         $session = BlogCMS::session();
         $session->delete('user');
         $session->end();
         
-        $response->redirect('/', 'Logout successful', 'success');
+        $this->response->redirect('/', 'Logout successful', 'success');
     }
 
     /**
-     * Handles GET /account/settings
+     * View the account settings page.
+     * 
+     * GET /account/settings
      */
     public function settings()
     {
@@ -192,7 +226,9 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles POST /account/settings
+     * Process an account settings update.
+     * 
+     * POST /account/settings
      */
     protected function saveAccountSettings()
     {
@@ -227,7 +263,9 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles GET /account/password
+     * View the password change form.
+     * 
+     * GET /account/password
      */
     public function password()
     {
@@ -239,7 +277,9 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles POST /account/password
+     * Process the update password form.
+     * 
+     * POST /account/password
      */
     protected function updatePassword()
     {
@@ -270,6 +310,11 @@ class AccountController extends GenericController
         $this->response->redirect('/cms/account/password', 'Password changed', 'success');
     }
     
+    /**
+     * Generate a random photo name.
+     * 
+     * @todo Move out of this class
+     */
     protected function generateProfilePhotoName()
     {
         $filename = rand(10000,32000) . rand(10000,32000) . "." . pathinfo($_FILES["avatar"]["name"], PATHINFO_EXTENSION);
@@ -283,7 +328,9 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles GET /account/avatar
+     * View the change profile photo page.
+     * 
+     * GET /account/avatar
      */
     public function avatar()
     {
@@ -294,7 +341,9 @@ class AccountController extends GenericController
     }
 
     /**
-     * Handles POST /account/avatar
+     * Process change profile photo form.
+     * 
+     * POST /account/avatar
      */
     protected function updateAvatar()
     {
@@ -348,6 +397,11 @@ class AccountController extends GenericController
         $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
 
+    /**
+     * View a users profile summary card.
+     * 
+     * GET /account/card/<userid>
+     */
     public function card()
     {
         $userID = $this->request->getUrlParameter(1);
@@ -362,5 +416,5 @@ class AccountController extends GenericController
         $this->request->isAjax = true;
         $this->response->write('account/usercard.tpl');
     }
+    
 }
-

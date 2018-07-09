@@ -61,7 +61,7 @@ class Contributors extends RBFactory
      * 
      * @return bool Is the user and contributor to the blog?
      */
-    public function isBlogContributor($blogID, $userID)
+    public function isBlogContributor($userID, $blogID)
     {
         return $this->count([
             'blog_id' => Sanitize::int($blogID),

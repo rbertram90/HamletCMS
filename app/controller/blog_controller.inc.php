@@ -15,7 +15,7 @@ use rbwebdesigns\core\DateFormatter;
  * pages which are expected to return content will be passed the parameters
  * $request and $response where:
  * 
- * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
 class BlogController extends GenericController
 {
@@ -48,6 +48,9 @@ class BlogController extends GenericController
      */
     protected $response;
 
+    /**
+     * Create blog controller instance
+     */
     public function __construct()
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
@@ -131,7 +134,7 @@ class BlogController extends GenericController
         if(strlen($blogID) == 0) {
             $this->response->redirect('/cms');
         }
-        elseif(!$this->modelContributors->isBlogContributor($blogID, $currentUser['id'])) {
+        elseif(!$this->modelContributors->isBlogContributor($currentUser['id'], $blogID)) {
             $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
         }
 
@@ -252,7 +255,8 @@ class BlogController extends GenericController
      * This could be moved into a core function
      * Source: https://stackoverflow.com/a/3349792
      */
-    protected function deleteDir($dirPath) {
+    protected function deleteDir($dirPath)
+    {
         if (!is_dir($dirPath)) {
             throw new InvalidArgumentException("$dirPath must be a directory");
         }
@@ -269,4 +273,5 @@ class BlogController extends GenericController
         }
         rmdir($dirPath);
     }
+
 }

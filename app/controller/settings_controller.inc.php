@@ -83,7 +83,7 @@ class SettingsController extends GenericController
         $access = true;
 
         // Check the user is a contributor of the blog to begin with
-        if (!$this->modelContributors->isBlogContributor($this->blog['id'], $currentUser['id'])) {
+        if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog['id'])) {
             $access = false;
         }
         elseif (!$this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_CHANGE_SETTINGS)) {

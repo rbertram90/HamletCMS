@@ -46,6 +46,8 @@ use rbwebdesigns\core\Database;
 ****************************************************************/
 
     require_once SERVER_ROOT . '/app/view/response.php';
+    require_once SERVER_ROOT . '/app/view/menu.php';
+    require_once SERVER_ROOT . '/app/view/menulink.php';
     require_once SERVER_ROOT . '/app/cms.php';
 
     // Smarty

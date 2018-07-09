@@ -51,7 +51,8 @@ class BlogContentController
             $this->pathPrefix = "/blogs/{$this->blogID}";
         }
         
-        if ($this->modelContributors->isBlogContributor($blog_key, $currentUser, 'all')) {
+        // todo: Update this...
+        if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
             $this->userPermissionsLevel = 2;
         }
         elseif ($this->userIsContributor()) {
@@ -101,7 +102,7 @@ class BlogContentController
     {
         $currentUser = BlogCMS::session()->currentUser;
         if(!$currentUser) return false;
-        return $this->modelContributors->isBlogContributor($this->blogID, $currentUser);
+        return $this->modelContributors->isBlogContributor($currentUser, $this->blogID);
     }
 
     /**
@@ -125,7 +126,7 @@ class BlogContentController
 
         $isContributor = false;
         if ($currentUser = BlogCMS::session()->currentUser) {
-            $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
+            $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
         $blogConfig = $this->getBlogConfig($this->blogID);
@@ -437,7 +438,7 @@ class BlogContentController
 
         $isContributor = false;
         if ($currentUser = BlogCMS::session()->currentUser) {
-            $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
+            $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
         $blogConfig = $this->getBlogConfig($this->blogID);
@@ -625,7 +626,7 @@ class BlogContentController
             $isContributor = false;
 
             if ($currentUser = BlogCMS::session()->currentUser) {
-                $isContributor = $this->modelContributors->isBlogContributor($this->blogID, $currentUser['id']);
+                $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
             }
             if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');

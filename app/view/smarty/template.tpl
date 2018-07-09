@@ -25,7 +25,18 @@
             </div>
 
             <nav class="ui fluid vertical pointing menu">
-                {$page_sidemenu}
+                {foreach from=$page_sidemenu->getLinks() item=link}
+                    {if isset($link->url)}
+                        {if $link->active}
+                            {$active = 'active'}
+                        {else}
+                            {$active = ''}
+                        {/if}
+                        <a href="{$link->url}" class="{$active} teal item" target="{$link->target}"><span class="left floated"><i class="{$link->icon} icon"></i></span>{$link->text}</a>
+                    {else}
+                        <div class="header item">{$link->text}</div>
+                    {/if}
+                {/foreach}
             </nav>
         </div>
         <div class="twelve wide tablet thirteen wide computer column">

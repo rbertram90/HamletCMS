@@ -59,7 +59,7 @@ use rbwebdesigns\core\Sanitize;
 
         // Surely must be an ID for a blog
         // Check the user has edit permissions
-        BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($blogID, $user['id']);
+        BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($user['id'], $blogID);
 
         if (!BlogCMS::$userIsContributor) {
             $response->redirect('/', 'You\'re not a contributor for that blog!', 'error');
@@ -125,22 +125,117 @@ use rbwebdesigns\core\Sanitize;
 
     
 /****************************************************************
-  Output Template
+  Generate side menu
 ****************************************************************/
 
-    // Set the side menu content
-    // $view->setSideMenu($controller->getSideMenu($queryParams, $action));
+    $sideMenu = new Menu();
+    $sideMenuLinks = [
+        [
+            'url' => '/cms',
+            'icon' => 'list ul',
+            'label' => 'My Blogs',
+        ],
+        [
+            'label' => 'Blog Actions',
+            'permissions' => ['is_contributor'],
+        ],
+        [
+            'key' => 'overview',
+            'url' => '/cms/blog/overview/'. $blogID,
+            'icon' => 'chart bar',
+            'permissions' => ['is_contributor'],
+            'label' => 'Dashboard',
+        ],
+        [
+            'key' => 'posts',
+            'url' => '/cms/posts/manage/'. $blogID,
+            'icon' => 'copy outline',
+            'permissions' => ['is_contributor'],
+            'label' => 'Posts',
+        ],
+        [
+            'key' => 'comments',
+            'url' => '/cms/comments/all/'. $blogID,
+            'icon' => 'comments outline',
+            'label' => 'Comments',
+            'permissions' => ['manage_comments'],
+        ],
+        [
+            'key' => 'files',
+            'url' => '/cms/files/manage/'. $blogID,
+            'icon' => 'image outline',
+            'label' => 'Files',
+            'permissions' => ['delete_files'],
+        ],
+        [
+            'key' => 'settings',
+            'url' => '/cms/settings/menu/'. $blogID,
+            'icon' => 'cogs',
+            'label' => 'Settings',
+            'permissions' => ['change_settings'],
+        ],
+        [
+            'key' => 'users',
+            'url' => '/cms/contributors/manage/'. $blogID,
+            'icon' => 'users',
+            'label' => 'Contributors',
+            'permissions' => ['manage_contributors'],
+        ],
+        [
+            'key' => 'blog',
+            'url' => '/blogs/'. $blogID,
+            'icon' => 'book',
+            'label' => 'View Blog',
+            'permissions' => ['is_contributor'],
+        ],
+        [
+            'label' => 'Your Account'
+        ],
+        [
+            'key' => 'profile',
+            'url' => '/cms/account/user',
+            'icon' => 'user',
+            'label' => 'View Profile',
+        ],
+        [
+            'key' => 'accountsettings',
+            'url' => '/cms/account/settings',
+            'icon' => 'cogs',
+            'label' => 'Settings',
+        ],
+        [
+            'key' => 'logout',
+            'url' => '/cms/account/logout',
+            'icon' => 'arrow left',
+            'label' => 'Logout',
+        ]
+    ];
 
-    require SERVER_ROOT . '/app/view/sidemenu.php';
+    foreach ($sideMenuLinks as $link) {
+        $newLink = new MenuLink();
+        if ($link['url']) $newLink->url = $link['url'];
+        if ($link['icon']) $newLink->icon = $link['icon'];
+        if ($link['label']) $newLink->text = $link['label'];
+        if ($link['permissions']) $newLink->permissions = $link['permissions'];
+        if ($link['target']) $newLink->target = $link['target'];
 
-    if (BlogCMS::$blogID) {
-        $userPermissions = $modelContributors->getUserPermissions($user['id'], BlogCMS::$blogID);
-        $sideMenu = getCMSSideMenu(BlogCMS::$blogID, BlogCMS::$activeMenuLink, $userPermissions);
+        if (isset($link['key']) && $link['key'] == BlogCMS::$activeMenuLink) {
+            $newLink->active = true;
+        }
+
+        if (!$newLink->accessible()) continue;
+
+        $sideMenu->addLink($newLink);
     }
-    else {
-        $sideMenu = getCMSSideMenu(0, BlogCMS::$activeMenuLink);
-    }
+
+    BlogCMS::runHook('onMenuGenerated', ['id' => 'cms_main_actions', 'menu' => $sideMenu]);
+
     $response->setVar('page_sidemenu', $sideMenu);
+
+    
+/****************************************************************
+  Run wrapping template
+****************************************************************/
 
     // Run Template here
     $response->writeTemplate('template.tpl');
