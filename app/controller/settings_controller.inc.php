@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\blogcms\model\ContributorGroups;
+use rbwebdesigns\blogcms\Menu;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\HTMLFormTools;
@@ -9,9 +10,7 @@ use rbwebdesigns\core\AppSecurity;
 use Codeliner\ArrayReader\ArrayReader;
 
 /**
- * class SettingsController
- *
- * This is the controller which acts as the intermediatory between the
+ * The controller acts as the intermediatory between the
  * model (database) and the view. Any requests to the model are sent from
  * here rather than the view.
  */
@@ -100,6 +99,11 @@ class SettingsController extends GenericController
      */
     public function menu()
     {
+        $settingsMenu = new Menu('settings');
+
+        BlogCMS::runHook('onGenerateMenu', ['id' => 'settings', 'menu' => &$settingsMenu]);
+
+        $this->response->setVar('menu', $settingsMenu->getLinks());
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Blog Settings - ' . $this->blog['name']);
         $this->response->write('settings/menu.tpl');

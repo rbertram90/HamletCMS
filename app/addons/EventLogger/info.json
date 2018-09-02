@@ -1,0 +1,12 @@
+{
+    "name": "Event logger",
+    "author": "Ricky",
+    "enabled": 1,
+    "namespace": "\\rbwebdesigns\\blogcms",
+    "files": [
+
+    ],
+    "dependencies": [
+
+    ]
+}

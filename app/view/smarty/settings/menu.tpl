@@ -10,65 +10,34 @@
             <div class="ui secondary segment">
                 This section allows you to change the look and feel of the blog.</p>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="column">
             <h3 class="ui header">General</h3>
         </div>
     </div>
 
-    <div class="two columns row">
-        
-        <div class="column">
+    {foreach name=menuitems from=$menu item=menuitem}
+        <div class="eight wide column">
             <div class="ui segment clearing">
                 <h4 class="ui header">
-                    <i class="wrench icon"></i>
+                    <i class="{$menuitem->icon} icon"></i>
                     <div class="content">
-                        <a href="/cms/settings/general/{$blog.id}">Name &amp; Description</a>
-                        <div class="sub header">Update the identity of your blog</div>
-                    </div>
-                </h4>
-            </div>
-            <div class="ui segment clearing">
-                <h4 class="ui header">
-                    <i class="table icon"></i>
-                    <div class="content">
-                        <a href="/cms/settings/header/{$blog.id}">Header</a>
-                        <div class="sub header">Settings for your blog header</div>
-                    </div>
-                </h4>
-            </div>
-            <div class="ui segment clearing">
-                <h4 class="ui header">
-                    <i class="sitemap icon"></i>
-                    <div class="content">
-                        <a href="/cms/settings/pages/{$blog.id}">Pages</a>
-                        <div class="sub header">Add posts to the blog menu</div>
+                        <a href="{$menuitem->url}">{$menuitem->text}</a>
+                        <div class="sub header">{$menuitem->subtext}</div>
                     </div>
                 </h4>
             </div>
         </div>
-        
+    {/foreach}
+
+    <div class="row">
         <div class="column">
-            <div class="ui segment clearing">
-                <h4 class="ui header">
-                    <i class="copy outline icon"></i>
-                    <div class="content">
-                        <a href="/cms/settings/posts/{$blog.id}">Posts</a>
-                        <div class="sub header">Change how posts are displayed</div>
-                    </div>
-                </h4>
-            </div>
-            <div class="ui segment clearing">
-                <h4 class="ui header">
-                    <i class="table icon"></i>
-                    <div class="content">
-                        <a href="/cms/settings/footer/{$blog.id}">Footer</a>
-                        <div class="sub header">Settings for your blog footer</div>
-                    </div>
-                </h4>
-            </div>
+            <h3 class="ui header">Design</h3>
         </div>
     </div>
-
-    <h3 class="ui header">Design</h3>
     
     <div class="two columns row">
         

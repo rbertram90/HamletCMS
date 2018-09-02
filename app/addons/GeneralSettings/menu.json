@@ -1,0 +1,47 @@
+[
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.general",
+        "weight": 10,
+        "text": "Name & Description",
+        "subtext": "Update the identity of your blog",
+        "icon": "wrench"
+    },
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.posts",
+        "weight": 20,
+        "text": "Posts",
+        "subtext": "Change how posts are displayed",
+        "icon": "copy outline"
+    },
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.header",
+        "weight": 15,
+        "text": "Header",
+        "subtext": "Settings for your blog header",
+        "icon": "table"
+    },
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.footer",
+        "weight": 25,
+        "text": "Footer",
+        "subtext": "Settings for your blog footer",
+        "icon": "table"
+    },
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.pages",
+        "weight": 30,
+        "text": "Pages",
+        "subtext": "Add pages to the blog menu",
+        "icon": "sitemap"
+    }
+]

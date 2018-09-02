@@ -1,0 +1,12 @@
+{
+    "name": "General settings",
+    "author": "Ricky",
+    "enabled": 1,
+    "namespace": "\\rbwebdesigns\\blogcms",
+    "files": [
+
+    ],
+    "dependencies": [
+
+    ]
+}
