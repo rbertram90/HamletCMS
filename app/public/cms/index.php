@@ -141,49 +141,49 @@ use rbwebdesigns\core\Sanitize;
         ],
         [
             'key' => 'overview',
-            'url' => '/cms/blog/overview/'. $blogID,
+            'url' => '/cms/blog/overview/'. BlogCMS::$blogID,
             'icon' => 'chart bar',
             'permissions' => ['is_contributor'],
             'label' => 'Dashboard',
         ],
         [
             'key' => 'posts',
-            'url' => '/cms/posts/manage/'. $blogID,
+            'url' => '/cms/posts/manage/'. BlogCMS::$blogID,
             'icon' => 'copy outline',
             'permissions' => ['is_contributor'],
             'label' => 'Posts',
         ],
         [
             'key' => 'comments',
-            'url' => '/cms/comments/all/'. $blogID,
+            'url' => '/cms/comments/all/'. BlogCMS::$blogID,
             'icon' => 'comments outline',
             'label' => 'Comments',
             'permissions' => ['manage_comments'],
         ],
         [
             'key' => 'files',
-            'url' => '/cms/files/manage/'. $blogID,
+            'url' => '/cms/files/manage/'. BlogCMS::$blogID,
             'icon' => 'image outline',
             'label' => 'Files',
             'permissions' => ['delete_files'],
         ],
         [
             'key' => 'settings',
-            'url' => '/cms/settings/menu/'. $blogID,
+            'url' => '/cms/settings/menu/'. BlogCMS::$blogID,
             'icon' => 'cogs',
             'label' => 'Settings',
             'permissions' => ['change_settings'],
         ],
         [
             'key' => 'users',
-            'url' => '/cms/contributors/manage/'. $blogID,
+            'url' => '/cms/contributors/manage/'. BlogCMS::$blogID,
             'icon' => 'users',
             'label' => 'Contributors',
             'permissions' => ['manage_contributors'],
         ],
         [
             'key' => 'blog',
-            'url' => '/blogs/'. $blogID,
+            'url' => '/blogs/'. BlogCMS::$blogID,
             'icon' => 'book',
             'label' => 'View Blog',
             'permissions' => ['is_contributor'],
@@ -228,7 +228,7 @@ use rbwebdesigns\core\Sanitize;
         $sideMenu->addLink($newLink);
     }
 
-    BlogCMS::runHook('onMenuGenerated', ['id' => 'cms_main_actions', 'menu' => $sideMenu]);
+    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => $sideMenu]);
 
     $response->setVar('page_sidemenu', $sideMenu);
 
