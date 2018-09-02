@@ -94,7 +94,9 @@ class Contributors extends RBFactory
         $groupQuery = $this->db->query("SELECT `data` FROM {$this->tableGroups} WHERE id={$groupQuery['group_id']}");
 
         if($group = $groupQuery->fetch(\PDO::FETCH_ASSOC)) {
-            return JSONHelper::JSONtoArray($group['data']);
+            $userPermissions = JSONHelper::JSONtoArray($group['data']);
+            $userPermissions['is_contributor'] = $this->isBlogContributor($userID, $blogID);
+            return $userPermissions;
         }
 
         return false;
@@ -103,24 +105,25 @@ class Contributors extends RBFactory
     /**
      * @param int    $blogID
      * @param int    $userID
-     * @param string $permissionName
+     * @param string|array $permissionName
      */
     public function userHasPermission($userID, $blogID, $permissionName)
     {
-        $groupQuery = $this->get('group_id', [
-            'user_id' => $userID,
-            'blog_id' => $blogID,
-        ], '', '', false);
-
-        if (!$groupQuery) return false;
-
-        $groupQuery = $this->db->query("SELECT `data` FROM {$this->tableGroups} WHERE id={$groupQuery['group_id']}");
-
-        if($group = $groupQuery->fetch(\PDO::FETCH_ASSOC)) {
-            $data = JSONHelper::JSONtoArray($group['data']);
-            return isset($data[$permissionName]) && $data[$permissionName];
+        if (!$permissions = $this->getUserPermissions($userID, $blogID)) {
+            return false;
         }
-        return false;
+
+        if (gettype($permissionName) == 'string') {
+            return isset($permissions[$permissionName]) && $permissions[$permissionName];
+        }
+        elseif (gettype($permissionName) == 'array') {
+            foreach ($permissionName as $requiredPermission) {
+                if (!isset($permissions[$requiredPermission]) || !$permissions[$requiredPermission]) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     /**

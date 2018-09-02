@@ -21,11 +21,16 @@ class MenuLink
      */
     public $text;
     /**
+     * @var string Link descriptive text
+     */
+    public $subtext;
+    /**
      * @var string Target window for anchor
      */
     public $target = '_self';
     /**
      * @var array Permissions required to use this link
+     *   for list of permissions see constants in class ContributorGroups
      */
     public $permissions = [];
     /**
@@ -50,20 +55,7 @@ class MenuLink
         }
 
         $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
-
-        $isContributor = $modelContributors->isBlogContributor(BlogCMS::session()->currentUser['id'], BlogCMS::$blogID);
-        $userPermissions = $modelContributors->getUserPermissions(BlogCMS::session()->currentUser['id'], BlogCMS::$blogID);
-
-        foreach ($this->permissions as $requiredPermission) {
-            if ($requiredPermission == 'is_contributor') {
-                return $isContributor;
-            }
-            elseif (!isset($userPermissions[$requiredPermission]) || !$userPermissions[$requiredPermission]) {
-                return false;
-            }
-        }
-
-        return true;
+        return $modelContributors->userHasPermission(BlogCMS::session()->currentUser['id'], BlogCMS::$blogID, $this->permissions);
     }
 
 }

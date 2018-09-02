@@ -185,8 +185,7 @@ class BlogController extends GenericController
         }
         else {
             $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
-            // var_dump($newblogkey);
-            // die();
+
             if (!$newblogkey) {
                 $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
             }
