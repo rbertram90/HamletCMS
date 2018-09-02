@@ -4,6 +4,8 @@ namespace rbwebdesigns\blogcms;
 use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\model\ModelManager;
+use rbwebdesigns\blogcms\Addon;
+use rbwebdesigns\core\JSONHelper;
 
 /**
  * /app/cms.php
@@ -60,6 +62,9 @@ class BlogCMS
         return self::$config;
     }
 
+    /**
+     * @param array $items
+     */
     public static function addToConfig($items)
     {
         self::$config = array_merge_recursive(self::$config, $items);
@@ -137,19 +142,19 @@ class BlogCMS
         return $modelManager->get($modelName);
     }
 
-    
     /**
      * Include a class in the addons.
      * 
      * @param string $className
      */
-    public static function registerAddon($className) {
-        if (array_key_exists($className, self::$addons)) {
+    public static function registerAddon($directoryName)
+    {
+        if (array_key_exists($directoryName, self::$addons)) {
             // don't duplicate entries
             return;
         }
-        $className = "\\rbwebdesigns\\blogcms\\$className";
-        self::$addons[$className] = new $className();
+
+        self::$addons[$className] = new Addon($directoryName);
     }
 
     /**
@@ -158,12 +163,139 @@ class BlogCMS
      * @param string $hookName
      * @param array  $parameters
      */
-    public static function runHook($hookName, $parameters) {
-        foreach (self::$addons as $class) {
-            if (method_exists($class, $hookName)) {
-                $class->$hookName($parameters);
+    public static function runHook($hookName, $parameters)
+    {
+        foreach (self::$addons as $addon) {
+            if (!$addon->instance) continue;
+            if (method_exists($addon->instance, $hookName)) {
+                $addon->instance->$hookName($parameters);
             }
         }
     }
-    
+
+    /**
+     * Transform a route into a URL
+     * 
+     * @param string $route
+     *  Name of the route to fetch
+     * 
+     * @return string
+     *  URL that corresponds to the route
+     */
+    public static function route($route)
+    {
+        $routeCache = self::getCache('routes');
+
+        if (!array_key_exists($route, $routeCache)) return false;
+
+        if (array_key_exists('permissions', $routeCache[$route])) {
+            // Check permissions
+            $modelContributors = self::model('\rbwebdesigns\blogcms\model\Contributors');
+            $granted = $modelContributors->userHasPermission(self::session()->currentUser['id'], self::$blogID, $routeCache[$route]['permissions']);
+            if (!$granted) return false;
+        }
+
+        $url = $routeCache[$route]['path'];
+        $url = str_replace('{BLOG_ID}', self::$blogID, $url);
+
+        return $url;
+    }
+
+    /**
+     * Create cache folder if not already created.
+     */
+    public static function getCacheDirectory()
+    {
+        $dir = SERVER_ROOT .'/cache';
+
+        if (!is_dir($dir)) {
+            if (!mkdir($dir)) {
+                die('Unable to create cache folder - please ensure the web server has write access to project root directory');
+            }
+        }
+
+        return $dir;
+    }
+
+    /**
+     * Get a cache by name - this will match the filename
+     */
+    public static function getCache($name)
+    {
+        $cacheDir = self::getCacheDirectory();
+        if (!file_exists($cacheDir .'/'. $name .'.json')) {
+            return false;
+        }
+
+        return JSONhelper::JSONFileToArray($cacheDir .'/'. $name .'.json');
+    }
+
+    /**
+     * Generate the menu links cache.
+     */
+    public static function generateMenuCache()
+    {
+        $cacheDir = self::getCacheDirectory();
+
+        $file = fopen($cacheDir .'/menus.json', 'w');
+        $menuCache = [];
+
+        foreach (self::$addons as $addon) {
+            if (file_exists(SERVER_ADDONS_PATH .'/'. $addon->key .'/menu.json')) {
+                $links = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH .'/'. $addon->key .'/menu.json');
+                foreach ($links as $link) {
+                    if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
+
+                    if (array_key_exists($link['weight'], $menuCache[$link['menu']])) {
+                        print 'WARNING: Duplicate menu weighting ('. $link['weight'] .') for '. $link['menu'] .' in '. $addon->key.PHP_EOL;
+                        continue;
+                    }
+
+                    $menuCache[$link['menu']][$link['weight']] = array_diff_key($link, ['menu' => null, 'weight' => null]);
+
+                    if (php_sapi_name() == "cli") {
+                        print "INFO: Added link to ". $link['menu'] .PHP_EOL;
+                    }
+                }
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($menuCache));
+        fclose($file);
+    }
+
+    /**
+     * Generate routes
+     */
+    public static function generateRouteCache()
+    {
+        // clear all routes
+        // $modelManager = ModelManager::getInstance(self::$config['database']['name']);
+        // $connection = $modelManager->getDatabaseConnection();
+
+        $cacheDir = self::getCacheDirectory();
+
+        $file = fopen($cacheDir .'/routes.json', 'w');
+        $routeCache = [];
+
+        foreach (self::$addons as $addon) {
+            if (file_exists(SERVER_ADDONS_PATH .'/'. $addon->key .'/routes.json')) {
+                $routes = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH .'/'. $addon->key .'/routes.json');
+                foreach ($routes as $route) {
+                    if (array_key_exists($route['key'], $routes)) {
+                        print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $addon->key.PHP_EOL;
+                        continue;
+                    }
+                    $routeCache[$route['key']] = $route;
+
+                    if (php_sapi_name() == "cli") {
+                        print "INFO: Added route - ". $route['key'] .PHP_EOL;
+                    }
+                }
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($routeCache));
+        fclose($file);
+    }
 }

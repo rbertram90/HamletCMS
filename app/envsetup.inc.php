@@ -2,6 +2,31 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Database;
+use rbwebdesigns\core\JSONhelper;
+
+    // Load JSON config file
+    // Note: cannot use core function to do this as hasn't been loaded
+    // at this stage - chicken and egg situation
+    if (!file_exists(__DIR__ . '/config/config.json')) {
+        die('Site not configured - please create file /app/config/config.json');
+    }
+
+    $config = JSONhelper::JSONFileToArray(__DIR__ . '/config/config.json');
+
+    define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
+    
+    define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
+    define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
+    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
+    define('SERVER_ADDONS_PATH', SERVER_ROOT . '/app/addons');        // Path to addons folder
+    define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
+    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
+    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');  // Path to the folder containing user avatars
+    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');      // Path to installed widgets
+
+    // Make sure we're in the right timezone
+    date_default_timezone_set($config['environment']['timezone']);
+
 
 /****************************************************************
   Session Handling
@@ -48,6 +73,7 @@ use rbwebdesigns\core\Database;
     require_once SERVER_ROOT . '/app/view/response.php';
     require_once SERVER_ROOT . '/app/view/menu.php';
     require_once SERVER_ROOT . '/app/view/menulink.php';
+    require_once SERVER_ROOT . '/app/addon.php';
     require_once SERVER_ROOT . '/app/cms.php';
 
     // Smarty
@@ -67,3 +93,28 @@ use rbwebdesigns\core\Database;
     
     // Import view functions
     require_once SERVER_ROOT.'/app/view/page_header.php';
+
+
+    // Store the configuration
+    BlogCMS::addToConfig($config);
+
+/****************************************************************
+  Set-Up Hooks
+****************************************************************/    
+
+    // Import all addons
+    $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/addons');
+
+    foreach ($directoryListing as $file) {
+        if ($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..') {
+            
+            $dirPath = $file->getPath() . '/' . $file->getFilename();
+
+            if (!file_exists($dirPath . '/info.json')) continue;
+
+            $moduleInfo = JSONhelper::JSONFileToArray($dirPath . '/info.json');
+            if ($moduleInfo['enabled'] != 1) continue;
+
+            BlogCMS::registerAddon($file->getFilename());
+        }
+    }
