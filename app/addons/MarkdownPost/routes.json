@@ -1,0 +1,7 @@
+[
+    {
+        "key": "posts.create.markdown",
+        "path": "/cms/posts/create/{BLOG_ID}/standard",
+        "permissions": ["create_posts"]
+    }
+]

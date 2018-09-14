@@ -189,6 +189,10 @@ class PostsController extends GenericController
             break;
             
             default:
+            $newPostMenu = new Menu('newpost');
+            BlogCMS::runHook('onGenerateMenu', ['id' => 'newpost', 'menu' => &$newPostMenu]);
+
+            $this->response->setVar('menu', $newPostMenu->getLinks());
             $this->response->write('posts/newpostmenu.tpl');
             break;
         }

@@ -1,0 +1,11 @@
+[
+    {
+        "menu": "newpost",
+        "type": "route",
+        "route": "posts.create.markdown",
+        "weight": 10,
+        "text": "Markdown post",
+        "subtext": "Create a post using markdown code to add formatting.",
+        "icon": "wrench"
+    }
+]

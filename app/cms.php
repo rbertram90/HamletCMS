@@ -154,7 +154,7 @@ class BlogCMS
             return;
         }
 
-        self::$addons[$className] = new Addon($directoryName);
+        self::$addons[$directoryName] = new Addon($directoryName);
     }
 
     /**

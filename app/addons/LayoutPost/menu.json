@@ -1,0 +1,11 @@
+[
+    {
+        "menu": "newpost",
+        "type": "route",
+        "route": "posts.create.layout",
+        "weight": 20,
+        "text": "Layout post",
+        "subtext": "Create a post using our layout editor to create a structured post.",
+        "icon": "wrench"
+    }
+]

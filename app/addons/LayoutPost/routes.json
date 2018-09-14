@@ -1,0 +1,7 @@
+[
+    {
+        "key": "posts.create.layout",
+        "path": "/cms/posts/create/{BLOG_ID}/layout",
+        "permissions": ["create_posts"]
+    }
+]
