@@ -12,7 +12,7 @@ class Addon
     public $instance = null;
 
     // These should be set in the info.json folder
-    public $namespace;
+    // public $namespace;
     public $author;
 
     public function __construct($key)
@@ -27,7 +27,7 @@ class Addon
 
         if (file_exists(SERVER_ADDONS_PATH . '/' . $this->key . '/' . $this->key . '.php')) {
             require_once SERVER_ADDONS_PATH . '/' . $this->key . '/' . $this->key . '.php';
-            $className = $this->namespace . '\\' . $this->key;
+            $className = '\\rbwebdesigns\\blogcms\\' . $this->key;
             $this->instance = new $className();
         }
     }

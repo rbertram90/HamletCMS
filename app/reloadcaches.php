@@ -8,3 +8,5 @@ require_once __DIR__ . '/envsetup.inc.php';
 
 BlogCMS::generateRouteCache();
 BlogCMS::generateMenuCache();
+BlogCMS::generatePermissionCache();
+BlogCMS::generateTemplateCache();

@@ -1,0 +1,9 @@
+[
+    {
+        "menu": "blog_actions",
+        "type": "route",
+        "route": "blog.dashboard",
+        "weight": 10,
+        "text": "Dashboard"
+    }
+]

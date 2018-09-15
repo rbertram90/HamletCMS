@@ -1,0 +1,23 @@
+[
+    {
+        "key": "comments.all",
+        "path": "/cms/comments/all/{BLOG_ID}",
+        "permissions": ["administer_comments"],
+        "controller": "\\rbwebdesigns\\blogcms\\PostComments\\Controller\\Comments",
+        "action": "all"
+    },
+    {
+        "key": "comments.approve",
+        "path": "/cms/comments/approve/{COMMENT_ID}",
+        "permissions": ["administer_comments"],
+        "controller": "\\rbwebdesigns\\blogcms\\PostComments\\Controller\\Comments",
+        "action": "approve"
+    },
+    {
+        "key": "comments.delete",
+        "path": "/cms/comments/delete/{COMMENT_ID}",
+        "permissions": ["administer_comments"],
+        "controller": "\\rbwebdesigns\\blogcms\\PostComments\\Controller\\Comments",
+        "action": "delete"
+    }
+]

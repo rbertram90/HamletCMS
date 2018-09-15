@@ -5,6 +5,9 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
 
 /**
+ * @deprecated NO LONGER IN USE!!!!
+ * @see addons/PostComments
+ * 
  * /app/controller/blog_controller.inc.php
  *  
  * The controller acts as the intermediatory between the
@@ -94,6 +97,11 @@ class BlogController extends GenericController
             else {
                 $lastposted = 'Currently Nothing Posted!';
             }
+
+            // Get all menu items
+            $blogActions = new Menu('bloglist');
+            BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions]);
+            $blogs[$key]['actions'] = $blogActions;
         }
         
         BlogCMS::$activeMenuLink = 'dashboard';

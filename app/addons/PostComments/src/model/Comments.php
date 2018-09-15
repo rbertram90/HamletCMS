@@ -1,13 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\blogcms\PostComments\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
 /**
- * @deprecated NO LONGER IN USE!!!!
- * @see addons/PostComments
- * 
  * /app/model/mdl_comment.inc.php
  * Access to the comment database is done through this class
  * 
@@ -23,7 +20,7 @@ class Comments extends RBFactory
     function __construct($modelFactory)
     {
         $this->db = $modelFactory->getDatabaseConnection();
-        $this->tableName = TBL_COMMENTS;
+        $this->tableName = 'comments';
 
         $this->fields = array(
             'id' => 'number',

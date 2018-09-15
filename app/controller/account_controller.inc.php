@@ -22,10 +22,6 @@ class AccountController extends GenericController
      * @var \rbwebdesigns\blogcms\Response
      */
     protected $response;
-    /**
-     * @var \rbwebdesigns\blogcms\model\Comments
-     */
-    protected $modelComments;
     
     /**
      * Create an account controller instance
@@ -33,8 +29,6 @@ class AccountController extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
     }
@@ -57,8 +51,10 @@ class AccountController extends GenericController
             $this->response->redirect('/cms', 'User not found', 'error');
         }
 
-        $this->response->setVar('comments', $this->modelComments->getCommentsByUser($user['id'], 0));
-        
+        $dynamicContent = "";
+        BlogCMS::runHook('content', ['key' => 'userProfile', 'user' => $user, 'content' => &$dynamicContent]);
+        $this->response->setVar('dynamicContent', $dynamicContent);
+
         $this->response->setVar('user', $user);
         $this->response->setTitle($user['username'] . '\'s profile');
         $this->response->write('account/viewuser.tpl');
@@ -153,6 +149,8 @@ class AccountController extends GenericController
         }
 
         if ($this->model->login($username, $password)) {
+            BlogCMS::runHook('onAccountLogin');
+
             $this->response->redirect('/cms', 'Welcome back', 'success');
         }
         else {
@@ -190,6 +188,7 @@ class AccountController extends GenericController
         }
 
         if ($this->model->register($details)) {
+            BlogCMS::runHook('onAccountCreated');
             $this->response->redirect('/cms/account/login', 'Account created', 'success');
         }
         else {
@@ -255,6 +254,7 @@ class AccountController extends GenericController
         }
         
         if ($this->model->saveSettings($details)) {
+            BlogCMS::runHook('onAccountUpdated');
             $this->response->redirect('/cms/account/settings', 'Account updated', 'success');
         }
         else {
@@ -307,6 +307,7 @@ class AccountController extends GenericController
             $this->response->redirect('/cms/account/password', 'Failed to save new password', 'error');
         }
         
+        BlogCMS::runHook('onPasswordChanged');
         $this->response->redirect('/cms/account/password', 'Password changed', 'success');
     }
     
@@ -394,6 +395,7 @@ class AccountController extends GenericController
         imagecopy($destImage, $srcImage , 0 , 0 , $startX , $startY , $min , $min);
         imagejpeg($destImage, $destLoc);
         
+        BlogCMS::runHook('onAvatarChanged');
         $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
 

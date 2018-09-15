@@ -6,7 +6,7 @@ use rbwebdesigns\core\Sanitize;
 /**
  * This controller will be no longer
  * 
- * Will be moving methods over to their appropriate controller (posts/comments/blogs)
+ * Will be moving methods over to their appropriate controller (posts/blogs)
  */
 
 class AjaxController extends GenericController

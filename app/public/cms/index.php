@@ -74,19 +74,35 @@ use rbwebdesigns\core\Sanitize;
   Setup controller
 ****************************************************************/
     
-    // Check if we've got a valid controller
-    $controllerFilePath = SERVER_ROOT . '/app/controller/' . $controllerName . '_controller.inc.php';
-
-    if(!file_exists($controllerFilePath)) {
-        $response->redirect('/cms', 'Page not found', 'error');
+    // New - get the controller from pre-defined routes in addons
+    $found = false;
+    if ($route = BlogCMS::pathMatch()) {
+        if ($route['controller'] && $route['action']) {
+            $found = true;
+            $controller = new $route['controller']();
+            $action = $route['action'];
+        }
     }
-    
-    // Get controller class file
-    require_once $controllerFilePath;
-    
-    // Dynamically instantiate new class
-    $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
-    $controller = new $controllerClassName();
+
+    if (!$found) {
+        // Core result
+        // Check if we've got a valid controller
+        $controllerFilePath = SERVER_ROOT . '/app/controller/' . $controllerName . '_controller.inc.php';
+
+        if(!file_exists($controllerFilePath)) {
+            $response->redirect('/cms', 'Page not found', 'error');
+        }
+        
+        // Get controller class file
+        require_once $controllerFilePath;
+        
+        // Dynamically instantiate new class
+        $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
+        $controller = new $controllerClassName();
+
+        $action = $request->getUrlParameter(0, 'defaultAction');
+    }
+
 
 /****************************************************************
   Get body content
@@ -111,7 +127,7 @@ use rbwebdesigns\core\Sanitize;
     $response->setDescription('Default page description');
 
     // Call the requested function
-    $action = $request->getUrlParameter(0, 'defaultAction');
+
     ob_start();
     $controller->$action($request, $response);
     $response->setBody(ob_get_contents());

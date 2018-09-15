@@ -70,6 +70,13 @@ use rbwebdesigns\core\JSONhelper;
   Includes
 ****************************************************************/
 
+    spl_autoload_register(function ($class) {
+        $split = explode('\\', $class);
+        if (count($split) < 5) error_log('Unable to load class '. $class);
+        $type = strtolower($split[3]);
+        include SERVER_ADDONS_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
+    });
+
     require_once SERVER_ROOT . '/app/view/response.php';
     require_once SERVER_ROOT . '/app/view/menu.php';
     require_once SERVER_ROOT . '/app/view/menulink.php';
@@ -83,7 +90,6 @@ use rbwebdesigns\core\JSONhelper;
     require_once SERVER_ROOT.'/app/model/mdl_eventlog.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_blog.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
-    require_once SERVER_ROOT.'/app/model/mdl_comment.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_contributorgroups.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_account.inc.php';

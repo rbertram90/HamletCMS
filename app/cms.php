@@ -182,7 +182,7 @@ class BlogCMS
      * @return string
      *  URL that corresponds to the route
      */
-    public static function route($route)
+    public static function route($route, $data = [])
     {
         $routeCache = self::getCache('routes');
 
@@ -198,7 +198,53 @@ class BlogCMS
         $url = $routeCache[$route]['path'];
         $url = str_replace('{BLOG_ID}', self::$blogID, $url);
 
+        foreach ($data as $key => $var) {
+            $key = strtoupper($key);
+            $url = str_replace('{' . $key . '}', $var, $url);
+        }
+
         return $url;
+    }
+
+    /**
+     * Need a function that takes the current url path and finds the corresponding route
+     */
+    public static function pathMatch()
+    {
+        // todo
+        $routeCache = self::getCache('routes');
+
+        $requestPath = ['cms', self::request()->getControllerName()];
+
+        $e = 0;
+        while ($elem = self::request()->getUrlParameter($e, false)) {
+            $requestPath[] = $elem;
+            $e++;
+        }
+        $pathCount = count($requestPath);
+
+        foreach ($routeCache as $route) {
+            $splitRoute = explode('/', $route['path']);
+            array_shift($splitRoute);
+
+            if (count($splitRoute) != $pathCount) continue;
+
+            $match = true;
+            for ($r = 0; $r < count($splitRoute); $r++) {
+                if (substr($splitRoute[$r], 0, 1) == '{') {
+                    continue;
+                }
+                if ($splitRoute[$r] != $requestPath[$r]) {
+                    $match = false;
+                    break;
+                }
+            }
+            if ($match) {
+                return $route;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -298,4 +344,59 @@ class BlogCMS
         fwrite($file, JSONHelper::arrayToJSON($routeCache));
         fclose($file);
     }
+
+    /**
+     * Generate permissions
+     * @todo a lot of this code is the same as routes - make a generic function
+     */
+    public static function generatePermissionCache()
+    {
+        $cacheDir = self::getCacheDirectory();
+
+        $file = fopen($cacheDir .'/permissions.json', 'w');
+        $permissionCache = [];
+
+        foreach (self::$addons as $addon) {
+            $filePath = SERVER_ADDONS_PATH .'/'. $addon->key .'/permissions.json';
+            if (file_exists($filePath)) {
+                $permissions = JSONhelper::JSONFileToArray($filePath);
+                foreach ($permissions as $permission) {
+                    if (array_key_exists($permission['key'], $permissions)) {
+                        print 'WARNING: Duplicate permission key "'. $permission['key'] .'" in '. $addon->key.PHP_EOL;
+                        continue;
+                    }
+                    $permissionCache[$permission['key']] = $permission;
+
+                    if (php_sapi_name() == "cli") {
+                        print "INFO: Added permission - ". $permission['key'] .PHP_EOL;
+                    }
+                }
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($permissionCache));
+        fclose($file);
+    }
+
+    /**
+     * Generate a list of all template directories for smarty
+     */
+    public static function generateTemplateCache()
+    {
+        $cacheDir = self::getCacheDirectory();
+
+        $file = fopen($cacheDir .'/templates.json', 'w');
+        $templatesCache = [];
+
+        foreach (self::$addons as $addon) {
+            $dirPath = SERVER_ADDONS_PATH .'/'. $addon->key .'/src/templates';
+            if (file_exists($dirPath)) {
+                $templatesCache[$addon->key] = $dirPath;
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($templatesCache));
+        fclose($file);
+    }
+    
 }

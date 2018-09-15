@@ -245,32 +245,12 @@ class BlogContentController
         }
         return $navigation;
     }
-
-    /**
-     *  Generate the HTML for the widgets on the blog
-     *  @return <string> Page HTML
-     */
-    public function generateWidgets()
-    {
-        // replace quotes - caused by sanitize_string when storing in database - should we be doing this?
-        $blogJSON = str_replace("&#34;", '"', $this->blog['widgetJSON']);
-        
-        // Convert config to array
-        $arrayWidgets = json_decode($blogJSON, true);
-        
-        // Default the JSON if none found - again this should be saved elsewhere...
-        // if(strlen($blogJSON) == 0) $blogJSON = '{"profile":{"order":1,"show":1},"postlist":{"order":2,"show":1},"taglist":{"order":3,"show":1},"subscribers":{"order":4,"show":1},"comments":{"order":5,"show":1}}';
-        
-        // View
-        require SERVER_ROOT.'/app/view/widgets/widgets.php';
-        return generateWidgets($arrayWidgets, $this->modelPosts, $this->modelBlogs, $this->modelComments, $this->blog, $this->modelUsers);
-    }
     
     /**
      * New widget generator
      * @todo complete
      */
-    public function generateWidgets2()
+    public function generateWidgets()
     {
         $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
         $widgets = [];

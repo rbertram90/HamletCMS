@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Response;
+use rbwebdesigns\core\JSONHelper;
 
 class BlogCMSResponse extends Response
 {
@@ -10,15 +11,29 @@ class BlogCMSResponse extends Response
     public function __construct()
     {
         $this->smarty = new \Smarty;
-        $this->smarty->setTemplateDir([
+
+        $cacheDirectories = [
             'main' => SERVER_ROOT.'/app/view/smarty/'
-        ]);
+        ];
+
+        $cacheDir = BlogCMS::getCacheDirectory();
+        if (!is_file($cacheDir. '/templates.json')) {
+            BlogCMS::generateTemplateCache();
+        }
+        $templateCache = JSONHelper::jsonFileToArray($cacheDir. '/templates.json');
+        foreach ($templateCache as $key => $dir) {
+            $cacheDirectories[$key] = $dir;
+        }
+
+        $this->smarty->setTemplateDir($cacheDirectories);
+
+        $this->smarty->setCacheDir($cacheDir); // not sure this is taking effect? need one for each key?
     }
 
     /**
      * Provide a render function that uses smarty template
      */
-    public function write($templatePath)
+    public function write($templatePath, $source='main', $output = true)
     {
         $session = BlogCMS::session();
         $currentUser = $session->currentUser;
@@ -28,12 +43,15 @@ class BlogCMSResponse extends Response
         // Note using this class we are ALWAYS using smarty template
         // $usesmarty = (substr($templatePath, -3) == 'tpl');
 
-        if(!file_exists($this->smarty->getTemplateDir('main') . $templatePath)) {
+        if(!file_exists($this->smarty->getTemplateDir($source) . $templatePath)) {
             $debug = print_r(debug_backtrace(), true);
             die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
         }
+        elseif ($output){
+            $this->smarty->display("file:[$source]". $templatePath);
+        }
         else {
-            $this->smarty->display($templatePath);
+            return $this->smarty->fetch("file:[$source]". $templatePath);
         }
     }
 
