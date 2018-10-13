@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "files.manage",
+        "icon": "image outline",
+        "text": "Files",
+        "weight": 30
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "contributors.manage",
+        "icon": "users",
+        "text": "Contributors",
+        "weight": 20
+    }
+]

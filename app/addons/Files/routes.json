@@ -1,0 +1,30 @@
+[
+    {
+        "key": "files.manage",
+        "path": "/cms/files/manage/{BLOG_ID}",
+        "permissions": ["delete_files"],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
+        "action": "manage"
+    },
+    {
+        "key": "files.imagedrop",
+        "path": "/cms/files/viewimagedrop",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
+        "action": "viewimagedrop"
+    },
+    {
+        "key": "files.select",
+        "path": "/cms/files/select/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
+        "action": "fileselect"
+    },
+    {
+        "key": "files.delete",
+        "path": "/cms/files/delete/{BLOG_ID}/{FILE_NAME}",
+        "permissions": ["delete_files"],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
+        "action": "delete"
+    }
+]

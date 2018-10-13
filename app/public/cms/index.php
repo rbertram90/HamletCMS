@@ -170,20 +170,6 @@ use rbwebdesigns\core\Sanitize;
             'label' => 'Posts',
         ],
         [
-            'key' => 'files',
-            'url' => '/cms/files/manage/'. BlogCMS::$blogID,
-            'icon' => 'image outline',
-            'label' => 'Files',
-            'permissions' => ['delete_files'],
-        ],
-        [
-            'key' => 'users',
-            'url' => '/cms/contributors/manage/'. BlogCMS::$blogID,
-            'icon' => 'users',
-            'label' => 'Contributors',
-            'permissions' => ['manage_contributors'],
-        ],
-        [
             'key' => 'blog',
             'url' => '/blogs/'. BlogCMS::$blogID,
             'icon' => 'book',

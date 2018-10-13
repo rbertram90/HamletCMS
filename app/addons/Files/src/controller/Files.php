@@ -1,10 +1,11 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\Files\controller;
 
-use rbwebdesigns;
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 
-class FilesController extends GenericController
+class Files extends GenericController
 {
     protected $modelBlogs;
     protected $blog;
@@ -38,7 +39,7 @@ class FilesController extends GenericController
     }
 
     /**
-     * Handles /files/manage/<blogid>
+     * Handles /cms/files/manage/<blogid>
      * Setup and run the manage files page
      */
     public function manage(&$request, &$response)
@@ -83,11 +84,11 @@ class FilesController extends GenericController
         $response->addStylesheet('/resources/css/rbrtf.css');
         
         $response->setTitle('Manage Files - ' . $this->blog['name']);
-        $response->write('files/manage.tpl');
+        $response->write('manage.tpl', 'Files');
     }
 
     /**
-     * Handles /files/delete/<blogid>/<filename>
+     * Handles /cms/files/delete/<blogid>/<filename>
      * Delete a file by filename
      */
     public function delete(&$request, &$response)
@@ -115,7 +116,7 @@ class FilesController extends GenericController
     }
 
     /**
-     * Handles /files/viewimagedrop?blogid=<blogid>
+     * Handles /cms/files/viewimagedrop?blogid=<blogid>
      */
     public function viewimagedrop(&$request, &$response)
     {
@@ -124,12 +125,12 @@ class FilesController extends GenericController
         if($blogID = $request->getInt('blogid')) {
             $blog = $this->modelBlogs->getBlogById($blogID);
             $response->setVar('blog', $blog);
-            $response->write('files/upload.tpl');
+            $response->write('upload.tpl', 'Files');
         }
     }
     
     /**
-     * Handles /files/uploadimage?blogid=<blogid>
+     * Handles /cms/files/uploadimage?blogid=<blogid>
      */
     public function uploadimages(&$request, &$response)
     {
@@ -190,7 +191,7 @@ class FilesController extends GenericController
     }
 
     /**
-     * Handles /files/select/<blogid>
+     * Handles /cms/files/select/<blogid>
      */
     public function fileselect(&$request, &$response)
     {
@@ -227,6 +228,6 @@ class FilesController extends GenericController
 
         $response->setVar('imagesOutput', $imagesHTML);
 
-        $response->write('files/select.tpl');
+        $response->write('select.tpl', 'Files');
     }
 }
