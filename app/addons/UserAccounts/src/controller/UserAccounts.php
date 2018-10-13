@@ -1,14 +1,16 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\UserAccounts\controller;
 
 use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\BlogCMS;
 
 /**
  * Handles requests relating to user accounts.
  * 
  * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
-class AccountController extends GenericController
+class UserAccounts extends GenericController
 {
     /**
      * @var \rbwebdesigns\blogcms\model\AccountFactory
@@ -28,7 +30,7 @@ class AccountController extends GenericController
      */
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
     }
@@ -57,7 +59,7 @@ class AccountController extends GenericController
 
         $this->response->setVar('user', $user);
         $this->response->setTitle($user['username'] . '\'s profile');
-        $this->response->write('account/viewuser.tpl');
+        $this->response->write('viewuser.tpl', 'UserAccounts');
     }
 
     /**
@@ -70,7 +72,7 @@ class AccountController extends GenericController
         if ($this->request->method() == 'POST') return $this->runLogin();
 
         $this->response->setTitle('Login required');
-        $this->response->writeTemplate('account/login.tpl');
+        $this->response->writeTemplate('login.tpl', 'UserAccounts');
     }
 
     /**
@@ -83,7 +85,7 @@ class AccountController extends GenericController
         if($this->request->method() == 'POST') return $this->runRegister();
 
         $this->response->setTitle('Create a new account');
-        $this->response->writeTemplate('account/register.tpl');
+        $this->response->writeTemplate('register.tpl', 'UserAccounts');
     }
 
     /**
@@ -94,7 +96,7 @@ class AccountController extends GenericController
         if($this->request->method() == 'POST') return $this->runResetPassword();
 
         $this->response->setTitle('Reset your password');
-        $this->response->writeTemplate('account/resetpassword.tpl');
+        $this->response->writeTemplate('resetpassword.tpl', 'UserAccounts');
     }
 
     /**
@@ -221,13 +223,13 @@ class AccountController extends GenericController
 
         $this->response->setVar('user', $this->model->getById(BlogCMS::session()->currentUser['id']));
         $this->response->setTitle('Profile settings');
-        $this->response->write('account/editdetails.tpl');
+        $this->response->write('editdetails.tpl', 'UserAccounts');
     }
 
     /**
      * Process an account settings update.
      * 
-     * POST /account/settings
+     * POST /cms/account/settings
      */
     protected function saveAccountSettings()
     {
@@ -273,7 +275,7 @@ class AccountController extends GenericController
         
         $this->response->setTitle('Change Password');
         // $this->view->setVar();
-        $this->response->write('account/changepassword.tpl');
+        $this->response->write('changepassword.tpl', 'UserAccounts');
     }
 
     /**
@@ -338,7 +340,7 @@ class AccountController extends GenericController
         if ($this->request->method() == 'POST') return $this->updateAvatar();
 
         $this->response->setTitle('Upload profile photo');
-        $this->response->write('account/uploadavatar.tpl');
+        $this->response->write('uploadavatar.tpl', 'UserAccounts');
     }
 
     /**
@@ -416,7 +418,7 @@ class AccountController extends GenericController
         $this->response->setVar('user', $user);
 
         $this->request->isAjax = true;
-        $this->response->write('account/usercard.tpl');
+        $this->response->write('usercard.tpl', 'UserAccounts');
     }
     
 }

@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\blogcms\UserAccounts\model;
 
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
@@ -8,7 +8,7 @@ use rbwebdesigns\core\model\RBFactory;
 /**
  * /app/model/mdl_account.inc.php
  */
-class AccountFactory extends RBFactory
+class UserAccounts extends RBFactory
 {
     /**
      * @var string Database table name for this model

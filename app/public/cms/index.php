@@ -191,13 +191,13 @@ use rbwebdesigns\core\Sanitize;
             'permissions' => ['is_contributor'],
         ],
         [
-            'label' => 'Your Account'
+            'label' => 'My account'
         ],
         [
             'key' => 'profile',
             'url' => '/cms/account/user',
             'icon' => 'user',
-            'label' => 'View Profile',
+            'label' => 'View my profile',
         ],
         [
             'key' => 'accountsettings',
