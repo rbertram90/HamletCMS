@@ -91,7 +91,6 @@ use rbwebdesigns\core\JSONhelper;
     require_once SERVER_ROOT.'/app/model/mdl_blog.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
-    require_once SERVER_ROOT.'/app/model/mdl_contributorgroups.inc.php';
     require_once SERVER_ROOT.'/app/model/mdl_account.inc.php';
     
     // Generic controller class
@@ -109,6 +108,9 @@ use rbwebdesigns\core\JSONhelper;
 ****************************************************************/    
 
     // Import all addons
+    // todo - cache in database
+    // make a UI for enabling / disabling addons
+    // ... and a CLI script?
     $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/addons');
 
     foreach ($directoryListing as $file) {

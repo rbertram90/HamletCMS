@@ -58,7 +58,7 @@ class BlogController extends GenericController
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
-        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\model\ContributorGroups');
+        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
@@ -149,31 +149,24 @@ class BlogController extends GenericController
         $blog = $this->modelBlogs->getBlogById($blogID);
         $this->response->setVar('blog', $blog);
         
-        // Get latest 5 comments
-        $latestcomments = $this->modelComments->getCommentsByBlog($blogID, 5);
-        
-        // Get comment-ers usernames
-        foreach($latestcomments as $key => $comment) {
-            $user = $this->modelUsers->getById($comment['user_id']);
-            $username = $comment['user_id'] == $currentUser['id'] ? "You" : $user['username'];
-            $latestcomments[$key]['userid'] = $comment['user_id'];
-            $latestcomments[$key]['name'] = $username;
-        }
-        $this->response->setVar('comments', $latestcomments);
-        
         // Get latest 5 posts
         $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
-        
         $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
 
+        $counts = [];
+        BlogCMS::runHook('dashboardCounts', ['blogID' => $blogID, 'counts' => &$counts]);
+
         // Get count statistics
-        $this->response->setVar('counts', array(
+        $this->response->setVar('counts', array_merge($counts, [
             'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
-            'comments' => $this->modelComments->getCount(array('blog_id' => $blogID)),
             'contributors' => $this->modelContributors->getCount(array('blog_id' => $blogID)),
-            'totalviews' => $this->modelPosts->countTotalPostViews($blogID)
-        ));
+            'totalviews' => $this->modelPosts->countTotalPostViews($blogID),
+        ]));
         
+        $panels = [];
+        BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
+        $this->response->setVar('panels', $panels);
+
         BlogCMS::$activeMenuLink = 'overview';
         $this->response->setTitle('Dashboard - '.$blog['name']);
         $this->response->write('overview.tpl');

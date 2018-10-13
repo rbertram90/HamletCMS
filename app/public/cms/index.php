@@ -50,7 +50,7 @@ use rbwebdesigns\core\Sanitize;
     }
 
     $user = BlogCMS::session()->currentUser;
-    $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+    $modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
     
     // Check the user has access to view/edit this blog
     $blogID = $request->getUrlParameter(1);
@@ -59,9 +59,9 @@ use rbwebdesigns\core\Sanitize;
 
         // Surely must be an ID for a blog
         // Check the user has edit permissions
-        BlogCMS::$userIsContributor = $modelContributors->isBlogContributor($user['id'], $blogID);
+        BlogCMS::$userGroup = $modelPermissions->getUserGroup($blogID);
 
-        if (!BlogCMS::$userIsContributor) {
+        if (!BlogCMS::$userGroup) {
             $response->redirect('/', 'You\'re not a contributor for that blog!', 'error');
         }
     }
@@ -170,13 +170,6 @@ use rbwebdesigns\core\Sanitize;
             'label' => 'Posts',
         ],
         [
-            'key' => 'comments',
-            'url' => '/cms/comments/all/'. BlogCMS::$blogID,
-            'icon' => 'comments outline',
-            'label' => 'Comments',
-            'permissions' => ['manage_comments'],
-        ],
-        [
             'key' => 'files',
             'url' => '/cms/files/manage/'. BlogCMS::$blogID,
             'icon' => 'image outline',
@@ -244,7 +237,7 @@ use rbwebdesigns\core\Sanitize;
         $sideMenu->addLink($newLink);
     }
 
-    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => $sideMenu]);
+    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
 
     $response->setVar('page_sidemenu', $sideMenu);
 

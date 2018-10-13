@@ -1,0 +1,44 @@
+[
+    {
+        "key": "contributors.manage",
+        "path": "/cms/contributors/manage/{BLOG_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "manage"
+    },
+    {
+        "key": "contributors.create",
+        "path": "/cms/contributors/create/{BLOG_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "create"
+    },
+    {
+        "key": "contributors.edit",
+        "path": "/cms/contributors/edit/{BLOG_ID}/{CONTRIBUTOR_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "edit"
+    },
+    {
+        "key": "contributors.remove",
+        "path": "/cms/contributors/remove/{BLOG_ID}/{CONTRIBUTOR_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "remove"
+    },
+    {
+        "key": "contributors.creategroup",
+        "path": "/cms/contributors/creategroup/{BLOG_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "creategroup"
+    },
+    {
+        "key": "contributors.editgroup",
+        "path": "/cms/contributors/editgroup/{BLOG_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "editgroup"
+    }
+]

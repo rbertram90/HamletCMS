@@ -74,23 +74,11 @@
             <a href='/cms/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
             <a href='/cms/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>
         </div>
-        <div class="column">
-            <h3 class="ui header">Recent Comments</h3>
-            {foreach $comments as $comment}
-                <div class="ui segment">
-                    &quot;{$comment.message}&quot;
-                    <div class="comment-date">
-                        {formatdate($comment.timestamp)}
-                    </div>
-                    <div class="comment-info">
-                        Added by <a href="/cms/account/user/{$comment.userid}">{$comment.name}</a> on <a href="/blogs/{$blog.id}/posts/{$comment.link}">{$comment.title}</a>
-                    </div>
-                </div>
-            {foreachelse}
-                <p class="ui message info">No comments have been made on your posts on this blog :(</p>
-            {/foreach}
-            <a href='/cms/comments/all/{$blog.id}' class='ui teal right floated button'>All Comments &gt;</a>
-        </div>
+        {foreach from=$panels item=panel}
+            <div class="column">
+                {$panel}
+            </div>
+        {/foreach}
     </div>
     <div class="row">
         <div class="column">
@@ -106,5 +94,5 @@
             {/foreach}
             </div>
         </div>
-    </row> 
+    </div> 
 </div>

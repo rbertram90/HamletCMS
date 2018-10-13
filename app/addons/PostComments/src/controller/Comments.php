@@ -1,7 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms\PostComments\controller;
 
-use rbwebdesigns\blogcms\model\ContributorGroups;
+use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\blogcms\GenericController;
 use rbwebdesigns\blogcms\BlogCMS;

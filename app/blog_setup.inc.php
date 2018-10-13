@@ -71,7 +71,7 @@ use rbwebdesigns\core\Sanitize;
     $response->setVar('custom_css', ''); // $page_controller->getBlogCustomCSS()
 
     $response->setVar('widgets', $page_controller->generateWidgets());
-    $response->setVar('user_is_contributor', $page_controller->userIsContributor()); // @todo this is broken...
+    $response->setVar('user_is_contributor', BlogCMS::$userGroup !== false);
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('is_favourite', $page_controller->blogIsFavourite());
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());

@@ -1,16 +1,19 @@
 <?php
-namespace rbwebdesigns\blogcms;
 
+namespace rbwebdesigns\blogcms\Contributors\controller;
+
+use rbwebdesigns\blogcms\GenericController;
 use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\blogcms\BlogCMS;
 
 /**
  * /app/controller/contributors_controller.inc.php
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
-class ContributorsController extends GenericController
+class Contributors extends GenericController
 {
     // Models
     protected $modelUsers;
@@ -27,7 +30,8 @@ class ContributorsController extends GenericController
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
-        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\model\ContributorGroups');
+        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
+        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
@@ -57,12 +61,11 @@ class ContributorsController extends GenericController
      */
     protected function checkUserAccess()
     {
-        $currentUser = BlogCMS::session()->currentUser;
         $access = true;
-
-        if (!$this->blog) $access = false;
-
-        elseif (!$this->model->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_MANAGE_CONTRIBUTORS)) {
+        if (!$this->blog) {
+            $access = false;
+        }
+        elseif (!$this->modelPermissions->userHasPermission($this->blog['id'], 'manage_contributors')) {
             $access = false;
         }
 
@@ -88,7 +91,7 @@ class ContributorsController extends GenericController
         $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog['id'])); // Get the number of post each contributor has made
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Blog Contributors - '.$this->blog['name']);
-        $this->response->write('contributors/manage.tpl');
+        $this->response->write('manage.tpl', 'Contributors');
     }
     
     /**
@@ -102,7 +105,7 @@ class ContributorsController extends GenericController
 
         $this->response->setVar('blog', $blog);
         $this->response->setTitle('Create Contributor');
-        $this->response->write('contributors/create.tpl');
+        $this->response->write('create.tpl', 'Contributors');
     }
 
     /**
@@ -167,9 +170,33 @@ class ContributorsController extends GenericController
         $this->response->setVar('contributor', $user);
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('groups', $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]));
-        $this->response->write('contributors/edit.tpl');
+        $this->response->write('edit.tpl', 'Contributors');
     }
     
+    /**
+     * Handles POST /contributors/edit/<blogid>/<userid>
+     * (via. edit)
+     */
+    protected function runUpdateContributor($contributor)
+    {
+        $groupID = $this->request->getInt('fld_group');
+
+        // Check group exists and belongs to this blog
+        if (!$group = $this->modelGroups->getGroupById($groupID)) {
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+        }
+        if ($group['blog_id'] != $this->blog['id']) {
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+        }
+
+        if($this->model->update(['user_id' => $contributor['id'], 'blog_id' => $this->blog['id']], ['group_id' => $group['id']])) {
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
+        }
+    }
+
     /**
      * Handles /contributors/remove/<blogid>/<userid>
      * Confirmation happened client side
@@ -204,8 +231,9 @@ class ContributorsController extends GenericController
         }
 
         $this->response->setVar('blog', $this->blog);
+        $this->response->setVar('permissions', \rbwebdesigns\blogcms\Contributors\model\Permissions::getList());
         $this->response->setTitle('Add contributors group');
-        $this->response->write('contributors/creategroup.tpl');
+        $this->response->write('creategroup.tpl', 'Contributors');
     }
 
     /**
@@ -219,14 +247,19 @@ class ContributorsController extends GenericController
             $this->response->redirect('/cms', 'Data error', 'error');
         }
 
-        $systemPermissions = [
+        $permissionsList = [
             "create_posts","publish_posts","edit_all_posts","delete_posts",
-            "manage_comments","delete_files","change_settings","manage_contributors"
+            "delete_files","change_settings","manage_contributors"
         ];
+
+        $cache = BlogCMS::getCache('permissions');
+        foreach ($cache as $permission) {
+            $permissionsList[] = $permission['key'];
+        }
 
         $data = [];
 
-        foreach ($systemPermissions as $permission) {
+        foreach ($permissionsList as $permission) {
             if (array_key_exists($permission, $permissions) && $permissions[$permission] == 'on') {
                 $data[$permission] = 1;
             }
@@ -275,7 +308,7 @@ class ContributorsController extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('group', $group);
         $this->response->setTitle('Edit contributors group');
-        $this->response->write('contributors/editgroup.tpl');
+        $this->response->write('editgroup.tpl', 'Contributors');
     }
 
     protected function runEditGroup($group)
@@ -286,14 +319,19 @@ class ContributorsController extends GenericController
             $this->response->redirect('/cms', 'Data error', 'error');
         }
 
-        $systemPermissions = [
+        $permissionsList = [
             "create_posts","publish_posts","edit_all_posts","delete_posts",
-            "manage_comments","delete_files","change_settings","manage_contributors"
+            "delete_files","change_settings","manage_contributors"
         ];
+
+        $cache = BlogCMS::getCache('permissions');
+        foreach ($cache as $permission) {
+            $permissionsList[] = $permission['key'];
+        }
 
         $data = [];
 
-        foreach ($systemPermissions as $permission) {
+        foreach ($permissionsList as $permission) {
             if (array_key_exists($permission, $permissions) && $permissions[$permission] == 'on') {
                 $data[$permission] = 1;
             }
@@ -316,27 +354,4 @@ class ContributorsController extends GenericController
         }
     }
 
-    /**
-     * Handles POST /contributors/edit/<blogid>/<userid>
-     * (via. edit)
-     */
-    protected function runUpdateContributor($contributor)
-    {
-        $groupID = $this->request->getInt('fld_group');
-
-        // Check group exists and belongs to this blog
-        if (!$group = $this->modelGroups->getGroupById($groupID)) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
-        }
-        if ($group['blog_id'] != $this->blog['id']) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
-        }
-
-        if($this->model->update(['user_id' => $contributor['id']], ['group_id' => $group['id']])) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
-        }
-        else {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
-        }
-    }
 }

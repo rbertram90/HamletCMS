@@ -55,7 +55,7 @@ class BlogContentController
         if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
             $this->userPermissionsLevel = 2;
         }
-        elseif ($this->userIsContributor()) {
+        elseif (BlogCMS::$userGroup) {
             $this->userPermissionsLevel = 1;
         }
         else {
@@ -95,17 +95,6 @@ class BlogContentController
     }
     
     /**
-     *  Check if the current user is a contributor of this blog
-     *  @return bool true if user is a contributor, false otherwise
-     */
-    public function userIsContributor()
-    {
-        $currentUser = BlogCMS::session()->currentUser;
-        if(!$currentUser) return false;
-        return $this->modelContributors->isBlogContributor($currentUser, $this->blogID);
-    }
-
-    /**
      * Check if this blog is currently listed in the users favourites
      * @return bool true if blog is in current users favourites, false otherwise
      */
@@ -123,11 +112,6 @@ class BlogContentController
     public function viewHome(&$request, &$response)
     {
         $pageNum = $request->getInt('s', 1);
-
-        $isContributor = false;
-        if ($currentUser = BlogCMS::session()->currentUser) {
-            $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
-        }
 
         $blogConfig = $this->getBlogConfig($this->blogID);
         $postConfig = null;
@@ -183,6 +167,8 @@ class BlogContentController
                 $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
             }
         }
+
+        $isContributor = BlogCMS::$userGroup !== false;
 
         $response->setTitle($this->blog['name']);
         $response->setVar('userIsContributor', $isContributor);
@@ -603,11 +589,9 @@ class BlogContentController
 
         // Check conditions in which the user is not allowed to view the post
         if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
-            $isContributor = false;
+            
+            $isContributor = BlogCMS::$userGroup !== false;
 
-            if ($currentUser = BlogCMS::session()->currentUser) {
-                $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
-            }
             if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
             }

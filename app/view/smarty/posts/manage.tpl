@@ -134,7 +134,7 @@
     
                 output += "<th>Views <a href='#' class='helptext' onclick='javascript:alert(\"This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable\");'>[?]</a></th>";
     
-                output += "<th>Comments</th><th>Type</th><th>Word Count</th><th></th></tr></thead>";
+                output += "<th>Type</th><th>Word Count</th><th></th></tr></thead>";
             
                 for(var i=0; i<numtoshow; i++) {
                                         
@@ -184,9 +184,6 @@
 
                     output += "</td><td>";
                     output += " <div class='ui circular label'>" + post.hits + "</div>";
-
-                    output += "</td><td>";
-                    output += " <div class='ui circular label'>" + post.numcomments + "</div>";
 
                     output += "</td><td>";
                     

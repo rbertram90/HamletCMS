@@ -149,7 +149,7 @@ class AccountController extends GenericController
         }
 
         if ($this->model->login($username, $password)) {
-            BlogCMS::runHook('onAccountLogin');
+            BlogCMS::runHook('onAccountLogin', []);
 
             $this->response->redirect('/cms', 'Welcome back', 'success');
         }
@@ -188,7 +188,7 @@ class AccountController extends GenericController
         }
 
         if ($this->model->register($details)) {
-            BlogCMS::runHook('onAccountCreated');
+            BlogCMS::runHook('onAccountCreated', []);
             $this->response->redirect('/cms/account/login', 'Account created', 'success');
         }
         else {
@@ -254,7 +254,7 @@ class AccountController extends GenericController
         }
         
         if ($this->model->saveSettings($details)) {
-            BlogCMS::runHook('onAccountUpdated');
+            BlogCMS::runHook('onAccountUpdated', []);
             $this->response->redirect('/cms/account/settings', 'Account updated', 'success');
         }
         else {
@@ -307,7 +307,7 @@ class AccountController extends GenericController
             $this->response->redirect('/cms/account/password', 'Failed to save new password', 'error');
         }
         
-        BlogCMS::runHook('onPasswordChanged');
+        BlogCMS::runHook('onPasswordChanged', []);
         $this->response->redirect('/cms/account/password', 'Password changed', 'success');
     }
     
@@ -395,7 +395,7 @@ class AccountController extends GenericController
         imagecopy($destImage, $srcImage , 0 , 0 , $startX , $startY , $min , $min);
         imagejpeg($destImage, $destLoc);
         
-        BlogCMS::runHook('onAvatarChanged');
+        BlogCMS::runHook('onAvatarChanged', []);
         $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
 

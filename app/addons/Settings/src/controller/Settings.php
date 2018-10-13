@@ -1,8 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\Settings\controller;
 
-use rbwebdesigns\blogcms\model\ContributorGroups;
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
 use rbwebdesigns\blogcms\Menu;
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\HTMLFormTools;
@@ -14,7 +16,7 @@ use Codeliner\ArrayReader\ArrayReader;
  * model (database) and the view. Any requests to the model are sent from
  * here rather than the view.
  */
-class SettingsController extends GenericController
+class Settings extends GenericController
 {
     /**
      * @var \rbwebdesigns\blogcms\model\Blogs
@@ -53,7 +55,7 @@ class SettingsController extends GenericController
     {
         // Initialise Models
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
@@ -82,10 +84,10 @@ class SettingsController extends GenericController
         $access = true;
 
         // Check the user is a contributor of the blog to begin with
-        if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog['id'])) {
+        if (!BlogCMS::$userGroup) {
             $access = false;
         }
-        elseif (!$this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_CHANGE_SETTINGS)) {
+        elseif (!$this->modelPermissions->userHasPermission($this->blog['id'], 'change_settings')) {
             $access = false;
         }
 
@@ -106,7 +108,7 @@ class SettingsController extends GenericController
         $this->response->setVar('menu', $settingsMenu->getLinks());
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Blog Settings - ' . $this->blog['name']);
-        $this->response->write('settings/menu.tpl');
+        $this->response->write('menu.tpl', 'Settings');
     }
 
     /**
@@ -120,7 +122,7 @@ class SettingsController extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('General Settings - ' . $this->blog['name']);
         $this->response->setVar('categorylist', BlogCMS::config()['blogcategories']);
-        $this->response->write('settings/general.tpl');
+        $this->response->write('general.tpl', 'Settings');
     }
 
     /**
@@ -146,7 +148,7 @@ class SettingsController extends GenericController
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Post Settings - ' . $this->blog['name']);
-        $this->response->write('settings/posts.tpl');
+        $this->response->write('posts.tpl', 'Settings');
     }
 
     /**
@@ -169,7 +171,7 @@ class SettingsController extends GenericController
         $response->addStylesheet('/resources/css/rbrtf.css');
         $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Header - ' . $blog['name']);
-        $response->write('settings/header.tpl');        
+        $response->write('header.tpl', 'Settings');        
     }
 
     /**
@@ -192,7 +194,7 @@ class SettingsController extends GenericController
         $response->addStylesheet('/resources/css/rbrtf.css');
         $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Footer - ' . $blog['name']);
-        $response->write('settings/footer.tpl');
+        $response->write('footer.tpl', 'Settings');
     }
 
     /**
@@ -245,7 +247,7 @@ class SettingsController extends GenericController
         $response->setVar('posts', $posts);
         $response->setVar('blog', $blog);
         $response->setTitle('Manage Pages - ' . $blog['name']);
-        $response->write('settings/pages.tpl');
+        $response->write('pages.tpl', 'Settings');
     }
 
     /**
@@ -261,7 +263,7 @@ class SettingsController extends GenericController
         $response->setVar('serverroot', SERVER_ROOT);
         $response->setVar('blog', $blog);
         $response->setTitle('Edit Stylesheet - ' . $blog['name']);
-        $response->write('settings/stylesheet.tpl');
+        $response->write('stylesheet.tpl', 'Settings');
     }
 
     /**
@@ -276,7 +278,7 @@ class SettingsController extends GenericController
 
         $response->setVar('blog', $blog);
         $response->setTitle('Choose Template - ' . $blog['name']);
-        $response->write('settings/template.tpl');
+        $response->write('template.tpl', 'Settings');
     }
 
     /**
@@ -308,7 +310,7 @@ class SettingsController extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('widgetconfig', $this->getWidgetConfig($this->blog['id']));
         $this->response->setVar('installedwidgets', $this->getInstalledWidgets());
-        $this->response->write('settings/widgets3.tpl');
+        $this->response->write('widgets3.tpl', 'Settings');
     }
     
     /******************************************************************
@@ -762,7 +764,6 @@ class SettingsController extends GenericController
         }
     }
     
-    
     /**
      * Create the settings.json file
      * @param int blog ID
@@ -1011,6 +1012,9 @@ class SettingsController extends GenericController
         // redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/widgets');
     }
     
+    /**
+     * Save changes to widget layout
+     */
     protected function action_saveWidgetLayout($blog)
     {        
         if(!array_key_exists('fld_submit', $_POST)) die('Submit field missing');
@@ -1045,4 +1049,5 @@ class SettingsController extends GenericController
         setSystemMessage(ITEM_UPDATED, "Success");
         redirect('/config/'.$blog['id'].'/widgets');
     }
+
 }

@@ -52,7 +52,7 @@ class BlogCMS
     /**
      * @var boolean  flag for if the user a contributor to the active blog
      */
-    public static $userIsContributor = false;
+    public static $userGroup = false;
 
     /**
      * @return array
@@ -264,7 +264,13 @@ class BlogCMS
     }
 
     /**
-     * Get a cache by name - this will match the filename
+     * Get a cache by name
+     * 
+     * @param string $name
+     *   Name of the cache - this will match the filename (without extention)
+     * 
+     * @return array
+     *   Data from the cache
      */
     public static function getCache($name)
     {

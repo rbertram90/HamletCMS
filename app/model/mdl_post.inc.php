@@ -241,13 +241,14 @@ class Posts extends RBFactory
     {
         $start = ($page-1) * $num;
         $tp = TBL_POSTS; $tc = TBL_COMMENTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
-        $sql = "SELECT $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
+        $sql = "SELECT $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
         $sql.= "FROM $tp ";
+        // (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments
         $sql.= "WHERE $tp.blog_id = '".$blogID."' ";
         if($drafts == 0) $sql.= "AND $tp.draft='0' ";
         if($future == 0) $sql.= "AND $tp.timestamp<='".date('Y-m-d H:i:s')."' ";
         
-        $fields = array_merge($this->fields, ['numcomments' => 'number', 'uniqueviews' => 'number', 'hits' => 'number']);
+        $fields = array_merge($this->fields, ['uniqueviews' => 'number', 'hits' => 'number']); // 'numcomments' => 'number', 
         
         $splitSort = explode(' ', $sort);
         if(count($splitSort) == 2) {
