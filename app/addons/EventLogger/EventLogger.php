@@ -7,7 +7,7 @@ class EventLogger
 {
 
     /**
-     * @var rbwebdesigns\blogcms\model\EventLog
+     * @var rbwebdesigns\blogcms\EventLogger\model\EventLogger
      */
     protected $eventLogModel;
 
@@ -22,7 +22,7 @@ class EventLogger
         $currentUser = BlogCMS::session()->currentUser;
         $text = "created post <a href='/blogs/{$post['blog_id']}/posts/{$post['link']}'>{$post['title']}</a>";
 
-        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLog::EVENT_POST_CREATED, $text);
+        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLogger\model\EventLogger::EVENT_POST_CREATED, $text);
     }
 
     public function onPostUpdated($data)
@@ -31,7 +31,7 @@ class EventLogger
         $currentUser = BlogCMS::session()->currentUser;
         $text = "updated post <a href='/blogs/{$post['blog_id']}/posts/{$post['link']}'>{$post['title']}</a>";
 
-        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLog::EVENT_POST_UPDATED, $text);
+        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLogger\model\EventLogger::EVENT_POST_UPDATED, $text);
     }
 
     public function onPostSettingsUpdated($data)

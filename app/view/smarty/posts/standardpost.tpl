@@ -231,7 +231,7 @@ $(document).ready(function () {
     {
         if(content_changed)
         {
-            jQuery.post("/cms/ajax/autosave",
+            jQuery.post("/cms/posts/autosave",
             {
                 "fld_postid": $("#fld_postid").val(),
                 "fld_content": $("#fld_postcontent").val(),
@@ -291,9 +291,9 @@ $(document).ready(function () {
         }
 
         {if isset($post)}
-            var url = "/cms/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
+            var url = "/cms/posts/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title + "&post_id={$post['id']}";
         {else}
-            var url = "/cms/ajax/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
+            var url = "/cms/posts/checkDuplicateTitle?blog_id=" + blog_id + "&post_title=" + post_title;
         {/if}
 
         $.ajax({ url: url, async: false }).done(function(data) {

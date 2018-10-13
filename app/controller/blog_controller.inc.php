@@ -59,7 +59,7 @@ class BlogController extends GenericController
         $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
 
         $this->request = BlogCMS::request();

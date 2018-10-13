@@ -196,7 +196,7 @@ $(document).ready(function ()
         if(content_changed)
         {ldelim}
 
-            jQuery.post("/ajax/autosave",
+            jQuery.post("/cms/posts/autosave",
             {ldelim}
                 "fld_postid": $("#fld_postid").val(),
                 "fld_content": $("#fld_postcontent").val(),

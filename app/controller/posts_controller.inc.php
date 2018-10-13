@@ -1,7 +1,7 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
-use rbwebdesigns\blogcms\model\ContributorGroups;
+use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
 use Codeliner\ArrayReader\ArrayReader;
@@ -59,6 +59,7 @@ class PostsController extends GenericController
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
 
         BlogCMS::$activeMenuLink = 'posts';
 
@@ -100,24 +101,24 @@ class PostsController extends GenericController
         switch ($action) {
             case 'edit':
                 if ($this->post['author_id'] != $currentUser['id']) {
-                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_EDIT_POSTS);
+                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'edit_all_posts');
                 }
                 elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_PUBLISH_POSTS);
+                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'publish_posts');
                 }
                 break;
 
             case 'create':
                 if ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_PUBLISH_POSTS);
+                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'publish_posts');
                 }
                 else {
-                    $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_CREATE_POSTS);
+                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'create_posts');
                 }
                 break;
 
             case 'delete':
-                $access = $this->modelContributors->userHasPermission($currentUser['id'], $this->blog['id'], ContributorGroups::GROUP_DELETE_POSTS);
+                $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'delete_posts');
                 break;
         }
 
@@ -327,6 +328,44 @@ class PostsController extends GenericController
     }
     
     /**
+     * Handles POST /cms/posts/autosave
+     */
+    public function autosave()
+    {
+        $postID = $this->request->getInt('fld_postid');
+
+        $data = [
+            'title'         => $this->request->getString('fld_title'),
+            'content'       => $this->request->getString('fld_content'),
+            'tags'          => $this->request->getString('fld_tags'),
+            'allowcomments' => $this->request->getInt('fld_allowcomments'),
+            'type'          => $this->request->getString('fld_type'),
+        ];
+
+        $updateDB = $this->model->autosavePost($postID, $data);
+
+        if($updateDB === false) {
+            echo json_encode([
+                'status' => 'failed',
+                'message' => 'Could not run autosave - DB Update Error'
+            ]);
+        }
+        elseif($updateDB > 0 && $updateDB !== $postID) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Post autosaved at ' . date('H:i'),
+                'newpostid' => $updateDB
+            ]);
+        }
+        else {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Post autosaved at ' . date('H:i')
+            ]);
+        }
+    }
+
+    /**
      * Handles POST /posts/cancelsave/<postID>
      * 
      * Cancel action from post screen
@@ -407,4 +446,38 @@ class PostsController extends GenericController
         }
     }
     
+    /**
+     * @todo exclude current post ID!!!
+     */
+    public function checkDuplicateTitle()
+    {
+        $blogID = $this->request->getInt('blog_id');
+        $postID = $this->request->getInt('post_id', 0);
+        $title = $this->request->getString('post_title', '');
+
+        if (strlen($title) == 0) {
+            print "true";
+            return;
+        } 
+
+        $link = $this->model->createSafePostUrl($title);
+        
+        $matchingPosts = $this->model->count(['blog_id' => $blogID, 'link' => $link]);
+        if ($matchingPosts == 0) {
+            print "false";
+            return;
+        }
+        elseif ($matchingPosts == 1) {
+            $post = $this->model->getPostByURL($link, $blogID);
+            // Valid if new post & only one match or if the found post
+            // is the one we're editing
+            if ($postID == 0 || $post['id'] == $postID) {
+                print "false";
+                return;
+            }
+        }
+
+        print "true";
+    }
+
 }

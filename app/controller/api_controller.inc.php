@@ -35,8 +35,8 @@ class ApiController extends GenericController
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
 
         $this->request = $request;
         $this->response = $response;

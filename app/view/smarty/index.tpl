@@ -64,7 +64,7 @@
                             <div class="menu">
                                 <a href="/cms/posts/manage/{$blog.id}" class="item">Manage Current Posts</a>
                                 <a href="/cms/posts/create/{$blog.id}" class="item">Create New Post</a>
-                                <a href="/cms/contributors/{$blog.id}" class="item">Contributors</a>
+                                <a href="/cms/contributors/manage/{$blog.id}" class="item">Contributors</a>
                                 <a href="/cms/settings/menu/{$blog.id}" class="item">Blog Settings</a>
                                 <a href="/cms/files/manage/{$blog.id}" class="item">Files</a>
                             </div>

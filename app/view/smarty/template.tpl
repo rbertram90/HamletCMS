@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>{$page_title} - Blog CMS from RBwebdesigns</title>
-    <link rel="shortcut icon" href="/resources/icons/64/gear.png" type="image/png" />
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
     
     <meta charset="UTF-8"> 
     <meta name="description" content="{$page_description}">
