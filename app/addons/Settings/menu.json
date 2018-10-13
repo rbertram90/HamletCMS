@@ -43,5 +43,13 @@
         "text": "Pages",
         "subtext": "Add pages to the blog menu",
         "icon": "sitemap"
+    },
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "settings.menu",
+        "icon": "cogs",
+        "text": "Settings",
+        "weight": 10
     }
 ]

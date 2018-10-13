@@ -144,7 +144,7 @@ use rbwebdesigns\core\Sanitize;
   Generate side menu
 ****************************************************************/
 
-    $sideMenu = new Menu();
+    $sideMenu = new Menu('cms_main_actions');
     $sideMenuLinks = [
         [
             'url' => '/cms',
@@ -175,13 +175,6 @@ use rbwebdesigns\core\Sanitize;
             'icon' => 'image outline',
             'label' => 'Files',
             'permissions' => ['delete_files'],
-        ],
-        [
-            'key' => 'settings',
-            'url' => '/cms/settings/menu/'. BlogCMS::$blogID,
-            'icon' => 'cogs',
-            'label' => 'Settings',
-            'permissions' => ['change_settings'],
         ],
         [
             'key' => 'users',

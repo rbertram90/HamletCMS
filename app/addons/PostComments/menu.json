@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "comments.all",
+        "weight": 40,
+        "text": "Comments",
+        "icon": "comments outline"
+    }
+]

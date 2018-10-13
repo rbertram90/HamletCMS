@@ -47,21 +47,4 @@ class PostComments
         $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']['id'], 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
-
-    public function onGenerateMenu($args)
-    {
-        if ($args['id'] == 'cms_main_actions') {
-
-            $link = new MenuLink();
-            $link->url = '/cms/comments/all/'. BlogCMS::$blogID;
-            $link->icon = 'comments outline';
-            $link->text = 'Comments';
-            $link->permissions = ['administer_comments'];
-            
-            if ($link->accessible()) {
-                $args['menu']->addLink($link);
-            }
-        }
-
-    }
 }
