@@ -77,26 +77,24 @@ use rbwebdesigns\core\JSONhelper;
         include SERVER_ADDONS_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
     });
 
-    require_once SERVER_ROOT . '/app/view/response.php';
-    require_once SERVER_ROOT . '/app/view/menu.php';
-    require_once SERVER_ROOT . '/app/view/menulink.php';
-    require_once SERVER_ROOT . '/app/addon.php';
-    require_once SERVER_ROOT . '/app/cms.php';
+    require_once SERVER_ROOT .'/app/response.php';
+    require_once SERVER_ROOT .'/app/menu.php';
+    require_once SERVER_ROOT .'/app/menulink.php';
+    require_once SERVER_ROOT .'/app/addon.php';
+    require_once SERVER_ROOT .'/app/cms.php';
 
     // Smarty
-    require_once SERVER_ROOT.'/app/vendor/smarty/smarty/libs/Smarty.class.php';
+    require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
     
     // Import model
-    require_once SERVER_ROOT.'/app/model/mdl_eventlog.inc.php';
-    require_once SERVER_ROOT.'/app/model/mdl_blog.inc.php';
-    require_once SERVER_ROOT.'/app/model/mdl_post.inc.php';
-    require_once SERVER_ROOT.'/app/model/mdl_contributor.inc.php';
+    require_once SERVER_ROOT .'/app/model/mdl_blog.inc.php';
+    require_once SERVER_ROOT .'/app/model/mdl_post.inc.php';
     
     // Generic controller class
-    require_once SERVER_ROOT.'/app/controller/generic_controller.inc.php';
+    require_once SERVER_ROOT .'/app/controller/generic_controller.inc.php';
     
     // Import view functions
-    require_once SERVER_ROOT.'/app/view/page_header.php';
+    require_once SERVER_ROOT .'/app/view/page_header.php';
 
 
     // Store the configuration
@@ -115,9 +113,9 @@ use rbwebdesigns\core\JSONhelper;
     foreach ($directoryListing as $file) {
         if ($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..') {
             
-            $dirPath = $file->getPath() . '/' . $file->getFilename();
+            $dirPath = $file->getPath() .'/'. $file->getFilename();
 
-            if (!file_exists($dirPath . '/info.json')) continue;
+            if (!file_exists($dirPath .'/info.json')) continue;
 
             $moduleInfo = JSONhelper::JSONFileToArray($dirPath . '/info.json');
             if ($moduleInfo['enabled'] != 1) continue;

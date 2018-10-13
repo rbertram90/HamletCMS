@@ -10,7 +10,7 @@ function addView($postModel, $postid) {
         if($userip == $visitor['userip']) {
             // already visited this page
             // $userviews = $visitor['viewcount'] + 1;
-// echo "pre".$userviews;
+            // echo "pre".$userviews;
             $postModel->incrementUserView($postid, $userip);
             $countUpdated = True;
             break;

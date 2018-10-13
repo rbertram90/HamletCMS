@@ -29,7 +29,7 @@ class Contributors extends GenericController
         $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         

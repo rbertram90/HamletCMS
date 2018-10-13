@@ -37,9 +37,8 @@ use rbwebdesigns\core\Sanitize;
         $action = $request->getUrlParameter(0, 'login');
 
         if ($action == 'login' || $action == 'register' || $action == 'resetpassword') {
-            require SERVER_ROOT . '/app/controller/account_controller.inc.php';
-            $controller = new \rbwebdesigns\blogcms\AccountController();
-            $controller->$action($request, $response);
+            $controller = new \rbwebdesigns\blogcms\UserAccounts\controller\UserAccounts();
+            $controller->$action();
             exit;
         }
     }

@@ -1,5 +1,7 @@
 {
-    "name": "Event logger",
+    "name": "Blog CMS Event logger",
+    "package": "Core",
+    "version": "0.0.1",
     "author": "Ricky",
     "enabled": 1,
     "files": [

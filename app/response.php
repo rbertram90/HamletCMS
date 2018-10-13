@@ -58,7 +58,7 @@ class BlogCMSResponse extends Response
     /**
      * Output the template SMARTY style
      */
-    public function writeTemplate($templatePath)
+    public function writeTemplate($templatePath, $source='main')
     {
         $session = BlogCMS::session();
 
@@ -68,7 +68,7 @@ class BlogCMSResponse extends Response
         $this->setVar('current_user', $session->currentUser);
         $this->setVar('messages', $session->getAllMessages());
 
-        if(!file_exists($this->smarty->getTemplateDir('main') . $templatePath)) {
+        if(!file_exists($this->smarty->getTemplateDir($source) . $templatePath)) {
             $debug = print_r(debug_backtrace(), true);
             die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
         }

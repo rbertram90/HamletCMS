@@ -54,8 +54,8 @@ class MenuLink
             return false;
         }
 
-        $modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
-        return $modelContributors->userHasPermission(BlogCMS::session()->currentUser['id'], BlogCMS::$blogID, $this->permissions);
+        $modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        return $modelPermissions->userHasPermission(BlogCMS::$blogID, $this->permissions);
     }
 
 }

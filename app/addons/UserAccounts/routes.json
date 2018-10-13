@@ -15,28 +15,28 @@
     },
     {
         "key": "user.login",
-        "path": "/account/login",
+        "path": "/cms/account/login",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "login"
     },
     {
         "key": "user.register",
-        "path": "/account/register",
+        "path": "/cms/account/register",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "register"
     },
     {
         "key": "user.resetpassword",
-        "path": "/account/resetpassword",
+        "path": "/cms/account/resetpassword",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "resetpassword"
     },
     {
         "key": "user.logout",
-        "path": "/account/logout",
+        "path": "/cms/account/logout",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "logout"

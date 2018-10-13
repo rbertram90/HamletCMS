@@ -13,7 +13,7 @@ class EventLogger
 
     public function __construct()
     {
-        $this->eventLogModel = BlogCMS::model('\rbwebdesigns\blogcms\model\EventLog');
+        $this->eventLogModel = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
     }
 
     public function onPostCreated($data)

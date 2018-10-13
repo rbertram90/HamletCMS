@@ -5,9 +5,6 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
 
 /**
- * @deprecated NO LONGER IN USE!!!!
- * @see addons/PostComments
- * 
  * /app/controller/blog_controller.inc.php
  *  
  * The controller acts as the intermediatory between the
@@ -57,12 +54,13 @@ class BlogController extends GenericController
     public function __construct()
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\model\Contributors');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-        $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\model\EventLog');
+        $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
 
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();

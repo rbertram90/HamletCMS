@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\blogcms\EventLogger\model;
 
 use rbwebdesigns\core\model\RBFactory;
 
-class EventLog extends RBFactory
+class EventLogger extends RBFactory
 {
     protected $tableName = 'eventlog';
 
