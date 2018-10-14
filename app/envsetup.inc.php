@@ -18,7 +18,7 @@ use rbwebdesigns\core\JSONhelper;
     define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
     define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
-    define('SERVER_ADDONS_PATH', SERVER_ROOT . '/app/addons');        // Path to addons folder
+    define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');      // Path to modules folder
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
     define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
     define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');  // Path to the folder containing user avatars
@@ -74,13 +74,13 @@ use rbwebdesigns\core\JSONhelper;
         $split = explode('\\', $class);
         if (count($split) < 5) error_log('Unable to load class '. $class);
         $type = strtolower($split[3]);
-        include SERVER_ADDONS_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
+        include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
     });
 
     require_once SERVER_ROOT .'/app/response.php';
     require_once SERVER_ROOT .'/app/menu.php';
     require_once SERVER_ROOT .'/app/menulink.php';
-    require_once SERVER_ROOT .'/app/addon.php';
+    require_once SERVER_ROOT .'/app/module.php';
     require_once SERVER_ROOT .'/app/cms.php';
 
     // Smarty
@@ -104,11 +104,11 @@ use rbwebdesigns\core\JSONhelper;
   Set-Up Hooks
 ****************************************************************/    
 
-    // Import all addons
+    // Import all modules
     // todo - cache in database
-    // make a UI for enabling / disabling addons
+    // make a UI for enabling / disabling modules
     // ... and a CLI script?
-    $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/addons');
+    $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
 
     foreach ($directoryListing as $file) {
         if ($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..') {
@@ -120,6 +120,6 @@ use rbwebdesigns\core\JSONhelper;
             $moduleInfo = JSONhelper::JSONFileToArray($dirPath . '/info.json');
             if ($moduleInfo['enabled'] != 1) continue;
 
-            BlogCMS::registerAddon($file->getFilename());
+            BlogCMS::registerModule($file->getFilename());
         }
     }

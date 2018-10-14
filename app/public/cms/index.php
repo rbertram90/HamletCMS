@@ -73,7 +73,7 @@ use rbwebdesigns\core\Sanitize;
   Setup controller
 ****************************************************************/
     
-    // New - get the controller from pre-defined routes in addons
+    // New - get the controller from pre-defined routes in modules
     $found = false;
     if ($route = BlogCMS::pathMatch()) {
         if ($route['controller'] && $route['action']) {

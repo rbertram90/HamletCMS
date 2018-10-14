@@ -4,7 +4,6 @@ namespace rbwebdesigns\blogcms;
 use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\model\ModelManager;
-use rbwebdesigns\blogcms\Addon;
 use rbwebdesigns\core\JSONHelper;
 
 /**
@@ -32,9 +31,9 @@ class BlogCMS
      */
     protected static $config = [];
     /**
-     * @var array  enabled addons
+     * @var array  enabled modules
      */
-    protected static $addons = [];
+    protected static $modules = [];
     // protected static $modelManager = null;
 
     /**
@@ -143,18 +142,18 @@ class BlogCMS
     }
 
     /**
-     * Include a class in the addons.
+     * Include a class in the modules.
      * 
      * @param string $className
      */
-    public static function registerAddon($directoryName)
+    public static function registerModule($directoryName)
     {
-        if (array_key_exists($directoryName, self::$addons)) {
+        if (array_key_exists($directoryName, self::$modules)) {
             // don't duplicate entries
             return;
         }
 
-        self::$addons[$directoryName] = new Addon($directoryName);
+        self::$modules[$directoryName] = new Module($directoryName);
     }
 
     /**
@@ -165,10 +164,10 @@ class BlogCMS
      */
     public static function runHook($hookName, $parameters)
     {
-        foreach (self::$addons as $addon) {
-            if (!$addon->instance) continue;
-            if (method_exists($addon->instance, $hookName)) {
-                $addon->instance->$hookName($parameters);
+        foreach (self::$modules as $module) {
+            if (!$module->instance) continue;
+            if (method_exists($module->instance, $hookName)) {
+                $module->instance->$hookName($parameters);
             }
         }
     }
@@ -292,14 +291,14 @@ class BlogCMS
         $file = fopen($cacheDir .'/menus.json', 'w');
         $menuCache = [];
 
-        foreach (self::$addons as $addon) {
-            if (file_exists(SERVER_ADDONS_PATH .'/'. $addon->key .'/menu.json')) {
-                $links = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH .'/'. $addon->key .'/menu.json');
+        foreach (self::$modules as $module) {
+            if (file_exists(SERVER_MODULES_PATH .'/'. $module->key .'/menu.json')) {
+                $links = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH .'/'. $module->key .'/menu.json');
                 foreach ($links as $link) {
                     if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
 
                     if (array_key_exists($link['weight'], $menuCache[$link['menu']])) {
-                        print 'WARNING: Duplicate menu weighting ('. $link['weight'] .') for '. $link['menu'] .' in '. $addon->key.PHP_EOL;
+                        print 'WARNING: Duplicate menu weighting ('. $link['weight'] .') for '. $link['menu'] .' in '. $module->key.PHP_EOL;
                         continue;
                     }
 
@@ -330,12 +329,12 @@ class BlogCMS
         $file = fopen($cacheDir .'/routes.json', 'w');
         $routeCache = [];
 
-        foreach (self::$addons as $addon) {
-            if (file_exists(SERVER_ADDONS_PATH .'/'. $addon->key .'/routes.json')) {
-                $routes = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH .'/'. $addon->key .'/routes.json');
+        foreach (self::$modules as $module) {
+            if (file_exists(SERVER_MODULES_PATH .'/'. $module->key .'/routes.json')) {
+                $routes = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH .'/'. $module->key .'/routes.json');
                 foreach ($routes as $route) {
                     if (array_key_exists($route['key'], $routes)) {
-                        print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $addon->key.PHP_EOL;
+                        print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $module->key.PHP_EOL;
                         continue;
                     }
                     $routeCache[$route['key']] = $route;
@@ -362,13 +361,13 @@ class BlogCMS
         $file = fopen($cacheDir .'/permissions.json', 'w');
         $permissionCache = [];
 
-        foreach (self::$addons as $addon) {
-            $filePath = SERVER_ADDONS_PATH .'/'. $addon->key .'/permissions.json';
+        foreach (self::$modules as $module) {
+            $filePath = SERVER_MODULES_PATH .'/'. $module->key .'/permissions.json';
             if (file_exists($filePath)) {
                 $permissions = JSONhelper::JSONFileToArray($filePath);
                 foreach ($permissions as $permission) {
                     if (array_key_exists($permission['key'], $permissions)) {
-                        print 'WARNING: Duplicate permission key "'. $permission['key'] .'" in '. $addon->key.PHP_EOL;
+                        print 'WARNING: Duplicate permission key "'. $permission['key'] .'" in '. $module->key.PHP_EOL;
                         continue;
                     }
                     $permissionCache[$permission['key']] = $permission;
@@ -394,10 +393,10 @@ class BlogCMS
         $file = fopen($cacheDir .'/templates.json', 'w');
         $templatesCache = [];
 
-        foreach (self::$addons as $addon) {
-            $dirPath = SERVER_ADDONS_PATH .'/'. $addon->key .'/src/templates';
+        foreach (self::$modules as $module) {
+            $dirPath = SERVER_MODULES_PATH .'/'. $module->key .'/src/templates';
             if (file_exists($dirPath)) {
-                $templatesCache[$addon->key] = $dirPath;
+                $templatesCache[$module->key] = $dirPath;
             }
         }
 

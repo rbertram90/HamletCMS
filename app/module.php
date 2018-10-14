@@ -4,9 +4,9 @@ namespace rbwebdesigns\blogcms;
 use rbwebdesigns\core\JSONHelper;
 
 /**
- * Wrapper class for an addon
+ * Wrapper class for an module
  */
-class Addon
+class Module
 {
     public $key;
     public $instance = null;
@@ -20,13 +20,13 @@ class Addon
         $this->key = $key;
 
         // load config
-        $moduleInfo = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH . '/' . $this->key . '/info.json');
+        $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . '/' . $this->key . '/info.json');
         foreach ($moduleInfo as $propertykey => $property) {
             $this->$propertykey = $property;
         }
 
-        if (file_exists(SERVER_ADDONS_PATH . '/' . $this->key . '/' . $this->key . '.php')) {
-            require_once SERVER_ADDONS_PATH . '/' . $this->key . '/' . $this->key . '.php';
+        if (file_exists(SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php')) {
+            require_once SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php';
             $className = '\\rbwebdesigns\\blogcms\\' . $this->key;
             $this->instance = new $className();
         }
