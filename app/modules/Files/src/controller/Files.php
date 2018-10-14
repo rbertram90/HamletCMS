@@ -12,7 +12,7 @@ class Files extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blogs\model\Blogs');
 
         $this->blog = BlogCMS::getActiveBlog();
     }

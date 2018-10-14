@@ -1,0 +1,18 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "blog.overview",
+        "icon": "chart bar",
+        "text": "Dashboard",
+        "weight": 2
+    },
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "blogs.view",
+        "icon": "book",
+        "text": "View Blog",
+        "weight": 99
+    }
+]

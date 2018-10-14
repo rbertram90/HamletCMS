@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\blogcms\Blog\model;
 
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;

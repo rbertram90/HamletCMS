@@ -151,24 +151,6 @@ use rbwebdesigns\core\Sanitize;
             'label' => 'My Blogs',
         ],
         [
-            'label' => 'Blog Actions',
-            'permissions' => ['is_contributor'],
-        ],
-        [
-            'key' => 'overview',
-            'url' => '/cms/blog/overview/'. BlogCMS::$blogID,
-            'icon' => 'chart bar',
-            'permissions' => ['is_contributor'],
-            'label' => 'Dashboard',
-        ],
-        [
-            'key' => 'blog',
-            'url' => '/blogs/'. BlogCMS::$blogID,
-            'icon' => 'book',
-            'label' => 'View Blog',
-            'permissions' => ['is_contributor'],
-        ],
-        [
             'label' => 'My account'
         ],
         [

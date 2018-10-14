@@ -13,7 +13,7 @@ use rbwebdesigns\blogcms\BlogCMS;
 class UserAccounts extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
      */
     protected $model;
     /**

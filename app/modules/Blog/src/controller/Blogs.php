@@ -1,8 +1,12 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\Blog\controller;
+
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\AppSecurity;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
+use rbwebdesigns\blogcms\Menu;
 
 /**
  * /app/controller/blog_controller.inc.php
@@ -17,26 +21,26 @@ use rbwebdesigns\core\DateFormatter;
  * 
  * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
-class BlogController extends GenericController
+class Blogs extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\model\Posts
+     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
-     * @var \rbwebdesigns\blogcms\model\Contributors
+     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
      */
     protected $modelContributors;
     /**
-     * @var \rbwebdesigns\blogcms\model\Comments
+     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
      */
     protected $modelComments;
     /**
-     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
      */
     protected $modelUsers;
     /**
@@ -53,12 +57,12 @@ class BlogController extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
 
@@ -114,7 +118,7 @@ class BlogController extends GenericController
         
         $this->response->addScript('/js/showUserCard.js');
         $this->response->setTitle('My Blogs');
-        $this->response->write('index.tpl');
+        $this->response->write('index.tpl', 'Blog');
     }
     
     /**
@@ -125,7 +129,7 @@ class BlogController extends GenericController
         if ($this->request->method() == 'POST') return $this->runCreateBlog();
 
         $this->response->setTitle('Create New Blog');
-        $this->response->write('newblog.tpl');
+        $this->response->write('newblog.tpl', 'Blog');
     }
         
     /**
@@ -167,7 +171,7 @@ class BlogController extends GenericController
 
         BlogCMS::$activeMenuLink = 'overview';
         $this->response->setTitle('Dashboard - '.$blog['name']);
-        $this->response->write('overview.tpl');
+        $this->response->write('overview.tpl', 'Blog');
     }
     
     /**

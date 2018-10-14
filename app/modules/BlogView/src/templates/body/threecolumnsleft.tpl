@@ -11,7 +11,7 @@
     
 </div>
 <div class="four wide column widgets-left">
-    {include file='blog/actions.tpl'}
+    {include file='actions.tpl'}
     {if isset($widgets.leftpanel)}
         {$widgets.leftpanel}
     {/if}

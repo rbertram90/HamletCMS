@@ -1,8 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\API\controller;
 
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONhelper;
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\BlogCMS;
 
 /**
  * ApiController
@@ -12,14 +14,14 @@ use rbwebdesigns\core\JSONhelper;
  * @todo decide on where data is coming from for cms vs public facing api
  * @todo cross origin domain restrictions
  */
-class ApiController extends GenericController
+class Api extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
@@ -33,7 +35,7 @@ class ApiController extends GenericController
     
     public function __construct(&$request, &$response)
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');

@@ -76,7 +76,7 @@ class BlogCMS
     {
         if (self::$blog) return self::$blog;
         if (self::$blogID) {
-            $blogsModel = self::model('\rbwebdesigns\blogcms\model\Blogs');
+            $blogsModel = self::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
             self::$blog = $blogsModel->getBlogById(self::$blogID);
             return self::$blog;
         }

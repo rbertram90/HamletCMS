@@ -1,11 +1,4 @@
-<div class="four wide column widgets-left">
-    {include file='blog/actions.tpl'}
-    {if isset($widgets.leftpanel)}
-        {$widgets.leftpanel}
-    {/if}
-</div>
-<div class="eight wide column posts">
-
+<div class="ten wide column posts">
     {if count($messages) > 0}
         <div class="messages">
         {foreach $messages as $message}
@@ -16,7 +9,8 @@
 
     {$body_content}
 </div>
-<div class="four wide column widgets-right">
+<div class="six wide column widgets-right">
+    {include file='actions.tpl'}
     {if isset($widgets.rightpanel)}
         {$widgets.rightpanel}
     {/if}

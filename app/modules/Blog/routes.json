@@ -1,0 +1,17 @@
+[
+    {
+        "key": "blog.dashboard",
+        "path": "/cms/blog",
+        "_developer_note": "ideally this would just be /cms (it does route with /cms) but need the controller name to be included...",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
+        "action": "home"
+    },
+    {
+        "key": "blog.overview",
+        "path": "/cms/blog/overview/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
+        "action": "overview"
+    }
+]

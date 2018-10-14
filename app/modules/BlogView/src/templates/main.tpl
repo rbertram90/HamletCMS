@@ -51,22 +51,22 @@
         {/if}
         
         {if $columncount == 1}
-            {include file='blog/body/onecolumn.tpl'}
+            {include file='body/onecolumn.tpl'}
         {elseif $columncount == 3}
             {$postcolumn = $template_config.Layout.PostsColumn}
             {if $postcolumn == 1}
-                {include file='blog/body/threecolumnsleft.tpl'}
+                {include file='body/threecolumnsleft.tpl'}
             {elseif $postcolumn == 2}
-                {include file='blog/body/threecolumnscentre.tpl'}
+                {include file='body/threecolumnscentre.tpl'}
             {else}
-                {include file='blog/body/threecolumnsright.tpl'}
+                {include file='body/threecolumnsright.tpl'}
             {/if}
         {else}
             {$postcolumn = $template_config.Layout.PostsColumn}
             {if $postcolumn == 1}
-                {include file='blog/body/twocolumnsleft.tpl'}
+                {include file='body/twocolumnsleft.tpl'}
             {else}
-                {include file='blog/body/twocolumnsright.tpl'}
+                {include file='body/twocolumnsright.tpl'}
             {/if}
         {/if}
 

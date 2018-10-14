@@ -1,17 +1,11 @@
 <div class="four wide column widgets-left">
-    {include file='blog/actions.tpl'}
+    {include file='actions.tpl'}
     {if isset($widgets.leftpanel)}
         {$widgets.leftpanel}
     {/if}
-
-</div>
-<div class="four wide column widgets-right">
-    {if isset($widgets.rightpanel)}
-        {$widgets.rightpanel}
-    {/if}
-
 </div>
 <div class="eight wide column posts">
+
     {if count($messages) > 0}
         <div class="messages">
         {foreach $messages as $message}
@@ -21,4 +15,9 @@
     {/if}
 
     {$body_content}
+</div>
+<div class="four wide column widgets-right">
+    {if isset($widgets.rightpanel)}
+        {$widgets.rightpanel}
+    {/if}
 </div>

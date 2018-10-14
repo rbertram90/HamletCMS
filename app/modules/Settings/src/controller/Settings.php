@@ -19,23 +19,23 @@ use Codeliner\ArrayReader\ArrayReader;
 class Settings extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\model\Posts
+     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
-     * @var \rbwebdesigns\blogcms\model\Comments
+     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
      */
     protected $modelComments;
     /**
-     * @var \rbwebdesigns\blogcms\model\AccountFactory
+     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
      */
     protected $modelUsers;
     /**
-     * @var \rbwebdesigns\blogcms\model\Contributors
+     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
      */
     protected $modelContributors;
     /**
@@ -54,11 +54,11 @@ class Settings extends GenericController
     public function __construct()
     {
         // Initialise Models
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\model\Comments');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
 
         BlogCMS::$activeMenuLink = 'settings';
 

@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Sanitize;
+use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
 
 /***************************************************************
     blog_setup.inc.php
@@ -18,13 +19,13 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
     
     // Setup - Stage 1
-    require_once SERVER_ROOT.'/app/envsetup.inc.php';
+    require_once SERVER_ROOT .'/app/envsetup.inc.php';
     
     // Setup for 'Plugins' Installed using composer
-    require_once SERVER_ROOT.'/app/vendor/autoload.php';
+    require_once SERVER_ROOT .'/app/vendor/autoload.php';
     
     // Include blogs controller
-    require_once SERVER_ROOT.'/app/controller/blogcontent_controller.inc.php';
+    // require_once SERVER_ROOT .'/app/modules/BlogView/controller/BlogContent.php';
 
 
 /****************************************************************
@@ -34,7 +35,7 @@ use rbwebdesigns\core\Sanitize;
     $request = BlogCMS::request();
     $response = BlogCMS::response();
 
-    $page_controller = new BlogContentController(BLOG_KEY);
+    $page_controller = new BlogContent(BLOG_KEY);
     $blog = $page_controller->getBlogInfo();
 
     $config = BlogCMS::config();
@@ -124,4 +125,4 @@ use rbwebdesigns\core\Sanitize;
 
     ob_end_clean();
 
-    $response->writeTemplate('blog/main.tpl');
+    $response->writeTemplate('main.tpl', 'BlogView');

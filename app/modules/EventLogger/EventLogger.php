@@ -1,8 +1,6 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
-use rbwebdesigns\blogcms\model\EventLog;
-
 class EventLogger
 {
 

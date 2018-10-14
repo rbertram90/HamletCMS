@@ -1,14 +1,16 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\Website\controller;
 
-class PublicController
+use rbwebdesigns\blogcms\BlogCMS;
+
+class Site
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
      */
     protected $modelPosts;
 
@@ -18,8 +20,8 @@ class PublicController
     {
         $this->request = $request;
         $this->response = $response;
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
     }
 
     public function home()
@@ -27,7 +29,7 @@ class PublicController
         $this->response->setTitle('Website homepage');
         $this->response->setDescription('Front page to your website powered by Blog CMS');
         $this->response->setVar('lettercounts', $this->modelBlogs->countBlogsByLetter());
-        $this->response->write('public/home.tpl');
+        $this->response->write('home.tpl', 'Website');
     }
 
 }

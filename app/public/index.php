@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms;
 use Athens\CSRF;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\blogcms\BlogCMSResponse;
+use rbwebdesigns\blogcms\Website\controller\Site;
 
 /****************************************************************
   Website Start point
@@ -48,12 +49,7 @@ use rbwebdesigns\blogcms\BlogCMSResponse;
   Setup controller
 ****************************************************************/
 
-    // Get controller class file
-    require_once SERVER_ROOT . '/app/controller/public_controller.inc.php';
-    
-    // Dynamically instantiate new class
-    $controllerClassName = '\rbwebdesigns\blogcms\\PublicController';
-    $controller = new $controllerClassName($request, $response);
+    $controller = new Site($request, $response);
 
 /****************************************************************
   Get body content
@@ -84,4 +80,4 @@ use rbwebdesigns\blogcms\BlogCMSResponse;
 ****************************************************************/
 
     // Run Template here
-    $response->writeTemplate('public/wrapper.tpl');
+    $response->writeTemplate('wrapper.tpl', 'Website');

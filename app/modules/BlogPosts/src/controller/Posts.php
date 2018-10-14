@@ -27,15 +27,15 @@ use Codeliner\ArrayReader\ArrayReader;
 class Posts extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Posts
+     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
      */
     protected $model;
     /**
-     * @var \rbwebdesigns\blogcms\model\Blogs
+     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\model\Contributors
+     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
      */
     protected $modelContributors;
     /**
@@ -59,7 +59,7 @@ class Posts extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
 

@@ -86,18 +86,15 @@ use rbwebdesigns\core\JSONhelper;
     // Smarty
     require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
     
-    // Import model
-    require_once SERVER_ROOT .'/app/model/mdl_blog.inc.php';
-    
     // Generic controller class
-    require_once SERVER_ROOT .'/app/controller/generic_controller.inc.php';
+    require_once SERVER_ROOT .'/app/abstractcontroller.php';
     
     // Import view functions
     require_once SERVER_ROOT .'/app/view/page_header.php';
 
-
     // Store the configuration
     BlogCMS::addToConfig($config);
+    
 
 /****************************************************************
   Set-Up Hooks

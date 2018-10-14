@@ -3,6 +3,7 @@ namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\Response;
+use rbwebdesigns\blogcms\API\controller\Api;
 
 /**
 * Blog CMS API Start Point
@@ -22,10 +23,10 @@ use rbwebdesigns\core\Response;
 ****************************************************************/
 
     // Get controller class file
-    require_once SERVER_ROOT . '/app/controller/api_controller.inc.php';
+    // require_once SERVER_ROOT . '/app/controller/api_controller.inc.php';
     
     // Dynamically instantiate new class
-    $controller = new \rbwebdesigns\blogcms\ApiController($request, $response);
+    $controller = new Api($request, $response);
 
 /****************************************************************
   Get body content

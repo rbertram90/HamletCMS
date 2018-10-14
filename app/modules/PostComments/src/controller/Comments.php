@@ -16,7 +16,7 @@ use rbwebdesigns\blogcms\BlogCMS;
 class Comments extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\model\Comments
+     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
      */
     protected $model;
     /**

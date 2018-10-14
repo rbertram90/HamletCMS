@@ -3,7 +3,6 @@
 namespace rbwebdesigns\blogcms\Contributors\controller;
 
 use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\blogcms\BlogCMS;
@@ -26,11 +25,11 @@ class Contributors extends GenericController
     
     public function __construct()
     {
-        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
+        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Blog\\model\ContributorGroups');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         
         $this->request = BlogCMS::request();

@@ -1,18 +1,19 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\BlogView\controller;
 
 use Codeliner;
 use Michelf\Markdown;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\Pagination;
 use rbwebdesigns\core\JSONhelper;
+use rbwebdesigns\blogcms\BlogCMS;
 
 /**
  * blog_content_controller
  * this class is for front end actions on the blogs within blog_cms
  * i.e. viewing posts, making comments etc.
  */
-class BlogContentController 
+class BlogContent
 {
     protected $modelBlogs;       // Blogs Model
     protected $modelPosts;       // Posts Model
@@ -32,11 +33,11 @@ class BlogContentController
         $currentUser = BlogCMS::session()->currentUser;
 
         // Create Models
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\model\AccountFactory');
+        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
@@ -175,7 +176,7 @@ class BlogContentController
         $response->setVar('posts', $postlist);
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
-        $response->write('blog/posts/postshome.tpl');
+        $response->write('posts/postshome.tpl', 'BlogView');
 
     }
 
@@ -464,7 +465,7 @@ class BlogContentController
         $response->setVar('posts', $postlist);
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
-        $response->write('blog/posts/postsbytag.tpl');
+        $response->write('posts/postsbytag.tpl', 'BlogView');
     }
 
     /**
@@ -642,7 +643,7 @@ class BlogContentController
         $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
         $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
         $response->setTitle($post['title']);
-        $response->write('blog/posts/singlepost.tpl');
+        $response->write('posts/singlepost.tpl', 'BlogView');
     }
     
     /**
