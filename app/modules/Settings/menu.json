@@ -50,6 +50,6 @@
         "route": "settings.menu",
         "icon": "cogs",
         "text": "Settings",
-        "weight": 10
+        "weight": 30
     }
 ]

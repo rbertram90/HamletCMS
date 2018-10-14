@@ -187,16 +187,20 @@ class BlogCMS
 
         if (!array_key_exists($route, $routeCache)) return false;
 
-        if (array_key_exists('permissions', $routeCache[$route])) {
-            // Check permissions
-            $modelPermissions = self::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-            $granted = $modelPermissions->userHasPermission(self::$blogID, $routeCache[$route]['permissions']);
-            if (!$granted) return false;
-        }
-
         $url = $routeCache[$route]['path'];
-        $url = str_replace('{BLOG_ID}', self::$blogID, $url);
 
+        // Check links applicable to the blog
+        if (self::$blogID) {
+            if (array_key_exists('permissions', $routeCache[$route])) {
+                // Check permissions
+                $modelPermissions = self::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+                $granted = $modelPermissions->userHasPermission(self::$blogID, $routeCache[$route]['permissions']);
+                if (!$granted) return false;
+            }
+
+            $url = str_replace('{BLOG_ID}', self::$blogID, $url);
+        }
+        
         foreach ($data as $key => $var) {
             $key = strtoupper($key);
             $url = str_replace('{' . $key . '}', $var, $url);
@@ -297,18 +301,24 @@ class BlogCMS
                 foreach ($links as $link) {
                     if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
 
-                    if (array_key_exists($link['weight'], $menuCache[$link['menu']])) {
-                        print 'WARNING: Duplicate menu weighting ('. $link['weight'] .') for '. $link['menu'] .' in '. $module->key.PHP_EOL;
+                    $weight = intval($link['weight']);
+
+                    if (array_key_exists($weight, $menuCache[$link['menu']])) {
+                        print 'WARNING: Duplicate menu weighting ('. $weight .') for '. $link['menu'] .' in '. $module->key.PHP_EOL;
                         continue;
                     }
 
-                    $menuCache[$link['menu']][$link['weight']] = array_diff_key($link, ['menu' => null, 'weight' => null]);
+                    $menuCache[$link['menu']][$weight] = array_diff_key($link, ['menu' => null, 'weight' => null]);
 
                     if (php_sapi_name() == "cli") {
                         print "INFO: Added link to ". $link['menu'] .PHP_EOL;
                     }
                 }
             }
+        }
+
+        foreach($menuCache as $key => $menu) {
+            ksort($menuCache[$key]);
         }
 
         fwrite($file, JSONHelper::arrayToJSON($menuCache));

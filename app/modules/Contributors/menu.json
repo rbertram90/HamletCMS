@@ -5,6 +5,6 @@
         "route": "contributors.manage",
         "icon": "users",
         "text": "Contributors",
-        "weight": 20
+        "weight": 15
     }
 ]

@@ -1,0 +1,32 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "text",
+        "text": "My account",
+        "weight": 50
+    },
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "user.current",
+        "icon": "user",
+        "text": "View my profile",
+        "weight": 52
+    },
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "user.settings",
+        "icon": "cogs",
+        "text": "Settings",
+        "weight": 54
+    },
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "user.logout",
+        "icon": "arrow left",
+        "text": "Logout",
+        "weight": 56
+    }
+]

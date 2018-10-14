@@ -5,6 +5,6 @@
         "route": "files.manage",
         "icon": "image outline",
         "text": "Files",
-        "weight": 30
+        "weight": 8
     }
 ]

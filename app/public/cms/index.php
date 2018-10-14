@@ -144,54 +144,7 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     $sideMenu = new Menu('cms_main_actions');
-    $sideMenuLinks = [
-        [
-            'url' => '/cms',
-            'icon' => 'list ul',
-            'label' => 'My Blogs',
-        ],
-        [
-            'label' => 'My account'
-        ],
-        [
-            'key' => 'profile',
-            'url' => '/cms/account/user',
-            'icon' => 'user',
-            'label' => 'View my profile',
-        ],
-        [
-            'key' => 'accountsettings',
-            'url' => '/cms/account/settings',
-            'icon' => 'cogs',
-            'label' => 'Settings',
-        ],
-        [
-            'key' => 'logout',
-            'url' => '/cms/account/logout',
-            'icon' => 'arrow left',
-            'label' => 'Logout',
-        ]
-    ];
-
-    foreach ($sideMenuLinks as $link) {
-        $newLink = new MenuLink();
-        if ($link['url']) $newLink->url = $link['url'];
-        if ($link['icon']) $newLink->icon = $link['icon'];
-        if ($link['label']) $newLink->text = $link['label'];
-        if ($link['permissions']) $newLink->permissions = $link['permissions'];
-        if ($link['target']) $newLink->target = $link['target'];
-
-        if (isset($link['key']) && $link['key'] == BlogCMS::$activeMenuLink) {
-            $newLink->active = true;
-        }
-
-        if (!$newLink->accessible()) continue;
-
-        $sideMenu->addLink($newLink);
-    }
-
     BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
-
     $response->setVar('page_sidemenu', $sideMenu);
 
     

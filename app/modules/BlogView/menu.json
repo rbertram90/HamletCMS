@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "blogs.view",
+        "icon": "book",
+        "text": "View Blog",
+        "weight": 49
+    }
+]

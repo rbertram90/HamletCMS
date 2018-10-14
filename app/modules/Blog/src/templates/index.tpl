@@ -62,6 +62,7 @@
                             - Actions -
                             <i class="dropdown icon"></i>
                             <div class="menu">
+                                {* @todo make this dynamically driven *}
                                 <a href="/cms/posts/manage/{$blog.id}" class="item">Manage Current Posts</a>
                                 <a href="/cms/posts/create/{$blog.id}" class="item">Create New Post</a>
                                 <a href="/cms/contributors/manage/{$blog.id}" class="item">Contributors</a>

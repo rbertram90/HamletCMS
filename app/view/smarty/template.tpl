@@ -26,7 +26,7 @@
 
             <nav class="ui fluid vertical pointing menu">
                 {foreach from=$page_sidemenu->getLinks() item=link}
-                    {if isset($link->url)}
+                    {if isset($link->url) and strlen($link->url)}
                         {if $link->active}
                             {$active = 'active'}
                         {else}

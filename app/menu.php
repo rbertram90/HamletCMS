@@ -45,6 +45,11 @@ class Menu
         return $this->links;
     }
 
+    public function setLinks($links)
+    {
+        $this->links = $links;
+    }
+
     /**
      * Generate the links from menu cache with menu ID passed in at constructor
      * Currently a protected function, would it be useful to be able to populate
@@ -68,12 +73,9 @@ class Menu
             switch ($linkData['type']) {
                 case 'route':
                     $link->url = BlogCMS::route($linkData['route']);
+                    if (!$link->url) continue 2;
                     break;
             }
-
-            // If not url was populated ignore,
-            // User may not have permission to view page
-            if (!$link->url) continue;
 
             if (array_key_exists('text', $linkData)) {
                 $link->text = $linkData['text'];

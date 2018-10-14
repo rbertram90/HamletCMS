@@ -3,7 +3,7 @@
         "menu": "cms_main_actions",
         "type": "route",
         "route": "comments.all",
-        "weight": 40,
+        "weight": 9,
         "text": "Comments",
         "icon": "comments outline"
     }
