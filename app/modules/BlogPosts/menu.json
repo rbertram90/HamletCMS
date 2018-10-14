@@ -1,0 +1,11 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "posts.manage",
+        "url": "/cms/posts/manage/{BLOG_ID}",
+        "icon": "copy outline",
+        "text": "Posts",
+        "weight": 5
+    }
+]

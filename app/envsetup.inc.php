@@ -88,7 +88,6 @@ use rbwebdesigns\core\JSONhelper;
     
     // Import model
     require_once SERVER_ROOT .'/app/model/mdl_blog.inc.php';
-    require_once SERVER_ROOT .'/app/model/mdl_post.inc.php';
     
     // Generic controller class
     require_once SERVER_ROOT .'/app/controller/generic_controller.inc.php';

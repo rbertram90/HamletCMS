@@ -1,0 +1,30 @@
+[
+    {
+        "key": "posts.manage",
+        "path": "/cms/posts/manage/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
+        "action": "manage"
+    },
+    {
+        "key": "posts.create",
+        "path": "/cms/posts/create/{BLOG_ID}",
+        "permissions": ["create_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
+        "action": "create"
+    },
+    {
+        "key": "posts.edit",
+        "path": "/cms/posts/edit/{POST_ID}",
+        "permissions": ["edit_all_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
+        "action": "edit"
+    },
+    {
+        "key": "posts.delete",
+        "path": "/cms/posts/delete/{POST_ID}",
+        "permissions": ["delete_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
+        "action": "delete"
+    }
+]

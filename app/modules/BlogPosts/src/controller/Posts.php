@@ -1,13 +1,15 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\blogcms\BlogPosts\controller;
 
 use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
+use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\blogcms\BlogCMS;
 use Codeliner\ArrayReader\ArrayReader;
 
 /**
- * class PostsController
+ * class Posts
  * 
  * This is the controller which acts as the intermediatory between the
  * model (database) and the view. Any requests to the model are sent from
@@ -22,7 +24,7 @@ use Codeliner\ArrayReader\ArrayReader;
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
-class PostsController extends GenericController
+class Posts extends GenericController
 {
     /**
      * @var \rbwebdesigns\blogcms\model\Posts
@@ -56,7 +58,7 @@ class PostsController extends GenericController
 
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\model\Posts');
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
@@ -86,7 +88,6 @@ class PostsController extends GenericController
         if (!BlogCMS::$blogID) {
             $postID = $this->request->getUrlParameter(1);
             $this->post = $this->model->getPostById($postID);
-
             BlogCMS::$blogID = $this->post['blog_id'];
         }
 
@@ -136,7 +137,7 @@ class PostsController extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Posts - ' . $this->blog['name']);
         $this->response->addScript('/js/showUserCard.js');
-        $this->response->write('posts/manage.tpl');
+        $this->response->write('manage.tpl', 'BlogPosts');
     }
     
     /**
@@ -186,7 +187,7 @@ class PostsController extends GenericController
 
             $this->response->addScript('/js/layoutPost.js');
             $this->response->addStylesheet('/css/layoutPost.css');
-            $this->response->write('posts/layoutpost.tpl');
+            $this->response->write('layoutpost.tpl', 'BlogPosts');
             break;
             
             default:
@@ -194,7 +195,7 @@ class PostsController extends GenericController
             BlogCMS::runHook('onGenerateMenu', ['id' => 'newpost', 'menu' => &$newPostMenu]);
 
             $this->response->setVar('menu', $newPostMenu->getLinks());
-            $this->response->write('posts/newpostmenu.tpl');
+            $this->response->write('newpostmenu.tpl', 'BlogPosts');
             break;
         }
     }
@@ -229,13 +230,14 @@ class PostsController extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Edit Post - ' . $this->post['title']);
         
+        // @todo This will change to be extenable (module for each type)
         switch ($this->post['type']) {
             case 'video':
-            $this->response->write('posts/videopost.tpl');
+            $this->response->write('videopost.tpl', 'BlogPosts');
             break;
             
             case 'gallery':
-            $this->response->write('posts/gallerypost.tpl');
+            $this->response->write('gallerypost.tpl', 'BlogPosts');
             break;
             
             case 'layout':
@@ -261,11 +263,11 @@ class PostsController extends GenericController
 
             $this->response->addScript('/js/layoutPost.js');
             $this->response->addStylesheet('/css/layoutPost.css');
-            $this->response->write('posts/layoutpost.tpl');
+            $this->response->write('layoutpost.tpl', 'BlogPosts');
             break;
 
             default:
-            $this->response->write('posts/standardpost.tpl');
+            $this->response->write('standardpost.tpl', 'BlogPosts');
             break;
         }
     }

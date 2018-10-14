@@ -162,13 +162,6 @@ use rbwebdesigns\core\Sanitize;
             'label' => 'Dashboard',
         ],
         [
-            'key' => 'posts',
-            'url' => '/cms/posts/manage/'. BlogCMS::$blogID,
-            'icon' => 'copy outline',
-            'permissions' => ['is_contributor'],
-            'label' => 'Posts',
-        ],
-        [
             'key' => 'blog',
             'url' => '/blogs/'. BlogCMS::$blogID,
             'icon' => 'book',

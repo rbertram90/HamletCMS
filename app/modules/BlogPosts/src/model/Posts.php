@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\blogcms\BlogPosts\model;
 
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\model\RBFactory;

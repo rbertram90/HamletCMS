@@ -1,25 +1,5 @@
 [
     {
-        "key": "create_posts",
-        "label": "Create new posts",
-        "group": "posts"
-    },
-    {
-        "key": "publish_posts",
-        "label": "Publish posts",
-        "group": "posts"
-    },
-    {
-        "key": "edit_all_posts",
-        "label": "Edit any post",
-        "group": "posts"
-    },
-    {
-        "key": "delete_posts",
-        "label": "Delete any post",
-        "group": "posts"
-    },
-    {
         "key": "manage_contributors",
         "label": "Manage contributors",
         "group": "settings"
