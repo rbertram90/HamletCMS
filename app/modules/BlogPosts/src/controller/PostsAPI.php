@@ -117,6 +117,8 @@ class PostsAPI extends GenericController
             return;
         }
 
+        // We've already verified that the user has access to post for this
+        // blog so check the blog ID listed for this post is a match
         if ($post['blog_id'] != $blogID) {
             print '{ "success": false, "errorMessage": "Blog ID mismatch" }';
             $this->response->code(406);

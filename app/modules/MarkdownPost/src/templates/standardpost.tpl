@@ -56,6 +56,8 @@
             
             {include 'edit-form/tags.tpl'}
             
+            <input type="hidden" name="post_type" id="post_type" value="standard">
+
             {* Submit button + hidden fields *}
             {include 'edit-form/actions.tpl'}
         </div>

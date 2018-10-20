@@ -6,8 +6,6 @@
     <input type="hidden" id="post_id" name="post_id" value="0">
 {/if}
 
-<input type="hidden" name="post_type" id="post_type" value="standard">
-
 <input type="button" value="Cancel" id="cancel_create_post" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = getCancelLocation(); window.content_changed = false; {rdelim}" class="ui button right floated">
 
 <input type="submit" name="submit_create_post" id="submit_create_post" value="{$submitLabel}" class="ui button teal right floated">

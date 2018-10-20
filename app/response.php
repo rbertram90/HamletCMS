@@ -85,4 +85,8 @@ class BlogCMSResponse extends Response
         $this->smarty->assign($name, $value);
     }
 
+    public function getVar($name) {
+        return $this->smarty->getTemplateVars($name);
+    }
+
 }
