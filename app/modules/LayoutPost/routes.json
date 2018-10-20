@@ -2,6 +2,15 @@
     {
         "key": "posts.create.layout",
         "path": "/cms/posts/create/{BLOG_ID}/layout",
+        "controller": "\\rbwebdesigns\\blogcms\\LayoutPost\\controller\\LayoutPost",
+        "action": "create",
         "permissions": ["create_posts"]
+    },
+    {
+        "key": "posts.edit.layout",
+        "path": "/cms/posts/edit/{BLOG_ID}/layout",
+        "controller": "\\rbwebdesigns\\blogcms\\LayoutPost\\controller\\LayoutPost",
+        "action": "edit",
+        "permissions": ["edit_all_posts"]
     }
 ]

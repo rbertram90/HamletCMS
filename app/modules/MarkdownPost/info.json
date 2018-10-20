@@ -1,12 +1,10 @@
 {
     "name": "Markdown post type",
     "author": "Ricky",
+    "package": "Core",
+    "version": "0.0.1",
     "enabled": 1,
-    "namespace": "\\rbwebdesigns\\blogcms",
-    "files": [
-
-    ],
     "dependencies": [
-
+        "BlogPosts"
     ]
 }

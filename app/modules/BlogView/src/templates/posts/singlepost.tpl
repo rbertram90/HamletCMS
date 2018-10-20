@@ -101,13 +101,13 @@
 
     {if $post.allowcomments}
     <div>
-        {include file='blog/comments/postcomments.tpl'}
+        {include file='comments/postcomments.tpl'}
     </div>
 
     <div class="ui hidden divider"></div>
 
     <div>
-        {include file='blog/comments/newcommentform.tpl'}
+        {include file='comments/newcommentform.tpl'}
     </div>
     {/if}
 

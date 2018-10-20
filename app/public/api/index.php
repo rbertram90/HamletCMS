@@ -5,40 +5,71 @@ use rbwebdesigns\core\Request;
 use rbwebdesigns\core\Response;
 use rbwebdesigns\blogcms\API\controller\Api;
 
-/**
-* Blog CMS API Start Point
-*/
+/****************************************************************
+  Blog CMS API Start Point
+****************************************************************/
+
     // Include cms setup script
     require_once __DIR__ . '/../../setup.inc.php';
+
 
 /****************************************************************
   Route request
 ****************************************************************/
     
-    $request = new Request();
-    $response = new Response();
-    
-/****************************************************************
-  Setup controller
-****************************************************************/
+    BlogCMS::$function = 'api';
 
-    // Get controller class file
-    // require_once SERVER_ROOT . '/app/controller/api_controller.inc.php';
+    $request = BlogCMS::request();
+    $response = BlogCMS::response();
     
-    // Dynamically instantiate new class
-    $controller = new Api($request, $response);
 
 /****************************************************************
-  Get body content
+  Get content
 ****************************************************************/
 
-    // Call the requested function
-    $action = $request->getControllerName();
+    $route = BlogCMS::pathMatch();
 
-    if (method_exists($controller, $action)) {
+    $errored = false;
+
+    $routeIsValid = $route &&
+        array_key_exists('controller', $route) &&
+        array_key_exists('action', $route);
+
+    if (!$routeIsValid) {
+        $response->setBody('{ "success": false, "errorMessage": "API method not found" }');
+        $response->code(404);
+        $errored = true;
+    }
+
+    $permissionsModel = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+    $blogModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+
+    $blogID = $request->getInt('blogID', false);
+
+    if (!$blog = $blogModel->getBlogById($blogID)) {
+        $response->setBody('{ "success": false, "errorMessage": "Blog not found" }');
+        $response->code(406);
+        $errored = true;
+    }
+
+    // Check permissions
+    if (array_key_exists('permissions', $route) && count($route['permissions'])) {
+        foreach ($route['permissions'] as $permissionName) {
+            if (!$permissionsModel->userHasPermission($blog['id'], $permissionName) ) {
+                $response->setBody('{ "success": false, "errorMessage": "Access denied" }');
+                $response->code(403);
+                $errored = true;
+            }
+        }
+    }
+
+    if (!$errored) {
+        $controller = new $route['controller']();
+        $action = $route['action'];
         $controller->$action();
     }
-    else {
-        $controller->defaultAction();
-    }
     
+    // TBD how to handle CORS
+    // $this->response->addHeader('Access-Control-Allow-Origin', '*');
+    $response->addHeader('Content-Type', 'application/json');
+    $response->writeBody();

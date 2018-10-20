@@ -1,6 +1,6 @@
 [
     {
-        "menu": "newpost",
+        "menu": "create_post",
         "type": "route",
         "route": "posts.create.markdown",
         "weight": 10,

@@ -6,6 +6,7 @@ use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
 use rbwebdesigns\blogcms\GenericController;
 use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\blogcms\Menu;
 use Codeliner\ArrayReader\ArrayReader;
 
 /**
@@ -149,20 +150,9 @@ class Posts extends GenericController
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('New Post');
-                
+        
         switch ($this->request->getUrlParameter(2)) {
-            case 'video':
-            $this->response->write('posts/videopost.tpl');
-            break;
-            
-            case 'gallery':
-            $this->response->write('posts/gallerypost.tpl');
-            break;
-            
-            case 'standard':
-            $this->response->write('posts/standardpost.tpl');
-            break;
-
+            /*
             case 'layout':
 
             $imagesHTML = '';
@@ -183,16 +173,14 @@ class Posts extends GenericController
             }
     
             $this->response->setVar('imagesOutput', $imagesHTML);
-
-
             $this->response->addScript('/js/layoutPost.js');
             $this->response->addStylesheet('/css/layoutPost.css');
             $this->response->write('layoutpost.tpl', 'BlogPosts');
             break;
-            
+            */
             default:
-            $newPostMenu = new Menu('newpost');
-            BlogCMS::runHook('onGenerateMenu', ['id' => 'newpost', 'menu' => &$newPostMenu]);
+            $newPostMenu = new Menu('create_post');
+            BlogCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
 
             $this->response->setVar('menu', $newPostMenu->getLinks());
             $this->response->write('newpostmenu.tpl', 'BlogPosts');
@@ -204,9 +192,11 @@ class Posts extends GenericController
      * Handles GET /posts/edit/<postID>
      */
     public function edit()
-    {
-        if ($this->request->method() == 'POST') return $this->runEditPost();
-        
+    {       
+        // Now passing this on individual modules
+        BlogCMS::runHook('onViewEditPost', ['type' => $this->post['type']]);
+
+        /*
         if ($this->post['type'] == 'gallery') {
             $this->post['gallery_imagelist'] = explode(',', $this->post['gallery_imagelist']);
         }
@@ -229,7 +219,9 @@ class Posts extends GenericController
         $this->response->setVar('post', $this->post);
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Edit Post - ' . $this->post['title']);
-        
+        */
+/*
+
         // @todo This will change to be extenable (module for each type)
         switch ($this->post['type']) {
             case 'video':
@@ -270,103 +262,10 @@ class Posts extends GenericController
             $this->response->write('standardpost.tpl', 'BlogPosts');
             break;
         }
+
+        */
     }
     
-    /**
-     * Handles POST /posts/create/<postID>
-     */
-    protected function runCreatePost()
-    {
-        $posttime = strtotime($this->request->getString('fld_postdate'));
-        
-        if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
-            $postdate = date("Y-m-d H:i:00", $posttime);
-        }
-        else {
-            $postdate = date("Y-m-d H:i:00");
-        }
-        
-        $newPost = [
-            'title'           => $this->request->getString('fld_posttitle'),
-            'content'         => $this->request->get('fld_postcontent'),
-            'tags'            => $this->request->getString('fld_tags'),
-            'teaser_image'    => $this->request->getString('fld_teaserimage'),
-            'blog_id'         => $this->blog['id'],
-            'draft'           => $this->request->getInt('fld_draft'),
-            'allowcomments'   => $this->request->getInt('fld_allowcomment'),
-            'type'            => $this->request->getString('fld_posttype'),
-            'initialautosave' => 0,
-            'timestamp'       => $postdate
-        ];
-
-        if (strlen($newPost['title']) == 0) {
-            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Please provide a title', 'error');
-        }
-        
-        if ($newPost['type'] == 'video') {
-            $newPost['videoid'] = $this->request->getString('fld_postvideoID');
-            $newPost['videosource'] = $this->request->getString('fld_postvideosource');
-        }
-        
-        if ($newPost['type'] == 'gallery') {
-            $newPost['gallery_imagelist'] = $this->request->get('fld_gallery_imagelist');
-        }
-
-        if($postID = $this->request->getInt('fld_postid', false)) {
-            // This should be the case as it should have been created when the autosave run
-            if ($this->model->updatePost($postID, $newPost)) {
-                $this->model->removeAutosave($postID);
-            }
-            else {
-                $this->response->redirect('/cms/posts/edit/' . $postID, 'Error updating post', 'error');
-            }
-        }
-        elseif (!$this->model->createPost($newPost)) {
-            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Error creating post', 'error');
-        }
-
-        BlogCMS::runHook('onPostCreated', ['post' => $newPost]);
-        $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Post created', 'success');
-    }
-    
-    /**
-     * Handles POST /cms/posts/autosave
-     */
-    public function autosave()
-    {
-        $postID = $this->request->getInt('fld_postid');
-
-        $data = [
-            'title'         => $this->request->getString('fld_title'),
-            'content'       => $this->request->getString('fld_content'),
-            'tags'          => $this->request->getString('fld_tags'),
-            'allowcomments' => $this->request->getInt('fld_allowcomments'),
-            'type'          => $this->request->getString('fld_type'),
-        ];
-
-        $updateDB = $this->model->autosavePost($postID, $data);
-
-        if($updateDB === false) {
-            echo json_encode([
-                'status' => 'failed',
-                'message' => 'Could not run autosave - DB Update Error'
-            ]);
-        }
-        elseif($updateDB > 0 && $updateDB !== $postID) {
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Post autosaved at ' . date('H:i'),
-                'newpostid' => $updateDB
-            ]);
-        }
-        else {
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Post autosaved at ' . date('H:i')
-            ]);
-        }
-    }
-
     /**
      * Handles POST /posts/cancelsave/<postID>
      * 
@@ -386,53 +285,6 @@ class Posts extends GenericController
     }
     
     /**
-     * Handles POST /posts/edit/<postID>
-     * 
-     * Edit an existing blog post
-     */
-    public function runEditPost()
-    {
-        // Check & Format date
-        $posttime = strtotime($this->request->getString('fld_postdate'));
-        
-        if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
-            $postdate = date("Y-m-d H:i:00", $posttime);
-        }
-        else {
-            $postdate = $arraypost['timestamp']; // Keep to original
-        }
-        
-        $updates = [
-            'title'           => $this->request->getString('fld_posttitle'),
-            'content'         => $this->request->get('fld_postcontent'),
-            'tags'            => $this->request->getString('fld_tags'),
-            'teaser_image'    => $this->request->getString('fld_teaserimage'),
-            'draft'           => $this->request->getInt('fld_draft'),
-            'allowcomments'   => $this->request->getInt('fld_allowcomment'),
-            'initialautosave' => 0,
-            'timestamp'       => $postdate
-        ];
-
-        if (strlen($updates['title']) == 0) {
-            $this->response->redirect('/cms/posts/manage/' . $this->blog['id'], 'Please provide a title', 'error');
-        }
-        
-        if ($this->post['type'] == 'video') {
-            $updates['videoid']     = $this->request->getString('fld_postvideoID');
-            $updates['videosource'] = $this->request->getString('fld_postvideosource');
-        }
-        if ($this->post['type'] == 'gallery') {
-            $updates['gallery_imagelist'] = $this->request->get('fld_gallery_imagelist');
-        }
-        
-        $this->model->updatePost($this->post['id'], $updates);
-        $this->model->removeAutosave($this->post['id']);
-        
-        BlogCMS::runHook('onPostUpdated', ['post' => array_merge($this->post, $updates)]);
-        $this->response->redirect('/cms/posts/edit/' . $this->post['id'], 'Save successful', 'success');
-    }
-    
-    /**
      * Handles /posts/delete/<postID>
      * 
      * @todo make sure there are no pages with this post ID
@@ -448,38 +300,4 @@ class Posts extends GenericController
         }
     }
     
-    /**
-     * @todo exclude current post ID!!!
-     */
-    public function checkDuplicateTitle()
-    {
-        $blogID = $this->request->getInt('blog_id');
-        $postID = $this->request->getInt('post_id', 0);
-        $title = $this->request->getString('post_title', '');
-
-        if (strlen($title) == 0) {
-            print "true";
-            return;
-        } 
-
-        $link = $this->model->createSafePostUrl($title);
-        
-        $matchingPosts = $this->model->count(['blog_id' => $blogID, 'link' => $link]);
-        if ($matchingPosts == 0) {
-            print "false";
-            return;
-        }
-        elseif ($matchingPosts == 1) {
-            $post = $this->model->getPostByURL($link, $blogID);
-            // Valid if new post & only one match or if the found post
-            // is the one we're editing
-            if ($postID == 0 || $post['id'] == $postID) {
-                print "false";
-                return;
-            }
-        }
-
-        print "true";
-    }
-
 }

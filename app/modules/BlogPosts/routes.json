@@ -1,6 +1,7 @@
 [
     {
         "key": "posts.manage",
+        "description": "Show the manage post page",
         "path": "/cms/posts/manage/{BLOG_ID}",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
@@ -8,6 +9,7 @@
     },
     {
         "key": "posts.create",
+        "description": "Show the create post menu listing each of the enabled post types",
         "path": "/cms/posts/create/{BLOG_ID}",
         "permissions": ["create_posts"],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
@@ -26,5 +28,33 @@
         "permissions": ["delete_posts"],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
         "action": "delete"
+    },
+    {
+        "key": "api.posts",
+        "path": "/api/posts",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "getList"
+    },
+    {
+        "key": "api.posts.create",
+        "path": "/api/posts/create",
+        "permissions": ["create_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "create"
+    },
+    {
+        "key": "api.posts.update",
+        "path": "/api/posts/update",
+        "permissions": ["edit_all_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "edit"
+    },
+    {
+        "key": "api.posts.autosave",
+        "path": "/api/posts/autosave",
+        "permissions": ["create_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "autosave"
     }
 ]

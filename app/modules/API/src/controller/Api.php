@@ -61,54 +61,6 @@ class Api extends GenericController
     }
 
     /**
-     * Get data for posts in JSON format
-     * Handles GET /api/posts
-     *
-     * Request Parameters:
-     *  blogID (required) - ID of the blog e.g. 1983749328
-     *  start (optional) - first post to start from
-     *  limit (optional) - number of posts to get
-     *  sort (optional) - ordering: 
-     *    timestamp ASC/DESC
-     *    title ASC/DESC
-     *    author_id ASC/DESC
-     *    hits ASC/DESC
-     *    uniqueviews ASC/DESC
-     *    numcomments ASC/DESC
-     *  showdrafts (optional) - include draft posts (true / false)
-     *  showscheduled (optional) - include scheduled posts (true / false)
-     */
-    public function posts()
-    {
-        $blogID = $this->request->getInt('blogID', -1);
-        $start  = $this->request->getInt('start', 1);
-        $limit  = $this->request->getInt('limit', 10);
-        $sort   = $this->request->getString('sort', 'name ASC');
-
-        $showDrafts = $this->request->getString('showdrafts', 'false');
-        $showDrafts = ($showDrafts == 'true') ? 1 : 0;
-
-        $showScheduled = $this->request->getString('showscheduled', 'false');
-        $showScheduled = ($showScheduled == 'true') ? 1 : 0;
-
-        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
-            die("{ 'error': 'Unable to find blog' }");
-        }
-        
-        $result = [
-            'blog'      => $blog,
-            'postcount' => $this->modelPosts->countPostsOnBlog($blogID, $showDrafts, $showScheduled),
-            'posts'     => $this->modelPosts->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
-        ];
-
-        $this->response->addHeader('Access-Control-Allow-Origin', '*');
-        $this->response->addHeader('Content-Type', 'application/json');
-        $this->response->setBody(JSONhelper::arrayToJSON($result));
-        $this->response->writeBody();
-    }
-
-
-    /**
      * GET /api/tags
      */
     public function tags()

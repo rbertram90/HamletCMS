@@ -561,7 +561,7 @@ class Posts extends RBFactory
                 'tags'            => $newTags,
                 'allowcomments'   => $data['allowcomments'],
                 'type'            => $data['type'],
-                'blog_id'         => Sanitize::int($_POST['fld_blogid']),
+                'blog_id'         => $data['blogID'],
                 'author_id'       => $currentUser['id'],
                 'draft'           => 1,
                 'initialautosave' => 1,

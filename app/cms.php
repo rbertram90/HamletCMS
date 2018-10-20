@@ -36,6 +36,8 @@ class BlogCMS
     protected static $modules = [];
     // protected static $modelManager = null;
 
+    public static $function = 'cms';
+
     /**
      * @var int  id field for the blog for which we are managing
      */
@@ -121,7 +123,7 @@ class BlogCMS
     /**
      * @param string $modelName
      * 
-     * @return \rbwebdesigns\core\model\ModelManager
+     * @return mixed
      */
     public static function model($modelName)
     {
@@ -217,7 +219,7 @@ class BlogCMS
         // todo
         $routeCache = self::getCache('routes');
 
-        $requestPath = ['cms', self::request()->getControllerName()];
+        $requestPath = [self::$function, self::request()->getControllerName()];
 
         $e = 0;
         while ($elem = self::request()->getUrlParameter($e, false)) {

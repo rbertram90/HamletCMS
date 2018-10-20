@@ -2,6 +2,8 @@
     {
         "key": "posts.create.markdown",
         "path": "/cms/posts/create/{BLOG_ID}/standard",
+        "controller": "\\rbwebdesigns\\blogcms\\MarkdownPost\\controller\\MarkdownPost",
+        "action": "create",
         "permissions": ["create_posts"]
     }
 ]

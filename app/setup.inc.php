@@ -1,8 +1,5 @@
 <?php
 namespace rbwebdesigns\blogcms;
-
-use rbwebdesigns\core\Router;
-use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\core\model\UserFactory;
 
 /**
