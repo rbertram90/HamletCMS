@@ -23,13 +23,6 @@
         "action": "edit"
     },
     {
-        "key": "posts.delete",
-        "path": "/cms/posts/delete/{POST_ID}",
-        "permissions": ["delete_posts"],
-        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
-        "action": "delete"
-    },
-    {
         "key": "api.posts",
         "path": "/api/posts",
         "permissions": [],
@@ -56,5 +49,12 @@
         "permissions": ["create_posts"],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
         "action": "autosave"
+    },
+    {
+        "key": "api.posts.delete",
+        "path": "/api/posts/delete",
+        "permissions": ["delete_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "delete"
     }
 ]

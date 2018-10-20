@@ -67,6 +67,7 @@
     
     <div class="one column row">
         <div class="column">
+            <div id="manage_posts_messages"></div>
             <div id="posts_display">Loading...</div>
         </div>
     </div>
@@ -186,20 +187,7 @@
                     output += " <div class='ui circular label'>" + post.hits + "</div>";
 
                     output += "</td><td>";
-                    
-                    switch(post.type.toLowerCase()) {
-                        case 'video':
-                            typecolour = 'purple';
-                            break;
-                        case 'gallery':
-                            typecolour = 'orange';
-                            break;
-                        default:
-                            typecolour = '';
-                            break;
-                    }
-                    
-                    output += " <div class='ui label " + typecolour + "'>" + post.type + "</div>";
+                    output += " <div class='ui label'>" + post.type + "</div>";
                     
                     output += "</td><td>" + post.wordcount;
 
@@ -208,7 +196,7 @@
                     output += "   <div class='default-option'>- Actions -</div>";
                     output += "   <div class='hidden-options'>";
                     output += "     <a href='/cms/posts/edit/" + post.id + "'>Edit</a>";
-                    output += "     <a href='/cms/posts/delete/" + post.id + "' onclick='return confirm(\"Are you sure you want to delete this post?\");'>Delete</a>";
+                    output += "     <a class='delete_post_link' data-postid='" + post.id + "'>Delete</a>";
                     output += " </div></div>";
 
                     output += " </td></tr>";
@@ -247,8 +235,14 @@
                 output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';
                 output += '  $(".user-link").mouseleave(function() {ldelim} hideUserProfile($(this)) {rdelim});';
                 output += '<\/script>';
-            
+
                 $("#posts_display").html(output);
+
+                $(".delete_post_link").click(function(event) {
+                    event.preventDefault();
+                    $("#delete_post_button").data("postid", $(this).data('postid'));
+                    $("#delete_post_modal").modal('setting', 'closable', false).modal('show');
+                });
             }
         );
     };
@@ -262,4 +256,48 @@
     // Init
     refreshData(1);
 
+</script>
+
+<div class="ui basic modal" id="delete_post_modal">
+  <div class="ui icon huge header">
+    <i class="archive icon"></i>
+    Delete post
+  </div>
+  <div class="content" style="text-align:center;">
+    <p>Are you sure you want to delete this post?</p>
+  </div>
+  <div class="actions" style="text-align:center;">
+    <a class="big ui green ok inverted button" id="delete_post_button">
+      <i class="checkmark icon"></i>
+      Yes
+    </a>
+    <div class="big ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      No
+    </div>
+  </div>
+</div>
+
+<script>
+    $("#delete_post_button").click(function(event) {
+        event.preventDefault();
+        var postID = $(this).data("postid");
+
+        $.ajax({
+            url: '/api/posts/delete',
+            type: 'post',
+            data: {
+                postID: postID,
+                blogID: {$blog.id}
+            }
+        }).done(function (data, textStatus, jqXHR) {
+            $("#delete_post_modal").modal('hide');
+            refreshData(1);
+            $("#manage_posts_messages").html('Post deleted!');
+
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            data = JSON.parse(jqXHR.responseText);
+            $("#manage_posts_messages").html(data.errorMessage);
+        });
+    });
 </script>

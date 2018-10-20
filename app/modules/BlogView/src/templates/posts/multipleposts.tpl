@@ -35,7 +35,7 @@
                 <script>Galleria.run("#galleria_{$post.id}");</script>
             {/if}
 
-            {if $post.teaser_image}
+            {if $post.teaser_image and $post.teaser_image != "false"}
                 <div class="teaser-image">
                     <a href="{$blog_root_url}/posts/{$post.link}">
                         <img src="/blogdata/{$blog.id}/images/{$post.teaser_image}" class="ui fluid image">

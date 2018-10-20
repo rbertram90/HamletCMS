@@ -192,7 +192,7 @@ class Posts extends GenericController
      * Handles GET /posts/edit/<postID>
      */
     public function edit()
-    {       
+    {
         // Now passing this on individual modules
         BlogCMS::runHook('onViewEditPost', ['type' => $this->post['type']]);
 
@@ -216,53 +216,6 @@ class Posts extends GenericController
             $this->post['autosave'] = $this->model->getAutosave($this->post['id']);
         }
         
-        $this->response->setVar('post', $this->post);
-        $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Edit Post - ' . $this->post['title']);
-        */
-/*
-
-        // @todo This will change to be extenable (module for each type)
-        switch ($this->post['type']) {
-            case 'video':
-            $this->response->write('videopost.tpl', 'BlogPosts');
-            break;
-            
-            case 'gallery':
-            $this->response->write('gallerypost.tpl', 'BlogPosts');
-            break;
-            
-            case 'layout':
-
-            $imagesHTML = '';
-            $path = SERVER_ROOT . "/app/public/blogdata/" . $this->blog['id'] . "/images";
-
-            if (is_dir($path)) {
-                if ($handle = opendir($path)) {
-                    while (false !== ($file = readdir($handle))) {
-                        $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
-                        $filename = pathinfo($file, PATHINFO_FILENAME);
-            
-                        if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                            $imagesHTML .= '<img src="/blogdata/'. $this->blog['id'] .'/images/'. $file .'" height="100" width="" data-name="'. $filename .'" class="selectableimage" />';
-                        }
-                    }
-                    closedir($handle);
-                }
-            }
-    
-            $this->response->setVar('imagesOutput', $imagesHTML);
-
-            $this->response->addScript('/js/layoutPost.js');
-            $this->response->addStylesheet('/css/layoutPost.css');
-            $this->response->write('layoutpost.tpl', 'BlogPosts');
-            break;
-
-            default:
-            $this->response->write('standardpost.tpl', 'BlogPosts');
-            break;
-        }
-
         */
     }
     
@@ -283,21 +236,5 @@ class Posts extends GenericController
 
         $this->response->redirect('/cms/posts/manage/' . $this->blog['id']);
     }
-    
-    /**
-     * Handles /posts/delete/<postID>
-     * 
-     * @todo make sure there are no pages with this post ID
-     */
-    public function delete()
-    {
-        if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
-            BlogCMS::runHook('onPostDeleted', ['post' => $this->post]);
-            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
-        }
-        else {
-            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
-        }
-    }
-    
+        
 }

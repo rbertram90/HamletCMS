@@ -183,12 +183,23 @@ class PostsAPI extends GenericController
      */
     public function delete()
     {
-        if($delete = $this->model->delete(['id' => $this->post['id']]) && $this->model->removeAutosave($this->post['id'])) {
-            BlogCMS::runHook('onPostDeleted', ['post' => $this->post]);
-            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'success');
+        $postID = $this->request->getInt('postID');
+        $blogID = $this->request->getInt('blogID');
+        $post = $this->model->getPostById($postID);
+
+        if (!$post || !isset($post['blog_id']) || $blogID != $post['blog_id']) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Blog ID Mismatch" }');
+            $this->response->code(400);
+            return;
+        }
+
+        if($this->model->delete(['id' => $post['id']]) && $this->model->removeAutosave($post['id'])) {
+            BlogCMS::runHook('onPostDeleted', ['post' => $post]);
+            $this->response->setBody('{ "success": true }');
         }
         else {
-            $this->response->redirect('/cms/posts/manage/' . $this->post['blog_id'], 'Blog post deleted', 'error');
+            $this->response->setBody('{ "success": false, "errorMessage": "Error deleting post" }');
+            $this->response->code(500);
         }
     }
     
@@ -274,4 +285,5 @@ class PostsAPI extends GenericController
         
         $this->response->setBody(JSONhelper::arrayToJSON($result));
     }
+
 }

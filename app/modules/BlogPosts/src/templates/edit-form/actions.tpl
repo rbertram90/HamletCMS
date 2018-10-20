@@ -109,16 +109,18 @@
             var saveURL = '/api/posts/create';
         }
 
-        $.ajax({ url: saveURL, async: false, method: 'POST', data: formData }).then(function (data) {
+        $.ajax({ url: saveURL, async: false, method: 'POST', data: formData }).done(function (data) {
             if (data.success) {
                 // window.location = '/cms/posts/manage/' + formData.blogID;
                 $('#post_save_success').modal('setting', 'closable', false).modal('show');
                 $('#edit_post_link').attr('href', '/cms/posts/edit/' + data.post.id);
                 $('#view_post_link').attr('href', '/blogs/{$blog.id}/posts/' + data.post.link);
             }
-            else {
-                $(".form_status").html("Save failed " + data.errorText).addClass("error");
-            }
+            enableForm();
+
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            data = JSON.parse(jqXHR.responseText);
+            $(".form_status").html("Save failed " + data.errorText).addClass("error");
             enableForm();
         });
         
