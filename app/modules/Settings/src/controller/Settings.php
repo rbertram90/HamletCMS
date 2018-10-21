@@ -60,8 +60,6 @@ class Settings extends GenericController
         $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
 
-        BlogCMS::$activeMenuLink = 'settings';
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
 
@@ -94,6 +92,8 @@ class Settings extends GenericController
         if (!$access) {
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
+
+        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog['id'];
     }
     
     /**

@@ -12,8 +12,7 @@ class Files extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blogs\model\Blogs');
-
+        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->blog = BlogCMS::getActiveBlog();
     }
 
@@ -69,7 +68,7 @@ class Files extends GenericController
                 }
             }
         }
-        BlogCMS::$activeMenuLink = 'files';
+        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $this->blog['id'];
         
         $response->setVar('blog', $this->blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));

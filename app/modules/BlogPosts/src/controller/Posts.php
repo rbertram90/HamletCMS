@@ -64,8 +64,6 @@ class Posts extends GenericController
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
 
-        BlogCMS::$activeMenuLink = 'posts';
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
 
@@ -93,6 +91,7 @@ class Posts extends GenericController
         }
 
         $this->blog = BlogCMS::getActiveBlog();
+        BlogCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog['id'];
 
         // Check the user is a contributor of the blog to begin with
         if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog['id'])) {

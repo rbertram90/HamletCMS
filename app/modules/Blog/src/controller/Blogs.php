@@ -106,7 +106,7 @@ class Blogs extends GenericController
             $blogs[$key]['actions'] = $blogActions;
         }
         
-        BlogCMS::$activeMenuLink = 'dashboard';
+        BlogCMS::$activeMenuLink = '/cms/blog';
 
         // Add to template
         $this->response->setVar('blogs', $blogs);
@@ -169,7 +169,7 @@ class Blogs extends GenericController
         BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
 
-        BlogCMS::$activeMenuLink = 'overview';
+        BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog['id'];
         $this->response->setTitle('Dashboard - '.$blog['name']);
         $this->response->write('overview.tpl', 'Blog');
     }

@@ -40,12 +40,10 @@ class Comments extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
-
-        BlogCMS::$activeMenuLink = 'comments';
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
         $this->blog = BlogCMS::getActiveBlog();
+        BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog['id'];
     }
 
     /**

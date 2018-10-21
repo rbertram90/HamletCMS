@@ -64,7 +64,7 @@
     },
     {
         "key": "user.card",
-        "path": "/cms/account/card",
+        "path": "/cms/account/card/{USER_ID}",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "card"

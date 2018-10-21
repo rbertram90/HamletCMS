@@ -86,6 +86,9 @@ class Menu
             if (array_key_exists('icon', $linkData)) {
                 $link->icon = $linkData['icon'];
             }
+            if (BlogCMS::$activeMenuLink && $link->url == BlogCMS::$activeMenuLink) {
+                $link->active = true;
+            }
 
             $this->links[] = $link;
         }

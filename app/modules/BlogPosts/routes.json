@@ -23,6 +23,13 @@
         "action": "edit"
     },
     {
+        "key": "posts.cancelsave",
+        "path": "/cms/posts/cancelsave/{POST_ID}",
+        "permissions": ["edit_all_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
+        "action": "cancelsave"
+    },
+    {
         "key": "api.posts",
         "path": "/api/posts",
         "permissions": [],

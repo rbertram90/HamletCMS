@@ -15,7 +15,7 @@
     },
     {
         "key": "files.select",
-        "path": "/cms/files/select/{BLOG_ID}",
+        "path": "/cms/files/fileselect/{BLOG_ID}",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
         "action": "fileselect"

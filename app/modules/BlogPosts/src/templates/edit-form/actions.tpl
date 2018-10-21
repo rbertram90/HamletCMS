@@ -93,8 +93,6 @@
             formData.teaserImage = srcSplit.pop();
         }
 
-        console.log(formData);
-
         // Quick client side validation
         if (formData.title.length == 0) {
             $(".form_status").html("Please add a title").addClass("error");

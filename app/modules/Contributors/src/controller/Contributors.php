@@ -29,13 +29,11 @@ class Contributors extends GenericController
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Blog\\model\ContributorGroups');
+        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
-
-        BlogCMS::$activeMenuLink = 'users';
 
         $this->setup();
     }
@@ -52,6 +50,7 @@ class Contributors extends GenericController
         }
 
         $this->checkUserAccess();
+        BlogCMS::$activeMenuLink = '/cms/contributors/manage/'. $this->blog['id'];
     }
 
     /**
