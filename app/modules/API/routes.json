@@ -1,0 +1,9 @@
+[
+    {
+        "key": "api.blogs.byletter",
+        "path": "/api/blogs/byLetter",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\API\\Controller\\API",
+        "action": "blogs"
+    }
+]

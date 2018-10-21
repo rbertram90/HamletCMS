@@ -46,7 +46,7 @@ use rbwebdesigns\blogcms\API\controller\Api;
 
     $blogID = $request->getInt('blogID', false);
 
-    if (!$blog = $blogModel->getBlogById($blogID)) {
+    if ($blogID && !$blog = $blogModel->getBlogById($blogID)) {
         $response->setBody('{ "success": false, "errorMessage": "Blog not found" }');
         $response->code(406);
         $errored = true;

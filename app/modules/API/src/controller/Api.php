@@ -33,15 +33,14 @@ class Api extends GenericController
      */
     protected $response;
     
-    public function __construct(&$request, &$response)
+    public function __construct()
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
 
-        $this->request = $request;
-        $this->response = $response;
+        parent::__construct();
     }
     
     /**
@@ -105,9 +104,6 @@ class Api extends GenericController
                 $this->blogsById($blog);
                 break;
         }
-
-        $this->response->addHeader('Content-Type', 'application/json');
-        $this->response->writeBody();
     }
 
     /**

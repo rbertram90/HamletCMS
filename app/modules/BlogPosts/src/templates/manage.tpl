@@ -260,7 +260,7 @@
 
 <div class="ui basic modal" id="delete_post_modal">
   <div class="ui icon huge header">
-    <i class="archive icon"></i>
+    <i class="trash alternate outline icon"></i>
     Delete post
   </div>
   <div class="content" style="text-align:center;">

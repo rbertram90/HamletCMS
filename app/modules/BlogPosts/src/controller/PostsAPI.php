@@ -43,6 +43,9 @@ class PostsAPI extends GenericController
         */
     }
 
+    /**
+     * Create a new post
+     */
     public function create()
     {
         // Already validated this as default API request
@@ -73,24 +76,24 @@ class PostsAPI extends GenericController
 
         // Check title provided
         if (strlen($newPost['title']) == 0) {
-            print '{ "success": "false", "errorMessage": "Please provide a title" }';
-            $this->request->code(400);
+            $this->response->setBody('{ "success": "false", "errorMessage": "Please provide a title" }');
+            $this->response->code(400);
             return;
         }
 
         // Validate unique title
         $url = $this->model->createSafePostUrl($newPost['title']);
         if ($post = $this->model->getPostByURL($url, $this->blog['id'])) {
-            print '{ "success": "false", "errorMessage": "Title is already in use" }';
-            $this->request->code(400);
+            $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
+            $this->response->code(400);
             return;
         }
         
         // note - custom fields for different post types would be processed
 
         if (!$this->model->createPost($newPost)) {
-            print '{ "success": "false", "errorMessage": "Error creating post" }';
-            $this->request->code(500);
+            $this->response->setBody('{ "success": "false", "errorMessage": "Error creating post" }');
+            $this->response->code(500);
             return;
         }
 
@@ -100,7 +103,7 @@ class PostsAPI extends GenericController
         BlogCMS::runHook('onPostCreated', ['post' => $post]);
 
         // todo - add new post ID
-        print '{ "success": "true", "post": ' . json_encode($post) .' }';
+        $this->response->setBody('{ "success": "true", "post": ' . json_encode($post) .' }');
     }
 
     /**
@@ -112,7 +115,7 @@ class PostsAPI extends GenericController
         $blogID = $this->request->getInt('blogID');
 
         if (!$post = $this->model->getPostById($postID)) {
-            print '{ "success": false, "errorMessage": "Post not found" }';
+            $this->response->setBody('{ "success": false, "errorMessage": "Post not found" }');
             $this->response->code(406);
             return;
         }
@@ -120,7 +123,7 @@ class PostsAPI extends GenericController
         // We've already verified that the user has access to post for this
         // blog so check the blog ID listed for this post is a match
         if ($post['blog_id'] != $blogID) {
-            print '{ "success": false, "errorMessage": "Blog ID mismatch" }';
+            $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
             $this->response->code(406);
             return;
         }
@@ -148,8 +151,8 @@ class PostsAPI extends GenericController
 
         // Check title provided
         if (strlen($updates['title']) == 0) {
-            print '{ "success": "false", "errorMessage": "Please provide a title" }';
-            $this->request->code(400);
+            $this->response->setBody('{ "success": "false", "errorMessage": "Please provide a title" }');
+            $this->response->code(400);
             return;
         }
 
@@ -159,8 +162,8 @@ class PostsAPI extends GenericController
 
             $matchingPost = $this->model->getPostByURL($url, $blogID);
             if ($matchingPost['id'] != $postID) {
-                print '{ "success": "false", "errorMessage": "Title is already in use" }';
-                $this->request->code(400);
+                $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
+                $this->response->code(400);
                 return;
             }
         }
@@ -173,7 +176,7 @@ class PostsAPI extends GenericController
 
         BlogCMS::runHook('onPostUpdated', ['post' => array_merge($post, $updates)]);
 
-        print '{ "success": true, "post": '. json_encode($post) .' }';
+        $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
     }
     
     /**

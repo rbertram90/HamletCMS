@@ -60,7 +60,7 @@
                         {if $post.timestamp > date('Y-m-d H:i:s')}<i>(scheduled)</i>{/if}
                         
                         <div class="comment-date">
-                            {formatDate($post.timestamp)}
+                            {$post.timestamp|date_format}
                         </div>
                         <div class="comment-info">
                             Added by <a href="/cms/account/user/{$post.author_id}">{$post.username}</a>

@@ -3,7 +3,7 @@
     <div class="ui segment">
         &quot;{$comment.message}&quot;
         <div class="comment-date">
-            {formatdate($comment.timestamp)}
+            {$comment.timestamp|date_format}
         </div>
         <div class="comment-info">
             {if $comment.user_id == $currentUser.id}

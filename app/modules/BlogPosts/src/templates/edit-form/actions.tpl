@@ -57,6 +57,7 @@
     var disableForm = function () {
         $("#submit_create_post").prop("disabled", true);
         $("#cancel_create_post").prop("disabled", true);
+        content_changed = false; // don't autosave again
         disableUnloadMessage();
     };
 
@@ -95,7 +96,7 @@
 
         // Quick client side validation
         if (formData.title.length == 0) {
-            $(".form_status").html("Please add a title").addClass("error");
+            $(".form_status").html("Please add a title").addClass("ui message error");
             enableForm();
             return;
         }
@@ -118,7 +119,7 @@
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             data = JSON.parse(jqXHR.responseText);
-            $(".form_status").html("Save failed " + data.errorText).addClass("error");
+            $(".form_status").html("Save failed: " + data.errorMessage).addClass("ui message error");
             enableForm();
         });
         

@@ -79,12 +79,11 @@
             <!-- Social Media -->
             {if $showsocialicons}
                 {$encodedTitle = rawurlencode($post.title)}
-                {$encodedUrl   = rawurlencode("/blog/{$blog['id']}/posts/{$post['link']}")}
-                {$unencodedUrl = "/blog/{$blog['id']}/posts/{$post['link']}"}
+                {$encodedUrl   = rawurlencode("{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}/blogs/{$blog['id']}/posts/{$post['link']}")}
+                {$unencodedUrl = "{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}/blogs/{$blog['id']}/posts/{$post['link']}"}
                 <div class="social-icons">
                     <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;" class="ui icon facebook button"><i class="facebook icon"></i></a>
                     <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank" class="ui icon twitter button"><i class="twitter icon"></i></a>
-                    <a href="https://plus.google.com/share?url={$unencodedUrl}" target="_blank" class="ui icon google plus button"><i class="google plus icon"></i></a>
                     <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}" class="ui icon grey button"><i class="mail icon"></i></a>
                 </div>
             {/if}
