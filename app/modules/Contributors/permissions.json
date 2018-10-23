@@ -2,6 +2,6 @@
     {
         "key": "manage_contributors",
         "label": "Manage contributors",
-        "group": "settings"
+        "group": "contributors"
     }
 ]

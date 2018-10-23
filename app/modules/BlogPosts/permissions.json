@@ -10,8 +10,18 @@
         "group": "posts"
     },
     {
+        "key": "edit_own_posts",
+        "label": "Edit own posts",
+        "group": "posts"
+    },
+    {
         "key": "edit_all_posts",
         "label": "Edit any post",
+        "group": "posts"
+    },
+    {
+        "key": "delete_own_posts",
+        "label": "Delete own posts",
         "group": "posts"
     },
     {

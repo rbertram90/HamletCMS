@@ -303,6 +303,7 @@ class Contributors extends GenericController
             return $this->runEditGroup($group);
         }
 
+        $this->response->setVar('permissions', $this->modelPermissions->getList());
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('group', $group);
         $this->response->setTitle('Edit contributors group');
