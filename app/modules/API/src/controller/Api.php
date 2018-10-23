@@ -75,9 +75,7 @@ class Api extends GenericController
         $tags = $this->modelPosts->countAllTagsByBlog($blog['id'], $sort);
 
         $this->response->addHeader('Access-Control-Allow-Origin', '*');
-        $this->response->addHeader('Content-Type', 'application/json');
         $this->response->setBody(JSONhelper::arrayToJSON($tags));
-        $this->response->writeBody();
     }
 
     /**
@@ -126,9 +124,6 @@ class Api extends GenericController
                 $this->blogContributors($blog);
                 break;
         }
-
-        $this->response->addHeader('Content-Type', 'application/json');
-        $this->response->writeBody();
     }
 
     /**

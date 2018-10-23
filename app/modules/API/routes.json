@@ -5,5 +5,19 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\API\\Controller\\API",
         "action": "blogs"
+    },
+    {
+        "key": "api.contributors.owner",
+        "path": "/api/contributors/owner",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\API\\Controller\\API",
+        "action": "contributors"
+    },
+    {
+        "key": "api.tags",
+        "path": "/api/tags",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\API\\Controller\\API",
+        "action": "tags"
     }
 ]
