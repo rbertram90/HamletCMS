@@ -48,10 +48,10 @@ class BlogCMSResponse extends Response
             die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
         }
         elseif ($output){
-            $this->smarty->display("file:[$source]". $templatePath);
+            $this->smarty->display("file:[$source]$templatePath");
         }
         else {
-            return $this->smarty->fetch("file:[$source]". $templatePath);
+            return $this->smarty->fetch("file:[$source]$templatePath");
         }
     }
 
@@ -73,7 +73,7 @@ class BlogCMSResponse extends Response
             die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
         }
         else {
-            $this->smarty->display($templatePath);
+            $this->smarty->display("file:[$source]$templatePath");
         }
     }
 

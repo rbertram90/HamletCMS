@@ -15,7 +15,9 @@ use rbwebdesigns\core\JSONhelper;
 
     define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
     
-    define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
+    if (!defined('SERVER_ROOT')) {
+        define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
+    }
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
     define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
     define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');      // Path to modules folder

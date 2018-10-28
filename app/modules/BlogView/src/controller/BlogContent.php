@@ -24,6 +24,8 @@ class BlogContent
     protected $blogConfig;       // Config array of current blog
     protected $blogPostCount;    // Number of posts on current blog
     protected $userPermissionsLevel; // 0 = none, 1 = post only, 2 = full
+    protected $request;
+    protected $response;
     
     public $header_hideTitle = false;
     public $header_hideDescription = false;
@@ -47,10 +49,15 @@ class BlogContent
 
         if (CUSTOM_DOMAIN) {
             $this->pathPrefix = '';
+            $this->fileDir = '';
+            $this->fileDir = '';
         }
         else {
             $this->pathPrefix = "/blogs/{$this->blogID}";
+            $this->fileDir = "/blogdata/{$this->blogID}";
         }
+
+
         
         // todo: Update this...
         if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
@@ -62,6 +69,9 @@ class BlogContent
         else {
             $this->userPermissionsLevel = 0;
         }
+
+        $this->request = BlogCMS::request();
+        $this->response = BlogCMS::response();
     }
     
     /**
@@ -107,6 +117,44 @@ class BlogContent
     }
     
     /**
+     * Generate HTML for the 'teaser' view for a post
+     * 
+     * @param array $post
+     *   Post database record
+     * @param array $config
+     *   Post view settings
+     */
+    public function generatePostTeaser($post, $config)
+    {
+        $teaserResponse = new BlogCMSResponse();
+
+        // Config defaults
+        $showTags = 1;
+        $shownumcomments = 1;
+        $showsocialicons = 1;
+        $summarylength = 150;
+        $postsperpage = 5;
+
+        if (isset($config['showtags']))
+            $teaserResponse->setVar('showtags', $config['showtags']);
+        if (isset($config['shownumcomments']))
+            $teaserResponse->setVar('shownumcomments', $config['shownumcomments']);
+        if (isset($config['showsocialicons']))
+            $teaserResponse->setVar('showsocialicons', $config['showsocialicons']);
+        if (isset($config['postsperpage']))
+            $teaserResponse->setVar('postsperpage', $config['postsperpage']);
+
+        if (file_exists(SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/teaser.tpl')) {
+
+        }
+
+        $templatePath = 'somewhere.tpl'; // dynamic
+        $source = ''; // dynamic
+
+        return $output->write($templatePath, $source, false);
+    }
+
+    /**
      *  View blog homepage
      *  @return <array> data for template
      */
@@ -124,11 +172,11 @@ class BlogContent
 
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
-            if (isset($postConfig['showtags']))     $showtags = $postConfig['showtags'];
-            if (isset($postConfig['shownumcomments'])) $shownumcomments = $postConfig['shownumcomments'];
-            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
+            if (isset($postConfig['showtags']))          $showTags = $postConfig['showtags'];
+            if (isset($postConfig['shownumcomments']))   $shownumcomments = $postConfig['shownumcomments'];
+            if (isset($postConfig['showsocialicons']))   $showsocialicons = $postConfig['showsocialicons'];
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
-            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+            if (isset($postConfig['postsperpage']))      $postsperpage = $postConfig['postsperpage'];
         }
 
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
@@ -815,7 +863,7 @@ class BlogContent
 
                 if ($column['image']) {
                     $classes .= ' black image-column';
-                    $style.= 'background-image: url(/blogdata/' . $this->blogID . '/images/' . $column['image'] . ');';
+                    $style.= 'background-image: url('. $this->fileDir .'/'. $column['image'] .');';
                 }
                 if ($column['minimumHeight']) {
                     $style.= 'min-height: '. $column['minimumHeight'] .';';

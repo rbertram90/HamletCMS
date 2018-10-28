@@ -21,7 +21,7 @@
     
     <script type="text/javascript">var folder_root = "/projects/blog_cms";</script>
 </head>
-<body>
+<body id="blog">
     <div class="ui grid container page-wrapper">
         <div class="row">
             <div class="sixteen wide column page-header">

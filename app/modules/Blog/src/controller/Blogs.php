@@ -183,16 +183,32 @@ class Blogs extends GenericController
     {
         $currentUser = BlogCMS::session()->currentUser;
 
+        // Check we've got the root.inc.php file under blogdata root
+        if (!file_exists(SERVER_PATH_BLOGS .'/root.inc.php')) {
+            // Replace contents
+            $fileContents = file_get_contents(SERVER_ROOT.'/app/root.default.php');
+
+            $fileContents = str_replace("{SERVER_ROOT}", BlogCMS::config()['environment']['root_directory'], $fileContents);
+            $fileContents = str_replace("{CMS_DOMAIN}", BlogCMS::config()['environment']['canonical_domain'], $fileContents);
+
+            // Copy file
+            $copy = file_put_contents(SERVER_PATH_BLOGS.'/root.inc.php', $fileContents);
+            if (!$copy) die("Failed to create root file, please check directory permissions for: ".SERVER_PATH_BLOGS);
+        }
+
+        // Hard limit of 4 - need to add option to configuration
         if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
             $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
         }
         else {
+            // Create blog db entry
             $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
 
             if (!$newblogkey) {
                 $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
             }
 
+            // Create admin groups
             if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
                 $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
             }
@@ -201,6 +217,7 @@ class Blogs extends GenericController
 
             if (!$adminGroup) die('No admin found' . $newblogkey);
 
+            // Add the user as contributor
             if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup['id'])) {
                 $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             }

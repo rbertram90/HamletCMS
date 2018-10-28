@@ -17,12 +17,12 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
      * Global variables
      * Global JavaScript and CSS
 ****************************************************************/
-    
-    // Setup - Stage 1
-    require_once SERVER_ROOT .'/app/envsetup.inc.php';
-    
+        
     // Setup for 'Plugins' Installed using composer
     require_once SERVER_ROOT .'/app/vendor/autoload.php';
+
+    // Setup - Stage 1
+    require_once SERVER_ROOT .'/app/envsetup.inc.php';
     
     // Include blogs controller
     // require_once SERVER_ROOT .'/app/modules/BlogView/controller/BlogContent.php';
@@ -31,6 +31,13 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
 /****************************************************************
     Setup and Decide on actual page content
 ****************************************************************/
+
+    if (!defined('BLOG_KEY')) {
+        $parts = explode('/', $_SERVER['DOCUMENT_ROOT']);
+        define('BLOG_KEY', array_pop($parts));
+    }
+
+    BlogCMS::$blogID = BLOG_KEY;
 
     $request = BlogCMS::request();
     $response = BlogCMS::response();
@@ -50,6 +57,16 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
         $action = strtolower($request->getUrlParameter(1));
         $pathPrefix = "/blogs/{$blog['id']}";
         $blogDir = "/blogdata/{$blog['id']}";
+    }
+
+    $session = BlogCMS::session();
+
+    // Check if we are logged in
+    if(gettype($session->currentUser) == 'array') {
+        define('USER_AUTHENTICATED', true);
+    }
+    else {
+        define('USER_AUTHENTICATED', false);
     }
 
     $response->addStylesheet($host . '/resources/css/core.css');

@@ -10,7 +10,7 @@
         {if $post.teaser_image and $post.teaser_image != "false"}
             <div class="teaser-image">
                 <a href="{$blog_root_url}/posts/{$post.link}">
-                    <img src="/blogdata/{$blog.id}/images/{$post.teaser_image}" class="ui fluid image">
+                    <img src="{$blog_file_dir}/images/{$post.teaser_image}" class="ui fluid image">
                 </a>
             </div>
         {/if}
