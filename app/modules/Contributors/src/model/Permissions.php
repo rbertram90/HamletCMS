@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms\Contributors\model;
 
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\model\RBFactory;
+use rbwebdesigns\core\JSONHelper;
 
 class Permissions extends RBFactory
 {
@@ -13,6 +14,8 @@ class Permissions extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'contributors';
+
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
     }
 
     /**
@@ -65,7 +68,7 @@ class Permissions extends RBFactory
         if ($groupData['super'] == 1) return true;
 
         $userPermissions = JSONHelper::JSONtoArray($group['data']);
-        $userPermissions['is_contributor'] = $this->isBlogContributor($userID, $blogID);
+        $userPermissions['is_contributor'] = $this->modelContributors->isBlogContributor($userID, $blogID);
         
         return array_key_exists($permission, $userPermissions) && $userPermissions[$permission] == 1;
     }

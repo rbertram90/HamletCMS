@@ -13,5 +13,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
         "action": "overview"
+    },
+    {
+        "key": "blog.create",
+        "path": "/cms/blog/create",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
+        "action": "create"
     }
 ]
