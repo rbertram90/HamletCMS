@@ -37,17 +37,23 @@ class BlogCMSResponse extends Response
     {
         $session = BlogCMS::session();
         $currentUser = $session->currentUser;
-
-        // $this->setVar('messages', $session->getAllMessages());
         
-        // Note using this class we are ALWAYS using smarty template
-        // $usesmarty = (substr($templatePath, -3) == 'tpl');
-
-        if(!file_exists($this->smarty->getTemplateDir($source) . $templatePath)) {
+        // Don't validate if the full file path has been passed in - this
+        // will be the case with blog templates as don't want to regsiter
+        // a template directory for each blog.
+        if(substr($templatePath, 0, 5) === "file:") {
+            if ($output) {
+                $this->smarty->display($templatePath);
+            }
+            else {
+                return $this->smarty->fetch($templatePath);
+            }
+        }
+        elseif(!file_exists($this->smarty->getTemplateDir($source) . $templatePath)) {
             $debug = print_r(debug_backtrace(), true);
             die('Unable to find template: ' . $templatePath . '<pre>' . $debug . '</pre>'); // todo - create a proper debug class
         }
-        elseif ($output){
+        elseif ($output) {
             $this->smarty->display("file:[$source]$templatePath");
         }
         else {

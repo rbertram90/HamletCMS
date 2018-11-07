@@ -2,11 +2,11 @@
 namespace rbwebdesigns\blogcms\BlogView\controller;
 
 use Codeliner;
-use Michelf\Markdown;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\Pagination;
 use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\blogcms\BlogCMSResponse;
 
 /**
  * blog_content_controller
@@ -144,14 +144,84 @@ class BlogContent
         if (isset($config['postsperpage']))
             $teaserResponse->setVar('postsperpage', $config['postsperpage']);
 
-        if (file_exists(SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/teaser.tpl')) {
+        // Copy accross sub-set of variables from main template
+        $globalResponse = BlogCMS::response();
+        $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
+        $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
 
+        BlogCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
+
+        // Check if blog template is overriding the teaser
+        // @todo - find this once and store in config?!
+        if (file_exists(SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/teaser.tpl')) {
+            $templatePath = 'file:'. SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/teaser.tpl';
+            $source = '';
+        }
+        else {
+            // Use system default
+            $templatePath = 'posts/teaser.tpl';
+            $source = 'BlogView';
         }
 
-        $templatePath = 'somewhere.tpl'; // dynamic
-        $source = ''; // dynamic
+        $teaserResponse->setVar('config', $config);
+        $teaserResponse->setVar('post', $post);
 
-        return $output->write($templatePath, $source, false);
+        return $teaserResponse->write($templatePath, $source, false);
+    }
+
+
+    public function generateSinglePost($post, $config)
+    {
+        $teaserResponse = new BlogCMSResponse();
+
+        // Copy accross sub-set of variables from main template
+        $globalResponse = BlogCMS::response();
+        $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
+        $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
+        $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
+        $teaserResponse->setVar('userAuthenticated', $globalResponse->getVar('user_is_logged_in'));
+
+        BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
+
+        // Check if blog template is overriding the teaser
+        // @todo - find this once and store in config?!
+        if (file_exists(SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/singlepost.tpl')) {
+            $templatePath = 'file:'. SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/singlepost.tpl';
+            $source = '';
+        }
+        else {
+            // Use system default
+            $templatePath = 'posts/singlepost.tpl';
+            $source = 'BlogView';
+        }
+
+        $teaserResponse->setVar('config', $config);
+        $teaserResponse->setVar('post', $post);
+
+        // Output the content direct - this is inconsistant with the teaser version
+        $teaserResponse->write($templatePath, $source, true);
+    }
+
+    public function generatePostTemplate($post, $config, $mode = 'full')
+    {
+        if (strlen($post['tags']) > 0) {
+            $post['tags'] = explode(',', $post['tags']);
+        }
+        else {
+            $post['tags'] = [];
+        }
+
+        $post['headerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'title');
+        $post['footerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'footer');
+
+        switch ($mode) {
+            case 'full':
+                return $this->generateSinglePost($post, $config);
+                break;
+            case 'teaser':
+                return $this->generatePostTeaser($post, $config);
+                break;
+        }
     }
 
     /**
@@ -172,56 +242,37 @@ class BlogContent
 
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
-            if (isset($postConfig['showtags']))          $showTags = $postConfig['showtags'];
-            if (isset($postConfig['shownumcomments']))   $shownumcomments = $postConfig['shownumcomments'];
-            if (isset($postConfig['showsocialicons']))   $showsocialicons = $postConfig['showsocialicons'];
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
-            if (isset($postConfig['postsperpage']))      $postsperpage = $postConfig['postsperpage'];
         }
 
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
+        $output = "";
 
-        $response->setVar('showtags', $showTags);
-        $response->setVar('shownumcomments', $shownumcomments);
-        $response->setVar('showsocialicons', $showsocialicons);
+        foreach ($postlist as $post) {
+            $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
+        }
+        
+        // Pagination
         $response->setVar('postsperpage', $postsperpage);
-        $response->setVar('currentPage', $pageNum);
-
         $response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
         // Format content
+        /*
         for ($p = 0; $p < count($postlist); $p++) {
-
-            if ($postlist[$p]['type'] == 'layout') {
-                $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
-                $mdContent = $this->generateLayoutMarkup($layout);
-                $postlist[$p]['trimmedContent'] = $mdContent;
-            }
-            else {
-                $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
-                $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
-            }
-
-            if (strlen($postlist[$p]['tags']) > 0) {
-                $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
-            }
-            else {
-                $postlist[$p]['tags'] = [];
-            }
             
-            $postlist[$p]['headerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'title');
-            $postlist[$p]['footerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'footer');
-
             if ($postlist[$p]['type'] == 'gallery') {
                 $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
             }
         }
+        */
 
         $isContributor = BlogCMS::$userGroup !== false;
 
         $response->setTitle($this->blog['name']);
         $response->setVar('userIsContributor', $isContributor);
-        $response->setVar('posts', $postlist);
+
+        $response->setVar('posts', $output);
+
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');
@@ -466,51 +517,24 @@ class BlogContent
 
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
-            if (isset($postConfig['showtags']))     $showtags = $postConfig['showtags'];
-            if (isset($postConfig['shownumcomments'])) $shownumcomments = $postConfig['shownumcomments'];
-            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
-            if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
             if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
         }
 
-        $response->setVar('showtags', $showTags);
-        $response->setVar('shownumcomments', $shownumcomments);
-        $response->setVar('showsocialicons', $showsocialicons);
+        $output = "";
+        foreach ($postlist as $post) {
+            $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
+        }
+
+        // Pagination
         $response->setVar('postsperpage', $postsperpage);
         $response->setVar('currentPage', $pageNum);
-
         $response->setVar('totalnumposts', count($postlist));
-
-        // Format content
-        for ($p = 0; $p < count($postlist); $p++) {
-
-            if ($postlist[$p]['type'] == 'layout') {
-                $layout = JSONHelper::JSONtoArray($postlist[$p]['content']);
-                $mdContent = $this->generateLayoutMarkup($layout);
-                $postlist[$p]['trimmedContent'] = $mdContent;
-
-            }
-            else {
-                $mdContent = Markdown::defaultTransform($postlist[$p]['content']);
-                $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
-            }
-
-            $postlist[$p]['trimmedContent'] = $this->trimContent($mdContent, $summarylength);
-            $postlist[$p]['tags'] = explode(',', $postlist[$p]['tags']);
-
-            $postlist[$p]['headerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'title');
-            $postlist[$p]['footerDate'] = $this->formatDateFromSettings($postlist[$p]['timestamp'], $postConfig, 'footer');
-
-            if ($postlist[$p]['type'] == 'gallery') {
-                $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
-            }
-        }
 
         // Set Page Title
         $response->setTitle("Posts tagged with {$tag} - {$this->blog['name']}");
         $response->setVar('userIsContributor', $isContributor);
         $response->setVar('tagName', $tag);
-        $response->setVar('posts', $postlist);
+        $response->setVar('posts', $output);
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postsbytag.tpl', 'BlogView');
@@ -638,9 +662,7 @@ class BlogContent
 
         // Check conditions in which the user is not allowed to view the post
         if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
-            
             $isContributor = BlogCMS::$userGroup !== false;
-
             if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
             }
@@ -650,48 +672,20 @@ class BlogContent
         }
         
         // Get all data required
-        if ($post['allowcomments']) {
-            $response->setVar('comments', $this->modelComments->getCommentsByPost($post['id'], false));
-        }
-
-        // Apply post configuration
-        $blogConfig = $this->getBlogConfig($this->blogID);
-        $showtags = $showsocialicons = 1;
-
-        if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'];
-            if (isset($postConfig['showtags'])) $showtags = $postConfig['showtags'];
-            if (isset($postConfig['showsocialicons'])) $showsocialicons = $postConfig['showsocialicons'];
-            $response->setVar('headerDate', $this->formatDateFromSettings($post['timestamp'], $postConfig, 'title'));
-            $response->setVar('footerDate', $this->formatDateFromSettings($post['timestamp'], $postConfig, 'footer'));
-        }
-        else {
-            $response->setVar('headerDate', '');
-            $response->setVar('footerDate', $this->formatDateFromSettings($post['timestamp'], null, 'footer'));
-        }
+        // if ($post['allowcomments']) {
+        //     $response->setVar('comments', $this->modelComments->getCommentsByPost($post['id'], false));
+        // }
 
         // Record the view
         $this->addView($post['id']);
-
-        $response->setVar('post', $post);
-        $response->setVar('showtags', $showtags);
-        $response->setVar('showsocialicons', $showsocialicons);
-        $response->setVar('userAuthenticated', getType($currentUser) == 'array');
-        $response->setVar('userIsContributor', $isContributor);
-
-        if ($post['type'] == 'layout') {
-            $layout = JSONHelper::JSONtoArray($post['content']);
-            $mdContent = $this->generateLayoutMarkup($layout);
-        }
-        else {
-            $mdContent = Markdown::defaultTransform($post['content']);
-        }
 
         $response->setVar('mdContent', $mdContent);
         $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
         $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
         $response->setTitle($post['title']);
         $response->write('posts/singlepost.tpl', 'BlogView');
+        
+        $this->generatePostTemplate($post, null, 'full');
     }
     
     /**
@@ -790,100 +784,6 @@ class BlogContent
         
         // Remove Whitespace and return answer
         return trim($trimmedContent);
-    }
-
-    /**
-     * generateLayoutMarkup
-     */
-    protected function generateLayoutMarkup($array)
-    {
-        $out = "<div class='ui grid'>";
-
-        foreach ($array['rows'] as $row) {
-            $rowClasses = "";
-            $rOut = "";
-            $columnWidths = null;
-
-            switch ($row['columnLayout']) {
-                case "twoColumns_50":
-                    $rowClasses = "two column";
-                    break;
-
-                case "twoColumns_75":
-                    $columnWidths = [75, 25];
-                    break;
-
-                case "twoColumns_75":
-                    $columnWidths = [25, 75];
-                    break;
-
-                case "twoColumns_66":
-                    $columnWidths = [66, 33];
-                    break;
-
-                case "twoColumns_66":
-                    $columnWidths = [33, 66];
-                    break;
-
-                case "threeColumns":
-                    $rowClasses = "three column";
-                    break;
-
-                case "fourColumns":
-                    $rowClasses = "four column";
-                    break;
-
-                default:
-                case "singleColumn":
-                    $columnWidths = [100];
-                    break;
-            }
-
-            foreach ($row['columns'] as $c => $column) {
-
-                $classes = "";
-                if ($columnWidths) {
-                    switch ($columnWidths[$c]) {
-                        case 100: $classes = "sixteen wide"; break;
-                        case 75: $classes = "twelve wide"; break;
-                        case 66: $classes = "ten wide"; break;
-                        case 33: $classes = "six wide"; break;
-                        case 25: $classes = "four wide"; break;
-                    }
-                }
-
-                $style = '';
-                if (isset($column['backgroundColour'])) {
-                    $classes .= ' ' . $column['backgroundColour'];
-                }
-
-                if (isset($column['fontColour'])) {
-                    $style .= sprintf('color: %s;', $column['fontColour']);
-                }
-
-                if ($column['image']) {
-                    $classes .= ' black image-column';
-                    $style.= 'background-image: url('. $this->fileDir .'/'. $column['image'] .');';
-                }
-                if ($column['minimumHeight']) {
-                    $style.= 'min-height: '. $column['minimumHeight'] .';';
-                }
-
-                $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);
-
-                if ($column['textContent']) {
-                    $rOut.= nl2br($column['textContent']);
-                }
-
-                $rOut.= "</div>";
-            }
-
-            $out .= sprintf("<div class='%s row'>%s</div>", $rowClasses, $rOut);
-        }
-
-        $out .= '</div>';
-
-        return $out;
     }
 
     /**
