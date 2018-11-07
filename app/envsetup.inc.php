@@ -19,7 +19,7 @@ use rbwebdesigns\core\JSONhelper;
         define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
     }
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
-    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/app/public');        // Path to www folder
+    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/public');        // Path to www folder
     define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');      // Path to modules folder
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
     define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data

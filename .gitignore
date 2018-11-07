@@ -5,8 +5,8 @@
 /docs
 /phpdocs
 /app/vendor
-/app/public/blogdata
-/app/public/avatars
+/public/blogdata
+/public/avatars
 templates_c/
 
 /app/config/config.json

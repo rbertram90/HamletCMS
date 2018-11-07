@@ -10,7 +10,7 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     // Include cms setup script
-    require_once __DIR__ . '/../../setup.inc.php';
+    require_once __DIR__ . '/../../app/setup.inc.php';
 
     
 /****************************************************************
