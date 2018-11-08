@@ -181,6 +181,8 @@ class BlogContent
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
         $teaserResponse->setVar('userAuthenticated', $globalResponse->getVar('user_is_logged_in'));
 
+        $post['after'] = [];
+
         BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
 
         // Check if blog template is overriding the teaser

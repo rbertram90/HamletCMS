@@ -107,16 +107,10 @@
         <div class="ui hidden divider"></div>
     </footer>
 
-    {if $post.allowcomments}
-    <div>
-        {include file='comments/postcomments.tpl'}
-    </div>
-
-    <div class="ui hidden divider"></div>
-
-    <div>
-        {include file='comments/newcommentform.tpl'}
-    </div>
+    {if $post.after}
+        {foreach $post.after as $afterTemplate}
+            {include file="$afterTemplate"}
+        {/foreach}
     {/if}
 
 </article>

@@ -47,4 +47,11 @@ class PostComments
         $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']['id'], 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
+
+    public function runTemplate($args) {
+        if ($args['template'] == 'singlePost' && $args['post']['allowcomments']) {
+            $args['post']['after'][] = 'file:[PostComments]postcomments.tpl';
+            $args['post']['after'][] = 'file:[PostComments]newcommentform.tpl';
+        }
+    }
 }
