@@ -55,8 +55,12 @@ class Permissions extends RBFactory
     /**
      * Check if the user has permission to perform an action
      */
-    public function userHasPermission($blogID, $permission)
+    public function userHasPermission($permission, $blogID = 0)
     {
+        if ($blogID == 0) {
+            $blogID = BlogCMS::$blogID;
+        }
+
         if (!$groupID = $this->getUserGroup($blogID)) return false;
 
         $sql = sprintf('SELECT `super`, `data` FROM `contributorgroups` WHERE id=%d', $groupID);

@@ -63,7 +63,7 @@ class Contributors extends GenericController
         if (!$this->blog) {
             $access = false;
         }
-        elseif (!$this->modelPermissions->userHasPermission($this->blog['id'], 'manage_contributors')) {
+        elseif (!$this->modelPermissions->userHasPermission('manage_contributors', $this->blog['id'])) {
             $access = false;
         }
 

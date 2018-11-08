@@ -36,7 +36,7 @@
                 {$comment.message}
             </td>
             <td>
-                {formatdate($comment.timestamp)}
+                {$comment.timestamp|date_format}
             </td>
             <td>
                 <a href="/cms/account/user/{$comment.userid}">{$comment.username}</a>

@@ -196,7 +196,7 @@ class BlogCMS
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
                 $modelPermissions = self::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-                $granted = $modelPermissions->userHasPermission(self::$blogID, $routeCache[$route]['permissions']);
+                $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;
             }
 

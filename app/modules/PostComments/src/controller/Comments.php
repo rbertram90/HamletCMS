@@ -40,10 +40,24 @@ class Comments extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->blog = BlogCMS::getActiveBlog();
+
         BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog['id'];
+
+        parent::__construct();
+    }
+
+    /**
+     * Check if the user has access to manage comments
+     */
+    protected function canAdminister($commentID)
+    {
+        if (!$comment = $this->model->getCommentById($commentID)) {
+            return false;
+        }
+        BlogCMS::$blogID = $comment['blog_id'];
+        return $this->modelPermissions->userHasPermission('administer_comments');
     }
 
     /**
@@ -66,11 +80,18 @@ class Comments extends GenericController
      */
     public function delete()
     {
-        if ($this->model->deleteComment($this->comment['id'])) {
-            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Comment removed', 'success');
+        $commentID = $this->request->getUrlParameter(1);
+
+        if (!$this->canAdminister($commentID)) {
+            $this->response->redirect('/cms', 'Unable to remove comment', 'error');
+        }
+        elseif ($this->model->deleteComment($commentID)) {
+            $blog = BlogCMS::getActiveBlog();
+            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Comment removed', 'success');
         }
         else {
-            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Unable to remove comment', 'error');
+            $blog = BlogCMS::getActiveBlog();
+            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Unable to remove comment', 'error');
         }
     }
     
@@ -79,7 +100,12 @@ class Comments extends GenericController
      */
     public function approve()
     {
-        if ($this->model->approve($this->comment['id'])) {
+        $commentID = $this->request->getUrlParameter(1);
+
+        if (!$this->canAdminister($commentID)) {
+            $this->response->redirect('/cms', 'Unable to remove comment', 'error');
+        }
+        elseif ($this->model->approve($this->comment['id'])) {
             $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Comment approved', 'success');
         }
         else {

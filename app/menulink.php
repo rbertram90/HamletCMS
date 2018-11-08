@@ -55,7 +55,7 @@ class MenuLink
         }
 
         $modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        return $modelPermissions->userHasPermission(BlogCMS::$blogID, $this->permissions);
+        return $modelPermissions->userHasPermission($this->permissions);
     }
 
 }

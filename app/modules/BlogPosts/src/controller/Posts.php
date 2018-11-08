@@ -102,24 +102,24 @@ class Posts extends GenericController
         switch ($action) {
             case 'edit':
                 if ($this->post['author_id'] != $currentUser['id']) {
-                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'edit_all_posts');
+                    $access = $this->modelPermissions->userHasPermission('edit_all_posts', $this->blog['id']);
                 }
                 elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'publish_posts');
+                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog['id']);
                 }
                 break;
 
             case 'create':
                 if ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'publish_posts');
+                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog['id']);
                 }
                 else {
-                    $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'create_posts');
+                    $access = $this->modelPermissions->userHasPermission('create_posts', $this->blog['id']);
                 }
                 break;
 
             case 'delete':
-                $access = $this->modelPermissions->userHasPermission($this->blog['id'], 'delete_posts');
+                $access = $this->modelPermissions->userHasPermission('delete_posts', $this->blog['id']);
                 break;
         }
 

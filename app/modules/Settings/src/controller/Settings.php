@@ -85,7 +85,7 @@ class Settings extends GenericController
         if (!BlogCMS::$userGroup) {
             $access = false;
         }
-        elseif (!$this->modelPermissions->userHasPermission($this->blog['id'], 'change_settings')) {
+        elseif (!$this->modelPermissions->userHasPermission('change_settings', $this->blog['id'])) {
             $access = false;
         }
 
