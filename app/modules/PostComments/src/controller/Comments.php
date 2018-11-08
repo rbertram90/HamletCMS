@@ -106,10 +106,12 @@ class Comments extends GenericController
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
         elseif ($this->model->approve($this->comment['id'])) {
-            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Comment approved', 'success');
+            $blog = BlogCMS::getActiveBlog();
+            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Comment approved', 'success');
         }
         else {
-            $this->response->redirect('/cms/comments/all/' . $this->blog['id'], 'Unable to approve comment', 'error');
+            $blog = BlogCMS::getActiveBlog();
+            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Unable to approve comment', 'error');
         }
     }
     
