@@ -1,0 +1,23 @@
+[
+    {
+        "key": "admin.modules",
+        "path": "/cms/admin/modules",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "modules",
+        "permissions": []
+    },
+    {
+        "key": "admin.reloadcache",
+        "path": "/cms/admin/reloadcache",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "reloadCache",
+        "permissions": []
+    },
+    {
+        "key": "admin.modulescan",
+        "path": "/cms/admin/modulescan",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "newModuleScan",
+        "permissions": []
+    }
+]

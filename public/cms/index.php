@@ -145,6 +145,13 @@ use rbwebdesigns\core\Sanitize;
 
     $sideMenu = new Menu('cms_main_actions');
     BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
+
+    if ($user['admin'] == 1) {
+        $adminMenu = new Menu('cms_admin_actions');
+        BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_admin_actions', 'menu' => &$adminMenu]);
+        $sideMenu->setLinks(array_merge($adminMenu->getLinks(), $sideMenu->getLinks()));
+    }
+
     $response->setVar('page_sidemenu', $sideMenu);
 
     

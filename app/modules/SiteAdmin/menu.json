@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_admin_actions",
+        "type": "route",
+        "route": "admin.modules",
+        "weight": 1,
+        "text": "Modules",
+        "icon": "terminal"
+    }
+]
