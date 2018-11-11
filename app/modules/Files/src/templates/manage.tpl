@@ -44,7 +44,7 @@
 </style>
 
 <div>
-    <button type="button" onclick="rbrtf_showWindow('/cms/files/viewimagedrop?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /> Add Image</button>
+    <button type="button" onclick="rbrtf_showWindow('/cms/files/viewimagedrop?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /> Add Images</button>
     
     <p>Total Space Used = {$foldersize} KB <br> Limit = {$maxfoldersize} MB</p>
 </div>

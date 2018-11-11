@@ -129,7 +129,7 @@ class Files extends GenericController
     }
     
     /**
-     * Handles /cms/files/uploadimage?blogid=<blogid>
+     * Handles /cms/files/uploadimage/<blogid>
      */
     public function uploadimages(&$request, &$response)
     {
@@ -184,7 +184,7 @@ class Files extends GenericController
         $filename = $this->createFilename($filepath, $ext);
         
         // Save in correct location
-        move_uploaded_file($_FILES["file"]["tmp_name"], $filepath . '/images/' . $filename);
+        move_uploaded_file($_FILES["file"]["tmp_name"], $filepath .'/images/'. $filename);
 
         print $filename;
     }
@@ -201,7 +201,7 @@ class Files extends GenericController
         // Append or replace
         $returnReplace = $request->getInt('replace', 0);
 
-        $path = SERVER_ROOT."/app/public/blogdata/{$this->blog['id']}/images";
+        $path = SERVER_PUBLIC_PATH. "/blogdata/{$this->blog['id']}/images";
 
         $request->isAjax = true;
         $response->setVar('blog', $this->blog);

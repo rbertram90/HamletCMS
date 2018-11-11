@@ -16,7 +16,7 @@ class MarkdownPost
     {
         $post = $args['post'];
 
-        if ($args['template'] == 'postTeaser' && $post['type'] == 'standard') {
+        if (($args['template'] == 'postTeaser' || $args['template'] == 'singlePost') && $post['type'] == 'standard') {
             $content = Markdown::defaultTransform($post['content']);
             $args['post']['trimmedContent'] = $content; // $this->trimContent($content, $summarylength);
         }

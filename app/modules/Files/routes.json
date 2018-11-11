@@ -26,5 +26,12 @@
         "permissions": ["delete_files"],
         "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
         "action": "delete"
+    },
+    {
+        "key": "files.upload",
+        "path": "/cms/files/uploadimages/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
+        "action": "uploadimages"
     }
 ]
