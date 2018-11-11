@@ -80,4 +80,83 @@ class SiteAdmin extends GenericController
 
         $this->response->redirect('/cms/admin/modules', 'Unable to read module directory', 'error');
     }
+
+    /**
+     * Handles GET /cms/admin/updatedatabase
+     */
+    public function databaseChecker()
+    {
+        if ($this->request->method() == 'POST') {
+            return $this->runDatabaseUpdates();
+        }
+
+        $modules = $this->model->getList();
+        $updates = [];
+
+        foreach ($modules as $module) {
+            $currentVersion = $module['dbversion'];
+            $moduleFile = SERVER_MODULES_PATH .'/'. $module['name'] .'/'. $module['name'] .'.php';
+
+            if (!file_exists($moduleFile)) continue;
+            
+            require_once $moduleFile;
+
+            $className = '\\rbwebdesigns\\blogcms\\'. $module['name'];
+            $mainClass = new $className();
+            $updateIndex = $currentVersion + 1;
+
+            while (method_exists($mainClass, 'databaseUpdate'. $updateIndex)) {
+                $updateIndex++;
+            }
+
+            if ($updateIndex-1 != $currentVersion) {
+                $updates[] = [
+                    'name' => $module['name'],
+                    'current' => $currentVersion,
+                    'latest' => $updateIndex-1
+                ];
+            }
+        }
+
+        if (count($updates) == 0) {
+            $this->response->redirect('/cms/admin/modules', 'No updates pending', 'success');
+        }
+        else {
+            $this->response->setTitle('Database updates');
+            $this->response->setVar('modules', $updates);
+            $this->response->write('pendingupdates.tpl', 'SiteAdmin');
+        }
+    }
+
+    /**
+     * Handles POST /cms/admin/updatedatabase
+     */
+    protected function runDatabaseUpdates()
+    {
+        $modules = $this->model->getList();
+        
+        foreach ($modules as $module) {
+            $currentVersion = $module['dbversion'];
+            $moduleFile = SERVER_MODULES_PATH .'/'. $module['name'] .'/'. $module['name'] .'.php';
+
+            if (!file_exists($moduleFile)) continue;
+            
+            require_once $moduleFile;
+
+            $className = '\\rbwebdesigns\\blogcms\\'. $module['name'];
+            $mainClass = new $className();
+            $updateIndex = $currentVersion + 1;
+
+            while (method_exists($mainClass, 'databaseUpdate'. $updateIndex)) {
+                $methodName = 'databaseUpdate'. $updateIndex;
+                $mainClass->$methodName();
+                $updateIndex++;
+            }
+
+            // Note update was done
+            $this->model->update(['name' => $module['name']], ['dbversion' => $updateIndex-1]);
+        }
+
+        $this->response->redirect('/cms/admin/modules', 'Database updates done', 'success');
+    }
 }

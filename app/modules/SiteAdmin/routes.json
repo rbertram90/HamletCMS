@@ -19,5 +19,12 @@
         "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
         "action": "newModuleScan",
         "permissions": []
+    },
+    {
+        "key": "admin.dbupdate",
+        "path": "/cms/admin/updatedatabase",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "databaseChecker",
+        "permissions": []
     }
 ]
