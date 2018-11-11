@@ -31,4 +31,4 @@
 
 <a href="/cms/admin/modulescan" class="ui labeled icon button"><i class="sync icon"></i>Scan for new modules</a>
 <a href="/cms/admin/reloadcache" class="ui labeled icon button"><i class="sync icon"></i>Reload system caches</a>
-<a href="/cms/admin/updatedatabase" class="ui button">Check for database updates</a>
+<a href="/cms/admin/updatedatabase" class="ui labeled icon button"><i class="database icon"></i>Check for database updates</a>

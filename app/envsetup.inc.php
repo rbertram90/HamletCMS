@@ -103,21 +103,11 @@ use rbwebdesigns\core\JSONhelper;
 ****************************************************************/    
 
     // Import all modules
-    // todo - cache in database
-    // make a UI for enabling / disabling modules
-    // ... and a CLI script?
-    $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
+    // $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
+    $moduleModel = BlogCMS::model('\rbwebdesigns\blogcms\SiteAdmin\model\Modules');
+    $modules = $moduleModel->getList();
 
-    foreach ($directoryListing as $file) {
-        if ($file->isDir() && $file->getFilename() != '.' && $file->getFilename() != '..') {
-            
-            $dirPath = $file->getPath() .'/'. $file->getFilename();
-
-            if (!file_exists($dirPath .'/info.json')) continue;
-
-            $moduleInfo = JSONhelper::JSONFileToArray($dirPath . '/info.json');
-            if ($moduleInfo['enabled'] != 1) continue;
-
-            BlogCMS::registerModule($file->getFilename());
-        }
+    foreach ($modules as $module) {
+        if ($module['enabled'] != 1) continue;
+        BlogCMS::registerModule($module['name']);
     }

@@ -26,5 +26,19 @@
         "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
         "action": "databaseChecker",
         "permissions": []
+    },
+    {
+        "key": "admin.installmodule",
+        "path": "/cms/admin/installmodule/{MODULE_NAME}",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "installModule",
+        "permissions": []
+    },
+    {
+        "key": "admin.uninstallmodule",
+        "path": "/cms/admin/uninstallmodule/{MODULE_NAME}",
+        "controller": "\\rbwebdesigns\\blogcms\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "uninstallModule",
+        "permissions": []
     }
 ]

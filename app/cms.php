@@ -159,6 +159,18 @@ class BlogCMS
     }
 
     /**
+     * Get a module instance
+     */
+    public static function getModule($moduleName)
+    {
+        if (!array_key_exists($moduleName, self::$modules)) {
+            return null;
+        }
+
+        return self::$modules[$moduleName];
+    }
+
+    /**
      * Run a hook
      * 
      * @param string $hookName

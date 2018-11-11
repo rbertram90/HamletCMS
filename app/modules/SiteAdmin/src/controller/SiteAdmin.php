@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms\SiteAdmin\controller;
 
 use rbwebdesigns\blogcms\GenericController;
 use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\blogcms\Module;
 
 class SiteAdmin extends GenericController
 {
@@ -158,5 +159,45 @@ class SiteAdmin extends GenericController
         }
 
         $this->response->redirect('/cms/admin/modules', 'Database updates done', 'success');
+    }
+
+    /**
+     * Handles GET /cms/admin/installmodule/[module_name]
+     */
+    public function installModule()
+    {
+        $moduleName = $this->request->getUrlParameter(1);
+        $module = new Module($moduleName);
+
+        // Run install method (if exists)
+        if (!is_null($module) && !is_null($module->instance)) {
+            if (method_exists($module->instance, 'install')) {
+                $module->instance->install();
+            }
+        }
+
+        // Update module database
+        $this->model->update(['name' => $module->key], ['enabled' => 1]);
+        $this->response->redirect('/cms/admin/modules', 'Module installed', 'success');
+    }
+
+    /**
+     * Handles GET /cms/admin/uninstallmodule/[module_name]
+     */
+    public function uninstallModule()
+    {
+        $moduleName = $this->request->getUrlParameter(1);
+        $module = BlogCMS::getModule($moduleName);
+
+        // Run uninstall method (if exists)
+        if (!is_null($module) && !is_null($module->instance)) {
+            if (method_exists($module->instance, 'uninstall')) {
+                $module->instance->install();
+            }
+        }
+
+        // Update module database
+        $this->model->update(['name' => $module->key], ['enabled' => 0]);
+        $this->response->redirect('/cms/admin/modules', 'Module uninstalled', 'success');
     }
 }

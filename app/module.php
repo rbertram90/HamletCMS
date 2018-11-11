@@ -9,7 +9,10 @@ use rbwebdesigns\core\JSONHelper;
 class Module
 {
     public $key;
+    // public $enabled; // will always be 1?
     public $instance = null;
+
+    protected $factory = null;
 
     // These should be set in the info.json folder
     // public $namespace;
@@ -18,6 +21,11 @@ class Module
     public function __construct($key)
     {
         $this->key = $key;
+
+        // Get database details
+        // Required?
+        // $this->factory = BlogCMS::model('\rbwebdesigns\blogcms\SiteAdmin\model\Modules');
+        // $this->factory->get(['name' => $key]);
 
         // load config
         $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . '/' . $this->key . '/info.json');
