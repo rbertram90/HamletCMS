@@ -22,16 +22,31 @@ class PostComments
 
     public function install()
     {
-        // todo
         // create database
-        // requires install process to be created first!!!!
+        $dbc = BlogCMS::databaseConnection();
+
+        $dbc->query("CREATE TABLE `comments` (
+            `id` int(8) NOT NULL,
+            `message` text NOT NULL,
+            `blog_id` bigint(10) NOT NULL,
+            `post_id` int(8) NOT NULL,
+            `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `user_id` int(8) NOT NULL,
+            `approved` int(11) NOT NULL DEFAULT '0'
+          ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+        $dbc->query("ALTER TABLE `comments` ADD PRIMARY KEY (`id`);");
+        $dbc->query("ALTER TABLE `comments` MODIFY `id` int(8) NOT NULL AUTO_INCREMENT;");
     }
 
     public function uninstall()
     {
-        // todo
         // delete database
-        // requires uninstall process to be created first!!!!
+        $dbc = BlogCMS::databaseConnection();
+        $query = $dbc->query("DROP TABLE IF EXISTS `comments`;");
+        if (!$query) {
+            die('Failed to delete table comments');
+        }
     }
 
     public function dashboardCounts($args)

@@ -53,20 +53,11 @@ use rbwebdesigns\core\JSONhelper;
     define("TBL_POSTS", $databaseCredentials['name'] . ".posts");
     define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
     define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
-    define("TBL_COMMENTS", $databaseCredentials['name'] . ".comments");
+    define("TBL_COMMENTS", $databaseCredentials['name'] . ".comments"); // @todo remove
     define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
     define("TBL_FAVOURITES", $databaseCredentials['name'] . ".favourites");
     define("TBL_USERS", $databaseCredentials['name'] . ".users");
-    
-    
-/****************************************************************
-  Database Connection
-****************************************************************/
-    
-    // Connect to the blog_cms database
-    $cms_db = new Database();
-    $cms_db->connect($databaseCredentials['server'], $databaseCredentials['name'], $databaseCredentials['user'], $databaseCredentials['password']);
-    
+
 
 /****************************************************************
   Includes

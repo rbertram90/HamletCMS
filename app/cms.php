@@ -34,7 +34,8 @@ class BlogCMS
      * @var array  enabled modules
      */
     protected static $modules = [];
-    // protected static $modelManager = null;
+
+    protected static $modelManager = null;
 
     public static $function = 'cms';
 
@@ -131,16 +132,29 @@ class BlogCMS
             die('Database name not configured - see: /app/config/config.json');
         }
 
-        $modelManager = ModelManager::getInstance(self::$config['database']['name']);
+        // Establish connection
+        self::databaseConnection();
 
-        if(!$modelManager->getDatabaseConnection()->isConnected()) {
-            $modelManager->getDatabaseConnection()->connect(self::$config['database']['server'],
+        return self::$modelManager->get($modelName);
+    }
+
+    /**
+     * Get the model manager instance & establish connection if required
+     */
+    public static function databaseConnection()
+    {
+        if (!self::$modelManager) {
+            self::$modelManager = ModelManager::getInstance(self::$config['database']['name']);
+        }
+
+        if(!self::$modelManager->getDatabaseConnection()->isConnected()) {
+            self::$modelManager->getDatabaseConnection()->connect(self::$config['database']['server'],
                 self::$config['database']['name'],
                 self::$config['database']['user'],
                 self::$config['database']['password']);
         }
 
-        return $modelManager->get($modelName);
+        return self::$modelManager->getDatabaseConnection();
     }
 
     /**

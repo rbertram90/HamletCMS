@@ -192,7 +192,7 @@ class SiteAdmin extends GenericController
         // Run uninstall method (if exists)
         if (!is_null($module) && !is_null($module->instance)) {
             if (method_exists($module->instance, 'uninstall')) {
-                $module->instance->install();
+                $module->instance->uninstall();
             }
         }
 
