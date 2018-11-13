@@ -2,6 +2,11 @@
 
 namespace rbwebdesigns\blogcms;
 
+/**
+ * class PostComments
+ * 
+ * @author R Bertram <ricky@rbwebdesigns.co.uk>
+ */
 class PostComments
 {
     protected $model;
@@ -11,6 +16,9 @@ class PostComments
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
     }
 
+    /**
+     * Adds comments block to the user dashboard
+     */
     public function content($args)
     {
         if ($args['key'] == 'userProfile') {
@@ -20,9 +28,11 @@ class PostComments
         }
     }
 
+    /**
+     * Run database setup
+     */
     public function install()
     {
-        // create database
         $dbc = BlogCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `comments` (
@@ -37,23 +47,33 @@ class PostComments
 
         $dbc->query("ALTER TABLE `comments` ADD PRIMARY KEY (`id`);");
         $dbc->query("ALTER TABLE `comments` MODIFY `id` int(8) NOT NULL AUTO_INCREMENT;");
+
+        $dbc->query("ALTER TABLE `posts` ADD `allowcomments` tinyint(1);");
     }
 
+    /**
+     * Removes all traces of comments from the database
+     */
     public function uninstall()
     {
         // delete database
         $dbc = BlogCMS::databaseConnection();
-        $query = $dbc->query("DROP TABLE IF EXISTS `comments`;");
-        if (!$query) {
-            die('Failed to delete table comments');
-        }
+        $dbc->query("DROP TABLE IF EXISTS `comments`;");
+
+        $dbc->query("ALTER TABLE `posts` DROP COLUMN `allowcomments`;");
     }
 
+    /**
+     * Adds a total comment count to the blog dashboard
+     */
     public function dashboardCounts($args)
     {
         $args['counts']['comments'] = $this->model->getCount(['blog_id' => $args['blogID']]);
     }
 
+    /**
+     * Adds comments block to the blog dashboard
+     */
     public function dashboardPanels($args)
     {
         $tempResponse = new BlogCMSResponse();
@@ -63,7 +83,11 @@ class PostComments
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
 
-    public function runTemplate($args) {
+    /**
+     * Adds comments section into bottom of single post view
+     */
+    public function runTemplate($args)
+    {
         if ($args['template'] == 'singlePost' && $args['post']['allowcomments']) {
             $args['post']['after'][] = 'file:[PostComments]postcomments.tpl';
             $args['post']['after'][] = 'file:[PostComments]newcommentform.tpl';
