@@ -25,7 +25,7 @@
         "menu": "cms_main_actions",
         "type": "route",
         "route": "user.logout",
-        "icon": "arrow left",
+        "icon": "sign-out",
         "text": "Logout",
         "weight": 56
     }

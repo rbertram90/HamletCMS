@@ -32,7 +32,7 @@
                         {else}
                             {$active = ''}
                         {/if}
-                        <a href="{$link->url}" class="{$active} teal item" target="{$link->target}"><span class="left floated"><i class="{$link->icon} icon"></i></span>{$link->text}</a>
+                        <a href="{$link->url}" class="{$active} teal item" target="{$link->target}"><i class="{$link->icon} icon"></i> {$link->text}</a>
                     {else}
                         <div class="header item">{$link->text}</div>
                     {/if}
