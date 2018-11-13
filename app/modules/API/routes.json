@@ -7,6 +7,13 @@
         "action": "blogs"
     },
     {
+        "key": "api.blogs.byCategory",
+        "path": "/api/blogs/byCategory",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\API\\Controller\\API",
+        "action": "blogs"
+    },
+    {
         "key": "api.contributors.owner",
         "path": "/api/contributors/owner",
         "permissions": [],

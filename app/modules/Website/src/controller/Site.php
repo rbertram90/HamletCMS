@@ -29,6 +29,7 @@ class Site
         $this->response->setTitle('Website homepage');
         $this->response->setDescription('Front page to your website powered by Blog CMS');
         $this->response->setVar('lettercounts', $this->modelBlogs->countBlogsByLetter());
+        $this->response->setVar('categorycounts', $this->modelBlogs->countBlogsByCategory());
         $this->response->write('home.tpl', 'Website');
     }
 

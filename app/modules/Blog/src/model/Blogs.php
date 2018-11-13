@@ -118,6 +118,11 @@ class Blogs extends RBFactory
         }
         return $res;
     }
+
+    public function countBlogsByCategory()
+    {
+        return $this->db->query('SELECT category, count(*) FROM blogs WHERE 1 GROUP BY category ORDER BY category ASC');
+    }
     
     /**
      *  Get number of blogs a user contributes to.

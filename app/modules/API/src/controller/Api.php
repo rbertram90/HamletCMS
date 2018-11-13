@@ -95,6 +95,9 @@ class Api extends GenericController
             case 'byLetter':
                 $this->blogsByLetter();
                 break;
+            case 'byCategory':
+                $this->blogsByCategory();
+                break;
             case 'count':
                 $this->blogsCount();
                 break;
@@ -206,5 +209,21 @@ class Api extends GenericController
         $this->response->setBody(JSONhelper::arrayToJSON($blogs));
     }
 
+    /**
+     * GET /api/blogs/byCategory?category=<category>
+     */
+    protected function blogsByCategory()
+    {
+        $category = $this->request->getString('category', false);
+
+        if ($category) {
+            $blogs = $this->modelBlogs->get(['name', 'id', 'description'], ['category' => $category]);
+        }
+        else {
+            $blogs = [];
+        }
+
+        $this->response->setBody(JSONhelper::arrayToJSON($blogs));
+    }
     
 }

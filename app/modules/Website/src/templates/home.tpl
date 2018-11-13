@@ -37,37 +37,69 @@
                     </div>
                 </div>
             </div>
+            <div class="ui compact menu">
+                <div class="ui simple dropdown item">
+                    Browse by category
+                    <i class="dropdown icon"></i>
+                    <div class="menu browse-by-category">
+                        {foreach from=$categorycounts item=count}
+                            <a class="item">{ucfirst($count.category)}</a>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="ui segment" id="browse-results">
             <!-- Browse results loaded here -->
-            Select a letter from the dropdown to discover more blogs
+            Select an option from the dropdowns to discover more blogs
         </div>
     </div>
 </div>
 
 <script>
+    var generateBlogsList = function(blogs) {
+        if (!blogs.length) return;
+        var list = "";
+        for (var i = 0; i < blogs.length; i++) {
+            blog = blogs[i];
+            list += '<div class="item"><div class="content">';
+            list += '<div class="header"><a href="/blogs/' + blog.id + '">' + blog.name + '</a></div>';
+            list += '<div class="description">' + blog.description + '</div></div></div>';
+        }
+        return '<div class="ui relaxed divided list">' + list + '</div>';
+    };
+
     // API call to get blog data
     var loadBlogsByLetter = function (letter) {
         $.get('/api/blogs/byLetter', { 'letter': letter }, function(data) {
-            if (!data.length) return;
-            var list = "";
-            for (var i = 0; i < data.length; i++) {
-                blog = data[i];
-                list += '<div class="item"><div class="content">';
-                list += '<div class="header"><a href="/blogs/' + blog.id + '">' + blog.name + '</a></div>';
-                list += '<div class="description">' + blog.description + '</div></div></div>';
-            }
-            $('#browse-results').html('<div class="ui relaxed divided list">' + list + "</div>");
+            $('#browse-results').html(generateBlogsList(data));
         });
+    };
+
+    var loadBlogsByCategory = function (category) {
+        $.get('/api/blogs/byCategory', { 'category': category }, function(data) {
+            $('#browse-results').html(generateBlogsList(data));
+        });
+    };
+
+    var setResultsLoading = function() {
+        $('#browse-results').html('<img src="/images/ajax-loader.gif" alt="Loading...">');
     };
 
     // Add event listener to dropdown
     $(".browse-by-letter > a").click(function() {
+        setResultsLoading();
         loadBlogsByLetter($(this).html());
     });
 
+    // Add event listener to dropdown
+    $(".browse-by-category > a").click(function() {
+        setResultsLoading();
+        loadBlogsByCategory($(this).html());
+    });
+
     // Init
-    loadBlogsByLetter('0');
+    // loadBlogsByLetter('0');
 </script>
 
 <a href="/cms" class="ui teal button">Login to CMS</a>
