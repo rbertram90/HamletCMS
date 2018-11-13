@@ -8,20 +8,7 @@
 Dropzone.discover();
     
 Dropzone.options.newImageUpload = {
-    maxFilesize: 20, // MB
+    maxFilesize: 2, // MB
     acceptedFiles: 'image/*'
 };
 </script>
-
-<style>
-    .dropzone {
-        overflow:auto;
-        height:90%;
-    }
-    #finishButton {
-        float:right;
-        margin:5px;
-    }
-</style>
-
-<button id="finishButton" class="action_button" onclick="window.location.reload();">Finish</button>

@@ -71,17 +71,11 @@ class Files extends GenericController
         BlogCMS::$activeMenuLink = '/cms/files/manage/'. $this->blog['id'];
         
         $response->setVar('blog', $this->blog);
-        $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000, 2));
+        $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
         $config = BlogCMS::config();
-        $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);
-
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbwindow.css');
-        $response->addStylesheet('/resources/css/rbrtf.css');
-        
+        $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);        
         $response->setTitle('Manage Files - ' . $this->blog['name']);
         $response->write('manage.tpl', 'Files');
     }

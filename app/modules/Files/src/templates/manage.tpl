@@ -3,10 +3,6 @@
     <div class="one column row">
         <div class="column">
             {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}), 'Files')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             {viewPageHeader('Files', 'file image outline', {$blog.name})}
         </div>
     </div>
@@ -19,11 +15,11 @@
             <div class="ui visible teal icon message">
                 <i class="folder open outline icon"></i>
                 <div class="content">
-                    <p><strong>{$foldersize}</strong> KB used out of maximum <strong>{$maxfoldersize}</strong> MB</p>
+                    <p><strong>{$foldersize}</strong> MB used out of maximum <strong>{$maxfoldersize}</strong> MB</p>
                 </div>
             </div>
 
-            <button type="button" class="ui labeled icon teal button" onclick="rbrtf_showWindow('/cms/files/viewimagedrop?blogid={$blog.id}')" title="Insert Image"><i class="upload icon"></i>Add Images</button>
+            <button type="button" class="ui labeled icon teal button" title="Add images" id="add_images_button"><i class="upload icon"></i>Add images</button>
         </div>
     </div>
     {foreach $images as $image name=imageloop}
@@ -59,7 +55,26 @@
     {/foreach}
 </div>
 
+<div class="ui modal" id="image_upload_modal">
+    <i class="close icon"></i>
+    <div class="ui header">
+        <i class="upload icon"></i>
+        <div class="content">Upload Images</div>
+    </div>
+    <div class="content main">
+        <img src="/images/ajax-loader.gif" alt="Loading..." />
+    </div>
+    <div class="actions">
+        <button id="finishButton" class="ui labeled icon teal button" onclick="window.location.reload();"><i class="check icon"></i>Finish</button>
+    </div>
+</div>
+
 <script>
+    $('#add_images_button').click(function() {
+        $('#image_upload_modal .main').load('/cms/files/viewimagedrop?blogid={$blog.id}');
+        $('#image_upload_modal').modal('show');
+    });
+
     $('.dimmable.image').dimmer({
         on:'hover'
     });
