@@ -5,7 +5,7 @@
         "route": "posts.create.layout",
         "weight": 20,
         "text": "Layout post",
-        "subtext": "Create a post using our layout editor to create a structured post.",
-        "icon": "wrench"
+        "subtext": "Create a post using the layout editor to create a structured post.",
+        "icon": "file alternate outline"
     }
 ]

@@ -6,6 +6,6 @@
         "weight": 15,
         "text": "Video post",
         "subtext": "Create a post with a YouTube or Vimeo video.",
-        "icon": "video"
+        "icon": "file video outline"
     }
 ]

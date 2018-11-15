@@ -73,7 +73,7 @@
         <div class="six wide column">
             {include 'edit-form/post-date.tpl'}
  
-            {include 'edit-form/allow-comments.tpl'}
+            {include 'edit-form/custom-fields.tpl'}
 
             {include 'edit-form/published.tpl'}
 

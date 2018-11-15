@@ -93,4 +93,8 @@ class PostComments
             $args['post']['after'][] = 'file:[PostComments]newcommentform.tpl';
         }
     }
+
+    public function editPostForm($args) {
+        $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
+    }
 }

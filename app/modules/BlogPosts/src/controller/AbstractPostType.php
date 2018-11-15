@@ -28,6 +28,10 @@ class AbstractPostType extends GenericController
         $this->blog = BlogCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Create blog post');
+
+        $extraFields = [];
+        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);
+        $this->response->setVar('customSettingFields', $extraFields);
     }
 
     public function edit() {
@@ -47,6 +51,10 @@ class AbstractPostType extends GenericController
         $this->response->setVar('post', $post);
         $this->response->setVar('blog', $blog);
         $this->response->setTitle('Edit blog post');
+
+        $extraFields = [];
+        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);
+        $this->response->setVar('customSettingFields', $extraFields);
     }
 
 }

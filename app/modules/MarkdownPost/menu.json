@@ -4,8 +4,8 @@
         "type": "route",
         "route": "posts.create.markdown",
         "weight": 10,
-        "text": "Markdown post",
-        "subtext": "Create a post using markdown code to add formatting.",
-        "icon": "wrench"
+        "text": "Standard post",
+        "subtext": "Create a blog post using markdown to control formatting.",
+        "icon": "file alternate outline"
     }
 ]
