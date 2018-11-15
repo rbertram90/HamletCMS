@@ -218,7 +218,6 @@
 
 <script type="text/javascript">
 var content_changed = false;
-window.postTitleIsValid = false;
     
 $(document).ready(function () {
 

@@ -71,8 +71,8 @@
             {else}
                 <p class="ui message info">Nothing has been posted on this blog, why not <a href="/cms/posts/create/{$blog.id}">make a start</a>?</p>
             {/if}
-            <a href='/cms/posts/manage/{$blog.id}' class='ui teal right floated button'>Manage Posts &gt;</a>
-            <a href='/cms/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post &gt;</a>
+            <a href='/cms/posts/manage/{$blog.id}' class='ui teal right labeled icon right floated button'><i class="chevron right icon"></i>Manage Posts</a>
+            <a href='/cms/posts/create/{$blog.id}' class='ui basic teal right floated button'>New Post</a>
         </div>
         {foreach from=$panels item=panel}
             <div class="column">

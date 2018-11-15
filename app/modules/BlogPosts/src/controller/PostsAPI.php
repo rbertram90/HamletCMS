@@ -89,7 +89,8 @@ class PostsAPI extends GenericController
             return;
         }
         
-        // note - custom fields for different post types would be processed
+        // Process custom fields for different post types
+        BlogCMS::runHook('onBeforePostSaved', ['post' => &$newPost]);
 
         if (!$this->model->createPost($newPost)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Error creating post" }');
@@ -139,6 +140,8 @@ class PostsAPI extends GenericController
         }
         
         $updates = [
+            'id'              => $postID,
+            'type'            => $post['type'],
             'title'           => $this->request->getString('title'),
             'content'         => $this->request->get('content'),
             'tags'            => $this->request->getString('tags'),
@@ -167,7 +170,10 @@ class PostsAPI extends GenericController
                 return;
             }
         }
-                
+
+        // Process custom fields for different post types
+        BlogCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
+
         $this->model->updatePost($post['id'], $updates);
         $this->model->removeAutosave($post['id']);
         

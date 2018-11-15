@@ -94,6 +94,11 @@
             formData.teaserImage = srcSplit.pop();
         }
 
+        // Allow custom modules to add to data
+        if (typeof addToFormData == 'function') { 
+            formData = addToFormData(formData);
+        }
+
         // Quick client side validation
         if (formData.title.length == 0) {
             $(".form_status").html("Please add a title").addClass("ui message error");

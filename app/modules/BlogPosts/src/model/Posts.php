@@ -42,12 +42,9 @@ class Posts extends RBFactory
             'link'              => 'string',
             'draft'             => 'boolean',
             'timestamp'         => 'datetime',
-            'allowcomments'     => 'boolean',
             'tags'              => 'string',
             'author_id'         => 'number',
             'type'              => 'string',
-            'videoid'           => 'string',
-            'videosource'       => 'string',
             'initialautosave'   => 'boolean',
             'gallery_imagelist' => 'memo'
         ];
@@ -545,7 +542,7 @@ class Posts extends RBFactory
     /**
      * Auto Save Functionality
      * 
-     * @todo Video and Gallery post autosave!
+     * @todo Add hook for custom post type fields!
      */
     public function autosavePost($postID, $data)
     {

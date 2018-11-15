@@ -22,16 +22,6 @@
         </div>
         
         <div class="post-content">
-            {* todo - make this dynamically populated from sub-template *}
-            {if $post.type == 'video'}
-                {if $post.videosource == 'youtube'}
-                    <iframe width="100%" height="400" src="//www.youtube.com/embed/{$post.videoid}" frameborder="0" allowfullscreen></iframe>
-
-                {elseif $post.videosource == 'vimeo'}
-                    <iframe src="//player.vimeo.com/video/{$post.videoid}?title=0&amp;byline=0&amp;portrait=0&amp;color=fafafa" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                {/if}
-            {/if}
-                
             {if $post.type == 'gallery'}
                 <div id="galleria_{$post.id}">
                     {foreach $post.images as $path}

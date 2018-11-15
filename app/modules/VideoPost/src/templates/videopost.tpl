@@ -1,25 +1,25 @@
 {if isset($post)}
-
     {* We are editing the post *}
     {$formAction = "/cms/posts/edit/{$post['id']}"}
     {$fieldTitle = $post['title']}
     {$fieldContent = $post['content']}
     {$teaserImage = $post['teaser_image']}
+    {$fieldVideoID = $post['videoid']}
     {$fieldTags = str_replace("+"," ",$post['tags'])}
     {$submitLabel = 'Update'}
-    {$mode = 'edit'}
     {$postdate = date('m/d/Y g:ia', strtotime($post['timestamp']))}
-
+    {$mode = 'edit'}
 {else}
     {* This must be a new post *}
-    {$formAction = "/cms/posts/create/{$blog.id}/standard"}
+    {$formAction = "/cms/posts/create/{$blog.id}/video"}
     {$fieldTitle = ''}
     {$fieldContent = ''}
     {$teaserImage = ''}
     {$fieldTags = ''}
+    {$fieldVideoID = ''}
     {$submitLabel = 'Create'}
-    {$mode = 'create'}
     {$postdate = date('m/d/Y g:ia')}
+    {$mode = 'create'}
 {/if}
 
 <div class="ui grid">
@@ -45,6 +45,18 @@
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
 
+            <div class="field"> 
+                <label for="video_source">Video Source</label>
+                <select name="video_source" id="video_source" class="ui dropdown">
+                    <option value="youtube">YouTube</option>
+                    <option value="vimeo">Vimeo</option>
+                </select>
+            </div>
+            <div class="field"> 
+                <label for="video_id">Video ID <a href="#" onclick="alert('Youtube ID are found in the URL youtube.com/user/?v={ldelim}URL{rdelim}'); return false;">[?]</a></label>
+                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$fieldVideoID}" />
+            </div>
+
             <div class="field">
                 <label for="post_content">Content</label>
                 <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image">
@@ -56,7 +68,7 @@
             
             {include 'edit-form/tags.tpl'}
             
-            <input type="hidden" name="post_type" id="post_type" value="standard">
+            <input type="hidden" name="post_type" id="post_type" value="video">
 
             {* Submit button + hidden fields *}
             {include 'edit-form/actions.tpl'}
@@ -75,8 +87,15 @@
 
 <script>
 var content_changed = false;
-    
+
+var addToFormData = function(postData) {
+    postData.videoid = $("#video_id").val();
+    postData.videosource = $("#video_source").val();
+    return postData;
+};
+
 $(document).ready(function () {
+    $('.ui.dropdown').dropdown();
 
     $("#upload_post_image").click(function() {
         $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN }, function() {
@@ -89,7 +108,11 @@ $(document).ready(function () {
             return false;
         }
     });
-    
+
+    {if $mode == 'edit'}
+        $('#video_source').dropdown('set selected', '{$post.videosource}');
+    {/if}
 });
+
 </script>
 </div>

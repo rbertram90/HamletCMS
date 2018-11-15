@@ -17,16 +17,6 @@
     </header>
 
     <main class="ui container">
-
-        {* @todo create the video post type module! *}
-        {if $post.type == 'video'}
-            {if $post.videosource == 'youtube'}
-                <iframe width="100%" style="max-width:560px;" height="315" src="//www.youtube.com/embed/{$post.videoid}" frameborder="0" allowfullscreen></iframe>
-
-            {elseif $post.videosource == 'vimeo'}
-                <iframe src="//player.vimeo.com/video/{$post.videoid}?title=0&amp;byline=0&amp;portrait=0&amp;color=fafafa" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            {/if}
-        {/if}
         
         {* @todo create the gallery post type module! *}
         {if $post.type == 'gallery'}

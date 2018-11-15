@@ -71,7 +71,7 @@ $(document).ready(function() {
 
     // Run on key down of content
     $("#post_content").on("keyup", function() { content_changed = true; });
-    $("#post_title").on("keyup", function() { window.postTitleIsValid = false; content_changed = true; });
+    $("#post_title").on("keyup", function() { content_changed = true; });
     $("#tags").on("keyup", function() { content_changed = true; });
 
     // Saves every 10 seconds if something has changed
