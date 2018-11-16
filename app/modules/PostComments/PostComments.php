@@ -97,4 +97,17 @@ class PostComments
     public function editPostForm($args) {
         $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
     }
+
+    public function onGenerateMenu($args)
+    {
+        if ($args['id'] == 'bloglist') {
+
+            $link = new MenuLink();
+            $link->url = BlogCMS::route('comments.all', [
+                'BLOG_ID' => $args['blog']['id']
+            ]);
+            $link->text = 'Comments';
+            $args['menu']->addLink($link);
+        }
+    }
 }

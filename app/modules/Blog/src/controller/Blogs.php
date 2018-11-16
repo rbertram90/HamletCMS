@@ -102,8 +102,8 @@ class Blogs extends GenericController
 
             // Get all menu items
             $blogActions = new Menu('bloglist');
-            BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions]);
-            $blogs[$key]['actions'] = $blogActions;
+            BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
+            $blogs[$key]['actions'] = $blogActions->getLinks();
         }
         
         BlogCMS::$activeMenuLink = '/cms/blog';
