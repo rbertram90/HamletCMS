@@ -12,7 +12,7 @@
     <div class="row">
         <div class="column">
             <h2>Groups</h2>
-            <p class="ui message">Groups allow you to define the set of actions that a contributor can perform on a granular level</p>
+            <p class="ui teal message">Groups allow you to define the set of actions that a contributor can perform on a granular level</p>
             <div class="ui segments">
                 {foreach $groups as $group}
                     <div class="ui segment">

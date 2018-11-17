@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<p class="info">Total Comments: <strong>{count($comments)}</strong></p>
+<p class="ui teal message">Total Comments: <strong>{count($comments)}</strong></p>
 
 {if count($comments) == 0}
     <div class="segment">No comments have been made on your posts</div>

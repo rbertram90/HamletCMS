@@ -7,8 +7,8 @@
     <div class="one column row">
         <div class="column">
             {viewPageHeader('Settings', 'sliders horizontal', {$blog.name})}
-            <div class="ui secondary segment">
-                This section allows you to change the look and feel of the blog.</p>
+            <div class="ui teal message">
+                This section allows you to change the look and feel of the blog.
             </div>
         </div>
     </div>
@@ -42,6 +42,7 @@
     <div class="two columns row">
         
         <div class="column">
+        {*
             <div class="ui segment clearing">
                 <h4 class="ui header">
                     <i class="paint brush icon"></i>
@@ -51,6 +52,7 @@
                     </div>
                 </h4>
             </div>
+        *}
             <div class="ui segment clearing">
                 <h4 class="ui header">
                     <i class="columns icon"></i>
@@ -60,9 +62,6 @@
                     </div>
                 </h4>
             </div>
-        </div>
-        
-        <div class="column">
             <div class="ui segment clearing">
                 <h4 class="ui header">
                     <i class="calculator icon"></i>
@@ -72,6 +71,9 @@
                     </div>
                 </h4>
             </div>
+        </div>
+
+        <div class="column">
             <div class="ui segment clearing">
                 <h4 class="ui header">
                     <i class="code icon"></i>
