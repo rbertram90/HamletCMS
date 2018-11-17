@@ -15,10 +15,16 @@ class LayoutPost
     public function runTemplate($args)
     {
         $post = $args['post'];
+        if ($post['type'] !== 'layout') return;
 
-        if ($args['template'] == 'postTeaser' && $post['type'] == 'layout') {
-            $layout = JSONHelper::JSONtoArray($post['content']);
-            $args['post']['trimmedContent'] = $this->generateLayoutMarkup($layout);
+        switch ($args['template']) { 
+            case 'singlePost':
+                $layout = JSONHelper::JSONtoArray($post['content']);
+                $args['post']['trimmedContent'] = $this->generateLayoutMarkup($layout);
+                break;
+            case 'postTeaser':
+                $args['post']['trimmedContent'] = $post['summary'];
+                break;
         }
     }
 

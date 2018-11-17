@@ -37,6 +37,7 @@ class Posts extends RBFactory
         $this->fields = [
             'id'                => 'number',
             'title'             => 'string',
+            'summary'           => 'memo',
             'content'           => 'memo',
             'blog_id'           => 'number',
             'link'              => 'string',

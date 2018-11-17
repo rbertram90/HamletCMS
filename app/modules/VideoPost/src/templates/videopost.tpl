@@ -45,6 +45,8 @@
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
 
+            {include 'edit-form/teaser-summary.tpl'}
+
             <div class="field"> 
                 <label for="video_source">Video Source</label>
                 <select name="video_source" id="video_source" class="ui dropdown">

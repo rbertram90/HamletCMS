@@ -42,6 +42,8 @@
         
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
+
+            {include 'edit-form/teaser-summary.tpl'}
             
             <div class="field">
                 <label for="fld_postcontent">Content</label>

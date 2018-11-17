@@ -64,6 +64,7 @@ class PostsAPI extends GenericController
         $newPost = [
             'title'           => $this->request->getString('title'),
             'content'         => $this->request->get('content'),
+            'summary'         => $this->request->getString('summary'),
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserimage'),
             'blog_id'         => $this->blog['id'],
@@ -143,6 +144,7 @@ class PostsAPI extends GenericController
             'id'              => $postID,
             'type'            => $post['type'],
             'title'           => $this->request->getString('title'),
+            'summary'         => $this->request->getString('summary'),
             'content'         => $this->request->get('content'),
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserImage'),
@@ -221,6 +223,7 @@ class PostsAPI extends GenericController
 
         $data = [
             'title'         => $this->request->getString('title'),
+            'summary'       => $this->request->getString('summary'),
             'content'       => $this->request->getString('content'),
             'tags'          => $this->request->getString('tags'),
             'allowcomments' => $this->request->getInt('allowcomments'),

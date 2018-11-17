@@ -65,23 +65,27 @@ use rbwebdesigns\core\JSONhelper;
 
     spl_autoload_register(function ($class) {
         $split = explode('\\', $class);
-        if (count($split) < 5) error_log('Unable to load class '. $class);
+        if (count($split) < 4) error_log('Unable to load class '. $class);
         $type = strtolower($split[3]);
-        include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
+        if ($type == 'controller' || $type == 'model') {
+            include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
+        }
+        else {
+            include SERVER_MODULES_PATH ."/{$split[2]}/src/{$split[3]}.php";
+        }
     });
 
+    // Include core classes
     require_once SERVER_ROOT .'/app/response.php';
     require_once SERVER_ROOT .'/app/menu.php';
     require_once SERVER_ROOT .'/app/menulink.php';
     require_once SERVER_ROOT .'/app/module.php';
     require_once SERVER_ROOT .'/app/cms.php';
+    require_once SERVER_ROOT .'/app/abstractcontroller.php';
 
     // Smarty
     require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
-    
-    // Generic controller class
-    require_once SERVER_ROOT .'/app/abstractcontroller.php';
-    
+        
     // Import view functions
     require_once SERVER_ROOT .'/app/view/page_header.php';
 

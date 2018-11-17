@@ -3,6 +3,7 @@
     {* We are editing the post *}
     {$formAction = "/cms/posts/edit/{$post['id']}"}
     {$fieldTitle = $post['title']}
+    {$fieldSummary = $post['summary']}
     {$fieldContent = $post['content']}
     {$teaserImage = $post['teaser_image']}
     {$fieldTags = str_replace("+"," ",$post['tags'])}
@@ -44,6 +45,8 @@
         
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
+
+            {include 'edit-form/teaser-summary.tpl'}
 
             <div class="field">
                 <label for="post_content">Content</label>

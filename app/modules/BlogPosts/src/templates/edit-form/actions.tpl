@@ -80,6 +80,7 @@
             blogID: {$blog.id},
             postID: parseInt($("#post_id").val()),
             title: $("#post_title").val(),
+            summary: $("#summary").val(),
             content: $("#post_content").val(),
             tags: $("#post_tags").val(),
             date: $("#post_date").val(),
