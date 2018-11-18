@@ -71,7 +71,6 @@ class UserAccounts extends RBFactory
             'username' => $details['username'],
             'password' => password_hash($details['password'], PASSWORD_DEFAULT),
             'email' => $details['email'],
-            'admin' => 0,
             'signup_date' => date('Y-m-d H:i:s')
         ];
 

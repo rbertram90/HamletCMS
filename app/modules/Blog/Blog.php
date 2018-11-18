@@ -29,4 +29,26 @@ class Blog
             $options['menu']->setLinks($newLinks);
         }
     }
+
+    /**
+     * Run database setup
+     */
+    public function install()
+    {
+        $dbc = BlogCMS::databaseConnection();
+
+        $dbc->query("CREATE TABLE `blogs` (
+            `id` bigint(10) NOT NULL,
+            `name` varchar(150) NOT NULL,
+            `description` text NOT NULL,
+            `user_id` int(8) NOT NULL,
+            `anon_search` tinyint(1) NOT NULL DEFAULT '1',
+            `visibility` enum('anon','private','members','friends') NOT NULL DEFAULT 'anon',
+            `widgetJSON` text NOT NULL,
+            `pagelist` varchar(500) NOT NULL,
+            `category` varchar(50) NOT NULL DEFAULT 'general'
+          ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+        $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
+    }
 }

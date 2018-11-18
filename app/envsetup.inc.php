@@ -43,23 +43,6 @@ use rbwebdesigns\core\JSONhelper;
     }
 
 /****************************************************************
-  Database Constants
-****************************************************************/
-    
-    if(!array_key_exists('database', $config)) die("Setup error - no database config found");
-    $databaseCredentials = $config['database'];
-
-    define("TBL_BLOGS", $databaseCredentials['name'] . ".blogs");
-    define("TBL_POSTS", $databaseCredentials['name'] . ".posts");
-    define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
-    define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
-    define("TBL_COMMENTS", $databaseCredentials['name'] . ".comments"); // @todo remove
-    define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
-    define("TBL_FAVOURITES", $databaseCredentials['name'] . ".favourites");
-    define("TBL_USERS", $databaseCredentials['name'] . ".users");
-
-
-/****************************************************************
   Includes
 ****************************************************************/
 
@@ -91,6 +74,37 @@ use rbwebdesigns\core\JSONhelper;
 
     // Store the configuration
     BlogCMS::addToConfig($config);
+
+// Continue if not installing
+if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
+
+
+/****************************************************************
+  Database Constants
+****************************************************************/
+    
+    if(!array_key_exists('database', $config)) die("Setup error - no database config found");
+    $databaseCredentials = $config['database'];
+
+    $dbc = BlogCMS::databaseConnection();
+    $checkInstall = $dbc->countRows("information_schema.tables", [
+        'table_schema' => $databaseCredentials['name'],
+        'table_name' => 'modules'
+    ]);
+
+    // Didn't find any modules - run install!
+    if ($checkInstall == 0) {
+        BlogCMS::response()->redirect('/cms/install.php');
+    }
+
+    define("TBL_BLOGS", $databaseCredentials['name'] . ".blogs");
+    define("TBL_POSTS", $databaseCredentials['name'] . ".posts");
+    define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
+    define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
+    define("TBL_COMMENTS", $databaseCredentials['name'] . ".comments"); // @todo remove
+    define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
+    define("TBL_FAVOURITES", $databaseCredentials['name'] . ".favourites");
+    define("TBL_USERS", $databaseCredentials['name'] . ".users");
     
 
 /****************************************************************
@@ -106,3 +120,5 @@ use rbwebdesigns\core\JSONhelper;
         if ($module['enabled'] != 1) continue;
         BlogCMS::registerModule($module['name']);
     }
+
+}

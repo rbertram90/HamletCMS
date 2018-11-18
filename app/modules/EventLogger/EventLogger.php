@@ -48,5 +48,26 @@ class EventLogger
      * onPageSettingsUpdated
      * onWidgetsUpdated
      */
+
+     
+    /**
+     * Run database setup
+     */
+    public function install()
+    {
+        $dbc = BlogCMS::databaseConnection();
+
+        $dbc->query("CREATE TABLE `eventlog` (
+            `id` int(11) NOT NULL,
+            `user_id` int(11) NOT NULL,
+            `activity_id` int(11) NOT NULL,
+            `blog_id` bigint(12) NOT NULL,
+            `text` varchar(255) NOT NULL,
+            `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+          ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+        $dbc->query("ALTER TABLE `eventlog` ADD PRIMARY KEY (`id`);");
+        $dbc->query("ALTER TABLE `eventlog` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
+    }
     
 }
