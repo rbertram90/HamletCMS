@@ -35,6 +35,11 @@ use Athens\CSRF;
 
     if ($request->method() == 'POST') {
 
+        if (!file_exists(SERVER_ROOT . '/public/blogdata')) {
+            $blogdata = mkdir(SERVER_ROOT . '/public/blogdata');
+            if (!$blogdata) die('Unable to create directory for blog data - check /public directory permissions');
+        }
+
         $dbc = BlogCMS::databaseConnection();
 
         // Create modules table
@@ -47,6 +52,25 @@ use Athens\CSRF;
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `modules` ADD UNIQUE KEY `name` (`name`);");
+
+        // Create procedures
+        $dbc->query("CREATE DEFINER=CURRENT_USER FUNCTION `wordcount` (`str` TEXT) RETURNS INT(11) NO SQL
+            DETERMINISTIC
+            SQL SECURITY INVOKER
+        BEGIN
+            DECLARE wordCnt, idx, maxIdx INT DEFAULT 0;
+            DECLARE currChar, prevChar BOOL DEFAULT 0;
+            SET maxIdx=char_length(str);
+            WHILE idx < maxIdx DO
+                SET currChar=SUBSTRING(str, idx, 1) RLIKE '[[:alnum:]]';
+                IF NOT prevChar AND currChar THEN
+                    SET wordCnt=wordCnt+1;
+                END IF;
+                SET prevChar=currChar;
+                SET idx=idx+1;
+            END WHILE;
+            RETURN wordCnt;
+          END");
 
         // Run module install
         foreach ($modules as $key => $module) {

@@ -20,9 +20,9 @@ In development: dev-master has known issues
 ## Technical
 Front end utilises Semantic UI (https://semantic-ui.com/)
 
-Back end is all vanilla PHP other than views which are now largely all using the Smarty templating engine. The code is heavily dependant on the rbwebdesigns\core library.
+Back end is all vanilla PHP other than views which are now largely all using the Smarty templating engine. The code is heavily dependent on the rbwebdesigns\core library.
 
-Data is stored both in MySQL database and within the file system (defaulted to /app/public/blogdata)
+Data is stored both in MySQL database and within the file system (defaulted to /public/blogdata)
  * default.php - one line file which includes the blog setup script
  * default.css - stylesheet from templates
  * images folder
@@ -31,12 +31,13 @@ Data is stored both in MySQL database and within the file system (defaulted to /
 ### Installation
 1. Clone repository
 2. Create database (default name = blog_cms)
-3. Import tables from database_install.sql
-4. Copy app/config/config_default.json -> app/config/config.json
-5. Change database connection details in config.json
-6. Change root_directory in config.json
-7. Run composer update from /app directory
-8. Check everything is working - if not please raise a ticket with details!
+3. Copy app/config/config_default.json -> app/config/config.json
+4. Change database connection details in config.json
+5. Change root_directory in config.json
+6. Run `composer update` from /app directory
+7. Navigate to the site - you should be redirected to /cms/install.php
+8. Complete the install form
+9. Check everything is working - if not please raise a ticket with details!
 
 ### Dependencies
  * codeliner/array-reader" : "~1.0",
