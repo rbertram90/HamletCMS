@@ -25,13 +25,13 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Widgets')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Widgets')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
             {* Header *}
-            {viewPageHeader('Widgets', 'sliders horizontal', $blog['name'])}
+            {viewPageHeader('Widgets', 'sliders horizontal', $blog->name)}
     
             <form method="post" id="configureWidgetsMainForm">
             
@@ -171,7 +171,7 @@ function runConfigureWidgetForm(buttonElement) {
     var widgetName = $(buttonParent).data('widgetname');
     var widgetSection = $(buttonParent).data('widgetsection');
     
-    $.get('/cms/settings/configurewidget/{$blog['id']}', { widget: widgetName }, function(data) {
+    $.get('/cms/settings/configurewidget/{$blog->id}', { widget: widgetName }, function(data) {
         $('#editWidgetPopup .content').html(data);
         
         var editForm = $('#editWidgetPopup .content form');

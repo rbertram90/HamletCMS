@@ -85,7 +85,7 @@ class Settings extends GenericController
         if (!BlogCMS::$userGroup) {
             $access = false;
         }
-        elseif (!$this->modelPermissions->userHasPermission('change_settings', $this->blog['id'])) {
+        elseif (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
             $access = false;
         }
 
@@ -93,7 +93,7 @@ class Settings extends GenericController
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog['id'];
+        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
     }
     
     /**
@@ -107,7 +107,7 @@ class Settings extends GenericController
 
         $this->response->setVar('menu', $settingsMenu->getLinks());
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Blog Settings - ' . $this->blog['name']);
+        $this->response->setTitle('Blog Settings - ' . $this->blog->name);
         $this->response->write('menu.tpl', 'Settings');
     }
 
@@ -120,7 +120,7 @@ class Settings extends GenericController
         if ($this->request->method() == 'POST') return $this->action_updateBlogGeneral();
 
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('General Settings - ' . $this->blog['name']);
+        $this->response->setTitle('General Settings - ' . $this->blog->name);
         $this->response->setVar('categorylist', BlogCMS::config()['blogcategories']);
         $this->response->write('general.tpl', 'Settings');
     }
@@ -133,7 +133,7 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->action_updatePostsSettings();
 
-        $postConfig = $this->getBlogConfig($this->blog['id']);
+        $postConfig = $this->getBlogConfig($this->blog->id);
 
         if (isset($postConfig['posts'])) {
             // Default values where needed
@@ -147,7 +147,7 @@ class Settings extends GenericController
         }
 
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Post Settings - ' . $this->blog['name']);
+        $this->response->setTitle('Post Settings - ' . $this->blog->name);
         $this->response->write('posts.tpl', 'Settings');
     }
 
@@ -161,7 +161,7 @@ class Settings extends GenericController
 
         if ($request->method() == 'POST') return $this->action_updateHeaderContent($request, $response, $blog);
         
-        $blogconfig = $this->getBlogConfig($blog['id']);
+        $blogconfig = $this->getBlogConfig($blog->id);
         if (isset($blogconfig['header'])) $response->setVar('blogconfig', $blogconfig['header']);
         else $response->setVar('blogconfig', []);
 
@@ -170,7 +170,7 @@ class Settings extends GenericController
         $response->addScript('/resources/js/rbrtf.js');
         $response->addStylesheet('/resources/css/rbrtf.css');
         $response->addStylesheet('/resources/css/rbwindow.css');
-        $response->setTitle('Customise Blog Header - ' . $blog['name']);
+        $response->setTitle('Customise Blog Header - ' . $blog->name);
         $response->write('header.tpl', 'Settings');        
     }
 
@@ -184,7 +184,7 @@ class Settings extends GenericController
 
         if ($request->method() == 'POST') return $this->action_updateFooterContent($request, $response, $blog);
         
-        $blogconfig = $this->getBlogConfig($blog['id']);
+        $blogconfig = $this->getBlogConfig($blog->id);
         if (isset($blogconfig['footer'])) $response->setVar('blogconfig', $blogconfig['footer']);
         else $response->setVar('blogconfig', []);
 
@@ -193,7 +193,7 @@ class Settings extends GenericController
         $response->addScript('/resources/js/rbrtf.js');
         $response->addStylesheet('/resources/css/rbrtf.css');
         $response->addStylesheet('/resources/css/rbwindow.css');
-        $response->setTitle('Customise Blog Footer - ' . $blog['name']);
+        $response->setTitle('Customise Blog Footer - ' . $blog->name);
         $response->write('footer.tpl', 'Settings');
     }
 
@@ -224,7 +224,7 @@ class Settings extends GenericController
             BlogCMS::Session()->addMessage('Failed to update page list', 'error');
         }
 
-        $pagelist = explode(',', $blog['pagelist']);
+        $pagelist = explode(',', $blog->pagelist);
         $pages = $taglist = [];
 
         foreach ($pagelist as $postID) {
@@ -237,8 +237,8 @@ class Settings extends GenericController
             }
         }
         
-        $tags = $this->modelPosts->getAllTagsByBlog($blog['id']);
-        $posts = $this->modelPosts->get(['id', 'title'], ['blog_id' => $blog['id']]);
+        $tags = $this->modelPosts->getAllTagsByBlog($blog->id);
+        $posts = $this->modelPosts->get(['id', 'title'], ['blog_id' => $blog->id]);
 
         $response->setVar('pagelist', $pagelist);
         $response->setVar('pages', $pages);
@@ -246,7 +246,7 @@ class Settings extends GenericController
         $response->setVar('tags', $tags);
         $response->setVar('posts', $posts);
         $response->setVar('blog', $blog);
-        $response->setTitle('Manage Pages - ' . $blog['name']);
+        $response->setTitle('Manage Pages - ' . $blog->name);
         $response->write('pages.tpl', 'Settings');
     }
 
@@ -262,7 +262,7 @@ class Settings extends GenericController
 
         $response->setVar('serverroot', SERVER_ROOT);
         $response->setVar('blog', $blog);
-        $response->setTitle('Edit Stylesheet - ' . $blog['name']);
+        $response->setTitle('Edit Stylesheet - ' . $blog->name);
         $response->write('stylesheet.tpl', 'Settings');
     }
 
@@ -277,7 +277,7 @@ class Settings extends GenericController
         if ($request->method() == 'POST') return $this->action_applyNewTemplate($request, $response, $blog);
 
         $response->setVar('blog', $blog);
-        $response->setTitle('Choose Template - ' . $blog['name']);
+        $response->setTitle('Choose Template - ' . $blog->name);
         $response->write('template.tpl', 'Settings');
     }
 
@@ -294,7 +294,7 @@ class Settings extends GenericController
         $response = new \rbwebdesigns\core\Response();
 
         $response->setVar('blog', $this->blog);
-        $response->setTitle('Blog Designer - ' . $this->blog['name']);
+        $response->setTitle('Blog Designer - ' . $this->blog->name);
         $response->addScript('/resources/colorpicker/jscolor.js');
         $response->write(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $this->blog));
     }
@@ -306,9 +306,9 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->action_updateWidgets();
         
-        $this->response->setTitle('Customise Widgets - ' . $this->blog['name']);
+        $this->response->setTitle('Customise Widgets - ' . $this->blog->name);
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('widgetconfig', $this->getWidgetConfig($this->blog['id']));
+        $this->response->setVar('widgetconfig', $this->getWidgetConfig($this->blog->id));
         $this->response->setVar('installedwidgets', $this->getInstalledWidgets());
         $this->response->write('widgets3.tpl', 'Settings');
     }
@@ -333,7 +333,7 @@ class Settings extends GenericController
      */
     public function action_updateBlogGeneral()
     {
-        $update = $this->modelBlogs->update(['id' => $this->blog['id']], [
+        $update = $this->modelBlogs->update(['id' => $this->blog->id], [
             'name'        => $this->request->getString('fld_blogname'),
             'description' => $this->request->getString('fld_blogdesc'),
             'visibility'  => $this->request->getString('fld_blogsecurity'),
@@ -342,10 +342,10 @@ class Settings extends GenericController
 
         if($update) {
             BlogCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);
-            $this->response->redirect('/cms/settings/general/' . $this->blog['id'], "Blog settings updated", "success");
+            $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Blog settings updated", "success");
         }
         else {
-            $this->response->redirect('/cms/settings/general/' . $this->blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Error saving to database", "error");
         }
     }
     
@@ -354,7 +354,7 @@ class Settings extends GenericController
      */
     public function action_updatePostsSettings()
     {
-        $update = $this->updateBlogConfig($this->blog['id'], [
+        $update = $this->updateBlogConfig($this->blog->id, [
             'posts' => [
                 'dateformat'        => $this->request->getString('fld_dateformat'),
                 'timeformat'        => $this->request->getString('fld_timeformat'),
@@ -373,10 +373,10 @@ class Settings extends GenericController
         
         if($update) {
             BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
-            $this->response->redirect('/cms/settings/posts/' . $this->blog['id'], "Post settings updated", "success");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Post settings updated", "success");
         }
         else {
-            $this->response->redirect('/cms/settings/posts/' . $this->blog['id'], "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error saving to database", "error");
         }
     }
     
@@ -430,7 +430,7 @@ class Settings extends GenericController
      */
     protected function action_updateFooterContent(&$request, &$response, $blog)
     {
-        $update = $this->updateBlogConfig($blog['id'], [
+        $update = $this->updateBlogConfig($blog->id, [
             'footer' => [
                 'numcols'                  => $request->getString('fld_numcolumns'),
                 'content_col1'             => $request->getString('fld_contentcol1'),
@@ -441,10 +441,10 @@ class Settings extends GenericController
             ]
         ]);
 
-        if(!$update) $response->redirect('/cms/settings/footer/' . $blog['id'], 'Updated failed', 'error');
+        if(!$update) $response->redirect('/cms/settings/footer/' . $blog->id, 'Updated failed', 'error');
         
         BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
-        $response->redirect('/cms/settings/footer/' . $blog['id'], 'Footer updated', 'success');
+        $response->redirect('/cms/settings/footer/' . $blog->id, 'Footer updated', 'success');
     }
     
     /**
@@ -452,7 +452,7 @@ class Settings extends GenericController
      */
     protected function action_updateHeaderContent(&$request, &$response, $blog)
     {
-        $update = $this->updateBlogConfig($blog['id'], ['header' => [
+        $update = $this->updateBlogConfig($blog->id, ['header' => [
             'background_image'          => $request->getString('fld_headerbackgroundimage'),
             'bg_image_post_horizontal'  => $request->getString('fld_horizontalposition'),
             'bg_image_post_vertical'    => $request->getString('fld_veritcalposition'),
@@ -461,10 +461,10 @@ class Settings extends GenericController
             'hide_description'          => $request->getString('fld_hidedescription')
         ]]);
 
-        if(!$update) $response->redirect('/cms/settings/header/' . $blog['id'], 'Updated failed', 'error');
+        if(!$update) $response->redirect('/cms/settings/header/' . $blog->id, 'Updated failed', 'error');
 
         BlogCMS::runHook('onHeaderSettingsUpdated', ['blog' => $this->blog]);
-        $response->redirect('/cms/settings/header/' . $blog['id'], 'Header updated', 'success');
+        $response->redirect('/cms/settings/header/' . $blog->id, 'Header updated', 'success');
     }
     
     /**
@@ -485,7 +485,7 @@ class Settings extends GenericController
                 // Check that post we're adding is valid
                 $newpageID = $request->getInt('fld_postid');
                 $targetpost = $this->modelPosts->get(['blog_id'], ['id' => $newpageID], '', '', false);
-                if (!$targetpost || $targetpost['blog_id'] != $blog['id']) {
+                if (!$targetpost || $targetpost['blog_id'] != $blog->id) {
                     return false;
                 }
                 break;
@@ -501,17 +501,17 @@ class Settings extends GenericController
         }
 
         // Update Current Page List
-        if (array_key_exists('pagelist', $blog) && strlen($blog['pagelist']) > 0) {
-            $pagelist = $blog['pagelist'] . ',' . $newpageID;
+        if (array_key_exists('pagelist', $blog) && strlen($blog->pagelist) > 0) {
+            $pagelist = $blog->pagelist . ',' . $newpageID;
         }
         else {
             $pagelist = $newpageID;
         }
 
         // Make sure we've got the most recent data for this request
-        $blog['pagelist'] = $pagelist;
+        $blog->pagelist = $pagelist;
         
-        return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
+        return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
     }
     
     /**
@@ -526,7 +526,7 @@ class Settings extends GenericController
         if (!$page = $request->getString('fld_postid', false)) return false;
         
         // Get position of page in the comma seperated list
-        $pagelist = explode(',', $blog['pagelist']);
+        $pagelist = explode(',', $blog->pagelist);
         $idKey = array_search($page, $pagelist);
         if ($idKey === false) return false;
 
@@ -534,10 +534,10 @@ class Settings extends GenericController
         array_splice($pagelist, $idKey, 1);
         
         // Make sure we've got the most recent data for this request
-        $blog['pagelist'] = implode(',', $pagelist);
+        $blog->pagelist = implode(',', $pagelist);
 
-        return $this->modelBlogs->update(['id' => $blog['id']], [
-            'pagelist' => $blog['pagelist']
+        return $this->modelBlogs->update(['id' => $blog->id], [
+            'pagelist' => $blog->pagelist
         ]);
     }
     
@@ -552,7 +552,7 @@ class Settings extends GenericController
     {
         if (!$page = $request->getString('fld_postid', false)) return false;
         
-        $pagelist = explode(',', $blog['pagelist']);
+        $pagelist = explode(',', $blog->pagelist);
         $idKey = array_search($page, $pagelist);
         
         if ($idKey !== false && $idKey > 0) {
@@ -560,9 +560,9 @@ class Settings extends GenericController
             $pagelist[$idKey - 1] = $page;
             $pagelist = implode(',', $pagelist);
 
-            $blog['pagelist'] = $pagelist;
+            $blog->pagelist = $pagelist;
 
-            return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
+            return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
         }
 
         return false;
@@ -579,7 +579,7 @@ class Settings extends GenericController
     {
         if (!$page = $request->getString('fld_postid', false)) return false;
         
-        $pagelist = explode(',', $blog['pagelist']);
+        $pagelist = explode(',', $blog->pagelist);
         $idKey = array_search($page, $pagelist);
         
         if ($idKey !== false && $idKey < count($pagelist) - 1) {
@@ -587,9 +587,9 @@ class Settings extends GenericController
             $pagelist[$idKey + 1] = $page;
             $pagelist = implode(',', $pagelist);
             
-            $blog['pagelist'] = $pagelist;
+            $blog->pagelist = $pagelist;
 
-            return $this->modelBlogs->update(['id' => $blog['id']], ['pagelist' => $pagelist]);
+            return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
         }
         
         return false;
@@ -606,7 +606,7 @@ class Settings extends GenericController
     {
         $log = "";
         
-        $settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/template_config.json');
+        $settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $this->blog->id . '/template_config.json');
         // Loop through JSON array
         // $log.= "looping through saved JSON<br>";
         
@@ -661,10 +661,10 @@ class Settings extends GenericController
         // die($log);
         
         // Save the config file back
-        file_put_contents(SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/template_config.json', json_encode($settings));
+        file_put_contents(SERVER_PATH_BLOGS . '/' . $this->blog->id . '/template_config.json', json_encode($settings));
 
         // BlogCMS::runHook('onStylesheetUpdated', ['blog' => $blog]);
-        $this->response->redirect('/cms/settings/blogdesigner/' . $this->blog['id'], 'Settings Updated', 'Success');
+        $this->response->redirect('/cms/settings/blogdesigner/' . $this->blog->id, 'Settings Updated', 'Success');
     }
     
     /**
@@ -673,32 +673,32 @@ class Settings extends GenericController
     protected function action_applyNewTemplate($request, $response, $blog)
     {
         if (!$template_id = $request->getString('template_id', false)) {
-            $response->redirect('/settings/template/' . $blog['id'], 'Template not found', 'error');
+            $response->redirect('/settings/template/' . $blog->id, 'Template not found', 'error');
         }
 
         $templateDirectory = SERVER_PATH_TEMPLATES . "/" . $template_id;
         if (!is_dir($templateDirectory)) {
-            $response->redirect('/settings/template/' . $blog['id'], 'Template not found', 'error');
+            $response->redirect('/settings/template/' . $blog->id, 'Template not found', 'error');
         }
 
         // Update default.css
         $copy_css = $templateDirectory . "/stylesheet.css";
-        $new_css  = SERVER_PATH_BLOGS . "/{$blog['id']}/default.css";
+        $new_css  = SERVER_PATH_BLOGS . "/{$blog->id}/default.css";
         if (!copy($copy_css, $new_css)) die(showError('failed to copy stylesheet.css'));
         
         // Update template_config.json
         $copy_json = $templateDirectory . "/config.json";
-        $new_json  = SERVER_PATH_BLOGS . "/{$blog['id']}/template_config.json";
+        $new_json  = SERVER_PATH_BLOGS . "/{$blog->id}/template_config.json";
         if (!copy($copy_json, $new_json)) die(showError('failed to copy config.json'));
 
         // Delete the widgets.json (as columns may have changed and no way to tell what current template is)
         // maybe do this differently in future updates
-        if (file_exists(SERVER_PATH_BLOGS . "/{$blog['id']}/widgets.json")) {
-            unlink(SERVER_PATH_BLOGS . "/{$blog['id']}/widgets.json");
+        if (file_exists(SERVER_PATH_BLOGS . "/{$blog->id}/widgets.json")) {
+            unlink(SERVER_PATH_BLOGS . "/{$blog->id}/widgets.json");
         }
 
         BlogCMS::runHook('onTemplateChanged', ['blog' => $blog]);
-        $response->redirect('/cms/settings/template/' . $blog['id'], 'Template changed', 'success');
+        $response->redirect('/cms/settings/template/' . $blog->id, 'Template changed', 'success');
     }
     
     /**
@@ -709,13 +709,13 @@ class Settings extends GenericController
         // Sanitize Variables
         $css_string = strip_tags($request->get('fld_css'));
 
-        if (is_dir(SERVER_PATH_BLOGS . "/{$blog['id']}") &&
-            file_put_contents(SERVER_PATH_BLOGS. "/{$blog['id']}/default.css", $css_string)) {
+        if (is_dir(SERVER_PATH_BLOGS . "/{$blog->id}") &&
+            file_put_contents(SERVER_PATH_BLOGS. "/{$blog->id}/default.css", $css_string)) {
             BlogCMS::runHook('onStylesheetUpdated', ['blog' => $blog]);
-            $response->redirect("/cms/settings/stylesheet/{$blog['id']}", "Stylesheet updated", "success");
+            $response->redirect("/cms/settings/stylesheet/{$blog->id}", "Stylesheet updated", "success");
         }
         else {
-            $response->redirect("/cms/settings/stylesheet/{$blog['id']}", "Update failed", "error");
+            $response->redirect("/cms/settings/stylesheet/{$blog->id}", "Update failed", "error");
         }
     }
     
@@ -725,7 +725,7 @@ class Settings extends GenericController
      */
     protected function checkWidgetJSON($blog, &$widgetconfig)
     {
-        $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog['id'].'/template_config.json');
+        $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog->id.'/template_config.json');
         
         // Config
         //  -> Layout
@@ -847,7 +847,7 @@ class Settings extends GenericController
      */
     protected function action_updateWidgets()
     {
-        $configPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
+        $configPath = SERVER_PATH_BLOGS . '/' . $this->blog->id . '/widgets.json';
         if (!file_exists($configPath)) die('Cannot find widget config file');
         $config = JSONhelper::JSONFileToArray($configPath);
         
@@ -867,7 +867,7 @@ class Settings extends GenericController
         
         // View the widgets page
         BlogCMS::runHook('onWidgetsUpdated', ['blog' => $this->blog]);
-        $this->response->redirect('/cms/settings/widgets/' . $this->blog['id'], 'Widgets updated', 'success');
+        $this->response->redirect('/cms/settings/widgets/' . $this->blog->id, 'Widgets updated', 'success');
     }
     
     /**
@@ -940,7 +940,7 @@ class Settings extends GenericController
     protected function action_saveWidgetConfig($blog)
     {
         // Get the current widgets as array
-        $initJSON = str_replace("&#34;", "\"", $blog['widgetJSON']);
+        $initJSON = str_replace("&#34;", "\"", $blog->widgetJSON);
         $arrayWidgetConfig = json_decode($initJSON, true);
         
         // Update config from all posted data
@@ -1001,7 +1001,7 @@ class Settings extends GenericController
         $jsonWidgetConfig = json_encode($arrayWidgetConfig);
         
         // Save to database
-        $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog['id']);
+        $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog->id);
 
         // Return the updated widget config
         // Update UI - don't - this is called using ajax
@@ -1009,7 +1009,7 @@ class Settings extends GenericController
         die(json_encode($arrayWidgetConfig[$widgetlocation][$targetwidget]));
         
         // setSystemMessage(ITEM_UPDATED, "Success");
-        // redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog['id'].'/widgets');
+        // redirect(CLIENT_ROOT_BLOGCMS.'/config/'.$blog->id.'/widgets');
     }
     
     /**
@@ -1044,10 +1044,10 @@ class Settings extends GenericController
             $jsonWidgetConfig.= "}";
         }
         
-        $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog['id']);
+        $this->modelBlogs->updateWidgetJSON($jsonWidgetConfig, $blog->id);
         
         setSystemMessage(ITEM_UPDATED, "Success");
-        redirect('/config/'.$blog['id'].'/widgets');
+        redirect('/config/'.$blog->id.'/widgets');
     }
 
 }

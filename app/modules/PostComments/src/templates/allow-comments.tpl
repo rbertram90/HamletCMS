@@ -8,6 +8,6 @@
 
 <script>
 {if $mode == 'edit'}
-    $("#allow_comment").val({$post.allowcomments});
+    $("#allow_comment").val({$post->allowcomments});
 {/if}
 </script>

@@ -18,20 +18,20 @@
             <div class="meta top">
                 <span class="post-date">{$post.headerDate}</span>
             </div>
-            <h2><a href="{$blog_root_url}/posts/{$post.link}">{$post.title}</a></h2>
+            <h2><a href="{$blog_root_url}/posts/{$post.link}">{$post->title}</a></h2>
         </div>
         
         <div class="post-content">
             {if $post.type == 'gallery'}
-                <div id="galleria_{$post.id}">
+                <div id="galleria_{$post->id}">
                     {foreach $post.images as $path}
                         {if strlen($path) > 0}
                             <img src="{$path}">
                         {/if}
                     {/foreach}
                 </div>
-                <style>#galleria_{$post.id} { width: 100%; height: 400px; background: #000; }</style>
-                <script>Galleria.run("#galleria_{$post.id}");</script>
+                <style>#galleria_{$post->id} { width: 100%; height: 400px; background: #000; }</style>
+                <script>Galleria.run("#galleria_{$post->id}");</script>
             {/if}
 
             {if $post.teaser_image and $post.teaser_image != "false"}
@@ -70,8 +70,8 @@
             <div class="extra">
                 <!-- Add / Edit Options -->
                 {if $userIsContributor}
-                    <a href="/cms/posts/delete/{$post.id}" onclick="return confirm('Are you sure?');" class="ui basic right floated button">Delete</a>
-                    <a href="/cms/posts/edit/{$post.id}" class="ui basic right floated button">Edit</a>
+                    <a href="/cms/posts/delete/{$post->id}" onclick="return confirm('Are you sure?');" class="ui basic right floated button">Delete</a>
+                    <a href="/cms/posts/edit/{$post->id}" class="ui basic right floated button">Edit</a>
                 {/if}
 
                 <!-- Social Media -->

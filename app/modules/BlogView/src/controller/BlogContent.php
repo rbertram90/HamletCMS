@@ -206,15 +206,15 @@ class BlogContent
 
     public function generatePostTemplate($post, $config, $mode = 'full')
     {
-        if (strlen($post['tags']) > 0) {
-            $post['tags'] = explode(',', $post['tags']);
+        if (strlen($post->tags) > 0) {
+            $post->tags = explode(',', $post->tags);
         }
         else {
-            $post['tags'] = [];
+            $post->tags = [];
         }
 
-        $post['headerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'title');
-        $post['footerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'footer');
+        $post->headerDate = $this->formatDateFromSettings($post->timestamp, $config, 'title');
+        $post->footerDate = $this->formatDateFromSettings($post->timestamp, $config, 'footer');
 
         switch ($mode) {
             case 'full':
@@ -270,7 +270,7 @@ class BlogContent
 
         $isContributor = BlogCMS::$userGroup !== false;
 
-        $response->setTitle($this->blog['name']);
+        $response->setTitle($this->blog->name);
         $response->setVar('userIsContributor', $isContributor);
 
         $response->setVar('posts', $output);
@@ -305,7 +305,7 @@ class BlogContent
      */
     public function generatePagelist()
     {
-        echo $this->blog['pagelist'];
+        echo $this->blog->pagelist;
     }
 
     /**
@@ -314,21 +314,21 @@ class BlogContent
     **/
     public function generateNavigation()
     {
-        if (!array_key_exists('pagelist', $this->blog) || strlen($this->blog['pagelist']) == 0) {
+        if (strlen($this->blog->pagelist) == 0) {
             return '';
         }
         $navigation = '';
-        $pagelist = explode(',', $this->blog['pagelist']);
+        $pagelist = explode(',', $this->blog->pagelist);
 
         foreach ($pagelist as $postid) {
             if (is_numeric($postid)) {
-                $arrayPosts = $this->modelPosts->get('*', array('id' => $postid));
-                $arrayPost = $arrayPosts[0];
-                $navigation.= '<a href="'.$this->pathPrefix.'/posts/'.$arrayPost['link'].'" class="item">'.$arrayPost['title'].'</a>';
+                $arrayPosts = $this->modelPosts->get('*', ['id' => $postid]);
+                $post = $arrayPosts[0];
+                $navigation.= '<a href="'. $this->pathPrefix .'/posts/'. $post->link .'" class="item">'. $post->title .'</a>';
             }
             elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
-                $navigation.= '<a href="'.$this->pathPrefix.'/tags/'.$tag.'" class="item">'.ucfirst($tag).'</a>';
+                $navigation.= '<a href="'. $this->pathPrefix .'/tags/'. $tag .'" class="item">'. ucfirst($tag) .'</a>';
             }
         }
         return $navigation;
@@ -340,7 +340,7 @@ class BlogContent
      */
     public function generateWidgets()
     {
-        $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
+        $widgetConfigPath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/widgets.json';
         $widgets = [];
 
         if(!file_exists($widgetConfigPath)) return '';
@@ -354,7 +354,7 @@ class BlogContent
         }
         else {
             $cmsDomain = '';
-            $pathPrefix = "/blogs/{$this->blog['id']}";
+            $pathPrefix = "/blogs/{$this->blog->id}";
         }
 
         $widgetSmarty = new \Smarty;
@@ -533,7 +533,7 @@ class BlogContent
         $response->setVar('totalnumposts', count($postlist));
 
         // Set Page Title
-        $response->setTitle("Posts tagged with {$tag} - {$this->blog['name']}");
+        $response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
         $response->setVar('userIsContributor', $isContributor);
         $response->setVar('tagName', $tag);
         $response->setVar('posts', $output);
@@ -578,8 +578,8 @@ class BlogContent
     
     public function getTemplateConfig()
     {
-        $lsSettings = file_get_contents(SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/template_config.json');
-        return json_decode($lsSettings, true);
+        $settings = file_get_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json');
+        return json_decode($settings, true);
     }
     
     /**

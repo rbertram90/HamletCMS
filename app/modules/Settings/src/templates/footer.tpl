@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Footer')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Footer')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Customise footer', 'sliders horizontal', $blog['name'])}
+            {viewPageHeader('Customise footer', 'sliders horizontal', $blog->name)}
 
             <form method="post" id="frm_updatefooter" class="ui form">
 
@@ -48,7 +48,7 @@
                 </div>
                 
                 <div class="field">
-                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog.id}?format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog->id}?format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
                     <button onclick="return removeImage();" class="ui button">Remove Image</button>
 
                     <input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}">

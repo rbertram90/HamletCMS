@@ -117,8 +117,8 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     $modules = $moduleModel->getList();
 
     foreach ($modules as $module) {
-        if ($module['enabled'] != 1) continue;
-        BlogCMS::registerModule($module['name']);
+        if ($module->enabled != 1) continue;
+        BlogCMS::registerModule($module->name);
     }
 
 }

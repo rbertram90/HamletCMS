@@ -6,8 +6,8 @@ use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
 /**
- * /app/model/mdl_post.inc.php
- * (All) Access to the posts database table is done through this class
+ * Posts factory class
+ * Access to the posts database table is done through this class
  */
 class Posts extends RBFactory
 {
@@ -19,6 +19,7 @@ class Posts extends RBFactory
      * @var string $tableName
      */
     protected $tableName;
+    protected $subClass;
 
     /**
      * @param \rbwebdesigns\core\ModelManager $modelManager
@@ -33,6 +34,7 @@ class Posts extends RBFactory
         $this->tblviews = TBL_POST_VIEWS;
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->tblautosave = TBL_AUTOSAVES;
+        $this->subClass = '\\rbwebdesigns\\blogcms\\BlogPosts\\Post';
         
         $this->fields = [
             'id'                => 'number',
@@ -57,7 +59,7 @@ class Posts extends RBFactory
      */
     public function getPostById($postID)
     {
-        return $this->db->selectSingleRow($this->tableName, '*', ['id' => $postID]);
+        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', ['id' => $postID]);
     }
     
     /**
@@ -68,7 +70,7 @@ class Posts extends RBFactory
      */
     public function getPostByURL($link, $blogID)
     {
-        return $this->db->selectSingleRow($this->tableName, '*', [
+        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', [
             'link' => $link,
             'blog_id' => $blogID
         ]);
@@ -85,7 +87,7 @@ class Posts extends RBFactory
             'timestamp' => '< CURRENT_TIMESTAMP',
             'draft'     => 0
         ];
-        return $this->db->selectSingleRow($this->tableName, '*', $where, 'timestamp DESC', '1');
+        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp DESC', '1');
     }
     
     /**
@@ -101,7 +103,7 @@ class Posts extends RBFactory
             'blog_id'   => $blogID,
             'draft'     => 0
         ];
-        $result = $this->db->selectSingleRow($this->tableName, '*', $where, 'timestamp ASC', '1');
+        $result = $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp ASC', '1');
         
         // Only Return Result if the post is not scheduled
         if($result['timestamp'] < date('Y-m-d H:i:s')) return $result;
@@ -120,7 +122,7 @@ class Posts extends RBFactory
             'timestamp' => '<' . $currentPostTimestamp,
             'draft'     => 0
         ];
-        return $this->db->selectSingleRow($this->tableName, '*', $where, 'timestamp DESC', '1');
+        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp DESC', '1');
     }
     
     /**
@@ -138,7 +140,7 @@ class Posts extends RBFactory
         $query_string.= "AND draft=0 AND timestamp <= CURRENT_TIMESTAMP";
 
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     /**
@@ -217,7 +219,7 @@ class Posts extends RBFactory
         $sql.= "ORDER BY p.timestamp DESC ";
 
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     /**
@@ -268,7 +270,7 @@ class Posts extends RBFactory
         
         $sql.= "LIMIT $start,$num";
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
         
     /**
@@ -303,7 +305,7 @@ class Posts extends RBFactory
         
         $query_string.= " ORDER BY ".$this->tableName.".timestamp DESC LIMIT 30";
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     /**
@@ -406,7 +408,7 @@ class Posts extends RBFactory
         // Loop through the posts
         foreach ($posts as $post) {
             // Create array from CSV string
-            $tags = explode(",", $post['tags']);
+            $tags = explode(",", $post->tags);
             // Check this post has tags
             if (count($tags) === 0) continue;
             // Loop through tags
@@ -445,7 +447,7 @@ class Posts extends RBFactory
         
         // Loop through the posts
         foreach ($posts as $post) {
-            $tags = explode(",", $post['tags']);
+            $tags = explode(",", $post->tags);
             if(count($tags) === 0) continue;
             
             foreach ($tags as $tag) {
@@ -490,7 +492,7 @@ class Posts extends RBFactory
         
         // Loop through all tags in all posts
         foreach ($posts as $post) {
-            $tags = explode(",", $post['tags']);
+            $tags = explode(",", $post->tags);
             if(count($tags) == 0) continue;
             
             foreach($tags as $tag) {

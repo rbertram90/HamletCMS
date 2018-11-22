@@ -10,7 +10,7 @@ class Contributors
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('contributors.manage', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Contributors';
             $args['menu']->addLink($link);

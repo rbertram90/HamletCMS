@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Template gallery')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Template gallery')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Template gallery', 'sliders horizontal', $blog['name'])}
+            {viewPageHeader('Template gallery', 'sliders horizontal', $blog->name)}
         </div>
     </div>
 </div>
@@ -131,7 +131,7 @@
     </div>
 </div>
 
-<form method="POST" action="/cms/settings/template/{$blog.id}" id="updateTemplateForm">
+<form method="POST" action="/cms/settings/template/{$blog->id}" id="updateTemplateForm">
     <input type="hidden" name="template_id" value="">
 </form>
 

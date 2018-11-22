@@ -58,13 +58,13 @@ class SiteAdmin extends GenericController
             $addCount = 0;
 
             foreach ($dbModules as $module) {
-                if (($key = array_search($module['name'], $modulesList)) !== FALSE) {
+                if (($key = array_search($module->name, $modulesList)) !== FALSE) {
                     // Found in database - remove from list
                     array_splice($modulesList, $key, 1);
                 }
                 else {
                     // Module removed from file system!
-                    $this->model->delete(['name' => $module['name']]);
+                    $this->model->delete(['name' => $module->name]);
                     $deleteCount++;
                 }
             }
@@ -95,14 +95,14 @@ class SiteAdmin extends GenericController
         $updates = [];
 
         foreach ($modules as $module) {
-            $currentVersion = $module['dbversion'];
-            $moduleFile = SERVER_MODULES_PATH .'/'. $module['name'] .'/'. $module['name'] .'.php';
+            $currentVersion = $module->dbversion;
+            $moduleFile = SERVER_MODULES_PATH .'/'. $module->name .'/'. $module->name .'.php';
 
             if (!file_exists($moduleFile)) continue;
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\blogcms\\'. $module['name'];
+            $className = '\\rbwebdesigns\\blogcms\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 
@@ -112,7 +112,7 @@ class SiteAdmin extends GenericController
 
             if ($updateIndex-1 != $currentVersion) {
                 $updates[] = [
-                    'name' => $module['name'],
+                    'name' => $module->name,
                     'current' => $currentVersion,
                     'latest' => $updateIndex-1
                 ];
@@ -137,14 +137,14 @@ class SiteAdmin extends GenericController
         $modules = $this->model->getList();
         
         foreach ($modules as $module) {
-            $currentVersion = $module['dbversion'];
-            $moduleFile = SERVER_MODULES_PATH .'/'. $module['name'] .'/'. $module['name'] .'.php';
+            $currentVersion = $module->dbversion;
+            $moduleFile = SERVER_MODULES_PATH .'/'. $module->name .'/'. $module->name .'.php';
 
             if (!file_exists($moduleFile)) continue;
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\blogcms\\'. $module['name'];
+            $className = '\\rbwebdesigns\\blogcms\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 
@@ -155,7 +155,7 @@ class SiteAdmin extends GenericController
             }
 
             // Note update was done
-            $this->model->update(['name' => $module['name']], ['dbversion' => $updateIndex-1]);
+            $this->model->update(['name' => $module->name], ['dbversion' => $updateIndex-1]);
         }
 
         $this->response->redirect('/cms/admin/modules', 'Database updates done', 'success');

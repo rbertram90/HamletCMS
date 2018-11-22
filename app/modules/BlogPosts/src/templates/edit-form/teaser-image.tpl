@@ -3,7 +3,7 @@
     <style>#teaser_image_image img { max-height: 200px; max-width: 200px; }</style>
     <div id="teaser_image_image">
     {if $teaserImage != ''}
-        <img src="/blogdata/{$blog.id}/images/{$teaserImage}">
+        <img src="/blogdata/{$blog->id}/images/{$teaserImage}">
     {/if}
     </div>
     <button type="button" id="teaser_image_select" title="Select Image" class="ui icon button">
@@ -20,7 +20,7 @@ $(document).ready(function() {
     $("body").append("<div class='ui modal upload_image_modal'></div>");
 
     $('#teaser_image_select').click(function() {
-        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN, 'elemid': 'teaser_image_image', 'format': 'html', 'replace': 1 }, function() {
+        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN, 'elemid': 'teaser_image_image', 'format': 'html', 'replace': 1 }, function() {
             $(this).modal('show');
         });
     });

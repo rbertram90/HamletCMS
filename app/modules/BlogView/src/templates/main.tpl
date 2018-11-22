@@ -26,7 +26,7 @@
         <div class="row">
             <div class="sixteen wide column page-header">
                 {if !$header_hide_title}
-                    <h1><a href="{$blog_root_url}">{$blog.name}</a></h1>
+                    <h1><a href="{$blog_root_url}">{$blog->name}</a></h1>
                 {/if}
                 
                 {if !$header_hide_description}

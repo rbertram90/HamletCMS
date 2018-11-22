@@ -20,6 +20,7 @@ class Contributors extends RBFactory
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = TBL_CONTRIBUTORS;
         $this->tableGroups = 'contributorgroups';
+        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\Contributor';
 
         $this->tblusers = TBL_USERS;
         $this->tblblogs = TBL_BLOGS;
@@ -36,7 +37,7 @@ class Contributors extends RBFactory
         // Get all the blog id for this user
         $query_string = 'SELECT a.blog_id, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblblogs.' as b ON a.blog_id = b.id WHERE a.user_id='.$userid;
         $results = $this->db->query($query_string);
-        return $results->fetchAll(\PDO::FETCH_ASSOC);
+        return $results->fetchAll(\PDO::FETCH_CLASS, '\\rbwebdesigns\\blogcms\\Blog\\Blog');
     }
     
     // Get all users that can contribute to a $blog
@@ -44,7 +45,7 @@ class Contributors extends RBFactory
     {
         $query_string = 'SELECT a.group_id, (SELECT `name` FROM contributorgroups WHERE id=a.group_id) as groupname, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblusers.' as b ON a.user_id = b.id WHERE a.blog_id='.$blogid;
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     // Check if user is the blog owner

@@ -21,7 +21,7 @@ class LayoutPost extends AbstractPostType
     {
         $blog = $this->response->getVar('blog');
         $imagesHTML = '';
-        $path = SERVER_ROOT ."/app/public/blogdata/{$blog['id']}/images";
+        $path = SERVER_ROOT ."/app/public/blogdata/{$blog->id}/images";
 
         if (!is_dir($path)) {
             return;
@@ -32,7 +32,7 @@ class LayoutPost extends AbstractPostType
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 
                 if ($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                    $imagesHTML .= "<img src='/blogdata/{$blog['id']}/images/{$file}' height='100' data-name='{$filename}' class='selectableimage' />";
+                    $imagesHTML .= "<img src='/blogdata/{$blog->id}/images/{$file}' height='100' data-name='{$filename}' class='selectableimage' />";
                 }
             }
             closedir($handle);

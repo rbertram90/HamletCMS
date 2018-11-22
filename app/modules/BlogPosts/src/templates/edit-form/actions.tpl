@@ -1,7 +1,7 @@
 <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
 {if $mode == 'edit'}
-    <input type="hidden" id="post_id" name="post_id" value="{$post.id}">
+    <input type="hidden" id="post_id" name="post_id" value="{$post->id}">
 {else}
     <input type="hidden" id="post_id" name="post_id" value="0">
 {/if}
@@ -22,8 +22,8 @@
   <div class="actions" style="text-align:center;">
     <a href="" class="large ui basic inverted teal button" id="view_post_link"><i class="eye icon"></i> View</a>
     <a href="" class="large ui basic inverted teal button" id="edit_post_link"><i class="pencil icon"></i> Amend</a>
-    <a href="/cms/posts/create/{$blog.id}" class="large ui basic inverted teal button"><i class="plus icon"></i> Create another</a>
-    <a href="/cms/posts/manage/{$blog.id}" class="large ui basic inverted teal button"><i class="copy outline icon"></i>Manage posts</a>
+    <a href="/cms/posts/create/{$blog->id}" class="large ui basic inverted teal button"><i class="plus icon"></i> Create another</a>
+    <a href="/cms/posts/manage/{$blog->id}" class="large ui basic inverted teal button"><i class="copy outline icon"></i>Manage posts</a>
   </div>
 </div>
 
@@ -39,7 +39,7 @@
             return '/cms/posts/cancelsave/' + postID;
         }
         else {
-            return '/cms/blog/overview/{$blog.id}';
+            return '/cms/blog/overview/{$blog->id}';
         }
     };
 
@@ -77,7 +77,7 @@
         event.preventDefault();
 
         var formData = {
-            blogID: {$blog.id},
+            blogID: {$blog->id},
             postID: parseInt($("#post_id").val()),
             title: $("#post_title").val(),
             summary: $("#summary").val(),
@@ -119,7 +119,7 @@
                 // window.location = '/cms/posts/manage/' + formData.blogID;
                 $('#post_save_success').modal('setting', 'closable', false).modal('show');
                 $('#edit_post_link').attr('href', '/cms/posts/edit/' + data.post.id);
-                $('#view_post_link').attr('href', '/blogs/{$blog.id}/posts/' + data.post.link);
+                $('#view_post_link').attr('href', '/blogs/{$blog->id}/posts/' + data.post.link);
             }
             enableForm();
 

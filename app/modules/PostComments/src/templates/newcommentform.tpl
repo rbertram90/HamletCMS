@@ -9,7 +9,7 @@
             </div>
 
             <div class="push-right">
-                <input type="hidden" name="fld_postid" value="{$post.id}">
+                <input type="hidden" name="fld_postid" value="{$post->id}">
                 <input type="submit" name="fld_submitcomment" class="ui button primary" value="Add">
             </div>
         </form>

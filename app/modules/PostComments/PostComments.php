@@ -79,7 +79,7 @@ class PostComments
         $tempResponse = new BlogCMSResponse();
         $tempResponse->setVar('blog', $args['blog']);
         $tempResponse->setVar('currentUser', BlogCMS::session()->currentUser);
-        $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']['id'], 5));
+        $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']->id, 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
 
@@ -104,7 +104,7 @@ class PostComments
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('comments.all', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Comments';
             $args['menu']->addLink($link);

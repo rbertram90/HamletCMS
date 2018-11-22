@@ -55,8 +55,8 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
     else {
         $host = '';
         $action = strtolower($request->getUrlParameter(1));
-        $pathPrefix = "/blogs/{$blog['id']}";
-        $blogDir = "/blogdata/{$blog['id']}";
+        $pathPrefix = "/blogs/{$blog->id}";
+        $blogDir = "/blogdata/{$blog->id}";
     }
 
     $session = BlogCMS::session();

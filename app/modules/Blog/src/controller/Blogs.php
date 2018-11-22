@@ -86,24 +86,24 @@ class Blogs extends GenericController
         // Add in extra information
         foreach($blogs as $key => $blog) {
             // The users who can contribute to this blog
-            $blogs[$key]['contributors'] = $this->modelContributors->getBlogContributors($blog['id']);
+            $blogs[$key]->contributors = $this->modelContributors->getBlogContributors($blog->id);
             
             // The lastest post for this blog
-            $blogs[$key]['latestpost'] = $this->modelPosts->getLatestPost($blog['id']);
+            $blogs[$key]->latestpost = $this->modelPosts->getLatestPost($blog->id);
             
             // Format the lastest post date for this blog
-            if(gettype($blogs[$key]['latestpost']) == 'array') {
-                $formatteddate = DateFormatter::formatFriendlyTime($blogs[$key]['latestpost']['timestamp']);
-                $blogs[$key]['latestpost']['timestamp'] = 'Last posted: '.$formatteddate;
+            if($blogs[$key]->latestpost) {
+                $formatteddate = DateFormatter::formatFriendlyTime($blogs[$key]->latestpost->timestamp);
+                $blogs[$key]->latestpost->timestamp = 'Last posted: '.$formatteddate;
             }
             else {
-                $lastposted = 'Currently Nothing Posted!';
+                $blogs[$key]->latestpost->timestamp = 'Nothing posted';
             }
 
             // Get all menu items
             $blogActions = new Menu('bloglist');
             BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
-            $blogs[$key]['actions'] = $blogActions->getLinks();
+            $blogs[$key]->actions = $blogActions->getLinks();
         }
         
         BlogCMS::$activeMenuLink = '/cms/blog';
@@ -149,6 +149,7 @@ class Blogs extends GenericController
         }
 
         $blog = $this->modelBlogs->getBlogById($blogID);
+
         $this->response->setVar('blog', $blog);
         
         // Get latest 5 posts
@@ -169,8 +170,8 @@ class Blogs extends GenericController
         BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
 
-        BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog['id'];
-        $this->response->setTitle('Dashboard - '.$blog['name']);
+        BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
+        $this->response->setTitle('Dashboard - '.$blog->name);
         $this->response->write('overview.tpl', 'Blog');
     }
     
@@ -239,7 +240,7 @@ class Blogs extends GenericController
         }
 
         // Only the owner can delete the blog
-        if ($blog['user_id'] != $currentUser['id']) {
+        if ($blog->user_id != $currentUser['id']) {
             $this->response->redirect('/cms', 'Access denied', 'error');
         }
 
@@ -255,13 +256,13 @@ class Blogs extends GenericController
     protected function runDeleteBlog($blog)
     {
         // Delete posts
-        $this->modelContributors->delete(['blog_id' => $blog['id']]);
-        $this->modelContributorGroups->delete(['blog_id' => $blog['id']]);
-        $this->modelPosts->delete(['blog_id' => $blog['id']]);
-        $this->modelComments->delete(['blog_id' => $blog['id']]);
-        $this->modelBlogs->delete(['id' => $blog['id']]);
+        $this->modelContributors->delete(['blog_id' => $blog->id]);
+        $this->modelContributorGroups->delete(['blog_id' => $blog->id]);
+        $this->modelPosts->delete(['blog_id' => $blog->id]);
+        $this->modelComments->delete(['blog_id' => $blog->id]);
+        $this->modelBlogs->delete(['id' => $blog->id]);
 
-        $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog['id']);
+        $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
 
         $this->response->redirect('/cms', 'Blog deleted', 'success');
 

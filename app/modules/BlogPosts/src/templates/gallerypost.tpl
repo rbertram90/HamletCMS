@@ -5,10 +5,10 @@
 {if isset($post)}
 
     {* We are editing the post *}
-    {$formAction = "/posts/{$blog['id']}/edit/{$post['id']}/submit"}
-    {$fieldTitle = $post['title']}
-    {$fieldContent = $post['content']}
-    {$fieldTags = str_replace("+"," ",$post['tags'])}
+    {$formAction = "/posts/{$blog->id}/edit/{$post->id}/submit"}
+    {$fieldTitle = $post->title}
+    {$fieldContent = $post->content}
+    {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
     {$mode = 'edit'}
     {$postdate_d = substr($post['timestamp'], 8, 2)}
@@ -19,7 +19,7 @@
 
 {else}
     {* This must be a new post *}
-    {$formAction = "/posts/{$blog['id']}/new/submit"}
+    {$formAction = "/posts/{$blog->id}/new/submit"}
     {$fieldTitle = ''}
     {$fieldContent = ''}
     {$fieldTags = ''}
@@ -33,8 +33,8 @@
 {/if}
 
 
-{viewCrumbtrail(array("/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
-{viewPageHeader("{$submitLabel} Blog Post <span style='color:green;'>+Gallery</span>", 'add_doc.png', "{$blog['name']}")}
+{viewCrumbtrail(array("/overview/{$blog->id}", "{$blog->name}"), 'New Post')}
+{viewPageHeader("{$submitLabel} Blog Post <span style='color:green;'>+Gallery</span>", 'add_doc.png', "{$blog->name}")}
 
 
 {if $mode=='edit' and array_key_exists('autosave', $post)}
@@ -94,7 +94,7 @@
         {/if}
         
         function addNewField() {ldelim}
-            $("#galleryNewImages").append('<div id="galleryimages' + fieldCount + 'holder"><div style="" class="galleryimage" id="galleryimages' + fieldCount + '"></div><input type="hidden" name="galleryimages[' + fieldCount + ']" value="" id="galleryimages' + fieldCount + 'path" class="galleryimagepath" /><button type="button" onclick="rbrtf_showWindow(\'/ajax/add_image?blogid={$blog.id}&elemid=galleryimages' + fieldCount + '&format=gallery\')" title="Insert Image">(*) Select Image</button><button type="button" onclick="removeImage(\'galleryimages' + fieldCount + 'holder\');">(-) Remove</button></div>');
+            $("#galleryNewImages").append('<div id="galleryimages' + fieldCount + 'holder"><div style="" class="galleryimage" id="galleryimages' + fieldCount + '"></div><input type="hidden" name="galleryimages[' + fieldCount + ']" value="" id="galleryimages' + fieldCount + 'path" class="galleryimagepath" /><button type="button" onclick="rbrtf_showWindow(\'/ajax/add_image?blogid={$blog->id}&elemid=galleryimages' + fieldCount + '&format=gallery\')" title="Insert Image">(*) Select Image</button><button type="button" onclick="removeImage(\'galleryimages' + fieldCount + 'holder\');">(-) Remove</button></div>');
             fieldCount++;
         {rdelim}
          
@@ -117,7 +117,7 @@
           <div id="galleryimages{$i}holder">
             <div style="background-image:url('{$galleryimage}');" class="galleryimage" id="galleryimages{$i}"></div>
             <input type="hidden" name="galleryimages[0]" value="{$galleryimage}" id="galleryimages{$i}path" class="galleryimagepath" />
-            <button type="button" onclick="rbrtf_showWindow('/ajax/add_image?blogid={$blog.id}&elemid=galleryimages{$i}&format=gallery')" title="Insert Image">(*) Change</button>
+            <button type="button" onclick="rbrtf_showWindow('/ajax/add_image?blogid={$blog->id}&elemid=galleryimages{$i}&format=gallery')" title="Insert Image">(*) Change</button>
             <button type="button" onclick="removeImage('galleryimages{$i}holder');">(-) Remove</button>
             {$i = $i + 1}
           </div>
@@ -134,7 +134,7 @@
     
     
     <label for="fld_postcontent">Content</label>
-    <button type="button" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog.id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
+    <button type="button" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog->id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
 
     <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
 
@@ -147,11 +147,11 @@
 
     <div class="push-right">
         {if $mode == 'edit'}
-          <input type="hidden" id="fld_postid" name="fld_postid" value="{$post.id}" />
+          <input type="hidden" id="fld_postid" name="fld_postid" value="{$post->id}" />
         {else}
           <input type="hidden" id="fld_postid" name="fld_postid" value="0" />
         {/if}
-        <input type="hidden" name="fld_blogid" id="fld_blogid" value="{$blog.id}" />
+        <input type="hidden" name="fld_blogid" id="fld_blogid" value="{$blog->id}" />
         
         {* Make sure this is changed for different post type!!! *}
         <input type="hidden" name="fld_posttype" value="gallery" />
@@ -264,7 +264,7 @@ $(document).ready(function ()
 
         // Check that the post title is unique
         var post_title = $("#fld_posttitle").val();
-        var blog_id = {$blog.id};
+        var blog_id = {$blog->id};
         var url = "/ajax/check_title?blog_id=" + blog_id + "&post_title=" + post_title;
 
         $.get(url, function(data)

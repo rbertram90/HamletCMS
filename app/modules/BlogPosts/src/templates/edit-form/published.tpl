@@ -8,6 +8,6 @@
 
 <script>
 {if $mode == 'edit'}
-    $("#draft").val({$post.draft});
+    $("#draft").val({$post->draft});
 {/if}
 </script>

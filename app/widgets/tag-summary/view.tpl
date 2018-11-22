@@ -11,7 +11,7 @@
 </div>
 
 <script>
-$.get('{$cms_url}/api/tags', { blogID: {$blog.id}, sort: '{$sort}' }, function(data) {
+$.get('{$cms_url}/api/tags', { blogID: {$blog->id}, sort: '{$sort}' }, function(data) {
     var list = "";
 
     for (var i = 0; i < data.length; i++) {
@@ -21,10 +21,10 @@ $.get('{$cms_url}/api/tags', { blogID: {$blog.id}, sort: '{$sort}' }, function(d
         if (tag.count < {$lowerlimit}) continue;
 
         if ('{$display}' == 'list') {
-            list += '<div class="item"><a href="/blogs/{$blog.id}/tags/' + tag.text + '">' + tag.text  +'</a></div>';
+            list += '<div class="item"><a href="/blogs/{$blog->id}/tags/' + tag.text + '">' + tag.text  +'</a></div>';
         }
         else {
-            list += '<a href="/blogs/{$blog.id}/tags/' + tag.text + '" class="ui label">' + tag.text + '<div class="detail">' + tag.count +'</div></a>';
+            list += '<a href="/blogs/{$blog->id}/tags/' + tag.text + '" class="ui label">' + tag.text + '<div class="detail">' + tag.count +'</div></a>';
         }
     }
 

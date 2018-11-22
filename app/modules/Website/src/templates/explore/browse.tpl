@@ -50,7 +50,7 @@
                 {else}
                     {foreach from=$blogs item=blog}
                         <div class="ui segment">
-                            <a href='/blogs/{$blog.id}'>{$blog.name}</a>
+                            <a href='/blogs/{$blog->id}'>{$blog->name}</a>
                         </div>
                     {/foreach}
                 {/if}

@@ -27,6 +27,7 @@ class ContributorGroups extends RBFactory
             'data'        => 'string',
             'super'       => 'boolean',
         ];
+        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\ContributorGroup';
 
         parent::__construct($modelFactory);
     }
@@ -34,7 +35,7 @@ class ContributorGroups extends RBFactory
     public function getGroupById($groupID)
     {
         $group = $this->get('*', ['id' => $groupID], '', '', false);
-        $group['permissions'] = JSONHelper::JSONtoArray($group['data']);
+        $group->permissions = JSONHelper::JSONtoArray($group->data);
         return $group;
     }
 

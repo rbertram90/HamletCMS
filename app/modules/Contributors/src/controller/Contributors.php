@@ -50,7 +50,7 @@ class Contributors extends GenericController
         }
 
         $this->checkUserAccess();
-        BlogCMS::$activeMenuLink = '/cms/contributors/manage/'. $this->blog['id'];
+        BlogCMS::$activeMenuLink = '/cms/contributors/manage/'. $this->blog->id;
     }
 
     /**
@@ -63,7 +63,7 @@ class Contributors extends GenericController
         if (!$this->blog) {
             $access = false;
         }
-        elseif (!$this->modelPermissions->userHasPermission('manage_contributors', $this->blog['id'])) {
+        elseif (!$this->modelPermissions->userHasPermission('manage_contributors', $this->blog->id)) {
             $access = false;
         }
 
@@ -77,18 +77,18 @@ class Contributors extends GenericController
      */
     public function manage()
     {
-        $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]);
+        $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog->id]);
 
         if (count($groups) == 0) {
-            $this->modelGroups->createDefaultGroups($this->blog['id']);
-            $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]);
+            $this->modelGroups->createDefaultGroups($this->blog->id);
+            $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog->id]);
         }
 
         $this->response->setVar('groups', $groups);
-        $this->response->setVar('contributors', $this->model->getBlogContributors($this->blog['id']));
-        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog['id'])); // Get the number of post each contributor has made
+        $this->response->setVar('contributors', $this->model->getBlogContributors($this->blog->id));
+        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog->id)); // Get the number of post each contributor has made
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Manage Blog Contributors - '.$this->blog['name']);
+        $this->response->setTitle('Manage Blog Contributors - '. $this->blog->name);
         $this->response->write('manage.tpl', 'Contributors');
     }
     
@@ -140,14 +140,14 @@ class Contributors extends GenericController
             $user = $this->modelUsers->get('id', ['email' => $accountData['email']], '', '', false);
         }
         else {
-            $this->response->redirect('/cms/contributors/create/' . $blog['id'], 'Error creating account', 'error');
+            $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error creating account', 'error');
         }
 
-        if (!$this->model->addBlogContributor($user['id'], 'p', $blog['id'])) {
-            $this->response->redirect('/cms/contributors/create/' . $blog['id'], 'Error assigning contributor', 'error');
+        if (!$this->model->addBlogContributor($user['id'], 'p', $blog->id)) {
+            $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error assigning contributor', 'error');
         }
 
-        $this->response->redirect('/cms/contributors/manage/' . $blog['id'], 'Contributor created', 'success');
+        $this->response->redirect('/cms/contributors/manage/' . $blog->id, 'Contributor created', 'success');
     }
     
     /**
@@ -167,7 +167,8 @@ class Contributors extends GenericController
 
         $this->response->setVar('contributor', $user);
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('groups', $this->modelGroups->get('*', ['blog_id' => $this->blog['id']]));
+        $this->response->setTitle('Edit contributor - '. $user->name);
+        $this->response->setVar('groups', $this->modelGroups->get('*', ['blog_id' => $this->blog->id]));
         $this->response->write('edit.tpl', 'Contributors');
     }
     
@@ -181,17 +182,17 @@ class Contributors extends GenericController
 
         // Check group exists and belongs to this blog
         if (!$group = $this->modelGroups->getGroupById($groupID)) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
-        if ($group['blog_id'] != $this->blog['id']) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group not found', 'error');
+        if ($group['blog_id'] != $this->blog->id) {
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
 
-        if($this->model->update(['user_id' => $contributor['id'], 'blog_id' => $this->blog['id']], ['group_id' => $group['id']])) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Update successful', 'success');
+        if($this->model->update(['user_id' => $contributor['id'], 'blog_id' => $this->blog->id], ['group_id' => $group['id']])) {
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Update successful', 'success');
         }
         else {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Could not update contributor', 'error');
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Could not update contributor', 'error');
         }
     }
 
@@ -207,11 +208,11 @@ class Contributors extends GenericController
             $this->response->redirect('/cms', 'Unable to find contributor', 'error');
         }
 
-        if ($this->model->delete(['blog_id' => $this->blog['id'], 'user_id' => $contributorID])) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Contributor removed', 'success');
+        if ($this->model->delete(['blog_id' => $this->blog->id, 'user_id' => $contributorID])) {
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Contributor removed', 'success');
         }
         else {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Unable to remove contributor', 'error');
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Unable to remove contributor', 'error');
         }
     }
 
@@ -267,7 +268,7 @@ class Contributors extends GenericController
         }
 
         $insert = $this->modelGroups->insert([
-            'blog_id'     => $this->blog['id'],
+            'blog_id'     => $this->blog->id,
             'name'        => $this->request->getString('fld_name'),
             'description' => $this->request->getString('fld_description'),
             'data'        => JSONHelper::arrayToJSON($data),
@@ -275,7 +276,7 @@ class Contributors extends GenericController
         ]);
 
         if ($insert) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group created', 'success');
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group created', 'success');
         }
         else {
             $this->response->redirect('/cms', 'Could not insert to database', 'error');
@@ -293,11 +294,11 @@ class Contributors extends GenericController
             $this->response->redirect('/cms', 'Group not found', 'error');
         }
 
-        $this->blog = $this->modelBlogs->getBlogById($group['blog_id']);
+        $this->blog = $this->modelBlogs->getBlogById($group->blog_id);
 
         $this->checkUserAccess();
 
-        BlogCMS::$blogID = $this->blog['id'];
+        BlogCMS::$blogID = $this->blog->id;
 
         if ($this->request->method() == 'POST') {
             return $this->runEditGroup($group);
@@ -346,7 +347,7 @@ class Contributors extends GenericController
         ]);
 
         if ($update) {
-            $this->response->redirect('/cms/contributors/manage/' . $this->blog['id'], 'Group updated', 'success');
+            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group updated', 'success');
         }
         else {
             $this->response->redirect('/cms', 'Could not update database', 'error');

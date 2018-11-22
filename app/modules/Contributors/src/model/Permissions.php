@@ -10,12 +10,16 @@ class Permissions extends RBFactory
 {
     protected $db;
 
+    protected $subClass;
+
     public function __construct($modelFactory)
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'contributors';
+        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\Contributor';
 
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
     }
 
     /**
@@ -49,7 +53,7 @@ class Permissions extends RBFactory
 
         if (!$groupQuery) return false;
 
-        return $groupQuery['group_id'];
+        return $groupQuery->group_id;
     }
 
     /**
@@ -63,15 +67,12 @@ class Permissions extends RBFactory
 
         if (!$groupID = $this->getUserGroup($blogID)) return false;
 
-        $sql = sprintf('SELECT `super`, `data` FROM `contributorgroups` WHERE id=%d', $groupID);
+        $group = $this->modelContributorGroups->getGroupById($groupID);
     
-        $groupQuery = $this->db->query($sql);
-        $groupData = $groupQuery->fetch(\PDO::FETCH_ASSOC);
-
         // Override for all permissions
-        if ($groupData['super'] == 1) return true;
+        if ($group->super == 1) return true;
 
-        $userPermissions = JSONHelper::JSONtoArray($group['data']);
+        $userPermissions = JSONHelper::JSONtoArray($group->data);
         $userPermissions['is_contributor'] = $this->modelContributors->isBlogContributor($userID, $blogID);
         
         return array_key_exists($permission, $userPermissions) && $userPermissions[$permission] == 1;

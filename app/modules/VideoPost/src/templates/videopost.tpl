@@ -1,17 +1,17 @@
 {if isset($post)}
     {* We are editing the post *}
-    {$formAction = "/cms/posts/edit/{$post['id']}"}
-    {$fieldTitle = $post['title']}
-    {$fieldContent = $post['content']}
-    {$teaserImage = $post['teaser_image']}
-    {$fieldVideoID = $post['videoid']}
-    {$fieldTags = str_replace("+"," ",$post['tags'])}
+    {$formAction = "/cms/posts/edit/{$post->id}"}
+    {$fieldTitle = $post->title}
+    {$fieldContent = $post->content}
+    {$teaserImage = $post->teaser_image}
+    {$fieldVideoID = $post->videoid}
+    {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
-    {$postdate = date('m/d/Y g:ia', strtotime($post['timestamp']))}
+    {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
     {$mode = 'edit'}
 {else}
     {* This must be a new post *}
-    {$formAction = "/cms/posts/create/{$blog.id}/video"}
+    {$formAction = "/cms/posts/create/{$blog->id}/video"}
     {$fieldTitle = ''}
     {$fieldContent = ''}
     {$teaserImage = ''}
@@ -26,13 +26,13 @@
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'New Post')}
         </div>
     </div>
     
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog['name']}")}
+            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog->name}")}
 
             {include 'edit-form/autosave.tpl'}
         </div>
@@ -100,7 +100,7 @@ $(document).ready(function () {
     $('.ui.dropdown').dropdown();
 
     $("#upload_post_image").click(function() {
-        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN }, function() {
+        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN }, function() {
             $(this).modal('show');
         });
     });

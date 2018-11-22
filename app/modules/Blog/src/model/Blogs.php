@@ -43,6 +43,7 @@ class Blogs extends RBFactory
         $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
+        $this->subClass = '\\rbwebdesigns\\blogcms\\Blog\\Blog';
         $this->fields = [
             'id'          => 'number',
             'name'        => 'string',
@@ -64,7 +65,7 @@ class Blogs extends RBFactory
      */
     public function getBlogById($blogID)
     {
-        return $this->db->selectSingleRow($this->tableName, array_keys($this->fields), ['id' => $blogID]);
+        return $this->get(array_keys($this->fields), ['id' => $blogID], null, null, false);
     }
     
     /**

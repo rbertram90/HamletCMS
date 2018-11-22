@@ -24,32 +24,32 @@
     <div class="two fields">
         <div class="field">
             <label for="fld_firstname">First Name</label>
-            <input type="text" name="fld_firstname" value="{$user.name}" onkeyup="validate(this,{ldelim}fieldlength:2{rdelim})">
+            <input type="text" name="fld_firstname" value="{$user->name}" onkeyup="validate(this,{ldelim}fieldlength:2{rdelim})">
         </div>
         
         <div class="field">
             <label for="fld_surname">Surname</label>
-            <input type="text" name="fld_surname" value="{$user.surname}" onkeyup="validate(this,{ldelim}fieldlength:2{rdelim})">
+            <input type="text" name="fld_surname" value="{$user->surname}" onkeyup="validate(this,{ldelim}fieldlength:2{rdelim})">
         </div>
     </div>
     <div class="two fields">
         <div class="field">
             <label for="fld_username">Username</label>
-            <input type="text" name="fld_username" value="{$user.username}">
+            <input type="text" name="fld_username" value="{$user->username}">
         </div>
 
         <div class="field">
             <label for="fld_email">Email</label>
-            <input type="text" name="fld_email" onkeyup="validate(this,{ldelim}email:true{rdelim}})" value="{$user.email}" />
+            <input type="text" name="fld_email" onkeyup="validate(this,{ldelim}email:true{rdelim}})" value="{$user->email}" />
         </div>
     </div>
     
     <div class="field">
         <label for="fld_description">Description</label>
-        <textarea name="fld_description">{$user.description}</textarea>
+        <textarea name="fld_description">{$user->description}</textarea>
     </div>
     
-    {$dob = getdate(strtotime($user['dob']))}
+    {$dob = getdate(strtotime($user->dob))}
 
     <div class="inline fields">
         <label for='fld_dob_day'>Date of Birth</label>
@@ -92,7 +92,7 @@
         <div class="field">
             <label for="fld_gender">Gender</label>
             <select name="fld_gender" class="ui dropdown">
-                {if $user.gender == 'Male'}
+                {if $user->gender == 'Male'}
                     <option selected>Male</option>
                     <option>Female</option>
                 {else}
@@ -104,7 +104,7 @@
 
         <div class="field">
             <label for="fld_location">Location</label>
-            <input type="text" name="fld_location" value="{$user.location}">
+            <input type="text" name="fld_location" value="{$user->location}">
         </div>
     </div>
 

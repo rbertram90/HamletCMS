@@ -46,11 +46,11 @@ class Files extends GenericController
         if(!is_array($this->blog)) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelBlogs->canWrite($this->blog['id'])) {
+        elseif(!$this->modelBlogs->canWrite($this->blog->id)) {
             $response->redirect('/cms', 'Access denied', 'error');
         }
 
-        $imagesDirectory = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/images';
+        $imagesDirectory = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/images';
         $images = array();
         
         if(is_dir($imagesDirectory)) {
@@ -68,7 +68,7 @@ class Files extends GenericController
                 }
             }
         }
-        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $this->blog['id'];
+        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $this->blog->id;
         
         $response->setVar('blog', $this->blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
@@ -76,7 +76,7 @@ class Files extends GenericController
 
         $config = BlogCMS::config();
         $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);        
-        $response->setTitle('Manage Files - ' . $this->blog['name']);
+        $response->setTitle('Manage Files - ' . $this->blog->name);
         $response->write('manage.tpl', 'Files');
     }
 
@@ -100,12 +100,12 @@ class Files extends GenericController
         $filename = str_replace('_', '.', $request->getUrlParameter(2));
         
         if(!file_exists($imagesDirectory . '/' . $filename)) {
-            $response->redirect('/cms/files/manage' . $blog['id'], 'Could not find blog', 'error');
+            $response->redirect('/cms/files/manage' . $blog->id, 'Could not find blog', 'error');
         }
         
         unlink($imagesDirectory . '/' . $filename);
         
-        $response->redirect('/cms/files/manage/' . $blog['id'], 'File deleted', 'success');
+        $response->redirect('/cms/files/manage/' . $blog->id, 'File deleted', 'success');
     }
 
     /**
@@ -155,7 +155,7 @@ class Files extends GenericController
             die("Unable to continue with upload: ".$_FILES["file"]["error"]."<br />");
         }
         
-        $filepath = SERVER_PATH_BLOGS . "/" . $blog['id'];
+        $filepath = SERVER_PATH_BLOGS ."/". $blog->id;
         
         if(!is_dir($filepath.'/images')) {
             // No Images directory exists
@@ -195,7 +195,7 @@ class Files extends GenericController
         // Append or replace
         $returnReplace = $request->getInt('replace', 0);
 
-        $path = SERVER_PUBLIC_PATH. "/blogdata/{$this->blog['id']}/images";
+        $path = SERVER_PUBLIC_PATH. "/blogdata/{$this->blog->id}/images";
 
         $request->isAjax = true;
         $response->setVar('blog', $this->blog);
@@ -210,9 +210,8 @@ class Files extends GenericController
             if ($handle = opendir($path)) {
                 while (false !== ($file = readdir($handle))) {
                     $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
-        
                     if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                        $imagesHTML .= '<img src="/blogdata/'.$this->blog['id'].'/images/'.$file.'" height="100" width="" class="selectableimage" />';
+                        $imagesHTML .= '<img src="/blogdata/'. $this->blog->id .'/images/'. $file .'" height="100" width="" class="selectableimage">';
                     }
                 }
                 closedir($handle);

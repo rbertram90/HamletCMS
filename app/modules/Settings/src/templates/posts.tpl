@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}, "/cms/settings/menu/{$blog.id}", 'Settings'), 'Post settings')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Post settings')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Post settings', 'sliders horizontal', {$blog.name})}
+            {viewPageHeader('Post settings', 'sliders horizontal', {$blog->name})}
 
             <form method="POST" class="ui form">
                 

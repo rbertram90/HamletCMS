@@ -4,13 +4,13 @@
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog.name}"), 'Manage Posts')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Manage Posts')}
         </div>
     </div>
     
     <div class="two column row">
         <div class="column">
-            {viewPageHeader('Manage Posts', 'copy outline', "{$blog.name}")}
+            {viewPageHeader('Manage Posts', 'copy outline', "{$blog->name}")}
         </div>
         <div class="column">
             <div class="ui form">
@@ -113,7 +113,7 @@
 
         $.get("/api/posts",
             {
-                blogID:         {$blog.id},
+                blogID:         {$blog->id},
                 start:          pagenum,
                 limit:          numtoshow,
                 sort:           sortby,
@@ -288,7 +288,7 @@
             type: 'post',
             data: {
                 postID: postID,
-                blogID: {$blog.id}
+                blogID: {$blog->id}
             }
         }).done(function (data, textStatus, jqXHR) {
             $("#delete_post_modal").modal('hide');

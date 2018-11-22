@@ -87,39 +87,39 @@ class Posts extends GenericController
         if (!BlogCMS::$blogID) {
             $postID = $this->request->getUrlParameter(1);
             $this->post = $this->model->getPostById($postID);
-            BlogCMS::$blogID = $this->post['blog_id'];
+            BlogCMS::$blogID = $this->post->blog_id;
         }
 
         $this->blog = BlogCMS::getActiveBlog();
-        BlogCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog['id'];
+        BlogCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog->id;
 
         // Check the user is a contributor of the blog to begin with
-        if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog['id'])) {
+        if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog->id)) {
             $access = false;
         }
 
         // Check action specific permissions
         switch ($action) {
             case 'edit':
-                if ($this->post['author_id'] != $currentUser['id']) {
-                    $access = $this->modelPermissions->userHasPermission('edit_all_posts', $this->blog['id']);
+                if ($this->post->author_id != $currentUser['id']) {
+                    $access = $this->modelPermissions->userHasPermission('edit_all_posts', $this->blog->id);
                 }
                 elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog['id']);
+                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog->id);
                 }
                 break;
 
             case 'create':
                 if ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog['id']);
+                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog->id);
                 }
                 else {
-                    $access = $this->modelPermissions->userHasPermission('create_posts', $this->blog['id']);
+                    $access = $this->modelPermissions->userHasPermission('create_posts', $this->blog->id);
                 }
                 break;
 
             case 'delete':
-                $access = $this->modelPermissions->userHasPermission('delete_posts', $this->blog['id']);
+                $access = $this->modelPermissions->userHasPermission('delete_posts', $this->blog->id);
                 break;
         }
 
@@ -135,7 +135,7 @@ class Posts extends GenericController
     public function manage()
     {
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Manage Posts - ' . $this->blog['name']);
+        $this->response->setTitle('Manage Posts - ' . $this->blog->name);
         $this->response->addScript('/js/showUserCard.js');
         $this->response->write('manage.tpl', 'BlogPosts');
     }
@@ -147,44 +147,13 @@ class Posts extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->runCreatePost();
 
+        $newPostMenu = new Menu('create_post');
+        BlogCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
+
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('New Post');
-        
-        switch ($this->request->getUrlParameter(2)) {
-            /*
-            case 'layout':
-
-            $imagesHTML = '';
-            $path = SERVER_ROOT . "/app/public/blogdata/" . $this->blog['id'] . "/images";
-
-            if (is_dir($path)) {
-                if ($handle = opendir($path)) {
-                    while (false !== ($file = readdir($handle))) {
-                        $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
-                        $filename = pathinfo($file, PATHINFO_FILENAME);
-            
-                        if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                            $imagesHTML .= '<img src="/blogdata/'. $this->blog['id'] .'/images/'. $file .'" height="100" width="" data-name="'. $filename .'" class="selectableimage" />';
-                        }
-                    }
-                    closedir($handle);
-                }
-            }
-    
-            $this->response->setVar('imagesOutput', $imagesHTML);
-            $this->response->addScript('/js/layoutPost.js');
-            $this->response->addStylesheet('/css/layoutPost.css');
-            $this->response->write('layoutpost.tpl', 'BlogPosts');
-            break;
-            */
-            default:
-            $newPostMenu = new Menu('create_post');
-            BlogCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
-
-            $this->response->setVar('menu', $newPostMenu->getLinks());
-            $this->response->write('newpostmenu.tpl', 'BlogPosts');
-            break;
-        }
+        $this->response->setVar('menu', $newPostMenu->getLinks());
+        $this->response->write('newpostmenu.tpl', 'BlogPosts');
     }
     
     /**
@@ -193,7 +162,7 @@ class Posts extends GenericController
     public function edit()
     {
         // Now passing this on individual modules
-        BlogCMS::runHook('onViewEditPost', ['type' => $this->post['type']]);
+        BlogCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
 
         /*
         if ($this->post['type'] == 'gallery') {
@@ -226,14 +195,14 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $this->model->removeAutosave($this->post['id']);
+        $this->model->removeAutosave($this->post->id);
 
         if ($this->post['initialautosave'] == 1) {
             // Delete post
-            $this->model->delete(['id' => $this->post['id']]);
+            $this->model->delete(['id' => $this->post->id]);
         }
 
-        $this->response->redirect('/cms/posts/manage/' . $this->blog['id']);
+        $this->response->redirect('/cms/posts/manage/' . $this->blog->id);
     }
         
 }

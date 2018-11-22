@@ -121,7 +121,7 @@ EOD;
 ?>
 
 <div class="crumbtrail">
-    <a href="/">Home</a><a href="/cms/blog/overview/<?=$blog['id'] ?>"><?=$blog['name']?></a><a href="/cms/settings/menu/<?=$blog['id'] ?>">Settings</a><a>Blog Design</a>
+    <a href="/">Home</a><a href="/cms/blog/overview/<?=$blog->id ?>"><?=$blog->name?></a><a href="/cms/settings/menu/<?=$blog->id ?>">Settings</a><a>Blog Design</a>
 </div>
 
 <img src="/resources/icons/64/paintbrush.png" class="settings-icon" /><h1 class="settings-title">Customise Blog Design<br><span class="subtitle" style="color: red;">Incomplete feature</span></h1>
@@ -165,10 +165,10 @@ $(document).ready(function() {
 <div style="clear:right;"></div>
 
 <div id="designoptions">
-    <form action="/cms/settings/blogdesigner/<?=$blog['id']?>" method="post">
+    <form action="/cms/settings/blogdesigner/<?=$blog->id?>" method="post">
 <?php
     // Open JSON file here
-    (array) $design_settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $blog['id'] . '/template_config.json');
+    (array) $design_settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $blog->id . '/template_config.json');
 
     // loop through sections (head,posts,footer...)
     foreach($design_settings as $key => $section):
@@ -223,4 +223,4 @@ var updatePreview = function() {
 window.updatePreview = updatePreview;
 </script>
 
-<iframe id="previewwindow" name="previewwindow" src="/blogs/<?=$blog['id']?>"></iframe>
+<iframe id="previewwindow" name="previewwindow" src="/blogs/<?=$blog->id?>"></iframe>
