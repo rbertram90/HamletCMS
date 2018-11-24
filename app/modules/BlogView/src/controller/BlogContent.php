@@ -681,14 +681,14 @@ class BlogContent
         // Record the view
         $this->addView($post->id);
 
+        $this->generatePostTemplate($post, null, 'full');
+
         $response->addScript('/resources/ace/ace.js');
         $response->setVar('mdContent', $mdContent);
         $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
         $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
         $response->setTitle($post->title);
         $response->write('posts/singlepost.tpl', 'BlogView');
-
-        $this->generatePostTemplate($post, null, 'full');
     }
     
     /**

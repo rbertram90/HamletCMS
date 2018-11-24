@@ -113,7 +113,7 @@ class LayoutPost
                 }
 
                 if ($column['codeContent']) {
-                    $rOut.= '<pre id="ace_view_'. $c .'" style="width: 100%;">'. $column['codeContent'] .'</pre>';
+                    $rOut.= '<pre id="ace_view_'. $c .'" style="width: 100%; margin: 0;">'. $column['codeContent'] .'</pre>';
                     $rOut.= '<script>
                         var ace_editor = ace.edit("ace_view_'. $c .'");
                         ace_editor.setTheme("ace/theme/'. $column['codeTheme'] .'");

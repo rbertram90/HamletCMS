@@ -30,7 +30,7 @@
                 {/if}
                 
                 {if !$header_hide_description}
-                    <h2>{$blog.description}</h2>
+                    <h2>{$blog->description}</h2>
                 {/if}
                 
                 {if isset($widgets.header)}
