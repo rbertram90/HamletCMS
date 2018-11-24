@@ -2,7 +2,7 @@
     <h2>Add Comment</h2>
 
     <div class="ui form">
-        <form action="/blogs/{$post.blog_id}/addcomment" method="POST">
+        <form action="/blogs/{$post->blog_id}/addcomment" method="POST">
             
             <div class="field">
                 <textarea name="fld_comment" rows="2"></textarea>

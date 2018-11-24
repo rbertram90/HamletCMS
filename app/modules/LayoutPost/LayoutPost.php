@@ -5,7 +5,8 @@ use rbwebdesigns\core\JSONHelper;
 
 class LayoutPost
 {
-    public function onViewEditPost($args) {
+    public function onViewEditPost($args)
+    {
         if ($args['type'] != 'layout') return;
 
         $controller = new LayoutPost\controller\LayoutPost();
@@ -109,6 +110,23 @@ class LayoutPost
 
                 if ($column['textContent']) {
                     $rOut.= nl2br($column['textContent']);
+                }
+
+                if ($column['codeContent']) {
+                    $rOut.= '<pre id="ace_view_'. $c .'" style="width: 100%;">'. $column['codeContent'] .'</pre>';
+                    $rOut.= '<script>
+                        var ace_editor = ace.edit("ace_view_'. $c .'");
+                        ace_editor.setTheme("ace/theme/'. $column['codeTheme'] .'");
+                        ace_editor.session.setMode("ace/mode/'. $column['codeLanguage'] .'");
+                        ace_editor.setReadOnly(true);
+
+                        var newHeight = ace_editor.getSession().getScreenLength()
+                                  * ace_editor.renderer.lineHeight
+                                  + ace_editor.renderer.scrollBar.getWidth();
+
+                        $("#ace_view_'. $c .'").height(newHeight.toString() + "px");
+                        ace_editor.resize();
+                    </script>';
                 }
 
                 $rOut.= "</div>";

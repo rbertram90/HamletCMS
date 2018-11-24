@@ -30,6 +30,7 @@ LayoutEditor.prototype.loadJSON = function() {
     else {
         this.definition = this.defaultDefinition;
     }
+    console.log(this.definition);
 };
 
 LayoutEditor.prototype.setOutputElement = function (elem) {
@@ -120,6 +121,9 @@ LayoutEditor.prototype.generateHTML = function() {
             if (column.image) {
                 rOut += '<img src="/blogdata/' + this.blogID + '/images/' + column.image + '" alt="' + column.image + '">';
             }
+            if (column.codeContent) {
+                rOut += column.codeLanguage;
+            }
 
             rOut += "</div></div>"
         }
@@ -160,30 +164,51 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
     var definition = window.layouteditor.definition.rows[rowIndex].columns[columnIndex];
 
     var modal = $('#edit_column_form');
-    
-    modal.find('.field').show();
+    modal.find('.field').hide();
+    modal.find("#type").parent().show();
+
     switch (definition.contentType) {
         case 'text':
-            modal.find("#selected_image").parent().hide();
-            modal.find("#min_height").parent().hide();
+            modal.find("#text_content").parent().show();
+            modal.find("#background_colour").parent().show();
+            modal.find("#font_colour").parent().show();
 
             modal.find('#text_content').val(definition.textContent);
             modal.find('#background_colour').val(definition.backgroundColour);
             modal.find('#font_colour').val(definition.fontColour);
+            break;
 
-        break;
         case 'image':
-            modal.find("#text_content").parent().hide();
-            modal.find("#background_colour").parent().hide();
-            modal.find("#font_colour").parent().hide();
+            modal.find("#selected_image")
+                .val(definition.image)
+                .parent()
+                .show();
 
-            modal.find('#selected_image').val(definition.image);
-            modal.find('#min_height').val(definition.minimumHeight);
+            modal.find("#min_height")
+                .val(definition.minimumHeight)
+                .parent()
+                .show();
+
             modal.find('.selectableimage[data-name="' + definition.image + '"]').css('border', '3px solid #0c0');
-        break;
-        case '':
-            modal.find('.field').hide();
-        break;
+            break;
+
+        case 'code':
+            modal.find("#code_content")
+                .parent()
+                .show();
+            ace_editor.setValue(definition.codeContent);
+
+            modal.find("#code_theme")
+                .val(definition.codeTheme)
+                .trigger('change')
+                .parent()
+                .show();
+            modal.find("#code_lang")
+                .val(definition.codeLanguage)
+                .trigger('change')
+                .parent()
+                .show();
+            break;
     }
 
     modal.find('#type').val(definition.contentType).parent().show();
@@ -209,7 +234,7 @@ LayoutEditor.prototype.saveColumnData = function(event) {
                 'backgroundColour': form.find('#background_colour').val(),
                 'fontColour': form.find('#font_colour').val()
             };
-        break;
+            break;
 
         case 'image':
             window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
@@ -217,7 +242,16 @@ LayoutEditor.prototype.saveColumnData = function(event) {
                 'image': form.find('#selected_image').val(),
                 'minimumHeight': form.find('#min_height').val()
             };
-        break;
+            break;
+
+        case 'code':
+            window.layouteditor.definition.rows[rowIndex].columns[columnIndex] = {
+                'contentType': form.find('#type').val(),
+                'codeContent': ace_editor.getValue(),
+                'codeLanguage': form.find('#code_lang').val(),
+                'codeTheme': form.find('#code_theme').val()
+            };
+            break;
     }
 
 

@@ -6,6 +6,10 @@ use rbwebdesigns\blogcms\BlogPosts\controller\AbstractPostType;
 
 class LayoutPost extends AbstractPostType
 {
+
+    /**
+     * View create page
+     */
     public function create()
     {
         parent::create();
@@ -13,10 +17,14 @@ class LayoutPost extends AbstractPostType
         $this->response->setVar('imagesOutput', $this->getImagesOutput());
         $this->response->addScript('/js/layoutPost.js');
         $this->response->addStylesheet('/css/layoutPost.css');
+        $this->response->addScript('/resources/ace/ace.js');
 
         $this->response->write('layoutpost.tpl', 'LayoutPost');
     }
 
+    /**
+     * List all the images
+     */
     protected function getImagesOutput()
     {
         $blog = $this->response->getVar('blog');
@@ -41,6 +49,9 @@ class LayoutPost extends AbstractPostType
         return $imagesHTML;
     }
 
+    /**
+     * View edit page
+     */
     public function edit()
     {
         parent::edit();
@@ -48,6 +59,7 @@ class LayoutPost extends AbstractPostType
         $this->response->setVar('imagesOutput', $this->getImagesOutput());
         $this->response->addScript('/js/layoutPost.js');
         $this->response->addStylesheet('/css/layoutPost.css');
+        $this->response->addScript('/resources/ace/ace.js');
         $this->response->write('layoutpost.tpl', 'LayoutPost');
     }
 }

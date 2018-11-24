@@ -20,7 +20,7 @@
         
         {* @todo create the gallery post type module! *}
         {if $post->type == 'gallery'}
-            <div id='galleria_{$arrayPost['id']}'>
+            <div id='galleria_{$arrayPost->id}'>
             $images = explode(',', $arrayPost['gallery_imagelist']);
             foreach($images as $path)
             {
@@ -32,10 +32,10 @@
             </div>
 
             <style>#galleria_{$post->id} { width: 100%; height: 400px; background: #000 }</style>
-            <script>Galleria.run("#galleria_'.$arrayPost['id'].'");</script>
+            <script>Galleria.run("#galleria_'.$arrayPost->id.'");</script>
         {/if}
         
-        {$post.trimmedContent}
+        {$post->trimmedContent}
 
     </main>
     
@@ -56,7 +56,7 @@
         {/if}
 
         {if $showsocialicons}
-            {$encodedTitle = rawurlencode($post.title)}
+            {$encodedTitle = rawurlencode($post->title)}
             {$encodedUrl   = rawurlencode("/blog/{$blog->id}/posts/{$post->link}")}
             {$unencodedUrl = "/blog/{$blog->id}/posts/{$post->link}"}
             <div class="social-icons">

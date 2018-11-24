@@ -106,7 +106,7 @@ class Posts extends RBFactory
         $result = $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp ASC', '1');
         
         // Only Return Result if the post is not scheduled
-        if($result['timestamp'] < date('Y-m-d H:i:s')) return $result;
+        if($result->timestamp < date('Y-m-d H:i:s')) return $result;
     }
     
     /**

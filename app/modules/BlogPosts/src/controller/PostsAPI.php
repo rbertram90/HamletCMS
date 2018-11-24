@@ -124,7 +124,7 @@ class PostsAPI extends GenericController
 
         // We've already verified that the user has access to post for this
         // blog so check the blog ID listed for this post is a match
-        if ($post['blog_id'] != $blogID) {
+        if ($post->blog_id != $blogID) {
             $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
             $this->response->code(406);
             return;
@@ -137,12 +137,12 @@ class PostsAPI extends GenericController
             $postdate = date("Y-m-d H:i:00", $posttime);
         }
         else {
-            $postdate = $post['timestamp']; // Keep to original
+            $postdate = $post->timestamp; // Keep to original
         }
         
         $updates = [
             'id'              => $postID,
-            'type'            => $post['type'],
+            'type'            => $post->type,
             'title'           => $this->request->getString('title'),
             'summary'         => $this->request->getString('summary'),
             'content'         => $this->request->get('content'),
@@ -166,7 +166,7 @@ class PostsAPI extends GenericController
         if ($this->model->count(['blog_id' => $blogID, 'link' => $url]) > 0) {
 
             $matchingPost = $this->model->getPostByURL($url, $blogID);
-            if ($matchingPost['id'] != $postID) {
+            if ($matchingPost->id != $postID) {
                 $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
                 $this->response->code(400);
                 return;
@@ -176,13 +176,13 @@ class PostsAPI extends GenericController
         // Process custom fields for different post types
         BlogCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
 
-        $this->model->updatePost($post['id'], $updates);
-        $this->model->removeAutosave($post['id']);
+        $this->model->updatePost($post->id, $updates);
+        $this->model->removeAutosave($post->id);
         
         // Re-fetch post data - will have updated URL alias
         $post = $this->model->getPostByURL($url, $blogID);
 
-        BlogCMS::runHook('onPostUpdated', ['post' => array_merge($post, $updates)]);
+        BlogCMS::runHook('onPostUpdated', ['post' => $post]);
 
         $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
     }

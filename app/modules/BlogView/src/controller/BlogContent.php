@@ -181,7 +181,7 @@ class BlogContent
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
         $teaserResponse->setVar('userAuthenticated', $globalResponse->getVar('user_is_logged_in'));
 
-        $post['after'] = [];
+        $post->after = [];
 
         BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
 
@@ -665,7 +665,7 @@ class BlogContent
         // Check conditions in which the user is not allowed to view the post
         if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
             $isContributor = BlogCMS::$userGroup !== false;
-            if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
+            if (($post->draft == 1 || strtotime($post->timestamp) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
             }
         }
@@ -679,14 +679,15 @@ class BlogContent
         // }
 
         // Record the view
-        $this->addView($post['id']);
+        $this->addView($post->id);
 
+        $response->addScript('/resources/ace/ace.js');
         $response->setVar('mdContent', $mdContent);
-        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
-        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
-        $response->setTitle($post['title']);
+        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
+        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
+        $response->setTitle($post->title);
         $response->write('posts/singlepost.tpl', 'BlogView');
-        
+
         $this->generatePostTemplate($post, null, 'full');
     }
     
