@@ -64,6 +64,9 @@ LayoutEditor.prototype.generateHTML = function() {
 */
         columnWidths = null;
 
+        rOut += "<a class='move_row_up' class='ui compact icon button'><i class='arrow up icon'></i></a>";
+        rOut += "<a class='move_row_down' class='ui compact icon button'><i class='arrow down icon'></i></a>";
+
         switch (columnLayout) {
             case "twoColumns_50":
                 rowClasses = "two column";
@@ -152,6 +155,9 @@ LayoutEditor.prototype.generateHTML = function() {
     }
 
     document.querySelector('#add_row').addEventListener("click", this.addRow);
+
+    $('.move_row_up').click(this.moveRowUp);
+    $('.move_row_down').click(this.moveRowDown);
 
     // Re-generate JSON
     this.jsonElement.innerHTML = JSON.stringify(this.definition, null, 4);
@@ -324,4 +330,32 @@ LayoutEditor.prototype.addRow = function() {
     });
 
     window.layouteditor.generateHTML();
+};
+
+LayoutEditor.prototype.moveRowUp = function(event) {
+    var rowIndex = $(this).parent().data('rowIndex');
+
+    if (rowIndex > 0) {
+        var temp = window.layouteditor.definition.rows[rowIndex];
+        window.layouteditor.definition.rows[rowIndex] = window.layouteditor.definition.rows[rowIndex - 1];
+        window.layouteditor.definition.rows[rowIndex - 1] = temp;
+        window.layouteditor.generateHTML();
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+LayoutEditor.prototype.moveRowDown = function(event) {
+    var rowIndex = $(this).parent().data('rowIndex');
+
+    if (rowIndex < window.layouteditor.definition.rows.length - 1) {
+        var temp = window.layouteditor.definition.rows[rowIndex];
+        window.layouteditor.definition.rows[rowIndex] = window.layouteditor.definition.rows[rowIndex + 1];
+        window.layouteditor.definition.rows[rowIndex + 1] = temp;
+        window.layouteditor.generateHTML();
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
 };

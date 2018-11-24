@@ -1,7 +1,7 @@
 body {
     min-width:              600px;
     background-color:     hsl(45, 20%, 97%);
-    margin: 10px;
+    margin:                 16px;
 }
 
 h1,h2,h3,h4,h5,h6 {
