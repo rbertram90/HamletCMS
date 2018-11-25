@@ -69,7 +69,6 @@ class PostsAPI extends GenericController
             'teaser_image'    => $this->request->getString('teaserimage'),
             'blog_id'         => $this->blog->id,
             'draft'           => $this->request->getInt('draft'),
-            'allowcomments'   => $this->request->getInt('comments'),
             'type'            => $this->request->getString('type'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
@@ -149,7 +148,6 @@ class PostsAPI extends GenericController
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserImage'),
             'draft'           => $this->request->getInt('draft'),
-            'allowcomments'   => $this->request->getInt('comments'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
@@ -226,7 +224,6 @@ class PostsAPI extends GenericController
             'summary'       => $this->request->getString('summary'),
             'content'       => $this->request->getString('content'),
             'tags'          => $this->request->getString('tags'),
-            'allowcomments' => $this->request->getInt('allowcomments'),
             'type'          => $this->request->getString('type'),
             'blogID'        => $this->request->getInt('blogID'),
         ];

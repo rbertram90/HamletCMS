@@ -31,13 +31,15 @@ class SiteAdmin extends GenericController
         $this->response->write('modulelist.tpl', 'SiteAdmin');
     }
 
-    public function reloadCache()
+    public function reloadCache($redirect = true)
     {
         BlogCMS::generateRouteCache();
         BlogCMS::generateMenuCache();
         BlogCMS::generatePermissionCache();
         BlogCMS::generateTemplateCache();
-        $this->response->redirect('/cms/admin/modules', 'System caches reloaded', 'success');
+        if ($redirect) {
+            $this->response->redirect('/cms/admin/modules', 'System caches reloaded', 'success');
+        }
     }
 
     public function newModuleScan()

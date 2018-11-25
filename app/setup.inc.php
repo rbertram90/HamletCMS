@@ -1,6 +1,6 @@
 <?php
 namespace rbwebdesigns\blogcms;
-use rbwebdesigns\core\model\UserFactory;
+// use rbwebdesigns\core\model\UserFactory;
 
 /**
  * app/setup.php
@@ -23,9 +23,6 @@ use rbwebdesigns\core\model\UserFactory;
   Set-Up Users Model & Auth flags
 ****************************************************************/    
     
-    // Connect to users model
-    $modelUsers = new UserFactory($cms_db);
-  
     $session = BlogCMS::session();
 
     // Check if we are logged in

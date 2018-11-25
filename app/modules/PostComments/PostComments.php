@@ -98,6 +98,9 @@ class PostComments
         $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
     }
 
+    /**
+     * Add menu link into dropdown on index page
+     */
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
@@ -110,4 +113,14 @@ class PostComments
             $args['menu']->addLink($link);
         }
     }
+
+    /**
+     * Save allowcomments flag into posts table when post created/updated
+     */
+    public function onBeforePostSaved($args)
+    {
+        $request = BlogCMS::request();
+        $args['post']['allowcomments'] = $request->getInt('comments');
+    }
+    
 }

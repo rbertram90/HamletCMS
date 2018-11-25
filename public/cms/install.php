@@ -97,7 +97,17 @@ use Athens\CSRF;
                 'enabled' => 1,
                 'locked' => !$module['optional']
             ]);
+
+            BlogCMS::registerModule($key);
         }
+
+        BlogCMS::generateRouteCache();
+        BlogCMS::generateMenuCache();
+        BlogCMS::generatePermissionCache();
+        BlogCMS::generateTemplateCache();
+
+        // $adminController = new \rbwebdesigns\blogcms\SiteAdmin\controller\SiteAdmin();
+        // $adminController->reloadCache(false);
 
         // Create admin user
         $accountData = [
@@ -128,7 +138,7 @@ use Athens\CSRF;
         if (!$modelUsers->register($accountData)) {
             $response->redirect('/cms/install.php', 'Error creating admin account', 'error');
         }
-        
+
         $response->redirect('/cms', 'Installation complete', 'success');
     }
 
