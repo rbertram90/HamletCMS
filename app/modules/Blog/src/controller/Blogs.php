@@ -219,7 +219,7 @@ class Blogs extends GenericController
             if (!$adminGroup) die('No admin found' . $newblogkey);
 
             // Add the user as contributor
-            if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup['id'])) {
+            if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
                 $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             }
 

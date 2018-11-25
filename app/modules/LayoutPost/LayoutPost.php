@@ -2,6 +2,7 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\JSONHelper;
+use Michelf\Markdown;
 
 class LayoutPost
 {
@@ -109,7 +110,7 @@ class LayoutPost
                 $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);
 
                 if ($column['textContent']) {
-                    $rOut.= nl2br($column['textContent']);
+                    $rOut.= Markdown::defaultTransform($column['textContent']);
                 }
 
                 if ($column['codeContent']) {
@@ -119,13 +120,17 @@ class LayoutPost
                         ace_editor.setTheme("ace/theme/'. $column['codeTheme'] .'");
                         ace_editor.session.setMode("ace/mode/'. $column['codeLanguage'] .'");
                         ace_editor.setReadOnly(true);
+setTimeout(function() {
 
                         var newHeight = ace_editor.getSession().getScreenLength()
                                   * ace_editor.renderer.lineHeight
                                   + ace_editor.renderer.scrollBar.getWidth();
+console.log(ace_editor.renderer);
+console.log(ace_editor.renderer.lineHeight);
 
                         $("#ace_view_'. $c .'").height(newHeight.toString() + "px");
                         ace_editor.resize();
+}, 1);
                     </script>';
                 }
 

@@ -1,6 +1,6 @@
 <article class="post">
 
-    <header>
+    <header class="ui header">
         {if strlen($headerDate) > 0}
             {$headerDate}
         {/if}

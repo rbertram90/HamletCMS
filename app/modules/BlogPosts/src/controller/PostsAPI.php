@@ -67,7 +67,7 @@ class PostsAPI extends GenericController
             'summary'         => $this->request->getString('summary'),
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserimage'),
-            'blog_id'         => $this->blog->id,
+            'blog_id'         => $blog->id,
             'draft'           => $this->request->getInt('draft'),
             'type'            => $this->request->getString('type'),
             'initialautosave' => 0,

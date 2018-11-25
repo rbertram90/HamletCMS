@@ -321,7 +321,6 @@ class Posts extends RBFactory
         }
         
         if(!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
-        if(!array_key_exists('allowcomments', $newValues)) $newValues['allowcomments'] = 1;
         if(!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
 
         $newValues['timestamp'] = date("Y-m-d H:i:s");

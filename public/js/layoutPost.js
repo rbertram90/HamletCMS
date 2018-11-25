@@ -175,45 +175,50 @@ LayoutEditor.prototype.showEditColumnModal = function(event) {
 
     switch (definition.contentType) {
         case 'text':
-            modal.find("#text_content").parent().show();
-            modal.find("#background_colour").parent().show();
-            modal.find("#font_colour").parent().show();
+            modal.find("#text_content")
+                .val(definition.textContent)
+                .parent().show();
 
-            modal.find('#text_content').val(definition.textContent);
-            modal.find('#background_colour').val(definition.backgroundColour);
-            modal.find('#font_colour').val(definition.fontColour);
+            modal.find("#background_colour")
+                .val(definition.backgroundColour)
+                .parent().show();
+
+            modal.find("#font_colour")
+                .val(definition.fontColour)
+                .parent().show();
             break;
 
         case 'image':
             modal.find("#selected_image")
                 .val(definition.image)
-                .parent()
-                .show();
+                .parent().show();
 
             modal.find("#min_height")
                 .val(definition.minimumHeight)
-                .parent()
-                .show();
+                .parent().show();
 
             modal.find('.selectableimage[data-name="' + definition.image + '"]').css('border', '3px solid #0c0');
             break;
 
         case 'code':
             modal.find("#code_content")
-                .parent()
-                .show();
+                .parent().show();
             ace_editor.setValue(definition.codeContent);
 
             modal.find("#code_theme")
                 .val(definition.codeTheme)
                 .trigger('change')
-                .parent()
-                .show();
+                .parent().show();
+
             modal.find("#code_lang")
                 .val(definition.codeLanguage)
                 .trigger('change')
-                .parent()
-                .show();
+                .parent().show();
+
+            modal.find('#background_colour')
+                .val(definition.backgroundColour)
+                .parent().show();
+
             break;
     }
 
@@ -255,7 +260,8 @@ LayoutEditor.prototype.saveColumnData = function(event) {
                 'contentType': form.find('#type').val(),
                 'codeContent': ace_editor.getValue(),
                 'codeLanguage': form.find('#code_lang').val(),
-                'codeTheme': form.find('#code_theme').val()
+                'codeTheme': form.find('#code_theme').val(),
+                'backgroundColour': form.find('#background_colour').val(),
             };
             break;
     }

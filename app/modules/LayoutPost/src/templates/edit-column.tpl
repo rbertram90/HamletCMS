@@ -314,6 +314,7 @@ $('#edit_column_form #type').change(function() {
             $("#code_content").parent().show();
             $("#code_lang").parent().show();
             $("#code_theme").parent().show();
+            $("#background_colour").parent().show();
             break;
     }
 });

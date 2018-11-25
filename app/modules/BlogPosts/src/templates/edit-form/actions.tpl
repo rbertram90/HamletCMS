@@ -84,10 +84,13 @@
             content: $("#post_content").val(),
             tags: $("#post_tags").val(),
             date: $("#post_date").val(),
-            comments: parseInt($("#allow_comment").val()),
             draft: parseInt($("#draft").val()),
             teaserImage: false
         };
+
+        if ($("#allow_comment")) {
+            formData.comments = parseInt($("#allow_comment").val());
+        }
 
         if ($("#teaser_image_image img").length > 0) {
             var imageSrc = $("#teaser_image_image img").attr('src');
@@ -114,7 +117,7 @@
             var saveURL = '/api/posts/create';
         }
 
-        $.ajax({ url: saveURL, async: false, method: 'POST', data: formData }).done(function (data) {
+        $.ajax({ url: saveURL, async: false, type: 'POST', data: formData }).done(function (data) {
             if (data.success) {
                 // window.location = '/cms/posts/manage/' + formData.blogID;
                 $('#post_save_success').modal('setting', 'closable', false).modal('show');

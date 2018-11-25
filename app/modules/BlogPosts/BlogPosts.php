@@ -64,6 +64,7 @@ class BlogPosts
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `posts` ADD PRIMARY KEY (`id`), ADD KEY `title` (`title`);");
+        $dbc->query("ALTER TABLE `posts` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
         $dbc->query("ALTER TABLE `postautosaves` ADD PRIMARY KEY (`post_id`);");
         $dbc->query("ALTER TABLE `postviews` ADD PRIMARY KEY (`postid`, `userip`);");
     }

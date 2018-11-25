@@ -41,7 +41,7 @@
 
     <div class="form_status"></div>
 
-    <form action="{$formAction}" method="post" name="form_create_post" id="form_create_post" class="two column row ui form">
+    <form action="{$formAction}" method="POST" name="form_create_post" id="form_create_post" class="two column row ui form">
         
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
