@@ -68,7 +68,7 @@ class Api extends GenericController
 
         $sort = $this->request->getString('sort', 'text'); // text or count
 
-        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
             die("{ 'error': 'Unable to find blog' }");
         }
 

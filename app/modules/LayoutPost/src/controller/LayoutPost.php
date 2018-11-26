@@ -29,7 +29,7 @@ class LayoutPost extends AbstractPostType
     {
         $blog = $this->response->getVar('blog');
         $imagesHTML = '';
-        $path = SERVER_ROOT ."/app/public/blogdata/{$blog->id}/images";
+        $path = SERVER_PUBLIC_PATH ."/blogdata/{$blog->id}/images";
 
         if (!is_dir($path)) {
             return;

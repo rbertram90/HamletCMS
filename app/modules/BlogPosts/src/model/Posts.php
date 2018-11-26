@@ -211,7 +211,7 @@ class Posts extends RBFactory
     public function getAllPostsOnBlog($blogID, $drafts=0, $future=0)
     {
         $tc = TBL_COMMENTS;
-        $sql = "SELECT p.*, (SELECT count(*) from $tc WHERE $tc.post_id = p.id) as numcomments ";
+        $sql = "SELECT p.* ";
         $sql.= "FROM " . TBL_POSTS . " as p ";
         $sql.= "WHERE p.blog_id = '".$blogID."' ";
         if ($drafts == 0) $sql.= "AND p.draft='0' ";

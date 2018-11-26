@@ -42,15 +42,15 @@ class Files extends GenericController
      * Setup and run the manage files page
      */
     public function manage(&$request, &$response)
-    {        
-        if(!is_array($this->blog)) {
+    {
+        if(!$blog = BlogCMS::getActiveBlog()) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelBlogs->canWrite($this->blog->id)) {
+        elseif(!$this->modelBlogs->canWrite($blog->id)) {
             $response->redirect('/cms', 'Access denied', 'error');
         }
 
-        $imagesDirectory = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/images';
+        $imagesDirectory = SERVER_PATH_BLOGS .'/'. $blog->id .'/images';
         $images = array();
         
         if(is_dir($imagesDirectory)) {
@@ -68,15 +68,15 @@ class Files extends GenericController
                 }
             }
         }
-        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $this->blog->id;
+        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $blog->id;
         
-        $response->setVar('blog', $this->blog);
+        $response->setVar('blog', $blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
         $config = BlogCMS::config();
         $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);        
-        $response->setTitle('Manage Files - ' . $this->blog->name);
+        $response->setTitle('Manage Files - ' . $blog->name);
         $response->write('manage.tpl', 'Files');
     }
 

@@ -83,6 +83,7 @@
             summary: $("#summary").val(),
             content: $("#post_content").val(),
             tags: $("#post_tags").val(),
+            type: $("#post_type").val(),
             date: $("#post_date").val(),
             draft: parseInt($("#draft").val()),
             teaserImage: false
@@ -133,6 +134,4 @@
         });
         
     });
-
-    // $('#post_save_success').modal('show');
 </script>
