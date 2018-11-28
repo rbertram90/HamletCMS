@@ -11,17 +11,16 @@ use rbwebdesigns\core\Sanitize;
  */
 class Posts extends RBFactory
 {
-    /**
-     * @var \rbwebdesigns\core\Database $db
-     */
+    /** @var \rbwebdesigns\core\Database $db */
     protected $db;
-    /**
-     * @var string $tableName
-     */
+    /** @var string $tableName */
     protected $tableName;
+    /** @var string $subClass */
     protected $subClass;
 
     /**
+     * Posts factory constructor
+     * 
      * @param \rbwebdesigns\core\ModelManager $modelManager
      */
     function __construct($modelManager)
@@ -54,31 +53,37 @@ class Posts extends RBFactory
     }
     
     /**
-     *  Get all available information on a single blog post
-     *  @param int $postID
+     * Get all available information on a single blog post
+     * 
+     * @param int $postID
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
      */
     public function getPostById($postID)
     {
-        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', ['id' => $postID]);
+        return $this->get('*', ['id' => $postID], null, null, false);
     }
     
     /**
-     *  Get information on a post by sepcifying the url and blog id
-     *  @param string $link
-     *   Url name of the post
-     *  @param int    $blogID
+     * Get information on a post by sepcifying the url and blog id
+     * 
+     * @param string $link
+     *   Url path of the post
+     * @param int $blogID
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
      */
     public function getPostByURL($link, $blogID)
     {
-        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', [
-            'link' => $link,
-            'blog_id' => $blogID
-        ]);
+        return $this->get('*', ['link' => $link, 'blog_id' => $blogID], null, null, false);
     }
     
     /**
      * Get the lastest (published) blog post
+     * 
      * @param int $blogid
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
      */
     public function getLatestPost($blogID)
     {
@@ -87,7 +92,7 @@ class Posts extends RBFactory
             'timestamp' => '< CURRENT_TIMESTAMP',
             'draft'     => 0
         ];
-        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp DESC', '1');
+        return $this->get('*', $where, 'timestamp DESC', '1', false);
     }
     
     /**
@@ -95,6 +100,8 @@ class Posts extends RBFactory
      * 
      * @param int $blogID
      * @param string $currentPostTimestamp
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
      */
     public function getNextPost($blogID, $currentPostTimestamp)
     {
@@ -103,10 +110,10 @@ class Posts extends RBFactory
             'blog_id'   => $blogID,
             'draft'     => 0
         ];
-        $result = $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp ASC', '1');
+        $result = $this->get('*', $where, 'timestamp ASC', '1', false);
         
         // Only Return Result if the post is not scheduled
-        if($result->timestamp < date('Y-m-d H:i:s')) return $result;
+        if ($result->timestamp < date('Y-m-d H:i:s')) return $result;
     }
     
     /**
@@ -114,15 +121,17 @@ class Posts extends RBFactory
      * 
      * @param int $blogID
      * @param string $currentPostTimestamp
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
      */
     public function getPreviousPost($blogID, $currentPostTimestamp)
     {
         $where = [
             'blog_id'   => $blogID,
-            'timestamp' => '<' . $currentPostTimestamp,
+            'timestamp' => '<'. $currentPostTimestamp,
             'draft'     => 0
         ];
-        return $this->db->selectSingleRow($this->subClass, $this->tableName, '*', $where, 'timestamp DESC', '1');
+        return $this->get('*', $where, 'timestamp DESC', '1', false);
     }
     
     /**
@@ -163,42 +172,30 @@ class Posts extends RBFactory
      * Get a count of posts and the last post date for all contributors for a blog
      * 
      * Used in manage contributors view
+     * 
+     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post[]
      */
     public function countPostsByUser($blogID)
     {
-        $query_string = "SELECT author_id, count(*) as post_count, ";
-        $query_string.= "   (";
-        $query_string.= "    SELECT timestamp ";
-        $query_string.= "    FROM {$this->tableName} as b ";
-        $query_string.= "    WHERE blog_id='{$blogID}' ";
-        $query_string.= "    AND author_id=a.author_id ";
-        $query_string.= "    AND timestamp < CURRENT_TIMESTAMP ";
-        $query_string.= "    ORDER BY timestamp DESC ";
-        $query_string.= "    LIMIT 1";
-        $query_string.= "   ) as last_post ";
-        $query_string.= "FROM {$this->tableName} as a ";
-        $query_string.= "WHERE blog_id='{$blogID}' ";
-        $query_string.= "AND draft=0 ";
-        $query_string.= "AND timestamp<='".date('Y-m-d H:i:s')."' ";
-        $query_string.= "GROUP BY author_id ORDER BY timestamp DESC";
+        $query_string = "SELECT author_id, count(*) as post_count, 
+        (
+            SELECT timestamp
+            FROM {$this->tableName} as b
+            WHERE blog_id='{$blogID}'
+            AND author_id=a.author_id
+            AND timestamp < CURRENT_TIMESTAMP
+            ORDER BY timestamp DESC
+            LIMIT 1
+        ) as last_post
+        FROM {$this->tableName} as a
+        WHERE blog_id = '{$blogID}'
+        AND draft = 0
+        AND timestamp <= '". date('Y-m-d H:i:s') ."'
+        GROUP BY author_id
+        ORDER BY timestamp DESC";
         
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * Sum all post views for a blog
-     * 
-     * @param int $blogID
-     */
-    public function countTotalPostViews($blogID)
-    {
-        $qs = "SELECT sum(userviews) as totalViews FROM ".$this->tblviews." WHERE postid in (SELECT id FROM ".$this->tableName." WHERE blog_id='$blogID')";
-        $statement = $this->db->query($qs);
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
-
-        if (strlen($result['totalViews']) == 0) $result['totalViews'] = 0;
-        return Sanitize::int($result['totalViews']);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     /**

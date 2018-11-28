@@ -159,11 +159,13 @@ class Blogs extends GenericController
         $counts = [];
         BlogCMS::runHook('dashboardCounts', ['blogID' => $blogID, 'counts' => &$counts]);
 
+        $modelPostViews = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\PostViews');
+
         // Get count statistics
         $this->response->setVar('counts', array_merge($counts, [
             'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
             'contributors' => $this->modelContributors->getCount(array('blog_id' => $blogID)),
-            'totalviews' => $this->modelPosts->countTotalPostViews($blogID),
+            'totalviews' => $modelPostViews->getTotalPostViewsByBlog($blogID),
         ]));
         
         $panels = [];

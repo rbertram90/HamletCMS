@@ -86,7 +86,8 @@ class Contributors extends GenericController
 
         $this->response->setVar('groups', $groups);
         $this->response->setVar('contributors', $this->model->getBlogContributors($this->blog->id));
-        $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog->id)); // Get the number of post each contributor has made
+        // Get the number of post each contributor has made - apparently not used in template?!
+        // $this->response->setVar('postcounts', $this->modelPosts->countPostsByUser($this->blog->id));
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Blog Contributors - '. $this->blog->name);
         $this->response->write('manage.tpl', 'Contributors');
