@@ -337,7 +337,8 @@ class Settings extends GenericController
             'name'        => $this->request->getString('fld_blogname'),
             'description' => $this->request->getString('fld_blogdesc'),
             'visibility'  => $this->request->getString('fld_blogsecurity'),
-            'category'    => $this->request->getString('fld_category')
+            'category'    => $this->request->getString('fld_category'),
+            'domain'      => $this->request->getString('fld_domain'),
         ]);
 
         if($update) {

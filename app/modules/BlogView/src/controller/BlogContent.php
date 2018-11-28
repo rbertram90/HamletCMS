@@ -170,6 +170,12 @@ class BlogContent
     }
 
 
+    /**
+     * Generate the output for a single post view
+     * 
+     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param array $config
+     */
     public function generateSinglePost($post, $config)
     {
         $teaserResponse = new BlogCMSResponse();
@@ -204,6 +210,14 @@ class BlogContent
         $teaserResponse->write($templatePath, $source, true);
     }
 
+    /**
+     * Generate the HTML for a post (either full or teaser)
+     * 
+     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param array $config
+     * @param string $mode
+     *   full / teaser modes accepted
+     */
     public function generatePostTemplate($post, $config, $mode = 'full')
     {
         if (strlen($post->tags) > 0) {
@@ -278,7 +292,6 @@ class BlogContent
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');
-
     }
 
     /**

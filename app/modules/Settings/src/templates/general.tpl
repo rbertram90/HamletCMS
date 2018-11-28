@@ -12,12 +12,19 @@
                 
                 <div class="field">
                     <label for="fld_blogname">Blog Name</label>
-                    <input type="text" value="{$blog->name}" name="fld_blogname" />
+                    <input type="text" value="{$blog->name}" name="fld_blogname" required>
                 </div>
                 
                 <div class="field">
                     <label for="fld_blogdesc">Description</label>
                     <textarea name="fld_blogdesc">{$blog->description}</textarea>
+                </div>
+
+                <div class="field">
+                    <label for="fld_domain">Custom domain<br>
+                    <small><em>Requires server configuration to work, see: <a href="https://github.com/rbertram90/blog_cms/wiki/Applying-custom-blog-domain-names" target="_blank">this wiki article</a></em></small></label>
+                    <input type="text" value="{$blog->domain}" name="fld_domain" placeholder="(default)">
+                    <small>Include http(s):// but no trailing slash.</small>
                 </div>
                 
                 <div class="field">

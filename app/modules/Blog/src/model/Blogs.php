@@ -53,7 +53,8 @@ class Blogs extends RBFactory
             'visibility'  => 'string',
             'widgetJSON'  => 'string',
             'pagelist'    => 'string',
-            'category'    => 'string'
+            'category'    => 'string',
+            'domain'      => 'string',
         ];
     }
     

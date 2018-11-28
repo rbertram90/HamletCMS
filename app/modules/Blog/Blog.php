@@ -40,6 +40,7 @@ class Blog
         $dbc->query("CREATE TABLE `blogs` (
             `id` bigint(10) NOT NULL,
             `name` varchar(150) NOT NULL,
+            `domain` varchar(150) NOT NULL,
             `description` text NOT NULL,
             `user_id` int(8) NOT NULL,
             `anon_search` tinyint(1) NOT NULL DEFAULT '1',
