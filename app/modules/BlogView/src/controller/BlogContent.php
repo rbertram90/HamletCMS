@@ -248,7 +248,7 @@ class BlogContent
     {
         $pageNum = $request->getInt('s', 1);
 
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         $postConfig = null;
         $showTags = 1;
         $shownumcomments = 1;
@@ -398,7 +398,7 @@ class BlogContent
     public function generateFooter()
     {
         // Get the JSON blog config
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         
         // Check that the footer key exists
         if(strtolower(gettype($blogConfig)) !== 'array' || !array_key_exists('footer', $blogConfig)) return '';
@@ -458,7 +458,7 @@ class BlogContent
     public function generateHeaderBackground()
     {
         // Get the JSON blog config
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         
         // Check header config exists
         if(getType($blogConfig) !== 'array' || !array_key_exists('header', $blogConfig)) return '';
@@ -522,7 +522,7 @@ class BlogContent
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         $postConfig = null;
         $showTags = 1;
         $shownumcomments = 1;
@@ -553,19 +553,6 @@ class BlogContent
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postsbytag.tpl', 'BlogView');
-    }
-
-    /**
-     * Get the blog config file 'config.json' as an array
-     */
-    private function getBlogConfig($blogid)
-    {
-        // Check variable cache
-        if($this->blogConfig === null) {
-            $settings = file_get_contents(SERVER_PATH_BLOGS.'/'.$blogid.'/config.json');
-            $this->blogConfig = json_decode($settings, true);
-        }
-        return $this->blogConfig;
     }
     
     /**

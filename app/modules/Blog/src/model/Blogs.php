@@ -77,7 +77,15 @@ class Blogs extends RBFactory
      */
     public function getBlogsByUser($userID)
     {
-        return $this->db->selectMultipleRows($this->tableName, '*', ['user_id' => $userID]);
+        return $this->get(array_keys($this->fields), ['user_id' => $userID]);
+    }
+
+    /**
+     * Get Blogs by Category
+     */
+    public function getByCategory($category, $num=10, $page=0)
+    {
+        return $this->get(array_keys($this->fields), ['category' => $category], null, "$page,$num");
     }
     
     /**
@@ -90,8 +98,7 @@ class Blogs extends RBFactory
     {
         if(!ctype_alpha($letter)) $letter = "[^A-Za-z]"; // search all numbers at once
         $qs = 'SELECT * FROM '.$this->tableName.' WHERE LEFT(name, 1) REGEXP "'.$letter.'" and visibility="anon"';
-        $statement = $this->db->query($qs);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->db->query($qs)->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -104,7 +111,7 @@ class Blogs extends RBFactory
         $res = array('0' => 0);
         foreach (range('A', 'Z') as $letter) $res[$letter] = 0;
         
-        $sql = 'SELECT UCASE(LEFT(name, 1)) as letter, count(*) as count FROM '.$this->tableName.' Where visibility = "anon" Group By UCASE(LEFT(name, 1))';
+        $sql = "SELECT UCASE(LEFT(name, 1)) AS letter, count(*) AS count FROM {$this->tableName} WHERE visibility='anon' GROUP BY UCASE(LEFT(name, 1))";
         $statement = $this->db->query($sql);
         $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -142,17 +149,16 @@ class Blogs extends RBFactory
      * @return string
      *  Unique random 10 digit string
      */
-    private function generateBlogKey()
+    protected function generateBlogKey()
     {
         // Generate a new random key
-        $blog_key = ''.rand(10000,32000).rand(10000,32000);
+        $blogKey = strval(rand(10000,32000) . rand(10000,32000));
         
         // Check if this key is unique
-        $lbKeyExists = $this->blogKeyExists($blog_key);
+        $keyExists = $this->blogKeyExists($blogKey);
         
-        // Check to see if generated key already exists!
-        if($lbKeyExists) return $this->generateBlogKey();
-        else return $blog_key;
+        // Check to see if generated key already exists
+        return $keyExists ? $this->generateBlogKey() : $blogKey;
     }
     
     /**
@@ -162,7 +168,7 @@ class Blogs extends RBFactory
      *  10 Digit Blog ID
      * 
      * @return boolean
-     *  True if found, False Otherwise
+     *  True if found, false otherwise
      */
     private function blogKeyExists($key)
     {
@@ -240,42 +246,7 @@ class Blogs extends RBFactory
      */
     public function updateWidgetJSON($config, $blogID)
     {
-        return $this->db->updateRow($this->tableName, ['id' => $blogID], [
-            'widgetJSON' => $config
-        ]);
+        return $this->update(['id' => $blogID], ['widgetJSON' => $config]);
     }
     
-    /**
-     * Security functions - check Read, Write Permissions
-     * Should this be in contributors model?
-     * 
-     * @param int $blogID
-     */
-    public function canWrite($blogID)
-    {
-        // Only allow contributors to update the blog settings
-        // further 'custom restrictions' to be added
-        $currentUser = BlogCMS::session()->currentUser;
-
-        $rowCount = $this->db->countRows($this->tblcontributors, array(
-            'blog_id' => $blogID,
-            'user_id' => $currentUser['id']
-        ));
-        
-        return $rowCount > 0;
-    }
-
-    /**
-     * Get Blogs by Category
-     */
-    public function getByCategory($category, $num=10, $page=0)
-    {
-        $query = 'SELECT * ';
-        $query.= 'FROM '.$this->tableName.' WHERE category = "' . $category . '" ';
-        $query.= 'LIMIT '.$page.','.$num;
-        
-        $statement = $this->db->query($query);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
 }

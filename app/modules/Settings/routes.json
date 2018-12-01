@@ -14,13 +14,6 @@
         "action": "general"
     },
     {
-        "key": "settings.posts",
-        "path": "/cms/settings/posts/{BLOG_ID}",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "posts"
-    },
-    {
         "key": "settings.header",
         "path": "/cms/settings/header/{BLOG_ID}",
         "permissions": ["change_settings"],

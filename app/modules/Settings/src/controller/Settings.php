@@ -126,32 +126,6 @@ class Settings extends GenericController
     }
 
     /**
-     * Handles /settings/posts/<blogid>
-     * Edit post display settings
-     */
-    public function posts()
-    {
-        if ($this->request->method() == 'POST') return $this->action_updatePostsSettings();
-
-        $postConfig = $this->getBlogConfig($this->blog->id);
-
-        if (isset($postConfig['posts'])) {
-            // Default values where needed
-            if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
-            if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
-            $this->response->setVar('postConfig', $postConfig['posts']);
-        }
-        else {
-            // No posts config exists - send defaults
-            $this->response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
-        }
-
-        $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Post Settings - ' . $this->blog->name);
-        $this->response->write('posts.tpl', 'Settings');
-    }
-
-    /**
      * Handles /settings/header/<blogid>
      */
     public function header(&$request, &$response)
@@ -161,7 +135,7 @@ class Settings extends GenericController
 
         if ($request->method() == 'POST') return $this->action_updateHeaderContent($request, $response, $blog);
         
-        $blogconfig = $this->getBlogConfig($blog->id);
+        $blogconfig = $blog->config();
         if (isset($blogconfig['header'])) $response->setVar('blogconfig', $blogconfig['header']);
         else $response->setVar('blogconfig', []);
 
@@ -184,7 +158,7 @@ class Settings extends GenericController
 
         if ($request->method() == 'POST') return $this->action_updateFooterContent($request, $response, $blog);
         
-        $blogconfig = $this->getBlogConfig($blog->id);
+        $blogconfig = $blog->config();
         if (isset($blogconfig['footer'])) $response->setVar('blogconfig', $blogconfig['footer']);
         else $response->setVar('blogconfig', []);
 
@@ -351,87 +325,11 @@ class Settings extends GenericController
     }
     
     /**
-     *  Update how posts are displayed on the blog
-     */
-    public function action_updatePostsSettings()
-    {
-        $update = $this->updateBlogConfig($this->blog->id, [
-            'posts' => [
-                'dateformat'        => $this->request->getString('fld_dateformat'),
-                'timeformat'        => $this->request->getString('fld_timeformat'),
-                'postsperpage'      => $this->request->getInt('fld_postsperpage'),
-                'allowcomments'     => $this->request->getInt('fld_commentapprove'),
-                'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
-                'showtags'          => $this->request->getString('fld_showtags'),
-                'dateprefix'        => $this->request->getString('fld_dateprefix'),
-                'dateseperator'     => $this->request->getString('fld_dateseperator'),
-                'datelocation'      => $this->request->getString('fld_datelocation'),
-                'timelocation'      => $this->request->getString('fld_timelocation'),
-                'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
-                'shownumcomments'   => $this->request->getString('fld_shownumcomments')
-            ]
-        ]);
-        
-        if($update) {
-            BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Post settings updated", "success");
-        }
-        else {
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error saving to database", "error");
-        }
-    }
-    
-    /**
-     * Get the blog config file JSON
-     * 
-     * @param int $blogid
-     * 
-     * @return array
-     */
-    protected function getBlogConfig($blogid)
-    {
-        return JSONhelper::JSONFileToArray(SERVER_PUBLIC_PATH . "/blogdata/{$blogid}/config.json");
-    }
-    
-    /**
-     * Save to the blog config file
-     * 
-     * @param int $blogid
-     * @param array $blogConfig
-     * 
-     * @return bool Was the save successful?
-     */
-    protected function saveBlogConfig($blogid, $blogConfig)
-    {
-        $json_string = JSONhelper::arrayToJSON($blogConfig);
-        $save = file_put_contents(SERVER_PUBLIC_PATH . "/blogdata/{$blogid}/config.json", $json_string);
-        return $save !== false;
-    }
-    
-    /**
-     * Update the blog configuration file with new values
-     * Note that new arrays are created if needs be.
-     */
-    protected function updateBlogConfig($blogid, $data)
-    {
-        $settings = $this->getBlogConfig($blogid);
-        
-        if (is_null($settings)) {
-            $settings = $data;
-        }
-        else {
-            $settings = array_replace_recursive($settings, $data);
-        }
-        
-        return $this->saveBlogConfig($blogid, $settings);
-    }
-    
-    /**
      * Update the content in the footer
      */
     protected function action_updateFooterContent(&$request, &$response, $blog)
     {
-        $update = $this->updateBlogConfig($blog->id, [
+        $update = $blog->updateConfig([
             'footer' => [
                 'numcols'                  => $request->getString('fld_numcolumns'),
                 'content_col1'             => $request->getString('fld_contentcol1'),
@@ -444,7 +342,7 @@ class Settings extends GenericController
 
         if(!$update) $response->redirect('/cms/settings/footer/' . $blog->id, 'Updated failed', 'error');
         
-        BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
+        BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $blog]);
         $response->redirect('/cms/settings/footer/' . $blog->id, 'Footer updated', 'success');
     }
     
@@ -453,14 +351,16 @@ class Settings extends GenericController
      */
     protected function action_updateHeaderContent(&$request, &$response, $blog)
     {
-        $update = $this->updateBlogConfig($blog->id, ['header' => [
-            'background_image'          => $request->getString('fld_headerbackgroundimage'),
-            'bg_image_post_horizontal'  => $request->getString('fld_horizontalposition'),
-            'bg_image_post_vertical'    => $request->getString('fld_veritcalposition'),
-            'bg_image_align_horizontal' => $request->getString('fld_horizontalalign'),
-            'hide_title'                => $request->getString('fld_hidetitle'),
-            'hide_description'          => $request->getString('fld_hidedescription')
-        ]]);
+        $update = $blog->updateConfig([
+            'header' => [
+                'background_image'          => $request->getString('fld_headerbackgroundimage'),
+                'bg_image_post_horizontal'  => $request->getString('fld_horizontalposition'),
+                'bg_image_post_vertical'    => $request->getString('fld_veritcalposition'),
+                'bg_image_align_horizontal' => $request->getString('fld_horizontalalign'),
+                'hide_title'                => $request->getString('fld_hidetitle'),
+                'hide_description'          => $request->getString('fld_hidedescription')
+            ]
+        ]);
 
         if(!$update) $response->redirect('/cms/settings/header/' . $blog->id, 'Updated failed', 'error');
 

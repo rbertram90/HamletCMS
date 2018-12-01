@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms\Contributors\model;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\blogcms\BlogCMS;
 
 /**
  * /app/model/mdl_contributor.inc.php
@@ -88,4 +89,24 @@ class Contributors extends RBFactory
         ]);
     }
     
+    /**
+     * Security functions - check Read, Write Permissions
+     * Should this be in contributors model?
+     * 
+     * @param int $blogID
+     */
+    public function canWrite($blogID)
+    {
+        // Only allow contributors to update the blog settings
+        // further 'custom restrictions' to be added
+        $currentUser = BlogCMS::session()->currentUser;
+
+        $rowCount = $this->count([
+            'blog_id' => $blogID,
+            'user_id' => $currentUser['id']
+        ]);
+        
+        return $rowCount > 0;
+    }
+
 }

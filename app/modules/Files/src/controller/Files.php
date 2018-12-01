@@ -13,6 +13,7 @@ class Files extends GenericController
     public function __construct()
     {
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->blog = BlogCMS::getActiveBlog();
     }
 
@@ -46,7 +47,7 @@ class Files extends GenericController
         if(!$blog = BlogCMS::getActiveBlog()) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelBlogs->canWrite($blog->id)) {
+        elseif(!$this->modelContributors->canWrite($blog->id)) {
             $response->redirect('/cms', 'Access denied', 'error');
         }
 
@@ -92,7 +93,7 @@ class Files extends GenericController
         if(!is_array($blog)) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelBlogs->canWrite($blogid)) {
+        elseif(!$this->modelContributors->canWrite($blogid)) {
             $response->redirect('/cms', 'Access denied', 'error');
         }
 

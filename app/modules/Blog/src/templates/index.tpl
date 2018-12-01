@@ -13,10 +13,10 @@
 <table class="ui padded table">
     <thead>
         <tr>
-        <th>Blog Name</th>
-        <th>Contributors</th>
-        <th class="collapsing"></th>
-        <th class="collapsing"></th>
+            <th>Blog Name</th>
+            <th>Contributors</th>
+            <th class="collapsing"></th>
+            <th class="collapsing"></th>
         </tr>
     </thead>
     <tbody>
@@ -25,10 +25,15 @@
             <tr>
                 <td>
                     <a href="/cms/blog/overview/{$blog->id}" title="{$blog->name}" style="font-size:120%;">{$blog->name}</a>
-                    <br><span class="date">{$blog->latestpost->timestamp}</span>
+                    {$lastestPost = $blog->latestpost()}
+                    {if $lastestPost}
+                        <br><span class="date">Latest post: {$lastestPost->timestamp|date_format}</span>
+                    {else}
+                        <br><span class="date">Nothing posted</span>
+                    {/if}
                 </td>
                 <td>
-                    {foreach from=$blog->contributors item=contributor name=contributors}
+                    {foreach from=$blog->contributors() item=contributor name=contributors}
                         
                         <a href="/cms/account/user/{$contributor->id}" class="user-link">
                         {* Remove whitespace after name *}

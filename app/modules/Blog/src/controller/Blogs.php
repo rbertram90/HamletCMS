@@ -85,21 +85,6 @@ class Blogs extends GenericController
         
         // Add in extra information
         foreach($blogs as $key => $blog) {
-            // The users who can contribute to this blog
-            $blogs[$key]->contributors = $this->modelContributors->getBlogContributors($blog->id);
-            
-            // The lastest post for this blog
-            $blogs[$key]->latestpost = $this->modelPosts->getLatestPost($blog->id);
-            
-            // Format the lastest post date for this blog
-            if($blogs[$key]->latestpost) {
-                $formatteddate = DateFormatter::formatFriendlyTime($blogs[$key]->latestpost->timestamp);
-                $blogs[$key]->latestpost->timestamp = 'Last posted: '.$formatteddate;
-            }
-            else {
-                $blogs[$key]->latestpost->timestamp = 'Nothing posted';
-            }
-
             // Get all menu items
             $blogActions = new Menu('bloglist');
             BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
@@ -110,12 +95,6 @@ class Blogs extends GenericController
 
         // Add to template
         $this->response->setVar('blogs', $blogs);
-        
-        // Get the current users favourite blogs
-        // $arrayFavoriteBlogs = $this->modelBlogs->getAllFavourites($user['id']);
-        // $this->response->setVar('favoriteblogs', $arrayFavoriteBlogs);
-        // $this->response->setVar('recentposts', $this->modelPosts->getRecentPosts($arrayFavoriteBlogs, 7));
-        
         $this->response->addScript('/js/showUserCard.js');
         $this->response->setTitle('My Blogs');
         $this->response->write('index.tpl', 'Blog');
@@ -138,23 +117,15 @@ class Blogs extends GenericController
     public function overview()
     {
         $blogID = $this->request->getUrlParameter(1);
-        $currentUser = BlogCMS::session()->currentUser;
-
-        // Validation
-        if(strlen($blogID) == 0) {
-            $this->response->redirect('/cms');
-        }
-        elseif(!$this->modelContributors->isBlogContributor($currentUser['id'], $blogID)) {
-            $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
-        }
-
         $blog = $this->modelBlogs->getBlogById($blogID);
 
-        $this->response->setVar('blog', $blog);
-        
-        // Get latest 5 posts
-        $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
-        $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
+        // Validation
+        if (!$blog) {
+            $this->response->redirect('/cms');
+        }
+        elseif (!$blog->isContributor()) {
+            $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
+        }
 
         $counts = [];
         BlogCMS::runHook('dashboardCounts', ['blogID' => $blogID, 'counts' => &$counts]);
@@ -171,9 +142,12 @@ class Blogs extends GenericController
         $panels = [];
         BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
+        $this->response->setVar('blog', $blog);
+        $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
+        $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
 
         BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
-        $this->response->setTitle('Dashboard - '.$blog->name);
+        $this->response->setTitle('Dashboard - '. $blog->name);
         $this->response->write('overview.tpl', 'Blog');
     }
     
@@ -248,7 +222,7 @@ class Blogs extends GenericController
 
         if ($this->request->method() == 'POST') return $this->runDeleteBlog($blog);
 
-        $this->response->setTitle('Delete New Blog');
+        $this->response->setTitle('Delete blog');
         $this->response->write('deleteblog.tpl');
     }
 
