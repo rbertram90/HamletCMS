@@ -196,6 +196,7 @@
                     output += "   <div class='default-option'>- Actions -</div>";
                     output += "   <div class='hidden-options'>";
                     output += "     <a href='/cms/posts/edit/" + post.id + "'>Edit</a>";
+                    output += "     <a class='clone_post_link' data-postid='" + post.id + "'>Clone</a>";
                     output += "     <a class='delete_post_link' data-postid='" + post.id + "'>Delete</a>";
                     output += " </div></div>";
 
@@ -243,6 +244,12 @@
                     $("#delete_post_button").data("postid", $(this).data('postid'));
                     $("#delete_post_modal").modal('setting', 'closable', false).modal('show');
                 });
+
+                $(".clone_post_link").click(function(event) {
+                    event.preventDefault();
+                    $("#clone_post_button").data("postid", $(this).data('postid'));
+                    $("#clone_post_modal").modal('show');
+                });
             }
         );
     };
@@ -269,11 +276,31 @@
   <div class="actions" style="text-align:center;">
     <a class="big ui green ok inverted button" id="delete_post_button">
       <i class="checkmark icon"></i>
-      Yes
+      Delete
     </a>
     <div class="big ui red basic cancel inverted button">
       <i class="remove icon"></i>
-      No
+      Nevermind
+    </div>
+  </div>
+</div>
+
+<div class="ui basic modal" id="clone_post_modal">
+  <div class="ui icon huge header">
+    <i class="copy outline icon"></i>
+    Clone post
+  </div>
+  <div class="content" style="text-align:center;">
+    <p>Are you sure you want to clone this post?</p>
+  </div>
+  <div class="actions" style="text-align:center;">
+    <a class="big ui green ok inverted button" id="clone_post_button">
+      <i class="checkmark icon"></i>
+      Clone
+    </a>
+    <div class="big ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      Nevermind
     </div>
   </div>
 </div>
@@ -294,6 +321,28 @@
             $("#delete_post_modal").modal('hide');
             refreshData(1);
             $("#manage_posts_messages").html('Post deleted!');
+
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            data = JSON.parse(jqXHR.responseText);
+            $("#manage_posts_messages").html(data.errorMessage);
+        });
+    });
+
+    $("#clone_post_button").click(function(event) {
+        event.preventDefault();
+        var postID = $(this).data("postid");
+
+        $.ajax({
+            url: '/api/posts/clone',
+            type: 'post',
+            data: {
+                postID: postID,
+                blogID: {$blog->id}
+            }
+        }).done(function (data, textStatus, jqXHR) {
+            $("#delete_post_modal").modal('hide');
+            refreshData(1);
+            $("#manage_posts_messages").html('Post cloned!');
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             data = JSON.parse(jqXHR.responseText);

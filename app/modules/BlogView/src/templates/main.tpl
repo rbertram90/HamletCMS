@@ -12,7 +12,7 @@
     // Galleria.run('.galleria');
     </script>
 
-    <link rel="stylesheet" href="{$blog->reletivePath()}/default.css" type="text/css">
+    <link rel="stylesheet" href="{$blog->reletivePath()}/default.css?v={'His'|date}" type="text/css">
 
     <!-- Custom CSS -->
     <style type="text/css" id="customcss">{$custom_css}</style>

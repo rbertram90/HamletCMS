@@ -329,6 +329,37 @@ class Posts extends RBFactory
     }
     
     /**
+     * Clone a post
+     */
+    public function clonePost($postID)
+    {
+        $now = new \DateTime();
+        $tempTableName = 'clonepost_'. $now->format('u');
+
+        // Simple SQL row copy
+        $query = $this->db->query("CREATE TEMPORARY TABLE `{$tempTableName}` SELECT * FROM {$this->tableName} WHERE id = {$postID}");
+        if (!$query) return false;
+        $query = $this->db->query("UPDATE `{$tempTableName}` SET id = NULL");
+        if (!$query) return false;
+        $query = $this->db->query("INSERT INTO {$this->tableName} SELECT * FROM `{$tempTableName}`");
+        $newPostID = $this->db->getLastInsertID();
+        if (!$query) return false;
+        $query = $this->db->query("DROP TEMPORARY TABLE IF EXISTS `{$tempTableName}`");
+        if (!$query) return false;
+
+        $newPost = $this->getPostById($newPostID);
+
+        $update = $this->update(['id' => $newPostID], [
+            'link' => $newPost->link .'-'. $now->format('u'),
+            'draft' => 1,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'author_id' => BlogCMS::session()->currentUser['id']
+        ]);
+
+        return $newPostID;
+    }
+
+    /**
      * Update a blog post
      * @param int $postid
      * @param array $newValues

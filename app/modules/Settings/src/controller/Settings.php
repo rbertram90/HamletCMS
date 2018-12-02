@@ -386,7 +386,7 @@ class Settings extends GenericController
                 // Check that post we're adding is valid
                 $newpageID = $request->getInt('fld_postid');
                 $targetpost = $this->modelPosts->get(['blog_id'], ['id' => $newpageID], '', '', false);
-                if (!$targetpost || $targetpost['blog_id'] != $blog->id) {
+                if (!$targetpost || $targetpost->blog_id != $blog->id) {
                     return false;
                 }
                 break;

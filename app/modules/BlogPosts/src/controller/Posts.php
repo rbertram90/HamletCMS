@@ -145,7 +145,7 @@ class Posts extends GenericController
      */
     public function create()
     {
-        if ($this->request->method() == 'POST') return $this->runCreatePost();
+        // if ($this->request->method() == 'POST') return $this->runCreatePost();
 
         $newPostMenu = new Menu('create_post');
         BlogCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);

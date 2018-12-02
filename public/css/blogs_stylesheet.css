@@ -318,6 +318,7 @@ p {
 {
     color:#fff;
     display:block;
+    cursor: pointer;
     padding:5px;
     text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 0px;
 }

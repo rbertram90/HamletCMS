@@ -1,4 +1,4 @@
-<div class="ui divided very relaxed link items">
+<div class="ui very relaxed link items">
     {$posts}
 </div>
 

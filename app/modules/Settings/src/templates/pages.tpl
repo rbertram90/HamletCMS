@@ -40,20 +40,20 @@
                             </form>
 
                         {else}
-                            <a href="/blogs/{$blog->id}/posts/{$page.link}" target="_blank">{$page.title}</a>
+                            <a href="/blogs/{$blog->id}/posts/{$page->link}" target="_blank">{$page->title}</a>
 
                             <form action="/cms/settings/pages/{$blog->id}/remove" method="POST" style="display:inline">
-                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <input type="hidden" name="fld_postid" value="{$page->id}" />
                                 <button class="ui button right floated" type="submit">Remove</button>
                             </form>
                             
                             <form action="/cms/settings/pages/{$blog->id}/down" method="POST" style="display:inline">
-                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <input type="hidden" name="fld_postid" value="{$page->id}" />
                                 <button class="ui button right floated" type="submit">&#x25BC;</button>
                             </form>
 
                             <form action="/cms/settings/pages/{$blog->id}/up" method="POST" style="display:inline">
-                                <input type="hidden" name="fld_postid" value="{$page.id}" />
+                                <input type="hidden" name="fld_postid" value="{$page->id}" />
                                 <button class="ui button right floated" type="submit">&#x25B2;</button>
                             </form>
                         {/if}

@@ -24,7 +24,8 @@ class AbstractPostType extends GenericController
      * 
      * If saving will exit here and redirect.
      */
-    public function create() {
+    public function create()
+    {
         $this->blog = BlogCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Create blog post');
@@ -34,7 +35,11 @@ class AbstractPostType extends GenericController
         $this->response->setVar('customSettingFields', $extraFields);
     }
 
-    public function edit() {
+    /**
+     * View edit post form
+     */
+    public function edit()
+    {
         $postID = $this->request->getUrlParameter(1);
         $post = $this->model->getPostById($postID);
 
@@ -50,7 +55,7 @@ class AbstractPostType extends GenericController
 
         $this->response->setVar('post', $post);
         $this->response->setVar('blog', $blog);
-        $this->response->setTitle('Edit blog post');
+        $this->response->setTitle('Editing - '. $post->title);
 
         $extraFields = [];
         BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);

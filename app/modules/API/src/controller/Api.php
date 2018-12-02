@@ -74,7 +74,9 @@ class Api extends GenericController
 
         $tags = $this->modelPosts->countAllTagsByBlog($blog->id, $sort);
 
-        $this->response->addHeader('Access-Control-Allow-Origin', '*');
+        if (CUSTOM_DOMAIN) {
+            $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
+        }
         $this->response->setBody(JSONhelper::arrayToJSON($tags));
     }
 
@@ -85,7 +87,6 @@ class Api extends GenericController
     public function blogs()
     {
         if ($blogID = $this->request->getInt('blogID', false)) {
-
             if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
                 die("{ 'error': 'Unable to find blog' }");
             }

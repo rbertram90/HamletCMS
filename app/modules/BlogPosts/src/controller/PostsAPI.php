@@ -104,7 +104,7 @@ class PostsAPI extends GenericController
         BlogCMS::runHook('onPostCreated', ['post' => $post]);
 
         // todo - add new post ID
-        $this->response->setBody('{ "success": "true", "post": ' . json_encode($post) .' }');
+        $this->response->setBody('{ "success": "true", "post": '. json_encode($post) .' }');
     }
 
     /**
@@ -185,6 +185,39 @@ class PostsAPI extends GenericController
         $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
     }
     
+    /**
+     * Clone a post
+     */
+    public function clonePost()
+    {
+        $postID = $this->request->getInt('postID');
+        $blogID = $this->request->getInt('blogID');
+
+        if (!$post = $this->model->getPostById($postID)) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Post not found" }');
+            $this->response->code(406);
+            return;
+        }
+
+        // We've already verified that the user has access to post for this
+        // blog so check the blog ID listed for this post is a match
+        if ($post->blog_id != $blogID) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
+            $this->response->code(406);
+            return;
+        }
+
+        if ($newPostID = $this->model->clonePost($postID)) {
+            $newPost = $this->model->getPostById($newPostID);
+            BlogCMS::runHook('onPostCreated', ['post' => $newPost]);
+            $this->response->setBody('{ "success": true, "newPostID": '.$newPostID.' }');
+        }
+        else {
+            $this->response->setBody('{ "success": false, "errorMessage": "Error cloning post" }');
+            $this->response->code(500);
+        }
+    }
+
     /**
      * Handles /api/posts/delete/<postID>
      * 
@@ -292,6 +325,10 @@ class PostsAPI extends GenericController
             'posts'     => $this->model->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
         
+        if (CUSTOM_DOMAIN) {
+            $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
+        }
+
         $this->response->setBody(JSONhelper::arrayToJSON($result));
     }
 
