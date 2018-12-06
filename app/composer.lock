@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "eb653ff57faad609ffd674996a3e5545",
@@ -140,12 +140,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rbertram90/core.git",
-                "reference": "394a315885cf6d7832e0edfd4df8bc9b9fec8d25"
+                "reference": "de0179243d00fccf18963987d0a08e5cc45c60d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rbertram90/core/zipball/394a315885cf6d7832e0edfd4df8bc9b9fec8d25",
-                "reference": "394a315885cf6d7832e0edfd4df8bc9b9fec8d25",
+                "url": "https://api.github.com/repos/rbertram90/core/zipball/de0179243d00fccf18963987d0a08e5cc45c60d6",
+                "reference": "de0179243d00fccf18963987d0a08e5cc45c60d6",
                 "shasum": ""
             },
             "type": "library",
@@ -162,7 +162,7 @@
                 "source": "https://github.com/rbertram90/core/tree/master",
                 "issues": "https://github.com/rbertram90/core/issues"
             },
-            "time": "2018-04-30T19:02:39+00:00"
+            "time": "2018-11-24T23:45:20+00:00"
         },
         {
             "name": "smarty/smarty",
