@@ -20,7 +20,6 @@ use Athens\CSRF;
         'BlogPosts' => ['optional' => 0],
         'BlogView' => ['optional' => 0],
         'Contributors' => ['optional' => 0],
-        'FavouriteBlogs' => ['optional' => 0],
         'Files' => ['optional' => 0],
         'Settings' => ['optional' => 0],
         'SiteAdmin' => ['optional' => 0],
@@ -29,8 +28,9 @@ use Athens\CSRF;
         'EventLogger' => ['optional' => 1],
         'LayoutPost' => ['optional' => 1],
         'MarkdownPost' => ['optional' => 1],
-        'PostComments' => ['optional' => 1],
         'VideoPost' => ['optional' => 1],
+        'PostComments' => ['optional' => 1],
+        'FavouriteBlogs' => ['optional' => 1],
     ];
 
     if ($request->method() == 'POST') {

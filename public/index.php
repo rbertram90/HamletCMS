@@ -1,17 +1,16 @@
 <?php
 namespace rbwebdesigns\blogcms;
 
-use Athens\CSRF;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\blogcms\BlogCMSResponse;
 use rbwebdesigns\blogcms\Website\controller\Site;
 
 /****************************************************************
-  Website Start point
+  Website entrypoint
 ****************************************************************/
 
     // Include cms setup script
-    require_once __DIR__ . '/../app/setup.inc.php';
+    require_once __DIR__ .'/../app/setup.inc.php';
 
 
 /****************************************************************
@@ -29,17 +28,21 @@ use rbwebdesigns\blogcms\Website\controller\Site;
     $action = $request->getControllerName();
     
     // Check if we are viewing a blog
-    if($action == 'blogs') {
+    if ($action == 'blogs') {
         // Viewing a blog
+        // Mark that we are not using a custom domain name
         define('CUSTOM_DOMAIN', false);
 
-        // Get the ID from the URL (& remove)
+        // Get the blog ID from the URL
         define('BLOG_KEY', $request->getUrlParameter(0));
         
         // Check key is somewhat valid
-        if(strlen(BLOG_KEY) != 10 || !is_numeric(BLOG_KEY)) redirect('/notfound');
+        // @todo make a not found page!
+        if(strlen(BLOG_KEY) != 10 || !is_numeric(BLOG_KEY)) {
+            $response->redirect('/');
+        }
         
-        require SERVER_ROOT . '/app/blog_setup.inc.php';
+        require SERVER_ROOT .'/app/blog_setup.inc.php';
         
         // Exit here
         exit;
@@ -51,22 +54,24 @@ use rbwebdesigns\blogcms\Website\controller\Site;
 
     $controller = new Site($request, $response);
 
+    // Check that the route exists
+    if (!method_exists($controller, $action)) {
+        $response->redirect('/');
+    }
+
 /****************************************************************
   Get body content
 ****************************************************************/
 
     // Add default stylesheet(s)
     $response->addStylesheet('/css/semantic.css');
-    $response->addStylesheet('/resources/css/header.css');
     $response->addStylesheet('/css/blogs_stylesheet.css');
 
     // Add default script(s)
     $response->addScript('/resources/js/jquery-1.8.0.min.js');
     $response->addScript('/js/semantic.js');
-    $response->addScript('/resources/js/core-functions.js');
-    $response->addScript('/resources/js/validate.js');
-    $response->addScript('/resources/js/ajax.js');
-
+    
+    // Set default meta data
     $response->setTitle('Default title');
     $response->setDescription('Default page description');
 

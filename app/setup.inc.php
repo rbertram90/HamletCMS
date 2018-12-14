@@ -1,6 +1,6 @@
 <?php
+
 namespace rbwebdesigns\blogcms;
-// use rbwebdesigns\core\model\UserFactory;
 
 /**
  * app/setup.php
@@ -13,10 +13,10 @@ namespace rbwebdesigns\blogcms;
  */
 
     // Composer setup
-    require_once __DIR__ . '/vendor/autoload.php';
+    require_once __DIR__ .'/vendor/autoload.php';
 
     // Setup common between cms and blog front-end
-    require_once __DIR__ . '/envsetup.inc.php';
+    require_once __DIR__ .'/envsetup.inc.php';
 
 
 /****************************************************************
@@ -26,7 +26,7 @@ namespace rbwebdesigns\blogcms;
     $session = BlogCMS::session();
 
     // Check if we are logged in
-    if(gettype($session->currentUser) == 'array') {
+    if (gettype($session->currentUser) == 'array') {
         define('USER_AUTHENTICATED', true);
     }
     else {
