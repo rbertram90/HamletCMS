@@ -44,39 +44,53 @@ class PostSettings extends GenericController
             $this->response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
         }
 
+        $customTemplateFile = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl';
+        if (file_exists($customTemplateFile)) {
+            $this->response->setVar('postTemplate', file_get_contents($customTemplateFile));
+        }
+        else {
+            $this->response->setVar('postTemplate', file_get_contents(SERVER_MODULES_PATH .'/BlogView/src/templates/posts/teaser.tpl'));
+        }
+
+        $this->response->addScript('/resources/ace/ace.js');
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Post Settings - ' . $this->blog->name);
-        $this->response->write('posts.tpl', 'Settings');
+        $this->response->write('settings.tpl', 'BlogPosts');
     }
 
     /**
      *  Update how posts are displayed on the blog
      */
-    public function action_updatePostsSettings()
+    protected function action_updatePostsSettings()
     {
         $update = $this->blog->updateConfig([
             'posts' => [
-                'dateformat'        => $this->request->getString('fld_dateformat'),
-                'timeformat'        => $this->request->getString('fld_timeformat'),
                 'postsperpage'      => $this->request->getInt('fld_postsperpage'),
                 'allowcomments'     => $this->request->getInt('fld_commentapprove'),
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
                 'showtags'          => $this->request->getString('fld_showtags'),
-                'dateprefix'        => $this->request->getString('fld_dateprefix'),
-                'dateseperator'     => $this->request->getString('fld_dateseperator'),
-                'datelocation'      => $this->request->getString('fld_datelocation'),
-                'timelocation'      => $this->request->getString('fld_timelocation'),
                 'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
                 'shownumcomments'   => $this->request->getString('fld_shownumcomments')
             ]
         ]);
+
+        if (!$update) {
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error saving to database", "error");
+        }
         
-        if($update) {
+        if (!is_dir(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates')) {
+            mkdir(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates');
+        }
+
+        $postTemplate = $this->request->get('fld_post_template');
+        $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl', $postTemplate);
+
+        if ($update) {
             BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
             $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Post settings updated", "success");
         }
         else {
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error writing teaser template file", "error");
         }
     }
 

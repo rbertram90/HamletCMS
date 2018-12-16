@@ -26,12 +26,6 @@
     <div class="content">
 
         <h2 class="header"><a href="{$blog_root_url}/posts/{$post->link}">{$post->title}</a></h2>
-
-        {if $post->headerDate}
-            <div class="meta">
-                <span>{$post->headerDate}</span>
-            </div>
-        {/if}
         
         <div class="description post-content">
             {if $post->type == 'gallery'}
@@ -52,7 +46,7 @@
         <div class="extra post-footer">
             <div class="meta bottom">
                 <!-- Post Date -->
-                <span class="post-date">{$post->footerDate}</span>
+                <span class="post-date">Posted {$post->timestamp|date_format:"%Y/%m/%d"} at {$post->timestamp|date_format:"%H:%M"}</span>
                 
                 {if $shownumcomments}
                     <span class="post-comment-count">{$post->numcomments} comments</span>
@@ -81,8 +75,9 @@
                 <!-- Social Media -->
                 {if $showsocialicons}
                     {$encodedTitle = rawurlencode($post->title)}
-                    {$encodedUrl   = rawurlencode("{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}{$blog_root_url}/posts/{$post->link}")}
                     {$unencodedUrl = "{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}{$blog_root_url}/posts/{$post->link}"}
+                    {$encodedUrl   = rawurlencode($unencodedUrl)}
+
                     <div class="social-icons">
                         <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;" class="ui icon facebook button"><i class="facebook icon"></i></a>
                         <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank" class="ui icon twitter button"><i class="twitter icon"></i></a>
