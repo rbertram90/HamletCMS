@@ -12,16 +12,28 @@
  *   - $userIsContributor
  *}
 <div class="item post">
-    <div class="content">
-        
-        <div class="post-header">
-            <div class="meta top">
-                <span class="post-date">{$post->headerDate}</span>
+
+    {if $post->teaser_image and $post->teaser_image != "false"}
+        <div class="image">
+            <div class="teaser-image">
+                <a href="{$blog_root_url}/posts/{$post->link}">
+                    <img src="{$blog_file_dir}/images/{$post->teaser_image}" class="ui fluid image">
+                </a>
             </div>
-            <h2><a href="{$blog_root_url}/posts/{$post->link}">{$post->title}</a></h2>
         </div>
+    {/if}
+
+    <div class="content">
+
+        <h2 class="header"><a href="{$blog_root_url}/posts/{$post->link}">{$post->title}</a></h2>
+
+        {if $post->headerDate}
+            <div class="meta">
+                <span>{$post->headerDate}</span>
+            </div>
+        {/if}
         
-        <div class="post-content">
+        <div class="description post-content">
             {if $post->type == 'gallery'}
                 <div id="galleria_{$post->id}">
                     {foreach $post->images as $path}
@@ -34,18 +46,10 @@
                 <script>Galleria.run("#galleria_{$post->id}");</script>
             {/if}
 
-            {if $post->teaser_image and $post->teaser_image != "false"}
-                <div class="teaser-image">
-                    <a href="{$blog_root_url}/posts/{$post->link}">
-                        <img src="{$blog_file_dir}/images/{$post->teaser_image}" class="ui fluid image">
-                    </a>
-                </div>
-            {/if}
-
             {$post->trimmedContent}
         </div>
         
-        <div class="post-footer">
+        <div class="extra post-footer">
             <div class="meta bottom">
                 <!-- Post Date -->
                 <span class="post-date">{$post->footerDate}</span>

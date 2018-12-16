@@ -127,6 +127,7 @@ class BlogContent
     public function generatePostTeaser($post, $config)
     {
         $teaserResponse = new BlogCMSResponse();
+        $teaserResponse->enableSecureMode();
 
         // Config defaults
         $showTags = 1;

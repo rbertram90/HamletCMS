@@ -85,14 +85,36 @@ class BlogCMSResponse extends Response
 
     /**
      * Overwrites default to use smarty templates
+     * 
+     * @param string $name
+     * @param mixed $value
      */
     public function setVar($name, $value)
     {
         $this->smarty->assign($name, $value);
     }
 
+    /**
+     * Get the value of a variable in the smarty template
+     * 
+     * @param string $name
+     *   Variable name
+     * 
+     * @return mixed
+     */
     public function getVar($name) {
         return $this->smarty->getTemplateVars($name);
     }
 
+    /**
+     * A template may be exposed to a user to edit, give the option
+     * to restrict smarty functionality for security purposes.
+     * 
+     * @see https://www.smarty.net/docsv2/en/variable.security.tpl
+     */
+    public function enableSecureMode()
+    {
+        $this->smarty->security = true;
+    }
+    
 }
