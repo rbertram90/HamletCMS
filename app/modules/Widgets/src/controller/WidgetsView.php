@@ -43,7 +43,7 @@ class WidgetsView extends GenericController
             $widgets[$sectionlower] = '';
             foreach ($childWidgets as $key => $widget) {
                 $id = $sectionlower .'_'. $key;
-                $widgets[$sectionlower] = "<div id='{$id}' class='widget'></div>";
+                $widgets[$sectionlower].= "<div id='{$id}' class='widget'></div>";
                 $params = [
                     "blogID" => $this->blog->id,
                     "section" => $section,
