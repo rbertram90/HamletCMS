@@ -8,11 +8,15 @@ class AbstractWidget
 {
     protected $request;
     protected $response;
+    protected $blog;
 
     public function __construct()
     {
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
+
+        BlogCMS::$blogID = $this->request->getInt('blogID');
+        $this->blog = BlogCMS::getActiveBlog();
     }
 
     /**
