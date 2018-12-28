@@ -1,0 +1,10 @@
+[
+    {
+        "key": "customHTML",
+        "name": "Custom HTML",
+        "description": "Static HTML code",
+        "version": 1.0,
+        "form": "rbwebdesigns\\blogcms\\Widgets\\forms\\ConfigureCustomHTML",
+        "class": "rbwebdesigns\\blogcms\\Widgets\\widgets\\CustomHTML"
+    }
+]

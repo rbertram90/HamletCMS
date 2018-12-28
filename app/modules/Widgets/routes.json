@@ -12,5 +12,12 @@
         "permissions": ["change_settings"],
         "controller": "\\rbwebdesigns\\blogcms\\Widgets\\Controller\\WidgetsAdmin",
         "action": "configureWidget"
+    },
+    {
+        "key": "widgets.render",
+        "path": "/cms/widgets/render",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Widgets\\Controller\\WidgetsView",
+        "action": "generateWidget"
     }
 ]

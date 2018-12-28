@@ -33,7 +33,7 @@ class BlogCMS
     /**
      * @var array  enabled modules
      */
-    protected static $modules = [];
+    public static $modules = [];
 
     protected static $modelManager = null;
 
@@ -408,7 +408,7 @@ class BlogCMS
             if (file_exists($filePath)) {
                 $permissions = JSONhelper::JSONFileToArray($filePath);
                 foreach ($permissions as $permission) {
-                    if (array_key_exists($permission['key'], $permissions)) {
+                    if (array_key_exists($permission['key'], $permissionCache)) {
                         print 'WARNING: Duplicate permission key "'. $permission['key'] .'" in '. $module->key.PHP_EOL;
                         continue;
                     }

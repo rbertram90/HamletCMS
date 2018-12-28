@@ -26,13 +26,11 @@
     <div class="one column row">
         <div class="column">
             {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Widgets')}
+            {viewPageHeader('Widgets', 'sliders horizontal', $blog->name)}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {* Header *}
-            {viewPageHeader('Widgets', 'sliders horizontal', $blog->name)}
-    
             <form method="post" id="configureWidgetsMainForm">
             
                 {* Save Message *}
@@ -46,36 +44,36 @@
 
                 <div class="ui segments" style="background-color:#fff;">
                     {foreach from=$widgetconfig key=sectionname item=section}
-                    {* Add Widget Button *}
-                    <div class="ui clearing segment">
-                        <h3 class="ui left floated header">{$sectionname}</h3>
-                        <button class="ui right floated basic green icon button" type="button" onclick="$('#widget_location').val('{$sectionname}'); $('#addWidgetPopup').modal('show');">
-                            <i class="plus icon"></i> Add Widget
-                        </button>
-                    </div>
-                    {if count($section) == 0}
-                    {* Empty Section *}
-                    <div id="{$sectionname}-widgetlist" data-sectionname="{$sectionname}" class="ui segments" data-empty="true">
-                        <div class="ui segment" data-placeholder="true"><i style="color:grey;">Empty</i></div>
-                    </div>
-                    {else}
-                    {* Section *}
-                    <div id="{$sectionname}-widgetlist" data-sectionname="{$sectionname}" class="ui segments" data-empty="false">
-                        {foreach from=$section key=widgettype item=widget}
-                        <div data-saved="true" class="ui segment clearing widget_placeholder" data-widgetsection="{$sectionname}" data-widgetname="{$widgettype}">
-                            <button type="button" class="ui right floated icon negative basic button" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>
-                            <button type="button" class="ui right floated icon blue basic button" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>
-                            <p><i class="move grey icon"></i> {$widgettype}</p>
-                            {*
-                                This textarea is the full data source for each widget
-                                The value and the name are both important - the name will dynamically change
-                                when widget is dropped into another section
-                            *}
-                            <textarea style="display:none;" class="widgetconfigjson" name="widgets[{$sectionname}][{$widgettype}]">{json_encode($widget, JSON_PRETTY_PRINT)}</textarea>
+                        {* Add Widget Button *}
+                        <div class="ui clearing segment">
+                            <h3 class="ui left floated header">{$sectionname}</h3>
+                            <button class="ui right floated basic green icon button" type="button" onclick="$('#widget_location').val('{$sectionname}'); $('#addWidgetPopup').modal('show');">
+                                <i class="plus icon"></i> Add Widget
+                            </button>
                         </div>
-                        {/foreach}
-                    </div>
-                    {/if}
+                        {if count($section) == 0}
+                            {* Empty section placeholder *}
+                            <div id="{$sectionname}-widgetlist" data-sectionname="{$sectionname}" class="ui segments" data-empty="true">
+                                <div class="ui segment" data-placeholder="true"><i style="color:grey;">Empty</i></div>
+                            </div>
+                        {else}
+                            {* Section *}
+                            <div id="{$sectionname}-widgetlist" data-sectionname="{$sectionname}" class="ui segments" data-empty="false">
+                                {foreach from=$section key=widgettype item=widget}
+                                <div data-saved="true" class="ui segment clearing widget_placeholder" data-widgetsection="{$sectionname}" data-widgetname="{$widgettype}">
+                                    <button type="button" class="ui right floated icon negative basic button" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>
+                                    <button type="button" class="ui right floated icon blue basic button" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>
+                                    <p><i class="move grey icon"></i> {$widgettype}</p>
+                                    {*
+                                        This textarea is the full data source for each widget
+                                        The value and the name are both important - the name will dynamically change
+                                        when widget is dropped into another section
+                                    *}
+                                    <textarea style="display:none;" class="widgetconfigjson" name="widgets[{$sectionname}][{$widgettype}]">{json_encode($widget, JSON_PRETTY_PRINT)}</textarea>
+                                </div>
+                                {/foreach}
+                            </div>
+                        {/if}
                     {/foreach}
                 </div>
             
@@ -95,7 +93,7 @@
         {foreach from=$installedwidgets key=name item=widget}
             <div class="ui clearing segment">
                 <button class="ui right floated icon green button" onclick="submitAddWidget(this);" data-widgetname="{$name}" data-widgettitle="{$widget.name}"><i class="plus icon"></i> Add</button>
-                <div class="widget_config" style="display:none;">{$widget._settings_json}</div>
+                <div class="widget_config" style="display:none;">{* todo *}</div>
                 <h3>{$widget.name}</h3>
                 <p>{$widget.description}</p>
             </div>
@@ -164,7 +162,7 @@ function submitAddWidget(buttonElement) {
     $('#unsaved-changes').show();
 }
 
-    
+// Show the edit widget form
 function runConfigureWidgetForm(buttonElement) {
     
     var buttonParent = $(buttonElement).parent();
@@ -177,25 +175,27 @@ function runConfigureWidgetForm(buttonElement) {
         var editForm = $('#editWidgetPopup .content form');
         editForm.data('widgetname', widgetName);
         editForm.data('widgetsection', widgetSection);
+        editForm.submit(submitConfigureWidgetForm);
         
-        var currentValues = JSON.parse($(buttonElement).siblings(".widgetconfigjson").val());
+        var fieldData = $(buttonElement).siblings(".widgetconfigjson").val();
+        var currentValues = fieldData.length > 0 ? JSON.parse(fieldData) : [];
         
         for(var item in currentValues) {
-            $('#editWidgetPopup .content form #widget\\[' + item + '\\]').val(currentValues[item]);
+            if (currentValues[item].length > 0) {
+                $('#editWidgetPopup .content form #widget\\[' + item + '\\]').val(currentValues[item]);
+            }
         }
     });
     
     $('#editWidgetPopup').modal('show');
 }
-    
-function submitConfigureWidgetForm(form) {
-    
-    var widgetSection = $(form).data('widgetsection');
-    var widgetName = $(form).data('widgetname');
-    
+
+function submitConfigureWidgetForm() {
+    var widgetSection = $(this).data('widgetsection');
+    var widgetName = $(this).data('widgetname');
     var widgetJson = '{ldelim}';
     
-    for(var i = 0, element; element = form.elements[i++];) {
+    for(var i = 0, element; element = this.elements[i++];) {
         if(element.name.substring(0, 6) == 'widget') {
             fieldName = element.name.slice(7, -1);
             fieldValue = element.value;
@@ -223,7 +223,6 @@ function submitConfigureWidgetForm(form) {
     return false;
 }
     
-    
 function submitRemoveWidget(buttonElement) {
     
     var fieldParent = $(buttonElement).parent();
@@ -248,7 +247,7 @@ function submitRemoveWidget(buttonElement) {
     
 
 // Define the droppable areas
-var drake = dragula([document.querySelector("#Header-widgetlist"),document.querySelector("#Footer-widgetlist"),document.querySelector("#LeftPanel-widgetlist"),document.querySelector("#RightPanel-widgetlist")], {
+var drake = dragula([document.querySelector("#Header-widgetlist"), document.querySelector("#Footer-widgetlist"), document.querySelector("#LeftPanel-widgetlist"),document.querySelector("#RightPanel-widgetlist")], {
     revertOnSpill: true
     
 }).on('drop', function(el, target, source, sibling)

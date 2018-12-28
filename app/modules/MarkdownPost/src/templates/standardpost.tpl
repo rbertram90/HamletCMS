@@ -1,22 +1,13 @@
 {if isset($post)}
-
     {* We are editing the post *}
     {$formAction = "/cms/posts/edit/{$post->id}"}
-    {$fieldTitle = $post->title}
-    {$fieldSummary = $post->summary}
-    {$fieldContent = $post->content}
-    {$teaserImage = $post->teaser_image}
     {$fieldTags = str_replace("+"," ",$post->tags)}
     {$submitLabel = 'Update'}
     {$mode = 'edit'}
     {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
-
 {else}
     {* This must be a new post *}
     {$formAction = "/cms/posts/create/{$blog->id}/standard"}
-    {$fieldTitle = ''}
-    {$fieldContent = ''}
-    {$teaserImage = ''}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
     {$mode = 'create'}
@@ -54,7 +45,7 @@
                     <i class="camera icon"></i>
                 </button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="post_content" id="post_content" style="height:30vh;">{$fieldContent}</textarea>
+                <textarea name="post_content" id="post_content" style="height:30vh;">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
@@ -67,6 +58,8 @@
 
         <div class="six wide column">
             {include 'edit-form/post-date.tpl'}
+
+            {include 'edit-form/url.tpl'}
  
             {include 'edit-form/custom-fields.tpl'}
 

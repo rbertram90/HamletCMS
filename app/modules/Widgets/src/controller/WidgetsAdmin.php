@@ -15,25 +15,9 @@ use Codeliner\ArrayReader\ArrayReader;
 class WidgetsAdmin extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
+     * @var \rbwebdesigns\blogcms\Contributors\model\Permissions
      */
-    protected $modelBlogs;
-    /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
-     */
-    protected $modelPosts;
-    /**
-     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
-     */
-    protected $modelComments;
-    /**
-     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
-     */
-    protected $modelUsers;
-    /**
-     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
-     */
-    protected $modelContributors;
+    protected $modelPermissions;
     /**
      * @var \rbwebdesigns\core\Request
      */
@@ -50,12 +34,7 @@ class WidgetsAdmin extends GenericController
     public function __construct()
     {
         // Initialise Models
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
 
@@ -210,23 +189,11 @@ class WidgetsAdmin extends GenericController
      * @return array
      *   Details from all config.json files under the widgets directory
      */
-    protected function getInstalledWidgets()
-    {        
-        $handle = opendir(SERVER_PATH_WIDGETS);
-        $folders = array();
-        
-        // May be wise to create a cache for this...
-        while ($file = readdir($handle)) {
-            if (is_dir(SERVER_PATH_WIDGETS . '/' . $file) && $file != '.' && $file != '..') {
-                $configPath = SERVER_PATH_WIDGETS . '/' . $file . '/config.json';
-                if (!file_exists($configPath)) continue;
-                $config = JSONhelper::JSONFileToArray($configPath);
-                $folders[$file] = $config;
-                $folders[$file]['_settings_json'] = JSONhelper::arrayToJSON($config['defaults']);
-            }
-        }
-        
-        return $folders;
+    public function getInstalledWidgets()
+    {
+        $cachePath = BlogCMS::getCacheDirectory() .'/widgets.json';
+        if (!file_exists($cachePath)) self::reloadWidgetCache();
+        return JSONhelper::JSONFileToArray($cachePath);
     }
     
     /**
@@ -262,22 +229,62 @@ class WidgetsAdmin extends GenericController
      */
     public function configurewidget()
     {
-        if(!$widgetname = $this->request->getString('widget', false)) {
+        if (!$widgetname = $this->request->getString('widget', false)) {
             die('Unable to continue - no widget found');
         }
         
-        // Get the definition
-        $formhelper = new HTMLFormTools(null);        
-        $widgetConfigPath = SERVER_PATH_WIDGETS . '/' . $widgetname . '/config.json';
+        // Get all widgets cache
+        $allWidgets = $this->getInstalledWidgets();
+
+        if (!array_key_exists($widgetname, $allWidgets)) {
+            die('Unable to continue - widget '. $widgetname .' not found');
+        }
         
-        // Get form definition
-        if(!file_exists($widgetConfigPath)) die('Widget definition not found');
-        $widgetConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
-                
-        // Output form
-        echo $formhelper->generateFromJSON($widgetConfig['form-configuration'], $widgetConfig['defaults']);
-        
+        // Get the configuration form for this widget
+        $widgetConfig = $allWidgets[$widgetname];
+        $configFormClass = $widgetConfig['form'];
+        $form = new $configFormClass();
+        $form->output(true);
+
         $this->request->isAjax = true;
     }
     
+
+    /**
+     * NEW widgets.json via modules code
+     */
+    public static function reloadWidgetCache()
+    {
+        $file = fopen(BlogCMS::getCacheDirectory() .'/widgets.json', 'w');
+        $widgetCache = [];
+
+        foreach (BlogCMS::$modules as $module) {
+            $filePath = SERVER_MODULES_PATH .'/'. $module->key .'/widgets.json';
+            if (file_exists($filePath)) {
+                $widgets = JSONhelper::JSONFileToArray($filePath);
+                foreach ($widgets as $widget) {
+                    if (array_key_exists($widget['key'], $widgetCache)) {
+                        print 'WARNING: Duplicate widget key "'. $permission['key'] .'" in '. $module->key.PHP_EOL;
+                        continue;
+                    }
+
+                    $configPath = SERVER_MODULES_PATH .'/'. $module->key .'/src/widgets/'. $widget['key'] .'/config.json';
+                    if (file_exists($configPath)) {
+                        $widgetConfig = JSONHelper::JSONFileToArray($configPath);
+                        $widget = array_merge($widget, $widgetConfig);
+                    }
+                    $widgetCache[$widget['key']] = $widget;
+
+                    if (php_sapi_name() == "cli") {
+                        print "INFO: Added widget - ". $widget['key'] .PHP_EOL;
+                    }
+                }
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($widgetCache));
+        fclose($file);
+    }
+
+
 }

@@ -349,50 +349,6 @@ class BlogContent
     }
     
     /**
-     * New widget generator
-     * @todo complete
-     */
-    public function generateWidgets()
-    {
-        $widgetConfigPath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/widgets.json';
-        $widgets = [];
-
-        if(!file_exists($widgetConfigPath)) return '';
-        
-        $widgetsConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
-
-        $config = BlogCMS::config();
-        if (CUSTOM_DOMAIN) {
-            $cmsDomain = $config['environment']['canonical_domain'];
-            $pathPrefix = '';
-        }
-        else {
-            $cmsDomain = '';
-            $pathPrefix = "/blogs/{$this->blog->id}";
-        }
-
-        $widgetSmarty = new \Smarty;
-        $widgetSmarty->setTemplateDir(SERVER_PATH_WIDGETS);
-
-        foreach ($widgetsConfig as $section => $childWidgets) {
-            $section = strtolower($section);
-            $widgets[$section] = '';
-            foreach ($childWidgets as $name => $widget) {
-                $widgetSmarty->clearAllAssign();
-                foreach ($widget as $settingkey => $settingvalue) {
-                    $widgetSmarty->assign($settingkey, $settingvalue);
-                }
-                $widgetSmarty->assign('blog', $this->blog);
-                $widgetSmarty->assign('cms_url', $cmsDomain);
-                $widgetSmarty->assign('blog_root_url', $pathPrefix);
-                $widgets[$section] .= $widgetSmarty->fetch($name . '/view.tpl');
-            }
-        }
-
-        return $widgets;
-    }
-    
-    /**
      * Generate the HTML to be shown in the footer
      * @return string html
      */

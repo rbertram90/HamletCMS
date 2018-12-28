@@ -37,6 +37,8 @@ class SiteAdmin extends GenericController
         BlogCMS::generateMenuCache();
         BlogCMS::generatePermissionCache();
         BlogCMS::generateTemplateCache();
+        BlogCMS::runHook('onReloadCache', []);
+
         if ($redirect) {
             $this->response->redirect('/cms/admin/modules', 'System caches reloaded', 'success');
         }
@@ -180,6 +182,10 @@ class SiteAdmin extends GenericController
 
         // Update module database
         $this->model->update(['name' => $module->key], ['enabled' => 1]);
+
+        // Run hook
+        BlogCMS::runHook('onModuleInstalled', ['module' => $module]);
+
         $this->response->redirect('/cms/admin/modules', 'Module installed', 'success');
     }
 
@@ -200,6 +206,9 @@ class SiteAdmin extends GenericController
 
         // Update module database
         $this->model->update(['name' => $module->key], ['enabled' => 0]);
+
+        BlogCMS::runHook('onModuleUninstalled', ['module' => $module]);
+
         $this->response->redirect('/cms/admin/modules', 'Module uninstalled', 'success');
     }
 }

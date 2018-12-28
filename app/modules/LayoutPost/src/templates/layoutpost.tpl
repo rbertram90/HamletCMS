@@ -1,21 +1,13 @@
 {if isset($post)}
-
     {* We are editing the post *}
     {$formAction = "/cms/posts/edit/{$post->id}"}
-    {$fieldTitle = $post->title}
-    {$fieldContent = $post->content}
-    {$teaserImage = $post->teaser_image}
     {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
     {$mode = 'edit'}
     {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
-
 {else}
     {* This must be a new post *}
     {$formAction = "/cms/posts/create/{$blog->id}/layout"}
-    {$fieldTitle = ''}
-    {$fieldContent = ''}
-    {$teaserImage = ''}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
     {$mode = 'create'}
@@ -74,6 +66,8 @@
 
         <div class="six wide column">
             {include 'edit-form/post-date.tpl'}
+
+            {include 'edit-form/url.tpl'}
  
             {include 'edit-form/custom-fields.tpl'}
 
