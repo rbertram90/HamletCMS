@@ -57,8 +57,6 @@ class BlogContent
             $this->fileDir = "/blogdata/{$this->blogID}";
         }
 
-
-        
         // todo: Update this...
         if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
             $this->userPermissionsLevel = 2;
@@ -595,7 +593,7 @@ class BlogContent
                 
         foreach($arrayVisitors as $visitor) {
             if($userip == $visitor['userip']) {
-                $this->modelPosts->incrementUserView($postid, $userip, $visitor['userviews']);
+                $this->modelPosts->incrementUserView($postid, $userip);
                 $countUpdated = true;
                 break;
             }

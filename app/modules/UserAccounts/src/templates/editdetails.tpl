@@ -17,8 +17,6 @@
   <a href="/cms/account/avatar" class="item">Upload Avatar</a>
 </div>
 
-<p class="ui message info">Information provided is not passed on to third parties</p>
-
 <form action="/cms/account/settings" method="POST" class="ui form">
 
     <div class="two fields">

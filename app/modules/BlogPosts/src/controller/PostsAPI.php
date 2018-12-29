@@ -28,6 +28,7 @@ class PostsAPI extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->modelAutosaves = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
 
         parent::__construct();
@@ -175,7 +176,7 @@ class PostsAPI extends GenericController
         BlogCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
 
         $this->model->updatePost($post->id, $updates);
-        $this->model->removeAutosave($post->id);
+        $this->modelAutosaves->removeAutosave($post->id);
         
         // Re-fetch post data - will have updated URL alias
         $post = $this->model->getPostByURL($url, $blogID);

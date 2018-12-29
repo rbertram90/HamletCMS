@@ -1,4 +1,4 @@
-<h2>{$heading}</h2>
+<h3>{$heading}</h3>
 
 <div class="ui {$columns} cards">
     {foreach $contributors as $contributor}

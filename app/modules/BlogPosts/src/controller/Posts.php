@@ -195,7 +195,8 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $this->model->removeAutosave($this->post->id);
+        $autosaveModel = BlogCMS::model('rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
+        $autosaveModel->removeAutosave($this->post->id);
 
         if ($this->post['initialautosave'] == 1) {
             // Delete post

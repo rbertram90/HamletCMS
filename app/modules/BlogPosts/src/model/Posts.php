@@ -47,8 +47,7 @@ class Posts extends RBFactory
             'tags'              => 'string',
             'author_id'         => 'number',
             'type'              => 'string',
-            'initialautosave'   => 'boolean',
-            'gallery_imagelist' => 'memo'
+            'initialautosave'   => 'boolean'
         ];
     }
     
@@ -169,30 +168,28 @@ class Posts extends RBFactory
     }
     
     /**
-     * Get a count of posts and the last post date for all contributors for a blog
-     * 
-     * Used in manage contributors view
+     * Get a count of posts & the last post date for all contributors for a blog
      * 
      * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post[]
      */
-    public function countPostsByUser($blogID)
+    public function getPostCountByUser($blogID)
     {
         $query_string = "SELECT author_id, count(*) as post_count, 
         (
-            SELECT timestamp
+            SELECT `timestamp`
             FROM {$this->tableName} as b
             WHERE blog_id='{$blogID}'
             AND author_id=a.author_id
-            AND timestamp < CURRENT_TIMESTAMP
-            ORDER BY timestamp DESC
+            AND `timestamp` < CURRENT_TIMESTAMP
+            ORDER BY `timestamp` DESC
             LIMIT 1
         ) as last_post
         FROM {$this->tableName} as a
         WHERE blog_id = '{$blogID}'
         AND draft = 0
-        AND timestamp <= '". date('Y-m-d H:i:s') ."'
+        AND `timestamp` <= '". date('Y-m-d H:i:s') ."'
         GROUP BY author_id
-        ORDER BY timestamp DESC";
+        ORDER BY `timestamp` DESC";
         
         $statement = $this->db->query($query_string);
         return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
@@ -385,7 +382,7 @@ class Posts extends RBFactory
      * @return string
      *   CSV of formatted, valid tags
      */
-    private function createSafeTagList($tags)
+    public static function createSafeTagList($tags)
     {
         $splitCSV = explode(",", $tags);
         $validTagsString = "";
@@ -394,7 +391,7 @@ class Posts extends RBFactory
         foreach ($splitCSV as $tag) {
             $validTag = trim($tag);
             // Remove anything that isn't alphanumeric or a space
-            $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag); 
+            $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag);
             $validTag = str_replace(" ", "+", $validTag);
             // Check the entry doesn't already exists
             if (array_search($validTag, $validTagsArray) === false) {
@@ -414,7 +411,7 @@ class Posts extends RBFactory
      * @param <string> $text - string to use for URL
      * @return <string> a safe URL to make the pages more SEO friendly
      */
-    public function createSafePostUrl($text)
+    public static function createSafePostUrl($text)
     {
         // Remove anything that isn't alphanumeric or a space
         $postlink = preg_replace("/[^A-Za-z0-9 ]/", '', $text);
@@ -547,9 +544,8 @@ class Posts extends RBFactory
      * Increment a specific users' view count (by IP)
      * @param $postid - id for the post that is viewed
      * @param $userip - the user's ip
-     * @param $updatedviewcount - not used!?
      */
-    public function incrementUserView($postid, $userip, $updatedviewcount)
+    public function incrementUserView($postid, $userip)
     {        
         $sql = "UPDATE ".TBL_POST_VIEWS." SET userviews=userviews+1 WHERE postid='$postid' AND userip='$userip'";
         $this->db->query($sql);
@@ -569,97 +565,5 @@ class Posts extends RBFactory
         ]);
     }
     
-    /**
-     * Auto Save Functionality
-     * 
-     * @todo Add hook for custom post type fields!
-     */
-    public function autosavePost($postID, $data)
-    {
-        // $postCheck = $this->count(['id' => $postID]);
-        $newTags = $this->createSafeTagList($data['tags']);
-        $currentUser = BlogCMS::session()->currentUser;
 
-        if($postID <= 0) {
-            // Post is not saved into the main table - create it as a draft
-            $this->insert([
-                'content'         => $data['content'],
-                'title'           => $data['title'],
-                'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
-                'type'            => $data['type'],
-                'blog_id'         => $data['blogID'],
-                'author_id'       => $currentUser['id'],
-                'draft'           => 1,
-                'initialautosave' => 1,
-                'link'            => $this->createSafePostUrl($data['title']),
-                'timestamp'       => date('Y-m-d H:i:s')
-            ]);
-                        
-            $postID = $this->db->getLastInsertID();
-        }
-        else {
-            $arrayPost = $this->get('initialautosave', ['id' => $postID], '', '', false);
-        
-            if($arrayPost['initialautosave'] == 1) {
-                // Update the post
-                $update = $this->update(['id' => $postID], [
-                    'content'         => $data['content'],
-                    'title'           => $data['title'],
-                    'link'            => $this->createSafePostUrl($data['title']),
-                    'tags'            => $newTags,
-                    'allowcomments'   => $data['allowcomments']
-                ]);
-            }
-        }
-        
-        // Check for existing save for this post
-        $autosaveCheck = $this->db->countRows($this->tblautosave, ["post_id" => $postID]);
-        
-        if($autosaveCheck == 1) {
-            // Found - Update
-            $update = $this->db->updateRow($this->tblautosave, ['post_id' => $postID], [
-                'content'         => $data['content'],
-                'title'           => $data['title'],
-                'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
-                'date_last_saved' => date('Y-m-d H:i:s')
-            ]);
-            if($update === false) return $false;
-            else return $postID;
-        }
-        else {
-            // Not Found - Create
-            $insert = $this->db->insertRow($this->tblautosave, array(
-                'post_id'         => $postID,
-                'content'         => $data['content'],
-                'title'           => $data['title'],
-                'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
-                'date_last_saved' => date('Y-m-d H:i:s')
-            ));
-            if($insert === false) return $false;
-            else return $postID;
-        }
-    }
-    
-    public function removeAutosave($postID)
-    {
-        $postID = Sanitize::int($postID);
-        return $this->db->deleteRow($this->tblautosave, ['post_id' => $postID]);
-    }
-    
-    public function autosaveExists($postID)
-    {
-        $postID = Sanitize::int($postID);
-        $savecount = $this->db->countRows($this->tblautosave, array('post_id' => $postID));
-        if($savecount == 1) return true;
-        else return false;
-    }
-    
-    public function getAutosave($postID)
-    {
-        $postid = Sanitize::int($postID);
-        return $this->db->selectSingleRow($this->tblautosave, '*', array('post_id' => $postID));
-    }
 }

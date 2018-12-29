@@ -42,23 +42,32 @@ class UserAccounts extends GenericController
      */
     public function user()
     {
-        if ($userID = $this->request->getUrlParameter(1)) {
-            $user = $this->model->getById($userID);
-        }
+        if ($userID = $this->request->getUrlParameter(1)) {}
         else {
-            $user = BlogCMS::session()->currentUser;
+            $userID = BlogCMS::session()->currentUser['id'];
         }
+
+        $user = $this->model->getById($userID);
 
         if (!$user) {
             $this->response->redirect('/cms', 'User not found', 'error');
         }
+
+        $postsModel = BlogCMS::model("rbwebdesigns\blogcms\BlogPosts\model\Posts");
+        $numberOfPost = $postsModel->count(['author_id' => $userID]);
+        $this->response->setVar('postCount', $numberOfPost);
+
+        $contributorModel = BlogCMS::model('rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $contributedBlogs = $contributorModel->getContributedBlogs($userID);
+        $this->response->setVar('blogCount', count($contributedBlogs));
+        $this->response->setVar('blogs', $contributedBlogs);
 
         $dynamicContent = "";
         BlogCMS::runHook('content', ['key' => 'userProfile', 'user' => $user, 'content' => &$dynamicContent]);
         $this->response->setVar('dynamicContent', $dynamicContent);
 
         $this->response->setVar('user', $user);
-        $this->response->setTitle($user['username'] . '\'s profile');
+        $this->response->setTitle($user->username . '\'s profile');
         $this->response->write('viewuser.tpl', 'UserAccounts');
     }
 
