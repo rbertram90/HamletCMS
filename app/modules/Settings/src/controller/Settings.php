@@ -254,39 +254,10 @@ class Settings extends GenericController
         $response->setTitle('Choose Template - ' . $blog->name);
         $response->write('template.tpl', 'Settings');
     }
-
-    /**
-     * Handles /settings/blogdesigner/<blogid>
-     * 
-     * @todo update to use smarty template
-     */
-    public function blogdesigner()
-    {
-        if ($this->request->method() == 'POST') return $this->action_updateBlogDisplaySettings();
-
-        // Create custom response as dealing with legacy code
-        $response = new \rbwebdesigns\core\Response();
-
-        $response->setVar('blog', $this->blog);
-        $response->setTitle('Blog Designer - ' . $this->blog->name);
-        $response->addScript('/resources/colorpicker/jscolor.js');
-        $response->write(SERVER_ROOT.'/app/view/settings/blogdesigner.php', array('blog' => $this->blog));
-    }
     
     /******************************************************************
         POST - Blog Settings
     ******************************************************************/
-    
-    /**
-     * View a specific widget config page
-     */
-    private function viewWidgetSpecificSettings($blog, $widgetname)
-    {
-        $settings_view = SERVER_ROOT.'/app/view/settings/widgets_'.$widgetname.'.php';
-        
-        if(file_exists($settings_view)) $this->view->render($settings_view, array('blog' => $blog));
-        else $this->throwNotFound();
-    }
     
     /**
      * Run update for name and description of a blog
@@ -480,78 +451,6 @@ class Settings extends GenericController
         }
         
         return false;
-    }
-    
-    /**
-     * Save template settings
-     * 
-     * Loops through the JSON stored on the
-     * server and looks for the corresponding value
-     * in $_POST
-     */
-    protected function action_updateBlogDisplaySettings()
-    {
-        $log = "";
-        
-        $settings = jsonToArray(SERVER_PATH_BLOGS . '/' . $this->blog->id . '/template_config.json');
-        // Loop through JSON array
-        // $log.= "looping through saved JSON<br>";
-        
-        foreach ($settings as $group => $groupdata) {
-            if (strtolower($group) == 'layout' || strtolower($group) == 'includes') continue;
-            
-            $displayfields = $this->request->get('displayfield');
-
-            // $log.= "<b>processing {$group}</b><br>";
-            // $log.= "looking for [displayfield][{$group}] in POST<br>";
-            $postdata = $displayfields[$group];
-            
-            // Check fields supplied in POST
-            if (!is_array($postdata)) continue;
-
-            // $log.= "found in post<br>";
-            // $log.= "looping through [displayfield][{$group}] in POST<br>";
-            
-            for ($i = 1; $i < count($groupdata); $i++) {
-                // Check that the name from the config is in $_POST
-                // echo array_key_exists('label', $groupdata[$i]);
-                $fieldname = str_replace(' ', '_', $groupdata[$i]['label']);
-                
-                // $log.= "checking for ".$fieldname."(json) in POST<br>";
-                
-                if (!array_key_exists($fieldname, $postdata)) continue;
-
-                // $log.= "found ".$fieldname."<br>";
-                
-                // Yes!
-                if (array_key_exists('defaultfield', $_POST) &&
-                    array_key_exists($group, $_POST['defaultfield']) &&
-                    array_key_exists($fieldname, $_POST['defaultfield'][$group])) {
-                    $defaultdata = $_POST['defaultfield'][$group][$fieldname];
-                }
-                else {
-                    $defaultdata = "off"; // may not be sent
-                }
-                
-                if (strtolower($defaultdata) == "on") {
-                    // Value is default
-                    // echo "Reverting {$group} {$i} to default<br>";
-                    $settings[$group][$i]['current'] = $settings[$group][$i]['default'];
-                }
-                else {
-                    // echo "setting {$group} {$i} current -> {$postdata[$fieldname]}<br>";
-                    $settings[$group][$i]['current'] = $postdata[$fieldname];
-                }
-            }
-        }
-        
-        // die($log);
-        
-        // Save the config file back
-        file_put_contents(SERVER_PATH_BLOGS . '/' . $this->blog->id . '/template_config.json', json_encode($settings));
-
-        // BlogCMS::runHook('onStylesheetUpdated', ['blog' => $blog]);
-        $this->response->redirect('/cms/settings/blogdesigner/' . $this->blog->id, 'Settings Updated', 'Success');
     }
     
     /**

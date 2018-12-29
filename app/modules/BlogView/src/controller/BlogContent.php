@@ -536,51 +536,7 @@ class BlogContent
         $settings = file_get_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json');
         return json_decode($settings, true);
     }
-    
-    /**
-     * Generates the CSS for a blog specified in the JSON file 'template_config.json'
-     * which should exist under the $pblogid folder
-     */
-    public function getBlogCustomCSS()
-    {
-        $lobjSettings = $this->getTemplateConfig();
-        $css = "";
         
-        if(count($lobjSettings) == 0) return;
-        
-        foreach($lobjSettings as $key => $lobjClass):
-            $key = strtolower($key);
-            if($key == 'layout' || $key == 'includes') continue;
-        
-            // 0 should always be class name
-            $css.= '.'.$lobjClass[0].' {';
-            
-            foreach($lobjClass as $rule):
-                // Check it is an array
-                if(gettype($rule) !== "array") continue;
-                if($rule['current'] === $rule['default']) continue;
-                
-                switch($rule['type']):
-                    case "bgcolor":
-                        $css.= "background-color:#".$rule['current'].';';
-                        break;
-                    case "color":
-                        $css.= 'color:#'.$rule['current'].';';
-                        break;
-                    case "font":
-                        $css.= 'font-family:'.$this->getFontFamilyFromName($rule['current']).';';
-                        break;
-                    case "textsize":
-                        $css.= 'font-size:'.$rule['current'].'px;';
-                        break;
-                endswitch;
-            endforeach;
-            $css.= '}';
-        endforeach;
-        
-        return $css;
-    }
-    
     /**
      * addView($postid as int)
      * Record that user has viewed the post

@@ -86,13 +86,13 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
     $response->setVar('custom_domain', CUSTOM_DOMAIN);
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
-    $response->setVar('custom_css', ''); // $page_controller->getBlogCustomCSS()
+    // $response->setVar('custom_css', ''); // $page_controller->getBlogCustomCSS()
 
     $widgetsController = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView();
     $response->setVar('widgets', $widgetsController->generatePlaceholders());
     $response->setVar('user_is_contributor', BlogCMS::$userGroup !== false);
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
-    $response->setVar('is_favourite', $page_controller->blogIsFavourite());
+    // $response->setVar('is_favourite', $page_controller->blogIsFavourite());
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());
     $response->setVar('page_footercontent', $page_controller->generateFooter());
     $response->setVar('page_navigation', $page_controller->generateNavigation());

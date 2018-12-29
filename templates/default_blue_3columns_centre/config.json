@@ -4,47 +4,8 @@
         "ColumnCount": 3,
         "PostsColumn": 2
     },
-
     "Includes":
     {
         "semantic-ui": true
-    },
-
-    "Heading":
-    [
-        "header",
-        {"label":"Background Colour","type":"bgcolor","default":"dddddd","current":"dddddd"},
-        {"label":"Text Colour","type":"color","default":"000000","current":"000000"},
-        {"label":"Font Style","type":"font","default":"arial","current":"arial"}
-    ],
-
-    "Posts":
-    [
-        "posts",
-        {"label":"Text Colour","type":"color","default":"000000","current":"000000"},
-        {"label":"Background Colour","type":"bgcolor","default":"ffffff","current":"ffffff"},
-        {"label":"Font Style","type":"font","default":"arial","current":"arial"}
-    ],
-    
-    "Post Headings":
-    [
-        "post_heading",
-        {"label":"Text Colour","type":"color","default":"000000","current":"000000"},
-        {"label":"Font Style","type":"font","default":"arial","current":"arial"}
-    ],
-    
-    "Post Content":
-    [
-        "post_content",
-        {"label":"Text Colour","type":"color","default":"000000","current":"000000"},
-        {"label":"Font Style","type":"font","default":"arial","current":"arial"}
-    ],
-    
-    "Footer":
-    [
-        "footer",
-        {"label":"Text Colour","type":"color","default":"000000","current":"000000"},
-        {"label":"Background Colour","type":"bgcolor","default":"dddddd","current":"dddddd"},
-        {"label":"Font Style","type":"font","default":"arial","current":"arial"}
-    ]
+    }
 }
