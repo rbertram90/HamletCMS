@@ -101,8 +101,10 @@ class WidgetsView extends GenericController
         $className = $widgetCache[$widget]['class'];
         $widgetClass = new $className();
         foreach ($widgetsConfig[$section][$widget] as $name => $value) {
+            $widgetClass->$name = $value;
             $this->response->setVar($name, $value);
         }
+        $this->response->setVar('blog', $this->blog);
         $widgetClass->render();
 
         $this->request->isAjax = true;

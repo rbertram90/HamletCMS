@@ -18,46 +18,31 @@ use Codeliner\ArrayReader\ArrayReader;
  */
 class Settings extends GenericController
 {
-    /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
-     */
+    /** @var \rbwebdesigns\blogcms\Blog\model\Blogs */
     protected $modelBlogs;
-    /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
-     */
+    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
     protected $modelPosts;
-    /**
-     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
-     */
-    protected $modelComments;
-    /**
-     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
-     */
+    /** @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts */
     protected $modelUsers;
-    /**
-     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
-     */
+    /** @var \rbwebdesigns\blogcms\Contributors\model\Contributors */
     protected $modelContributors;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
+
+    /** @var \rbwebdesigns\core\Request */
     protected $request;
-    /**
-     * @var \rbwebdesigns\core\Response
-     */
+    /** @var \rbwebdesigns\core\Response */
     protected $response;
-    /**
-     * @var array Active blog
-     */
+
+    /** @var array Active blog */
     protected $blog = null;
     
+    /**
+     * Constructor for Settings controller
+     */
     public function __construct()
     {
-        // Initialise Models
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
 
         $this->request = BlogCMS::request();
@@ -234,6 +219,7 @@ class Settings extends GenericController
 
         if($request->method() == 'POST') return $this->action_saveStylesheet($request, $response, $blog);
 
+        $response->addScript('/resources/ace/ace.js');
         $response->setVar('serverroot', SERVER_ROOT);
         $response->setVar('blog', $blog);
         $response->setTitle('Edit Stylesheet - ' . $blog->name);

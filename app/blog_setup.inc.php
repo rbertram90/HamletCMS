@@ -39,6 +39,9 @@ use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
 
     BlogCMS::$blogID = BLOG_KEY;
 
+    $modelPermissions = BlogCMS::model('rbwebdesigns\blogcms\Contributors\model\Permissions');
+    BlogCMS::$userGroup = $modelPermissions->getUserGroup(BLOG_KEY);
+
     $request = BlogCMS::request();
     $response = BlogCMS::response();
 

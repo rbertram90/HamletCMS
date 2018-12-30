@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms\BlogPosts\model;
 
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\model\RBFactory;
+use rbwebdesigns\core\Sanitize;
 
 class Autosaves extends RBFactory
 {

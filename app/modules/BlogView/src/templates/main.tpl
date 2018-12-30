@@ -3,6 +3,9 @@
 <head>
     <title>{$page_title} - powered by the Blog CMS from RBwebdesigns</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
     
     {$stylesheets}
     {$scripts}
@@ -12,7 +15,7 @@
     // Galleria.run('.galleria');
     </script>
 
-    <link rel="stylesheet" href="{$blog->reletivePath()}/default.css?v={'His'|date}" type="text/css">
+    <link rel="stylesheet" href="{$blog->resourcePath()}/default.css?v={'His'|date}" type="text/css">
 
     <!-- Custom CSS -->
     <style type="text/css" id="customcss">{$custom_css}</style>

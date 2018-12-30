@@ -53,6 +53,14 @@ class Blog
     }
 
     /**
+     * Get the path to blogdata folder
+     */
+    public function resourcePath()
+    {
+        return strlen($this->domain) ? "" : "/blogdata/{$this->id}";
+    }
+
+    /**
      * Get all the users that can contribute to this blog
      * 
      * @return \rbwebdesigns\blogcms\User[]

@@ -75,7 +75,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_left.png" alt="Default Blue Template" width="300">
         </div>
@@ -93,7 +93,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_centre.png" alt="Default Blue Template" width="300">
         </div>
@@ -111,7 +111,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Default Blue Template" width="300">
         </div>
@@ -125,6 +125,29 @@
         </div>
         
         <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_right">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+</div>
+
+<h2>Themed</h2>
+
+<div class="ui three cards">
+    <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Skate template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Skate theme</h3>
+            </div>
+            <div class="description">
+                <p>Great theme for those who love to skateboard</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="skate">
             <i class="add icon"></i>
             Apply to blog
         </button>

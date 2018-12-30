@@ -6,17 +6,17 @@ textarea   { padding:4px; font-family:arial; font-size:14px; }
 a          { color:blue; }
 
 /** Structure **/
-.wrapper     { max-width:1200px; margin:0 auto; }
+.page-wrapper     { max-width:1200px; margin:0 auto; }
 
-.header      { color:#777; height:50vw; max-height:600px; }
-.header h1   { background-color:rgba(50,50,50,0.6); padding:10px; margin-top:0px; text-align:center; }
-.header h1 a { color:#fff; text-decoration:none; }
+.page-header      { color:#777; height:50vw; max-height:600px; }
+.page-header h1   { background-color:rgba(50,50,50,0.6); padding:10px; margin-top:0px; text-align:center; }
+.page-header h1 a { color:#fff; text-decoration:none; }
 
 .posts       { box-sizing:border-box; }
 .post        { background-color:#fff; margin:20px 15px 40px 15px; position:relative; }
-.post-title  { margin:0px; background-color:#eeeeee; padding:10px 8px; }
-.post-title a { font-family: 'Oswald', sans-serif; text-transform:uppercase; color:#222; text-decoration:none; }
-.post-title a:hover { text-decoration:underline; }
+.post h2  { margin:0px; background-color:#eeeeee; padding:10px 8px; }
+.post h2 a { font-family: 'Oswald', sans-serif; text-transform:uppercase; color:#222; text-decoration:none; }
+.post h2 a:hover { text-decoration:underline; }
 .posts img   { max-width:100%; }
 .posts .tag  { background-color:#ddd; border:1px solid #bbb; border-radius:3px;
     display:inline-block; font-size:80%; margin-bottom:4px; margin-right:4px;
@@ -35,7 +35,7 @@ a          { color:blue; }
 .widget h3 { font-family: 'Oswald', sans-serif; background-color:#222; text-transform:uppercase; color:#eee; padding:8px; margin:0px; }
 .widget h3:empty { padding:0px; }
 #widget_profile p { padding-right:8px; padding-left:8px; }
-.footer      { padding:40px 0; font-size:0.8em; text-align:center; clear:both; }
+.page-footer      { padding:40px 0; font-size:0.8em; text-align:center; clear:both; }
 
 /* Desktop */
 @media (min-width: 800px)

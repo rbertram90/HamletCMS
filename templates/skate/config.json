@@ -1,0 +1,11 @@
+{
+    "Layout":
+    {
+        "ColumnCount": 2,
+        "PostsColumn": 2
+    },
+    "Includes":
+    {
+        "semantic-ui": true
+    }
+}

@@ -147,6 +147,7 @@ class BlogContent
         $globalResponse = BlogCMS::response();
         $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
         $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
+        $teaserResponse->setVar('user_is_contributor', $globalResponse->getVar('userIsContributor'));
 
         BlogCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
 
@@ -263,6 +264,9 @@ class BlogContent
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
         $output = "";
 
+        $isContributor = BlogCMS::$userGroup !== false;
+        $response->setVar('userIsContributor', $isContributor);
+
         foreach ($postlist as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
@@ -271,23 +275,8 @@ class BlogContent
         $response->setVar('postsperpage', $postsperpage);
         $response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
-        // Format content
-        /*
-        for ($p = 0; $p < count($postlist); $p++) {
-            
-            if ($postlist[$p]['type'] == 'gallery') {
-                $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
-            }
-        }
-        */
-
-        $isContributor = BlogCMS::$userGroup !== false;
-
         $response->setTitle($this->blog->name);
-        $response->setVar('userIsContributor', $isContributor);
-
         $response->setVar('posts', $output);
-
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');

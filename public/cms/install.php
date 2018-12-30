@@ -107,6 +107,8 @@ use Athens\CSRF;
         BlogCMS::generatePermissionCache();
         BlogCMS::generateTemplateCache();
 
+        BlogCMS::runHook('onReloadCache', []);
+
         // $adminController = new \rbwebdesigns\blogcms\SiteAdmin\controller\SiteAdmin();
         // $adminController->reloadCache(false);
 
@@ -125,6 +127,12 @@ use Athens\CSRF;
 
         $modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
 
+        // Misc folders
+        if (!file_exists(SERVER_AVATAR_FOLDER)) {
+            mkdir(SERVER_AVATAR_FOLDER);
+            mkdir(SERVER_AVATAR_FOLDER.'/thumbs');
+        }
+
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
@@ -132,7 +140,7 @@ use Athens\CSRF;
         }
 
         $checkUser = $modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
-        if($checkUser && $checkUser['id']) {
+        if ($checkUser && $checkUser['id']) {
             $response->redirect('/cms/install.php', 'Username is already taken', 'error');
         }
 
