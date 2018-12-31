@@ -52,6 +52,14 @@ class PostSettings extends GenericController
             $this->response->setVar('postTemplate', file_get_contents(SERVER_MODULES_PATH .'/BlogView/src/templates/posts/teaser.tpl'));
         }
 
+        $customFullTemplate = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl';
+        if (file_exists($customFullTemplate)) {
+            $this->response->setVar('postFullTemplate', file_get_contents($customFullTemplate));
+        }
+        else {
+            $this->response->setVar('postFullTemplate', file_get_contents(SERVER_MODULES_PATH .'/BlogView/src/templates/posts/singlepost.tpl'));
+        }
+
         $this->response->addScript('/resources/ace/ace.js');
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Post Settings - ' . $this->blog->name);
@@ -84,6 +92,9 @@ class PostSettings extends GenericController
 
         $postTemplate = $this->request->get('fld_post_template');
         $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl', $postTemplate);
+
+        $postFullTemplate = $this->request->get('fld_post_full_template');
+        $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl', $postFullTemplate);
 
         if ($update) {
             BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);

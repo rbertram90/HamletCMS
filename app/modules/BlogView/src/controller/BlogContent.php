@@ -22,8 +22,6 @@ class BlogContent
     protected $blog;             // Current viewing blog
     protected $blogID;           // ID of current blog
     protected $blogConfig;       // Config array of current blog
-    protected $blogPostCount;    // Number of posts on current blog
-    protected $userPermissionsLevel; // 0 = none, 1 = post only, 2 = full
     protected $request;
     protected $response;
     
@@ -45,11 +43,9 @@ class BlogContent
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
         $this->blogID        = $blog_key;
         $this->blogConfig    = null;
-        $this->blogPostCount = null;
 
         if (CUSTOM_DOMAIN) {
             $this->pathPrefix = '';
-            $this->fileDir = '';
             $this->fileDir = '';
         }
         else {
@@ -57,63 +53,10 @@ class BlogContent
             $this->fileDir = "/blogdata/{$this->blogID}";
         }
 
-        // todo: Update this...
-        if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
-            $this->userPermissionsLevel = 2;
-        }
-        elseif (BlogCMS::$userGroup) {
-            $this->userPermissionsLevel = 1;
-        }
-        else {
-            $this->userPermissionsLevel = 0;
-        }
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
     }
-    
-    /**
-     * function getBlogInfo()
-     * @return array All information from blog table for current blog
-     */
-    public function getBlogInfo()
-    {
-        return $this->blog;
-    }
-    
-    /**
-     *  function getBlogID()
-     *  @return int ID number for instance
-     */
-    public function getBlogID()
-    {
-        return $this->blogID;
-    }
-    
-    /**
-     * function getPostCount()
-     * @return int number of posts on blog
-    **/
-    public function getPostCount()
-    {
-        // Check Variable Cache
-        if($this->blogPostCount === null) {
-            $this->blogPostCount = $this->modelPosts->countPostsOnBlog($this->blogID);
-        }
-        return $this->blogPostCount;
-    }
-    
-    /**
-     * Check if this blog is currently listed in the users favourites
-     * @return bool true if blog is in current users favourites, false otherwise
-     */
-    public function blogIsFavourite()
-    {
-        $currentUser = BlogCMS::session()->currentUser;
-        if(!isset($currentUser)) return false;
-        return false; // $this->modelBlogs->isFavourite($currentUser, $this->blogID);
-    }
-    
+        
     /**
      * Generate HTML for the 'teaser' view for a post
      * 
@@ -178,17 +121,18 @@ class BlogContent
      */
     public function generateSinglePost($post, $config)
     {
-        $teaserResponse = new BlogCMSResponse();
+        $globalResponse = BlogCMS::response();
 
         // Copy accross sub-set of variables from main template
-        $globalResponse = BlogCMS::response();
+        $teaserResponse = new BlogCMSResponse();
         $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
         $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
         $teaserResponse->setVar('userAuthenticated', $globalResponse->getVar('user_is_logged_in'));
 
+        // Get custom content to be displayed in post
+        // Example - number of comments
         $post->after = [];
-
         BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
 
         // Check if blog template is overriding the teaser
@@ -226,9 +170,6 @@ class BlogContent
         else {
             $post->tags = [];
         }
-
-        $post->headerDate = $this->formatDateFromSettings($post->timestamp, $config, 'title');
-        $post->footerDate = $this->formatDateFromSettings($post->timestamp, $config, 'footer');
 
         switch ($mode) {
             case 'full':
@@ -325,11 +266,11 @@ class BlogContent
             if (is_numeric($postid)) {
                 $arrayPosts = $this->modelPosts->get('*', ['id' => $postid]);
                 $post = $arrayPosts[0];
-                $navigation.= '<a href="'. $this->pathPrefix .'/posts/'. $post->link .'" class="item">'. $post->title .'</a>';
+                $navigation.= "<a href='{$this->pathPrefix}/posts/{$post->link}' class='item'>{$post->title}</a>";
             }
             elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
-                $navigation.= '<a href="'. $this->pathPrefix .'/tags/'. $tag .'" class="item">'. ucfirst($tag) .'</a>';
+                $navigation.= "<a href='{$this->pathPrefix}/tags/{$tag}' class='item'>".ucfirst($tag)."</a>";
             }
         }
         return $navigation;
@@ -498,34 +439,13 @@ class BlogContent
         $response->setVar('blog', $this->blog);
         $response->write('posts/postsbytag.tpl', 'BlogView');
     }
-    
-    /**
-     * getFontFamilyFromName($fontName as String)
-     * @return <string> CSS String for font-family rule
-     */
-    protected function getFontFamilyFromName($fontName)
-    {
-        $fontarray = [
-            "ARIAL" => "Arial, Helvetica, sans-serif",
-            "CALIBRI" => "Calibri, sans-serif",
-            "COMICSANS" => "'Comic Sans MS', cursive",
-            "COURIER" => "'Courier New', monospace",
-            "IMPACT" => "Impact, Charcoal, sans-serif",
-            "LUCIDA" => "'Lucida Console', Monaco, monospace",
-            "TAHOMA" => 'Tahoma, Geneva, sans-serif',
-            "TREBUCHET" => "'Trebuchet MS', sans-serif"
-        ];
-
-        if(array_key_exists($fontName, $fontarray)) return $fontarray[$fontName];
-        else return "Arial, Helvetica, sans-serif";
-    }
-    
+        
     public function getTemplateConfig()
     {
         $settings = file_get_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json');
         return json_decode($settings, true);
     }
-        
+    
     /**
      * addView($postid as int)
      * Record that user has viewed the post
@@ -590,46 +510,7 @@ class BlogContent
         $response->setTitle($post->title);
         $response->write('posts/singlepost.tpl', 'BlogView');
     }
-    
-    /**
-     * Output the post date based on user defined settings
-     */
-    protected function formatDateFromSettings($timestamp, $postSettings, $location)
-    {
-        $res = "";
         
-        // Get Values
-        $dateformat    = 'Y-m-d';
-        $timeformat    = 'H:i:s';
-        $timelocation  = 'footer';
-        $datelocation  = 'footer';
-        $dateprefix    = 'Posted on: ';
-        $dateseperator = ' at ';
-
-        if (getType($postSettings) == 'array') {
-            if (isset($postSettings['dateformat']))    $dateformat    = $postSettings['dateformat'];
-            if (isset($postSettings['timeformat']))    $timeformat    = $postSettings['timeformat'];
-            if (isset($postSettings['timelocation']))  $timelocation  = $postSettings['timelocation'];
-            if (isset($postSettings['datelocation']))  $datelocation  = $postSettings['datelocation'];
-            if (isset($postSettings['dateprefix']))    $dateprefix    = $postSettings['dateprefix'];
-            if (isset($postSettings['dateseperator'])) $dateseperator = $postSettings['dateseperator'];
-        }
-        
-        if ($datelocation == $location) {
-            // Show Date
-            $res.= $dateprefix;
-            $res.= date($dateformat, strtotime($timestamp));
-        }
-        
-        if ($timelocation == $location) {
-            // Show Time
-            $res.= $dateseperator;
-            $res.= date($timeformat, strtotime($timestamp));
-        }
-        
-        return $res;
-    }
-    
     /**
      * trimContent
      * This function provides (needs improvement) a HTML friendly summary of post
