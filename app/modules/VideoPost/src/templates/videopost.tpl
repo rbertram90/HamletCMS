@@ -1,22 +1,14 @@
 {if isset($post)}
     {* We are editing the post *}
-    {$formAction = "/cms/posts/edit/{$post['id']}"}
-    {$fieldTitle = $post['title']}
-    {$fieldContent = $post['content']}
-    {$teaserImage = $post['teaser_image']}
-    {$fieldVideoID = $post['videoid']}
-    {$fieldTags = str_replace("+"," ",$post['tags'])}
+    {$formAction = "/cms/posts/edit/{$post->id}"}
+    {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
-    {$postdate = date('m/d/Y g:ia', strtotime($post['timestamp']))}
+    {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
     {$mode = 'edit'}
 {else}
     {* This must be a new post *}
-    {$formAction = "/cms/posts/create/{$blog.id}/video"}
-    {$fieldTitle = ''}
-    {$fieldContent = ''}
-    {$teaserImage = ''}
+    {$formAction = "/cms/posts/create/{$blog->id}/video"}
     {$fieldTags = ''}
-    {$fieldVideoID = ''}
     {$submitLabel = 'Create'}
     {$postdate = date('m/d/Y g:ia')}
     {$mode = 'create'}
@@ -26,13 +18,13 @@
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog['name']}"), 'New Post')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'New Post')}
         </div>
     </div>
     
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog['name']}")}
+            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog->name}")}
 
             {include 'edit-form/autosave.tpl'}
         </div>
@@ -45,6 +37,8 @@
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
 
+            {include 'edit-form/url.tpl'}
+
             {include 'edit-form/teaser-summary.tpl'}
 
             <div class="field"> 
@@ -56,7 +50,7 @@
             </div>
             <div class="field"> 
                 <label for="video_id">Video ID <a href="#" onclick="alert('Youtube ID are found in the URL youtube.com/user/?v={ldelim}URL{rdelim}'); return false;">[?]</a></label>
-                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$fieldVideoID}" />
+                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$post->videoid}" />
             </div>
 
             <div class="field">
@@ -65,7 +59,7 @@
                     <i class="camera icon"></i>
                 </button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="post_content" id="post_content" style="height:30vh;">{$fieldContent}</textarea>
+                <textarea name="post_content" id="post_content" style="height:30vh;">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
@@ -100,7 +94,7 @@ $(document).ready(function () {
     $('.ui.dropdown').dropdown();
 
     $("#upload_post_image").click(function() {
-        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog.id}', { 'csrf_token': CSRFTOKEN }, function() {
+        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN }, function() {
             $(this).modal('show');
         });
     });

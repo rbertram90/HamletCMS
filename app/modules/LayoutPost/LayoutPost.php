@@ -2,10 +2,12 @@
 namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\JSONHelper;
+use Michelf\Markdown;
 
 class LayoutPost
 {
-    public function onViewEditPost($args) {
+    public function onViewEditPost($args)
+    {
         if ($args['type'] != 'layout') return;
 
         $controller = new LayoutPost\controller\LayoutPost();
@@ -15,15 +17,15 @@ class LayoutPost
     public function runTemplate($args)
     {
         $post = $args['post'];
-        if ($post['type'] !== 'layout') return;
+        if ($post->type !== 'layout') return;
 
         switch ($args['template']) { 
             case 'singlePost':
-                $layout = JSONHelper::JSONtoArray($post['content']);
-                $args['post']['trimmedContent'] = $this->generateLayoutMarkup($layout);
+                $layout = JSONHelper::JSONtoArray($post->content);
+                $args['post']->trimmedContent = $this->generateLayoutMarkup($layout, $args['post']);
                 break;
             case 'postTeaser':
-                $args['post']['trimmedContent'] = $post['summary'];
+                $args['post']->trimmedContent = $post->summary;
                 break;
         }
     }
@@ -31,7 +33,7 @@ class LayoutPost
     /**
      * generateLayoutMarkup
      */
-    protected function generateLayoutMarkup($array)
+    protected function generateLayoutMarkup($array, $post)
     {
         $out = "<div class='ui grid'>";
 
@@ -99,7 +101,7 @@ class LayoutPost
 
                 if ($column['image']) {
                     $classes .= ' black image-column';
-                    $style.= 'background-image: url('. $this->fileDir .'/'. $column['image'] .');';
+                    $style.= 'background-image: url(/blogdata/'. $post->blog_id .'/images/'. $column['image'] .');';
                 }
                 if ($column['minimumHeight']) {
                     $style.= 'min-height: '. $column['minimumHeight'] .';';
@@ -108,7 +110,26 @@ class LayoutPost
                 $rOut.= sprintf("<div class='%s column' style='%s'>", $classes, $style);
 
                 if ($column['textContent']) {
-                    $rOut.= nl2br($column['textContent']);
+                    $rOut.= Markdown::defaultTransform($column['textContent']);
+                }
+
+                if ($column['codeContent']) {
+                    $rOut.= '<pre id="ace_view_'. $c .'" style="width: 100%; margin: 0;">'. $column['codeContent'] .'</pre>';
+                    $rOut.= '<script>
+                        var ace_editor = ace.edit("ace_view_'. $c .'");
+                        ace_editor.setTheme("ace/theme/'. $column['codeTheme'] .'");
+                        ace_editor.session.setMode("ace/mode/'. $column['codeLanguage'] .'");
+                        ace_editor.setReadOnly(true);
+
+                        setTimeout(function() {
+                            var newHeight = ace_editor.getSession().getScreenLength()
+                                    * ace_editor.renderer.lineHeight
+                                    + ace_editor.renderer.scrollBar.getWidth();
+
+                            $("#ace_view_'. $c .'").height(newHeight.toString() + "px");
+                            ace_editor.resize();
+                        }, 1);
+                    </script>';
                 }
 
                 $rOut.= "</div>";

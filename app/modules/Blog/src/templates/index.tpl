@@ -13,10 +13,10 @@
 <table class="ui padded table">
     <thead>
         <tr>
-        <th>Blog Name</th>
-        <th>Contributors</th>
-        <th class="collapsing"></th>
-        <th class="collapsing"></th>
+            <th>Blog Name</th>
+            <th>Contributors</th>
+            <th class="collapsing"></th>
+            <th class="collapsing"></th>
         </tr>
     </thead>
     <tbody>
@@ -24,19 +24,24 @@
         {foreach from=$blogs item=blog}
             <tr>
                 <td>
-                    <a href="/cms/blog/overview/{$blog.id}" title="{$blog.name}" style="font-size:120%;">{$blog.name}</a>
-                    <br><span class="date">{$blog.latestpost.timestamp}</span>
+                    <a href="/cms/blog/overview/{$blog->id}" title="{$blog->name}" style="font-size:120%;">{$blog->name}</a>
+                    {$lastestPost = $blog->latestpost()}
+                    {if $lastestPost}
+                        <br><span class="date">Latest post: {$lastestPost->timestamp|date_format}</span>
+                    {else}
+                        <br><span class="date">Nothing posted</span>
+                    {/if}
                 </td>
                 <td>
-                    {foreach from=$blog.contributors item=contributor name=contributors}
+                    {foreach from=$blog->contributors() item=contributor name=contributors}
                         
-                        <a href="/cms/account/user/{$contributor.id}" class="user-link">
+                        <a href="/cms/account/user/{$contributor->id}" class="user-link">
                         {* Remove whitespace after name *}
                         {strip}
-                            {if $contributor.id == $smarty.session.user}
-                                <span data-userid="{$contributor.id}">You</span>
+                            {if $contributor->id == $smarty.session.user}
+                                <span data-userid="{$contributor->id}">You</span>
                             {else}
-                                <span data-userid="{$contributor.id}">{$contributor.username}</span>
+                                <span data-userid="{$contributor->id}">{$contributor->username}</span>
                             {/if}
 
                             {* Output a comma if this isn't the last item *}
@@ -62,7 +67,7 @@
                             - Actions -
                             <i class="dropdown icon"></i>
                             <div class="menu">
-                                {foreach $blog.actions as $action}
+                                {foreach $blog->actions as $action}
                                     <a href="{$action->url}" class="item">{$action->text}</a>
                                 {/foreach}
                             </div>
@@ -70,7 +75,7 @@
                     </div>
                 </td>
                 <td>
-                    <a href="/blogs/{$blog.id}" class="ui button teal single line" target="_blank">View Blog</a>
+                    <a href="/blogs/{$blog->id}" class="ui button teal single line" target="_blank">View Blog</a>
                 </td>
             </div>
 

@@ -45,7 +45,7 @@
                 {foreach from=$blogs item=blog}
 
                     <tr>
-                        <td><a href="/blogs/{$blog.id}">{$blog.name}</a></td>
+                        <td><a href="/blogs/{$blog->id}">{$blog->name}</a></td>
                     </tr>
 
                 {foreachelse}

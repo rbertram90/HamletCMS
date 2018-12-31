@@ -22,11 +22,6 @@ class Module
     {
         $this->key = $key;
 
-        // Get database details
-        // Required?
-        // $this->factory = BlogCMS::model('\rbwebdesigns\blogcms\SiteAdmin\model\Modules');
-        // $this->factory->get(['name' => $key]);
-
         // load config
         $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . '/' . $this->key . '/info.json');
         foreach ($moduleInfo as $propertykey => $property) {

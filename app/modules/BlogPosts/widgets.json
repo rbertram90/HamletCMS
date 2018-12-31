@@ -1,0 +1,18 @@
+[
+    {
+        "key": "recentPostsList",
+        "name": "Recent posts list",
+        "description": "List recent entries to the blog",
+        "version": 1.0,
+        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureRecentPostsList",
+        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\RecentPostsList"
+    },
+    {
+        "key": "tagList",
+        "name": "Tags list",
+        "description": "List tags on the blog",
+        "version": 1.0,
+        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureTagList",
+        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\TagList"
+    }
+]

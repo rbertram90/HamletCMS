@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/contributors/manage/{$blog['id']}", "Contributors"], 'Edit Group')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/contributors/manage/{$blog->id}", "Contributors"], 'Edit Group')}
         </div>
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Edit Group", 'users', "{$group['name']} - {$blog['name']}")}
+            {viewPageHeader("Edit Group", 'users', "{$group->name} - {$blog->name}")}
         </div>
     </div>
     <div class="row">
@@ -15,12 +15,12 @@
                 <h2>Basic Information</h2>
                 <div class="field">
                     <label for="fld_name">Group Name</label>
-                    <input type="text" value="{$group.name}" name="fld_name" id="fld_name">
+                    <input type="text" value="{$group->name}" name="fld_name" id="fld_name">
                 </div>
 
                 <div class="field">
                     <label for="fld_description">Description</label>
-                    <input type="text" value="{$group.description}" name="fld_description" id="fld_description">
+                    <input type="text" value="{$group->description}" name="fld_description" id="fld_description">
                 </div>
 
                 <div class="ui divider hidden"></div>
@@ -31,19 +31,19 @@
                 {$currentGroup = ""}
 
                 {foreach from=$permissions item=$permission}
-                    {if $currentGroup != $permission.group}
-                        <h4 class="ui header">{ucfirst($permission.group)}</h4>
+                    {if $currentGroup != $permission->group}
+                        <h4 class="ui header">{ucfirst($permission->group)}</h4>
                     {/if}
-                    {$currentGroup = $permission.group}
+                    {$currentGroup = $permission->group}
 
                     <div class="inline field">
                         <div class="ui checkbox">
-                            <input class="hidden" id="perm_{$permission.key}" type="checkbox" name="fld_permission[{$permission.key}]">
-                            <label>{$permission.label}</label>
+                            <input class="hidden" id="perm_{$permission->key}" type="checkbox" name="fld_permission[{$permission->key}]">
+                            <label>{$permission->label}</label>
                             <script>
                                 // Apply defaults
-                                {if $group['permissions'][$permission['key']]}
-                                    $('#perm_{$permission.key}').attr("checked", "checked");
+                                {if $group->permissions[$permission->key]}
+                                    $('#perm_{$permission->key}').attr("checked", "checked");
                                 {/if}
                             </script>
                         </div>

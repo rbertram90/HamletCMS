@@ -2,8 +2,8 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}), 'Files')}
-            {viewPageHeader('Files', 'file image outline', {$blog.name})}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}), 'Files')}
+            {viewPageHeader('Files', 'file image outline', {$blog->name})}
         </div>
     </div>
     <div class="one column row">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="/blogdata/{$blog.id}/images/{$image.name}">
+                    <img src="/blogdata/{$blog->id}/images/{$image.name}">
                 </div>
                 <div class="content">
                     <div class="header">{$image.name}</div>
@@ -71,7 +71,7 @@
 
 <script>
     $('#add_images_button').click(function() {
-        $('#image_upload_modal .main').load('/cms/files/viewimagedrop?blogid={$blog.id}');
+        $('#image_upload_modal .main').load('/cms/files/viewimagedrop?blogid={$blog->id}');
         $('#image_upload_modal').modal('show');
     });
 

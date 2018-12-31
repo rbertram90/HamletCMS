@@ -46,7 +46,7 @@ $(document).ready(function() {
             jQuery.post("/api/posts/autosave",
             {
                 "postID": parseInt($("#post_id").val()),
-                "blogID": {$blog.id},
+                "blogID": {$blog->id},
                 "content": $("#post_content").val(),
                 "title": $("#post_title").val(),
                 "type": $("#post_type").val(),

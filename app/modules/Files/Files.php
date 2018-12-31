@@ -10,7 +10,7 @@ class Files
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('files.manage', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Files';
             $args['menu']->addLink($link);

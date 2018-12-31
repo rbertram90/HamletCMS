@@ -33,4 +33,16 @@ class UserAccounts
         $dbc->query("ALTER TABLE `users` MODIFY `id` int(8) NOT NULL AUTO_INCREMENT;");
     }
 
+    /**
+     * Hook content
+     */
+    public function content($args)
+    {
+        switch ($args['key']) {
+            case 'userProfile':
+
+                // $args['content'].= "<div>{$numberOfPost}</div>";
+                break;
+        }
+    }
 }

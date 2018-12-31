@@ -68,13 +68,15 @@ class Api extends GenericController
 
         $sort = $this->request->getString('sort', 'text'); // text or count
 
-        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
             die("{ 'error': 'Unable to find blog' }");
         }
 
-        $tags = $this->modelPosts->countAllTagsByBlog($blog['id'], $sort);
+        $tags = $this->modelPosts->countAllTagsByBlog($blog->id, $sort);
 
-        $this->response->addHeader('Access-Control-Allow-Origin', '*');
+        if (CUSTOM_DOMAIN) {
+            $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
+        }
         $this->response->setBody(JSONhelper::arrayToJSON($tags));
     }
 
@@ -85,7 +87,6 @@ class Api extends GenericController
     public function blogs()
     {
         if ($blogID = $this->request->getInt('blogID', false)) {
-
             if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
                 die("{ 'error': 'Unable to find blog' }");
             }
@@ -134,13 +135,13 @@ class Api extends GenericController
      */
     protected function blogContributors($blog)
     {
-        $contributors = $this->modelContributors->getBlogContributors($blog['id']);
+        $contributors = $this->modelContributors->getBlogContributors($blog->id);
 
         // Remove potentially sensitive data
         for ($i = 0; $i < count($contributors); $i++) {
-            unset($contributors[$i]['password']);
-            unset($contributors[$i]['security_q']);
-            unset($contributors[$i]['security_a']);
+            unset($contributors[$i]->password);
+            unset($contributors[$i]->security_q);
+            unset($contributors[$i]->security_a);
         }
 
         $this->response->setBody(JSONhelper::arrayToJSON($contributors));
@@ -151,11 +152,11 @@ class Api extends GenericController
      */
     protected function blogOwner($blog)
     {
-        $owner = $this->modelUsers->getById($blog['user_id']);
+        $owner = $this->modelUsers->getById($blog->user_id);
 
-        unset($owner['password']);
-        unset($owner['security_q']);
-        unset($owner['security_a']);
+        unset($owner->password);
+        unset($owner->security_q);
+        unset($owner->security_a);
 
         $this->response->setBody(JSONhelper::arrayToJSON($owner));
     }

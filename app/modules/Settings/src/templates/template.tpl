@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", $blog['name'], "/cms/settings/menu/{$blog['id']}", 'Settings'), 'Template gallery')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Template gallery')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Template gallery', 'sliders horizontal', $blog['name'])}
+            {viewPageHeader('Template gallery', 'sliders horizontal', $blog->name)}
         </div>
     </div>
 </div>
@@ -75,7 +75,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_left.png" alt="Default Blue Template" width="300">
         </div>
@@ -93,7 +93,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_centre.png" alt="Default Blue Template" width="300">
         </div>
@@ -111,7 +111,7 @@
             Apply to blog
         </button>
     </div>
-        <div class="ui card">
+    <div class="ui card">
         <div class="image">
             <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Default Blue Template" width="300">
         </div>
@@ -131,7 +131,30 @@
     </div>
 </div>
 
-<form method="POST" action="/cms/settings/template/{$blog.id}" id="updateTemplateForm">
+<h2>Themed</h2>
+
+<div class="ui three cards">
+    <div class="ui card">
+        <div class="image">
+            <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Skate template" width="300">
+        </div>
+        <div class="content">
+            <div class="header">
+                <h3>Skate theme</h3>
+            </div>
+            <div class="description">
+                <p>Great theme for those who love to skateboard</p>
+            </div>
+        </div>
+        
+        <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="skate">
+            <i class="add icon"></i>
+            Apply to blog
+        </button>
+    </div>
+</div>
+
+<form method="POST" action="/cms/settings/template/{$blog->id}" id="updateTemplateForm">
     <input type="hidden" name="template_id" value="">
 </form>
 

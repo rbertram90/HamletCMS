@@ -1,7 +1,7 @@
 <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
 {if $mode == 'edit'}
-    <input type="hidden" id="post_id" name="post_id" value="{$post.id}">
+    <input type="hidden" id="post_id" name="post_id" value="{$post->id}">
 {else}
     <input type="hidden" id="post_id" name="post_id" value="0">
 {/if}
@@ -22,8 +22,8 @@
   <div class="actions" style="text-align:center;">
     <a href="" class="large ui basic inverted teal button" id="view_post_link"><i class="eye icon"></i> View</a>
     <a href="" class="large ui basic inverted teal button" id="edit_post_link"><i class="pencil icon"></i> Amend</a>
-    <a href="/cms/posts/create/{$blog.id}" class="large ui basic inverted teal button"><i class="plus icon"></i> Create another</a>
-    <a href="/cms/posts/manage/{$blog.id}" class="large ui basic inverted teal button"><i class="copy outline icon"></i>Manage posts</a>
+    <a href="/cms/posts/create/{$blog->id}" class="large ui basic inverted teal button"><i class="plus icon"></i> Create another</a>
+    <a href="/cms/posts/manage/{$blog->id}" class="large ui basic inverted teal button"><i class="copy outline icon"></i>Manage posts</a>
   </div>
 </div>
 
@@ -39,7 +39,7 @@
             return '/cms/posts/cancelsave/' + postID;
         }
         else {
-            return '/cms/blog/overview/{$blog.id}';
+            return '/cms/blog/overview/{$blog->id}';
         }
     };
 
@@ -77,17 +77,21 @@
         event.preventDefault();
 
         var formData = {
-            blogID: {$blog.id},
+            blogID: {$blog->id},
             postID: parseInt($("#post_id").val()),
             title: $("#post_title").val(),
             summary: $("#summary").val(),
             content: $("#post_content").val(),
             tags: $("#post_tags").val(),
+            type: $("#post_type").val(),
             date: $("#post_date").val(),
-            comments: parseInt($("#allow_comment").val()),
             draft: parseInt($("#draft").val()),
             teaserImage: false
         };
+
+        if ($("#allow_comment")) {
+            formData.comments = parseInt($("#allow_comment").val());
+        }
 
         if ($("#teaser_image_image img").length > 0) {
             var imageSrc = $("#teaser_image_image img").attr('src');
@@ -114,12 +118,12 @@
             var saveURL = '/api/posts/create';
         }
 
-        $.ajax({ url: saveURL, async: false, method: 'POST', data: formData }).done(function (data) {
+        $.ajax({ url: saveURL, async: false, type: 'POST', data: formData }).done(function (data) {
             if (data.success) {
                 // window.location = '/cms/posts/manage/' + formData.blogID;
                 $('#post_save_success').modal('setting', 'closable', false).modal('show');
                 $('#edit_post_link').attr('href', '/cms/posts/edit/' + data.post.id);
-                $('#view_post_link').attr('href', '/blogs/{$blog.id}/posts/' + data.post.link);
+                $('#view_post_link').attr('href', '/blogs/{$blog->id}/posts/' + data.post.link);
             }
             enableForm();
 
@@ -130,6 +134,4 @@
         });
         
     });
-
-    // $('#post_save_success').modal('show');
 </script>

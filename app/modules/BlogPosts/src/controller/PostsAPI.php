@@ -28,6 +28,7 @@ class PostsAPI extends GenericController
     public function __construct()
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->modelAutosaves = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
 
         parent::__construct();
@@ -67,9 +68,8 @@ class PostsAPI extends GenericController
             'summary'         => $this->request->getString('summary'),
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserimage'),
-            'blog_id'         => $this->blog['id'],
+            'blog_id'         => $blog->id,
             'draft'           => $this->request->getInt('draft'),
-            'allowcomments'   => $this->request->getInt('comments'),
             'type'            => $this->request->getString('type'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
@@ -84,7 +84,7 @@ class PostsAPI extends GenericController
 
         // Validate unique title
         $url = $this->model->createSafePostUrl($newPost['title']);
-        if ($post = $this->model->getPostByURL($url, $this->blog['id'])) {
+        if ($post = $this->model->getPostByURL($url, $this->blog->id)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
             $this->response->code(400);
             return;
@@ -100,12 +100,12 @@ class PostsAPI extends GenericController
         }
 
         // Get the post created - with ID and URL
-        $post = $this->model->getPostByURL($url, $this->blog['id']);
+        $post = $this->model->getPostByURL($url, $this->blog->id);
 
         BlogCMS::runHook('onPostCreated', ['post' => $post]);
 
         // todo - add new post ID
-        $this->response->setBody('{ "success": "true", "post": ' . json_encode($post) .' }');
+        $this->response->setBody('{ "success": "true", "post": '. json_encode($post) .' }');
     }
 
     /**
@@ -124,7 +124,7 @@ class PostsAPI extends GenericController
 
         // We've already verified that the user has access to post for this
         // blog so check the blog ID listed for this post is a match
-        if ($post['blog_id'] != $blogID) {
+        if ($post->blog_id != $blogID) {
             $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
             $this->response->code(406);
             return;
@@ -137,19 +137,18 @@ class PostsAPI extends GenericController
             $postdate = date("Y-m-d H:i:00", $posttime);
         }
         else {
-            $postdate = $post['timestamp']; // Keep to original
+            $postdate = $post->timestamp; // Keep to original
         }
         
         $updates = [
             'id'              => $postID,
-            'type'            => $post['type'],
+            'type'            => $post->type,
             'title'           => $this->request->getString('title'),
             'summary'         => $this->request->getString('summary'),
             'content'         => $this->request->get('content'),
             'tags'            => $this->request->getString('tags'),
             'teaser_image'    => $this->request->getString('teaserImage'),
             'draft'           => $this->request->getInt('draft'),
-            'allowcomments'   => $this->request->getInt('comments'),
             'initialautosave' => 0,
             'timestamp'       => $postdate
         ];
@@ -166,7 +165,7 @@ class PostsAPI extends GenericController
         if ($this->model->count(['blog_id' => $blogID, 'link' => $url]) > 0) {
 
             $matchingPost = $this->model->getPostByURL($url, $blogID);
-            if ($matchingPost['id'] != $postID) {
+            if ($matchingPost->id != $postID) {
                 $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
                 $this->response->code(400);
                 return;
@@ -176,17 +175,50 @@ class PostsAPI extends GenericController
         // Process custom fields for different post types
         BlogCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
 
-        $this->model->updatePost($post['id'], $updates);
-        $this->model->removeAutosave($post['id']);
+        $this->model->updatePost($post->id, $updates);
+        $this->modelAutosaves->removeAutosave($post->id);
         
         // Re-fetch post data - will have updated URL alias
         $post = $this->model->getPostByURL($url, $blogID);
 
-        BlogCMS::runHook('onPostUpdated', ['post' => array_merge($post, $updates)]);
+        BlogCMS::runHook('onPostUpdated', ['post' => $post]);
 
         $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
     }
     
+    /**
+     * Clone a post
+     */
+    public function clonePost()
+    {
+        $postID = $this->request->getInt('postID');
+        $blogID = $this->request->getInt('blogID');
+
+        if (!$post = $this->model->getPostById($postID)) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Post not found" }');
+            $this->response->code(406);
+            return;
+        }
+
+        // We've already verified that the user has access to post for this
+        // blog so check the blog ID listed for this post is a match
+        if ($post->blog_id != $blogID) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
+            $this->response->code(406);
+            return;
+        }
+
+        if ($newPostID = $this->model->clonePost($postID)) {
+            $newPost = $this->model->getPostById($newPostID);
+            BlogCMS::runHook('onPostCreated', ['post' => $newPost]);
+            $this->response->setBody('{ "success": true, "newPostID": '.$newPostID.' }');
+        }
+        else {
+            $this->response->setBody('{ "success": false, "errorMessage": "Error cloning post" }');
+            $this->response->code(500);
+        }
+    }
+
     /**
      * Handles /api/posts/delete/<postID>
      * 
@@ -226,7 +258,6 @@ class PostsAPI extends GenericController
             'summary'       => $this->request->getString('summary'),
             'content'       => $this->request->getString('content'),
             'tags'          => $this->request->getString('tags'),
-            'allowcomments' => $this->request->getInt('allowcomments'),
             'type'          => $this->request->getString('type'),
             'blogID'        => $this->request->getInt('blogID'),
         ];
@@ -295,6 +326,10 @@ class PostsAPI extends GenericController
             'posts'     => $this->model->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
         
+        if (CUSTOM_DOMAIN) {
+            $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
+        }
+
         $this->response->setBody(JSONhelper::arrayToJSON($result));
     }
 

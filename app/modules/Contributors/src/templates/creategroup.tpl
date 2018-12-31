@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog['id']}", "{$blog['name']}", "/cms/contributors/manage/{$blog['id']}", "Contributors"], 'Add Group')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/contributors/manage/{$blog->id}", "Contributors"], 'Add Group')}
         </div>
     </div>
     <div class="row">
         <div class="column">
-            {viewPageHeader("Add Group", 'user plus', "{$blog['name']}")}
+            {viewPageHeader("Add Group", 'user plus', "{$blog->name}")}
         </div>
     </div>
     <div class="row">

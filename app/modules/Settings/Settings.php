@@ -10,7 +10,7 @@ class Settings
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('settings.menu', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Settings';
             $args['menu']->addLink($link);

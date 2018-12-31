@@ -43,7 +43,7 @@ class Comments extends GenericController
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->blog = BlogCMS::getActiveBlog();
 
-        BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog['id'];
+        BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog->id;
 
         parent::__construct();
     }
@@ -68,9 +68,9 @@ class Comments extends GenericController
      */
     public function all()
     {
-        $this->response->setVar('comments', $this->model->getCommentsByBlog($this->blog['id']));
+        $this->response->setVar('comments', $this->model->getCommentsByBlog($this->blog->id));
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Manage Comments - ' . $this->blog['name']);
+        $this->response->setTitle('Manage Comments - ' . $this->blog->name);
         $this->response->addScript('/resources/js/paginate.js');
         $this->response->write('comments.tpl', 'PostComments');
     }
@@ -87,11 +87,11 @@ class Comments extends GenericController
         }
         elseif ($this->model->deleteComment($commentID)) {
             $blog = BlogCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Comment removed', 'success');
+            $this->response->redirect('/cms/comments/all/'. $blog->id, 'Comment removed', 'success');
         }
         else {
             $blog = BlogCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Unable to remove comment', 'error');
+            $this->response->redirect('/cms/comments/all/'. $blog->id, 'Unable to remove comment', 'error');
         }
     }
     
@@ -107,11 +107,11 @@ class Comments extends GenericController
         }
         elseif ($this->model->approve($this->comment['id'])) {
             $blog = BlogCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Comment approved', 'success');
+            $this->response->redirect('/cms/comments/all/' . $blog->id, 'Comment approved', 'success');
         }
         else {
             $blog = BlogCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog['id'], 'Unable to approve comment', 'error');
+            $this->response->redirect('/cms/comments/all/' . $blog->id, 'Unable to approve comment', 'error');
         }
     }
     

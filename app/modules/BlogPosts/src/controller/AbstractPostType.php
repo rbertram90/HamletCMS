@@ -24,7 +24,8 @@ class AbstractPostType extends GenericController
      * 
      * If saving will exit here and redirect.
      */
-    public function create() {
+    public function create()
+    {
         $this->blog = BlogCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Create blog post');
@@ -34,7 +35,11 @@ class AbstractPostType extends GenericController
         $this->response->setVar('customSettingFields', $extraFields);
     }
 
-    public function edit() {
+    /**
+     * View edit post form
+     */
+    public function edit()
+    {
         $postID = $this->request->getUrlParameter(1);
         $post = $this->model->getPostById($postID);
 
@@ -42,15 +47,15 @@ class AbstractPostType extends GenericController
             $this->response->redirect('/', 'Could not find post', 'error');
         }
 
-        if (!$this->modelPermissions->userHasPermission('edit_all_posts', $post['blog_id'])) {
+        if (!$this->modelPermissions->userHasPermission('edit_all_posts', $post->blog_id)) {
             $this->response->redirect('/', 'You do not have permission to edit this post', 'error');
         }
 
-        $blog = $this->modelBlogs->getBlogById($post['blog_id']);
+        $blog = $this->modelBlogs->getBlogById($post->blog_id);
 
         $this->response->setVar('post', $post);
         $this->response->setVar('blog', $blog);
-        $this->response->setTitle('Edit blog post');
+        $this->response->setTitle('Editing - '. $post->title);
 
         $extraFields = [];
         BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);

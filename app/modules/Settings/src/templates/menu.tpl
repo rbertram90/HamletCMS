@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog.id}", {$blog.name}), 'Settings')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}), 'Settings')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Settings', 'sliders horizontal', {$blog.name})}
+            {viewPageHeader('Settings', 'sliders horizontal', {$blog->name})}
             <div class="ui teal message">
                 This section allows you to change the look and feel of the blog.
             </div>
@@ -47,7 +47,7 @@
                 <h4 class="ui header">
                     <i class="paint brush icon"></i>
                     <div class="content">
-                        <a href="/cms/settings/blogdesigner/{$blog.id}">Customise Design <em>(OUT OF ACTION!)</em></a>
+                        <a href="/cms/settings/blogdesigner/{$blog->id}">Customise Design <em>(OUT OF ACTION!)</em></a>
                         <div class="sub header">Fine tune the look of your blog</div>
                     </div>
                 </h4>
@@ -57,7 +57,7 @@
                 <h4 class="ui header">
                     <i class="columns icon"></i>
                     <div class="content">
-                        <a href="/cms/settings/template/{$blog.id}">Change Template</a>
+                        <a href="/cms/settings/template/{$blog->id}">Change Template</a>
                         <div class="sub header">Choose from our pre-made designs</div>
                     </div>
                 </h4>
@@ -66,7 +66,7 @@
                 <h4 class="ui header">
                     <i class="calculator icon"></i>
                     <div class="content">
-                        <a href="/cms/settings/widgets/{$blog.id}">Configure Widgets</a>
+                        <a href="/cms/settings/widgets/{$blog->id}">Configure Widgets</a>
                         <div class="sub header">Change what is shown on the sidebar of your blog</div>
                     </div>
                 </h4>
@@ -78,7 +78,7 @@
                 <h4 class="ui header">
                     <i class="code icon"></i>
                     <div class="content">
-                        <a href="/cms/settings/stylesheet/{$blog.id}">Edit Stylesheet</a>
+                        <a href="/cms/settings/stylesheet/{$blog->id}">Edit Stylesheet</a>
                         <div class="sub header">Ideal for advanced users</div>
                     </div>
                 </h4>
@@ -87,7 +87,7 @@
                 <h4 class="ui header">
                     <i class="trash alternate icon"></i>
                     <div class="content">
-                        <a href="/cms/blog/delete/{$blog.id}">Delete Blog</a>
+                        <a href="/cms/blog/delete/{$blog->id}">Delete Blog</a>
                         <div class="sub header">Completely erase this blog</div>
                     </div>
                 </h4>

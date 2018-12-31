@@ -2,12 +2,11 @@
     "name": "Blog CMS Posts",
     "package": "Core",
     "version": "0.0.1",
-    "author": "Ricky",
-    "enabled": 1,
-    "files": [
-        
-    ],
+    "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
     "dependencies": [
-
+        "Core/Blog",
+        "Core/Contributors",
+        "Core/Files",
+        "Core/Settings"
     ]
 }

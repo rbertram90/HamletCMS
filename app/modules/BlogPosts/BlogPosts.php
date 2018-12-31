@@ -10,14 +10,14 @@ class BlogPosts
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('posts.manage', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Manage posts';
             $args['menu']->addLink($link);
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('posts.create', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Create new post';
             $args['menu']->addLink($link);
@@ -64,6 +64,7 @@ class BlogPosts
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `posts` ADD PRIMARY KEY (`id`), ADD KEY `title` (`title`);");
+        $dbc->query("ALTER TABLE `posts` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
         $dbc->query("ALTER TABLE `postautosaves` ADD PRIMARY KEY (`post_id`);");
         $dbc->query("ALTER TABLE `postviews` ADD PRIMARY KEY (`postid`, `userip`);");
     }

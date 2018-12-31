@@ -3,13 +3,13 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog['id']}", "{$blog['name']}"), 'Create New Post')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Create New Post')}
         </div>
     </div>
 
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('New Post', 'doc_add.png', $blog.name)}
+            {viewPageHeader('New Post', 'doc_add.png', $blog->name)}
         </div>
     </div>
 

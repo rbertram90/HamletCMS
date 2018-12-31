@@ -13,9 +13,9 @@
 <tbody>
 {foreach from=$modules item=module}
     <tr>
-        <td>{$module.name}</td>
-        <td>{$module.current}</td>
-        <td>{$module.latest}</td>
+        <td>{$module->name}</td>
+        <td>{$module->current}</td>
+        <td>{$module->latest}</td>
     </tr>
 {/foreach}
 </tbody>

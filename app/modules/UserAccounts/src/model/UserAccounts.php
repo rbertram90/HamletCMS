@@ -16,6 +16,7 @@ class UserAccounts extends RBFactory
     protected $tableName = 'users';
 
     protected $passwordHash = '';
+    protected $subClass = '\\rbwebdesigns\\blogcms\\UserAccounts\\User';
     
     /**
      * Check username and password are a match in database
@@ -31,19 +32,18 @@ class UserAccounts extends RBFactory
     {
         $user = $this->get(['id', 'password', 'admin'], ['username' => $username], '', '', false);
 
-        if($user && password_verify($password, $user['password'])) {
-
-            if (password_needs_rehash($user['password'], PASSWORD_DEFAULT)) {
+        if($user && password_verify($password, $user->password)) {
+            
+            if (password_needs_rehash($user->password, PASSWORD_DEFAULT)) {
                 // If so, create a new hash, and replace the old one
-                $newHash = password_hash($user['password'], PASSWORD_DEFAULT);
-
-                $this->update(['id' => $user['id']], ['password' => $newHash]);
+                $newHash = password_hash($user->password, PASSWORD_DEFAULT);
+                $this->update(['id' => $user->id], ['password' => $newHash]);
             }
 
             // Log the user in
             BlogCMS::session()->setCurrentUser([
-                'id' => $user['id'],
-                'admin' => $user['admin'],
+                'id' => $user->id,
+                'admin' => $user->admin,
             ]);
             return true;
         }

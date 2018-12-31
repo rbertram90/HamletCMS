@@ -1,23 +1,30 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog.id}", "{$blog.name}", "/cms/settings/menu/{$blog.id}", 'Settings'], 'General Settings')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/settings/menu/{$blog->id}", 'Settings'], 'General Settings')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('General settings', 'sliders horizontal', "{$blog.name}")}
+            {viewPageHeader('General settings', 'sliders horizontal', "{$blog->name}")}
 
             <form method="POST" class="ui form">
                 
                 <div class="field">
                     <label for="fld_blogname">Blog Name</label>
-                    <input type="text" value="{$blog.name}" name="fld_blogname" />
+                    <input type="text" value="{$blog->name}" name="fld_blogname" required>
                 </div>
                 
                 <div class="field">
                     <label for="fld_blogdesc">Description</label>
-                    <textarea name="fld_blogdesc">{$blog.description}</textarea>
+                    <textarea name="fld_blogdesc">{$blog->description}</textarea>
+                </div>
+
+                <div class="field">
+                    <label for="fld_domain">Custom domain<br>
+                    <small><em>Requires server configuration to work, see: <a href="https://github.com/rbertram90/blog_cms/wiki/Applying-custom-blog-domain-names" target="_blank">this wiki article</a></em></small></label>
+                    <input type="text" value="{$blog->domain}" name="fld_domain" placeholder="(default)">
+                    <small>Include http(s):// but no trailing slash.</small>
                 </div>
                 
                 <div class="field">
@@ -29,7 +36,7 @@
                     </select>
                     <script type="text/javascript">
                         // Set default
-                        $("#fld_category").val("{$blog.category}");
+                        $("#fld_category").val("{$blog->category}");
                     </script>
                 </div>
                 
@@ -43,7 +50,7 @@
                     </select>
                     <script type="text/javascript">
                         // Set default
-                        $("#fld_blogsecurity").val("{$blog.visibility}");
+                        $("#fld_blogsecurity").val("{$blog->visibility}");
                     </script>
 
                 </div>

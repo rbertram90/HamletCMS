@@ -63,5 +63,19 @@
         "permissions": ["delete_posts"],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
         "action": "delete"
+    },
+    {
+        "key": "api.posts.clone",
+        "path": "/api/posts/clone",
+        "permissions": ["create_posts"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "clonePost"
+    },
+    {
+        "key": "settings.posts",
+        "path": "/cms/settings/posts/{BLOG_ID}",
+        "permissions": ["change_settings"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostSettings",
+        "action": "posts"
     }
 ]

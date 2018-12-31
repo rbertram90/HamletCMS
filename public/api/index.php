@@ -55,7 +55,7 @@ use rbwebdesigns\blogcms\API\controller\Api;
     // Check permissions
     if (array_key_exists('permissions', $route) && count($route['permissions'])) {
         foreach ($route['permissions'] as $permissionName) {
-            if (!$permissionsModel->userHasPermission($permissionName, $blog['id']) ) {
+            if (!$permissionsModel->userHasPermission($permissionName, $blog->id) ) {
                 $response->setBody('{ "success": false, "errorMessage": "Access denied" }');
                 $response->code(403);
                 $errored = true;

@@ -41,6 +41,10 @@ use rbwebdesigns\core\JSONhelper;
         error_reporting(E_STRICT && E_ALL);
         ini_set('display_errors', 1);
     }
+    else {
+        error_reporting(0);
+        ini_set('display_errors', 0);
+    }
 
 /****************************************************************
   Includes
@@ -50,7 +54,7 @@ use rbwebdesigns\core\JSONhelper;
         $split = explode('\\', $class);
         if (count($split) < 4) error_log('Unable to load class '. $class);
         $type = strtolower($split[3]);
-        if ($type == 'controller' || $type == 'model') {
+        if (in_array($type, ['controller', 'model', 'widgets', 'forms'])) {
             include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
         }
         else {
@@ -117,8 +121,8 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     $modules = $moduleModel->getList();
 
     foreach ($modules as $module) {
-        if ($module['enabled'] != 1) continue;
-        BlogCMS::registerModule($module['name']);
+        if ($module->enabled != 1) continue;
+        BlogCMS::registerModule($module->name);
     }
 
 }

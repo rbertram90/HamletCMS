@@ -11,13 +11,13 @@
 <tbody>
 {foreach from=$modules item=module}
     <tr>
-        <td>{$module.name}</td>
-        <td>{$module.enabled}</td>
+        <td>{$module->name}</td>
+        <td>{$module->enabled}</td>
         <td>
-            {if $module.enabled and not $module.locked}
-                <a href="/cms/admin/uninstallmodule/{$module.name}">Uninstall</a>
-            {elseif not $module.locked}
-                <a href="/cms/admin/installmodule/{$module.name}">Install</a>
+            {if $module->enabled and not $module->locked}
+                <a href="/cms/admin/uninstallmodule/{$module->name}">Uninstall</a>
+            {elseif not $module->locked}
+                <a href="/cms/admin/installmodule/{$module->name}">Install</a>
             {else}
                 <em>Locked</em>
             {/if}

@@ -1,0 +1,10 @@
+[
+    {
+        "key": "contributorsList",
+        "name": "Contributors list",
+        "description": "List contributors to the blog",
+        "version": 1.0,
+        "form": "rbwebdesigns\\blogcms\\Contributors\\forms\\ConfigureContributorsList",
+        "class": "rbwebdesigns\\blogcms\\Contributors\\widgets\\ContributorsList"
+    }
+]

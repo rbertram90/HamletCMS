@@ -1,12 +1,12 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog.id}", "{$blog.name}", "/cms/contributors/manage/{$blog.id}", "Contributors"], 'Edit Contributor')}
+            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/contributors/manage/{$blog->id}", "Contributors"], 'Edit Contributor')}
         </div>
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Edit Contributor', 'user', "{$blog.name}")}
+            {viewPageHeader('Edit Contributor', 'user', "{$contributor->name} {$contributor->surname}")}
         </div>
     </div>
 
@@ -17,7 +17,7 @@
             <form class="ui form" method="POST">
                 <select class="ui dropdown" name="fld_group">
                 {foreach $groups as $group}
-                    <option value="{$group.id}">{$group.name}</option>
+                    <option value="{$group->id}">{$group->name}</option>
                 {/foreach}
                 </select>
 

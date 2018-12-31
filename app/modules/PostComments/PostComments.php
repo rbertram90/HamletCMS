@@ -79,7 +79,7 @@ class PostComments
         $tempResponse = new BlogCMSResponse();
         $tempResponse->setVar('blog', $args['blog']);
         $tempResponse->setVar('currentUser', BlogCMS::session()->currentUser);
-        $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']['id'], 5));
+        $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']->id, 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
 
@@ -88,9 +88,9 @@ class PostComments
      */
     public function runTemplate($args)
     {
-        if ($args['template'] == 'singlePost' && $args['post']['allowcomments']) {
-            $args['post']['after'][] = 'file:[PostComments]postcomments.tpl';
-            $args['post']['after'][] = 'file:[PostComments]newcommentform.tpl';
+        if ($args['template'] == 'singlePost' && $args['post']->allowcomments) {
+            $args['post']->after[] = 'file:[PostComments]postcomments.tpl';
+            $args['post']->after[] = 'file:[PostComments]newcommentform.tpl';
         }
     }
 
@@ -98,16 +98,29 @@ class PostComments
         $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
     }
 
+    /**
+     * Add menu link into dropdown on index page
+     */
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('comments.all', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Comments';
             $args['menu']->addLink($link);
         }
     }
+
+    /**
+     * Save allowcomments flag into posts table when post created/updated
+     */
+    public function onBeforePostSaved($args)
+    {
+        $request = BlogCMS::request();
+        $args['post']['allowcomments'] = $request->getInt('comments');
+    }
+    
 }

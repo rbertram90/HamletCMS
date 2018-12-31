@@ -14,13 +14,6 @@
         "action": "general"
     },
     {
-        "key": "settings.posts",
-        "path": "/cms/settings/posts/{BLOG_ID}",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "posts"
-    },
-    {
         "key": "settings.header",
         "path": "/cms/settings/header/{BLOG_ID}",
         "permissions": ["change_settings"],
@@ -89,19 +82,5 @@
         "permissions": ["change_settings"],
         "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
         "action": "blogdesigner"
-    },
-    {
-        "key": "settings.widgets",
-        "path": "/cms/settings/widgets/{BLOG_ID}",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "widgets"
-    },
-    {
-        "key": "settings.configurewidget",
-        "path": "/cms/settings/configurewidget/{BLOG_ID}",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "configurewidget"
     }
 ]

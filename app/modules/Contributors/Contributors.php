@@ -10,7 +10,7 @@ class Contributors
 
             $link = new MenuLink();
             $link->url = BlogCMS::route('contributors.manage', [
-                'BLOG_ID' => $args['blog']['id']
+                'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Contributors';
             $args['menu']->addLink($link);
@@ -41,6 +41,7 @@ class Contributors
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `contributorgroups` ADD PRIMARY KEY (`id`);");
+        $dbc->query("ALTER TABLE `contributorgroups` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
         $dbc->query("ALTER TABLE `contributors` ADD PRIMARY KEY (`user_id`,`blog_id`);");
     }
 }

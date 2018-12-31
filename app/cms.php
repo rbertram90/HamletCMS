@@ -33,7 +33,7 @@ class BlogCMS
     /**
      * @var array  enabled modules
      */
-    protected static $modules = [];
+    public static $modules = [];
 
     protected static $modelManager = null;
 
@@ -44,7 +44,7 @@ class BlogCMS
      */
     public static $blogID = 0;
     /**
-     * @var array|null  cache for the database row for the blog we're managing in the CMS
+     * @var \rbwebdesigns\blogcms\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS
      */
     public static $blog = null;
     /**
@@ -143,8 +143,12 @@ class BlogCMS
      */
     public static function databaseConnection()
     {
+        // Model manager class only ever instantiated here on the first call
         if (!self::$modelManager) {
             self::$modelManager = ModelManager::getInstance(self::$config['database']['name']);
+
+            // Now returning all SELECT results as objects
+            self::$modelManager->setDatabaseClass(new \rbwebdesigns\core\ObjectDatabase());
         }
 
         if(!self::$modelManager->getDatabaseConnection()->isConnected()) {
@@ -404,7 +408,7 @@ class BlogCMS
             if (file_exists($filePath)) {
                 $permissions = JSONhelper::JSONFileToArray($filePath);
                 foreach ($permissions as $permission) {
-                    if (array_key_exists($permission['key'], $permissions)) {
+                    if (array_key_exists($permission['key'], $permissionCache)) {
                         print 'WARNING: Duplicate permission key "'. $permission['key'] .'" in '. $module->key.PHP_EOL;
                         continue;
                     }

@@ -18,18 +18,18 @@ class EventLogger
     {
         $post = $data['post'];
         $currentUser = BlogCMS::session()->currentUser;
-        $text = "created post <a href='/blogs/{$post['blog_id']}/posts/{$post['link']}'>{$post['title']}</a>";
+        $text = "created post <a href='/blogs/{$post->blog_id}/posts/{$post->link}'>{$post->title}</a>";
 
-        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLogger\model\EventLogger::EVENT_POST_CREATED, $text);
+        $this->eventLogModel->log($currentUser['id'], $post->blog_id, EventLogger\model\EventLogger::EVENT_POST_CREATED, $text);
     }
 
     public function onPostUpdated($data)
     {
         $post = $data['post'];
         $currentUser = BlogCMS::session()->currentUser;
-        $text = "updated post <a href='/blogs/{$post['blog_id']}/posts/{$post['link']}'>{$post['title']}</a>";
+        $text = "updated post <a href='/blogs/{$post->blog_id}/posts/{$post->link}'>{$post->title}</a>";
 
-        $this->eventLogModel->log($currentUser['id'], $post['blog_id'], EventLogger\model\EventLogger::EVENT_POST_UPDATED, $text);
+        $this->eventLogModel->log($currentUser['id'], $post->blog_id, EventLogger\model\EventLogger::EVENT_POST_UPDATED, $text);
     }
 
     public function onPostSettingsUpdated($data)

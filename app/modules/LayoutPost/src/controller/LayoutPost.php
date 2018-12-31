@@ -6,6 +6,10 @@ use rbwebdesigns\blogcms\BlogPosts\controller\AbstractPostType;
 
 class LayoutPost extends AbstractPostType
 {
+
+    /**
+     * View create page
+     */
     public function create()
     {
         parent::create();
@@ -13,15 +17,19 @@ class LayoutPost extends AbstractPostType
         $this->response->setVar('imagesOutput', $this->getImagesOutput());
         $this->response->addScript('/js/layoutPost.js');
         $this->response->addStylesheet('/css/layoutPost.css');
+        $this->response->addScript('/resources/ace/ace.js');
 
         $this->response->write('layoutpost.tpl', 'LayoutPost');
     }
 
+    /**
+     * List all the images
+     */
     protected function getImagesOutput()
     {
         $blog = $this->response->getVar('blog');
         $imagesHTML = '';
-        $path = SERVER_ROOT ."/app/public/blogdata/{$blog['id']}/images";
+        $path = SERVER_PUBLIC_PATH ."/blogdata/{$blog->id}/images";
 
         if (!is_dir($path)) {
             return;
@@ -32,7 +40,7 @@ class LayoutPost extends AbstractPostType
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 
                 if ($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                    $imagesHTML .= "<img src='/blogdata/{$blog['id']}/images/{$file}' height='100' data-name='{$filename}' class='selectableimage' />";
+                    $imagesHTML .= "<img src='/blogdata/{$blog->id}/images/{$file}' height='100' data-name='{$filename}' class='selectableimage' />";
                 }
             }
             closedir($handle);
@@ -41,6 +49,9 @@ class LayoutPost extends AbstractPostType
         return $imagesHTML;
     }
 
+    /**
+     * View edit page
+     */
     public function edit()
     {
         parent::edit();
@@ -48,6 +59,7 @@ class LayoutPost extends AbstractPostType
         $this->response->setVar('imagesOutput', $this->getImagesOutput());
         $this->response->addScript('/js/layoutPost.js');
         $this->response->addStylesheet('/css/layoutPost.css');
+        $this->response->addScript('/resources/ace/ace.js');
         $this->response->write('layoutpost.tpl', 'LayoutPost');
     }
 }

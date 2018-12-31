@@ -15,15 +15,15 @@ class MarkdownPost
     public function runTemplate($args)
     {
         $post = $args['post'];
-        if ($post['type'] !== 'standard') return;
+        if ($post->type !== 'standard') return;
 
         switch ($args['template']) { 
             case 'singlePost':
-                $content = Markdown::defaultTransform($post['content']);
-                $args['post']['trimmedContent'] = $content;
+                $content = Markdown::defaultTransform($post->content);
+                $args['post']->trimmedContent = $content;
                 break;
             case 'postTeaser':
-                $args['post']['trimmedContent'] = $post['summary'];
+                $args['post']->trimmedContent = $post->summary;
                 break;
         }
     }

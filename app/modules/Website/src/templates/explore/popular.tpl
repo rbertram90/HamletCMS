@@ -37,7 +37,7 @@
                 {foreach from=$topblogs item=blog}
 
                     <tr>
-                        <td><a href="/blogs/{$blog.id}">{$blog.name}</a></td>
+                        <td><a href="/blogs/{$blog->id}">{$blog->name}</a></td>
                         <td>{$blog.fav_count}</td>
                     </tr>
 

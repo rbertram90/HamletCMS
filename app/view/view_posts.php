@@ -403,7 +403,7 @@ function commentForm($blog, $post)
     }
 ?>
     <div class="comment-form">
-        <form action="/blogs/<?=$blog['id']?>/posts/<?=$post['id']?>/addcomment" method="POST">
+        <form action="/blogs/<?=$blog->id?>/posts/<?=$post->id?>/addcomment" method="POST">
             
             <label for="fld_comment">Comment</label>
             <textarea name="fld_comment"></textarea>

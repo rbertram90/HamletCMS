@@ -22,8 +22,6 @@ class BlogContent
     protected $blog;             // Current viewing blog
     protected $blogID;           // ID of current blog
     protected $blogConfig;       // Config array of current blog
-    protected $blogPostCount;    // Number of posts on current blog
-    protected $userPermissionsLevel; // 0 = none, 1 = post only, 2 = full
     protected $request;
     protected $response;
     
@@ -45,11 +43,9 @@ class BlogContent
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
         $this->blogID        = $blog_key;
         $this->blogConfig    = null;
-        $this->blogPostCount = null;
 
         if (CUSTOM_DOMAIN) {
             $this->pathPrefix = '';
-            $this->fileDir = '';
             $this->fileDir = '';
         }
         else {
@@ -57,65 +53,10 @@ class BlogContent
             $this->fileDir = "/blogdata/{$this->blogID}";
         }
 
-
-        
-        // todo: Update this...
-        if ($this->modelContributors->isBlogContributor($currentUser, $blog_key)) {
-            $this->userPermissionsLevel = 2;
-        }
-        elseif (BlogCMS::$userGroup) {
-            $this->userPermissionsLevel = 1;
-        }
-        else {
-            $this->userPermissionsLevel = 0;
-        }
-
         $this->request = BlogCMS::request();
         $this->response = BlogCMS::response();
     }
-    
-    /**
-     * function getBlogInfo()
-     * @return array All information from blog table for current blog
-     */
-    public function getBlogInfo()
-    {
-        return $this->blog;
-    }
-    
-    /**
-     *  function getBlogID()
-     *  @return int ID number for instance
-     */
-    public function getBlogID()
-    {
-        return $this->blogID;
-    }
-    
-    /**
-     * function getPostCount()
-     * @return int number of posts on blog
-    **/
-    public function getPostCount()
-    {
-        // Check Variable Cache
-        if($this->blogPostCount === null) {
-            $this->blogPostCount = $this->modelPosts->countPostsOnBlog($this->blogID);
-        }
-        return $this->blogPostCount;
-    }
-    
-    /**
-     * Check if this blog is currently listed in the users favourites
-     * @return bool true if blog is in current users favourites, false otherwise
-     */
-    public function blogIsFavourite()
-    {
-        $currentUser = BlogCMS::session()->currentUser;
-        if(!isset($currentUser)) return false;
-        return false; // $this->modelBlogs->isFavourite($currentUser, $this->blogID);
-    }
-    
+        
     /**
      * Generate HTML for the 'teaser' view for a post
      * 
@@ -127,6 +68,7 @@ class BlogContent
     public function generatePostTeaser($post, $config)
     {
         $teaserResponse = new BlogCMSResponse();
+        $teaserResponse->enableSecureMode();
 
         // Config defaults
         $showTags = 1;
@@ -148,6 +90,7 @@ class BlogContent
         $globalResponse = BlogCMS::response();
         $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
         $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
+        $teaserResponse->setVar('user_is_contributor', $globalResponse->getVar('userIsContributor'));
 
         BlogCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
 
@@ -170,19 +113,26 @@ class BlogContent
     }
 
 
+    /**
+     * Generate the output for a single post view
+     * 
+     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param array $config
+     */
     public function generateSinglePost($post, $config)
     {
-        $teaserResponse = new BlogCMSResponse();
+        $globalResponse = BlogCMS::response();
 
         // Copy accross sub-set of variables from main template
-        $globalResponse = BlogCMS::response();
+        $teaserResponse = new BlogCMSResponse();
         $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
         $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
         $teaserResponse->setVar('userAuthenticated', $globalResponse->getVar('user_is_logged_in'));
 
-        $post['after'] = [];
-
+        // Get custom content to be displayed in post
+        // Example - number of comments
+        $post->after = [];
         BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
 
         // Check if blog template is overriding the teaser
@@ -204,17 +154,22 @@ class BlogContent
         $teaserResponse->write($templatePath, $source, true);
     }
 
+    /**
+     * Generate the HTML for a post (either full or teaser)
+     * 
+     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param array $config
+     * @param string $mode
+     *   full / teaser modes accepted
+     */
     public function generatePostTemplate($post, $config, $mode = 'full')
     {
-        if (strlen($post['tags']) > 0) {
-            $post['tags'] = explode(',', $post['tags']);
+        if (strlen($post->tags) > 0) {
+            $post->tags = explode(',', $post->tags);
         }
         else {
-            $post['tags'] = [];
+            $post->tags = [];
         }
-
-        $post['headerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'title');
-        $post['footerDate'] = $this->formatDateFromSettings($post['timestamp'], $config, 'footer');
 
         switch ($mode) {
             case 'full':
@@ -234,7 +189,7 @@ class BlogContent
     {
         $pageNum = $request->getInt('s', 1);
 
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         $postConfig = null;
         $showTags = 1;
         $shownumcomments = 1;
@@ -250,6 +205,9 @@ class BlogContent
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
         $output = "";
 
+        $isContributor = BlogCMS::$userGroup !== false;
+        $response->setVar('userIsContributor', $isContributor);
+
         foreach ($postlist as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
@@ -258,27 +216,11 @@ class BlogContent
         $response->setVar('postsperpage', $postsperpage);
         $response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
-        // Format content
-        /*
-        for ($p = 0; $p < count($postlist); $p++) {
-            
-            if ($postlist[$p]['type'] == 'gallery') {
-                $postlist[$p]['images'] = explode(',', $postlist[$p]['gallery_imagelist']);
-            }
-        }
-        */
-
-        $isContributor = BlogCMS::$userGroup !== false;
-
-        $response->setTitle($this->blog['name']);
-        $response->setVar('userIsContributor', $isContributor);
-
+        $response->setTitle($this->blog->name);
         $response->setVar('posts', $output);
-
         $response->setVar('paginator', new Pagination());
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');
-
     }
 
     /**
@@ -305,7 +247,7 @@ class BlogContent
      */
     public function generatePagelist()
     {
-        echo $this->blog['pagelist'];
+        echo $this->blog->pagelist;
     }
 
     /**
@@ -314,68 +256,24 @@ class BlogContent
     **/
     public function generateNavigation()
     {
-        if (!array_key_exists('pagelist', $this->blog) || strlen($this->blog['pagelist']) == 0) {
+        if (strlen($this->blog->pagelist) == 0) {
             return '';
         }
         $navigation = '';
-        $pagelist = explode(',', $this->blog['pagelist']);
+        $pagelist = explode(',', $this->blog->pagelist);
 
         foreach ($pagelist as $postid) {
             if (is_numeric($postid)) {
-                $arrayPosts = $this->modelPosts->get('*', array('id' => $postid));
-                $arrayPost = $arrayPosts[0];
-                $navigation.= '<a href="'.$this->pathPrefix.'/posts/'.$arrayPost['link'].'" class="item">'.$arrayPost['title'].'</a>';
+                $arrayPosts = $this->modelPosts->get('*', ['id' => $postid]);
+                $post = $arrayPosts[0];
+                $navigation.= "<a href='{$this->pathPrefix}/posts/{$post->link}' class='item'>{$post->title}</a>";
             }
             elseif (substr($postid, 0, 2) == 't:') {
                 $tag = substr($postid, 2);
-                $navigation.= '<a href="'.$this->pathPrefix.'/tags/'.$tag.'" class="item">'.ucfirst($tag).'</a>';
+                $navigation.= "<a href='{$this->pathPrefix}/tags/{$tag}' class='item'>".ucfirst($tag)."</a>";
             }
         }
         return $navigation;
-    }
-    
-    /**
-     * New widget generator
-     * @todo complete
-     */
-    public function generateWidgets()
-    {
-        $widgetConfigPath = SERVER_PATH_BLOGS . '/' . $this->blog['id'] . '/widgets.json';
-        $widgets = [];
-
-        if(!file_exists($widgetConfigPath)) return '';
-        
-        $widgetsConfig = JSONhelper::JSONFileToArray($widgetConfigPath);
-
-        $config = BlogCMS::config();
-        if (CUSTOM_DOMAIN) {
-            $cmsDomain = $config['environment']['canonical_domain'];
-            $pathPrefix = '';
-        }
-        else {
-            $cmsDomain = '';
-            $pathPrefix = "/blogs/{$this->blog['id']}";
-        }
-
-        $widgetSmarty = new \Smarty;
-        $widgetSmarty->setTemplateDir(SERVER_PATH_WIDGETS);
-
-        foreach ($widgetsConfig as $section => $childWidgets) {
-            $section = strtolower($section);
-            $widgets[$section] = '';
-            foreach ($childWidgets as $name => $widget) {
-                $widgetSmarty->clearAllAssign();
-                foreach ($widget as $settingkey => $settingvalue) {
-                    $widgetSmarty->assign($settingkey, $settingvalue);
-                }
-                $widgetSmarty->assign('blog', $this->blog);
-                $widgetSmarty->assign('cms_url', $cmsDomain);
-                $widgetSmarty->assign('blog_root_url', $pathPrefix);
-                $widgets[$section] .= $widgetSmarty->fetch($name . '/view.tpl');
-            }
-        }
-
-        return $widgets;
     }
     
     /**
@@ -385,7 +283,7 @@ class BlogContent
     public function generateFooter()
     {
         // Get the JSON blog config
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         
         // Check that the footer key exists
         if(strtolower(gettype($blogConfig)) !== 'array' || !array_key_exists('footer', $blogConfig)) return '';
@@ -445,7 +343,7 @@ class BlogContent
     public function generateHeaderBackground()
     {
         // Get the JSON blog config
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         
         // Check header config exists
         if(getType($blogConfig) !== 'array' || !array_key_exists('header', $blogConfig)) return '';
@@ -509,7 +407,7 @@ class BlogContent
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
-        $blogConfig = $this->getBlogConfig($this->blogID);
+        $blogConfig = $this->blog->config();
         $postConfig = null;
         $showTags = 1;
         $shownumcomments = 1;
@@ -533,7 +431,7 @@ class BlogContent
         $response->setVar('totalnumposts', count($postlist));
 
         // Set Page Title
-        $response->setTitle("Posts tagged with {$tag} - {$this->blog['name']}");
+        $response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
         $response->setVar('userIsContributor', $isContributor);
         $response->setVar('tagName', $tag);
         $response->setVar('posts', $output);
@@ -541,89 +439,11 @@ class BlogContent
         $response->setVar('blog', $this->blog);
         $response->write('posts/postsbytag.tpl', 'BlogView');
     }
-
-    /**
-     * Get the blog config file 'config.json' as an array
-     */
-    private function getBlogConfig($blogid)
-    {
-        // Check variable cache
-        if($this->blogConfig === null) {
-            $settings = file_get_contents(SERVER_PATH_BLOGS.'/'.$blogid.'/config.json');
-            $this->blogConfig = json_decode($settings, true);
-        }
-        return $this->blogConfig;
-    }
-    
-    /**
-     * getFontFamilyFromName($fontName as String)
-     * @return <string> CSS String for font-family rule
-     */
-    protected function getFontFamilyFromName($fontName)
-    {
-        $fontarray = [
-            "ARIAL" => "Arial, Helvetica, sans-serif",
-            "CALIBRI" => "Calibri, sans-serif",
-            "COMICSANS" => "'Comic Sans MS', cursive",
-            "COURIER" => "'Courier New', monospace",
-            "IMPACT" => "Impact, Charcoal, sans-serif",
-            "LUCIDA" => "'Lucida Console', Monaco, monospace",
-            "TAHOMA" => 'Tahoma, Geneva, sans-serif',
-            "TREBUCHET" => "'Trebuchet MS', sans-serif"
-        ];
-
-        if(array_key_exists($fontName, $fontarray)) return $fontarray[$fontName];
-        else return "Arial, Helvetica, sans-serif";
-    }
-    
+        
     public function getTemplateConfig()
     {
-        $lsSettings = file_get_contents(SERVER_PATH_BLOGS.'/'.$this->blog['id'].'/template_config.json');
-        return json_decode($lsSettings, true);
-    }
-    
-    /**
-     * Generates the CSS for a blog specified in the JSON file 'template_config.json'
-     * which should exist under the $pblogid folder
-     */
-    public function getBlogCustomCSS()
-    {
-        $lobjSettings = $this->getTemplateConfig();
-        $css = "";
-        
-        if(count($lobjSettings) == 0) return;
-        
-        foreach($lobjSettings as $key => $lobjClass):
-            $key = strtolower($key);
-            if($key == 'layout' || $key == 'includes') continue;
-        
-            // 0 should always be class name
-            $css.= '.'.$lobjClass[0].' {';
-            
-            foreach($lobjClass as $rule):
-                // Check it is an array
-                if(gettype($rule) !== "array") continue;
-                if($rule['current'] === $rule['default']) continue;
-                
-                switch($rule['type']):
-                    case "bgcolor":
-                        $css.= "background-color:#".$rule['current'].';';
-                        break;
-                    case "color":
-                        $css.= 'color:#'.$rule['current'].';';
-                        break;
-                    case "font":
-                        $css.= 'font-family:'.$this->getFontFamilyFromName($rule['current']).';';
-                        break;
-                    case "textsize":
-                        $css.= 'font-size:'.$rule['current'].'px;';
-                        break;
-                endswitch;
-            endforeach;
-            $css.= '}';
-        endforeach;
-        
-        return $css;
+        $settings = file_get_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json');
+        return json_decode($settings, true);
     }
     
     /**
@@ -638,7 +458,7 @@ class BlogContent
                 
         foreach($arrayVisitors as $visitor) {
             if($userip == $visitor['userip']) {
-                $this->modelPosts->incrementUserView($postid, $userip, $visitor['userviews']);
+                $this->modelPosts->incrementUserView($postid, $userip);
                 $countUpdated = true;
                 break;
             }
@@ -665,7 +485,7 @@ class BlogContent
         // Check conditions in which the user is not allowed to view the post
         if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
             $isContributor = BlogCMS::$userGroup !== false;
-            if (($post['draft'] == 1 || strtotime($post['timestamp']) > time()) && !$isContributor) {
+            if (($post->draft == 1 || strtotime($post->timestamp) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
             }
         }
@@ -679,56 +499,18 @@ class BlogContent
         // }
 
         // Record the view
-        $this->addView($post['id']);
+        $this->addView($post->id);
 
-        $response->setVar('mdContent', $mdContent);
-        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post['timestamp']));
-        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post['timestamp']));
-        $response->setTitle($post['title']);
-        $response->write('posts/singlepost.tpl', 'BlogView');
-        
         $this->generatePostTemplate($post, null, 'full');
-    }
-    
-    /**
-     * Output the post date based on user defined settings
-     */
-    protected function formatDateFromSettings($timestamp, $postSettings, $location)
-    {
-        $res = "";
-        
-        // Get Values
-        $dateformat    = 'Y-m-d';
-        $timeformat    = 'H:i:s';
-        $timelocation  = 'footer';
-        $datelocation  = 'footer';
-        $dateprefix    = 'Posted on: ';
-        $dateseperator = ' at ';
 
-        if (getType($postSettings) == 'array') {
-            if (isset($postSettings['dateformat']))    $dateformat    = $postSettings['dateformat'];
-            if (isset($postSettings['timeformat']))    $timeformat    = $postSettings['timeformat'];
-            if (isset($postSettings['timelocation']))  $timelocation  = $postSettings['timelocation'];
-            if (isset($postSettings['datelocation']))  $datelocation  = $postSettings['datelocation'];
-            if (isset($postSettings['dateprefix']))    $dateprefix    = $postSettings['dateprefix'];
-            if (isset($postSettings['dateseperator'])) $dateseperator = $postSettings['dateseperator'];
-        }
-        
-        if ($datelocation == $location) {
-            // Show Date
-            $res.= $dateprefix;
-            $res.= date($dateformat, strtotime($timestamp));
-        }
-        
-        if ($timelocation == $location) {
-            // Show Time
-            $res.= $dateseperator;
-            $res.= date($timeformat, strtotime($timestamp));
-        }
-        
-        return $res;
+        $response->addScript('/resources/ace/ace.js');
+        $response->setVar('mdContent', $mdContent);
+        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
+        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
+        $response->setTitle($post->title);
+        $response->write('posts/singlepost.tpl', 'BlogView');
     }
-    
+        
     /**
      * trimContent
      * This function provides (needs improvement) a HTML friendly summary of post

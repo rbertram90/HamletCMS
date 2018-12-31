@@ -20,7 +20,6 @@ use Athens\CSRF;
         'BlogPosts' => ['optional' => 0],
         'BlogView' => ['optional' => 0],
         'Contributors' => ['optional' => 0],
-        'FavouriteBlogs' => ['optional' => 0],
         'Files' => ['optional' => 0],
         'Settings' => ['optional' => 0],
         'SiteAdmin' => ['optional' => 0],
@@ -29,8 +28,9 @@ use Athens\CSRF;
         'EventLogger' => ['optional' => 1],
         'LayoutPost' => ['optional' => 1],
         'MarkdownPost' => ['optional' => 1],
-        'PostComments' => ['optional' => 1],
         'VideoPost' => ['optional' => 1],
+        'PostComments' => ['optional' => 1],
+        'FavouriteBlogs' => ['optional' => 1],
     ];
 
     if ($request->method() == 'POST') {
@@ -45,6 +45,7 @@ use Athens\CSRF;
         // Create modules table
         $dbc->query("CREATE TABLE `modules` (
             `name` varchar(30) NOT NULL,
+            `description` text NOT NULL,
             `enabled` tinyint(1) NOT NULL DEFAULT '0',
             `locked` tinyint(1) NOT NULL DEFAULT '0',
             `settings` text NOT NULL,
@@ -97,7 +98,19 @@ use Athens\CSRF;
                 'enabled' => 1,
                 'locked' => !$module['optional']
             ]);
+
+            BlogCMS::registerModule($key);
         }
+
+        BlogCMS::generateRouteCache();
+        BlogCMS::generateMenuCache();
+        BlogCMS::generatePermissionCache();
+        BlogCMS::generateTemplateCache();
+
+        BlogCMS::runHook('onReloadCache', []);
+
+        // $adminController = new \rbwebdesigns\blogcms\SiteAdmin\controller\SiteAdmin();
+        // $adminController->reloadCache(false);
 
         // Create admin user
         $accountData = [
@@ -114,6 +127,12 @@ use Athens\CSRF;
 
         $modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
 
+        // Misc folders
+        if (!file_exists(SERVER_AVATAR_FOLDER)) {
+            mkdir(SERVER_AVATAR_FOLDER);
+            mkdir(SERVER_AVATAR_FOLDER.'/thumbs');
+        }
+
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
@@ -121,14 +140,14 @@ use Athens\CSRF;
         }
 
         $checkUser = $modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
-        if($checkUser && $checkUser['id']) {
+        if ($checkUser && $checkUser['id']) {
             $response->redirect('/cms/install.php', 'Username is already taken', 'error');
         }
 
         if (!$modelUsers->register($accountData)) {
             $response->redirect('/cms/install.php', 'Error creating admin account', 'error');
         }
-        
+
         $response->redirect('/cms', 'Installation complete', 'success');
     }
 
