@@ -26,13 +26,16 @@
         {if $smarty.foreach.imageloop.index % 3 == 0}
             <div class="three column row">
         {/if}
+
         <div class="column">
             <div class="ui fluid card">
                 <div class="blurring dimmable image">
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
-                                <button class="ui inverted button" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
+                                <form action="/cms/files/delete/{$blog->id}/{$image.file}">
+                                    <button class="ui inverted button" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>

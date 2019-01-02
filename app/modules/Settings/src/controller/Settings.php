@@ -7,9 +7,6 @@ use rbwebdesigns\blogcms\Menu;
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\core\HTMLFormTools;
-use rbwebdesigns\core\AppSecurity;
-use Codeliner\ArrayReader\ArrayReader;
 
 /**
  * The controller acts as the intermediatory between the
