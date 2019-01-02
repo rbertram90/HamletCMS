@@ -48,11 +48,23 @@
                 </div>
                 
                 <div class="field">
-                    <button type="button" title="Insert Image" class="ui button" onclick="rbrtf_showWindow('/cms/files/fileselect/{$blog->id}?format=html&elemid=current-profile-image&replace=1');">Select New Image</button>
+                    <button type="button" title="Insert Image" class="ui button" id="teaser_image_select">Select New Image</button>
                     <button onclick="return removeImage();" class="ui button">Remove Image</button>
 
                     <input type="hidden" name="fld_footerbackgroundimage" id="fld_footerbackgroundimage" value="{if isset($blogconfig['background_image'])}{$blogconfig.background_image}{/if}">
                 </div>
+
+                <script>
+                    $(document).ready(function() {
+                        $("body").append("<div class='ui modal upload_image_modal'></div>");
+                    });
+
+                    $('#teaser_image_select').click(function() {
+                        $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN, 'elemid': 'current-profile-image', 'format': 'html', 'replace': 1 }, function() {
+                            $(this).modal('show');
+                        });
+                    });
+                </script>
 
                 <div class="field">
                     <label for="fld_horizontalposition">Horizontal Position</label>

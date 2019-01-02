@@ -15,6 +15,8 @@ class Files extends GenericController
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->blog = BlogCMS::getActiveBlog();
+
+        parent::__construct();
     }
 
     /* Get the size in bytes of a folder */
@@ -85,28 +87,28 @@ class Files extends GenericController
      * Handles /cms/files/delete/<blogid>/<filename>
      * Delete a file by filename
      */
-    public function delete(&$request, &$response)
+    public function delete()
     {
-        $blogid = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogid);
+        $blog = BlogCMS::getActiveBlog();
         
-        if(!is_array($blog)) {
-            $response->redirect('/cms', 'Could not find blog', 'error');
+        if (is_null($blog)) {
+            $this->response->redirect('/cms', 'Could not find blog', 'error');
         }
-        elseif(!$this->modelContributors->canWrite($blogid)) {
-            $response->redirect('/cms', 'Access denied', 'error');
+        elseif (!$this->modelContributors->canWrite($blog->id)) {
+            $this->response->redirect('/cms', 'Access denied', 'error');
         }
 
-        $imagesDirectory = SERVER_PATH_BLOGS.'/' . $blogid . '/images';
-        $filename = str_replace('_', '.', $request->getUrlParameter(2));
+        $imagesDirectory = SERVER_PATH_BLOGS .'/'. $blog->id .'/images';
+        $filename = str_replace('_', '.', $this->request->getUrlParameter(2));
         
-        if(!file_exists($imagesDirectory . '/' . $filename)) {
-            $response->redirect('/cms/files/manage' . $blog->id, 'Could not find blog', 'error');
+        if (!file_exists($imagesDirectory .'/'. $filename)) {
+            $this->response->redirect('/cms/files/manage/'. $blog->id, 'Could not find image', 'error');
         }
         
-        unlink($imagesDirectory . '/' . $filename);
+        // Run delete
+        unlink($imagesDirectory .'/'. $filename);
         
-        $response->redirect('/cms/files/manage/' . $blog->id, 'File deleted', 'success');
+        $this->response->redirect('/cms/files/manage/'. $blog->id, 'File deleted', 'success');
     }
 
     /**

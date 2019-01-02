@@ -7,9 +7,6 @@ use rbwebdesigns\blogcms\Menu;
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\core\HTMLFormTools;
-use rbwebdesigns\core\AppSecurity;
-use Codeliner\ArrayReader\ArrayReader;
 
 /**
  * The controller acts as the intermediatory between the
@@ -125,10 +122,6 @@ class Settings extends GenericController
         else $response->setVar('blogconfig', []);
 
         $response->setVar('blog', $blog);
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbrtf.css');
-        $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Header - ' . $blog->name);
         $response->write('header.tpl', 'Settings');        
     }
@@ -148,10 +141,6 @@ class Settings extends GenericController
         else $response->setVar('blogconfig', []);
 
         $response->setVar('blog', $blog);
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbrtf.css');
-        $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Footer - ' . $blog->name);
         $response->write('footer.tpl', 'Settings');
     }
@@ -445,23 +434,39 @@ class Settings extends GenericController
     protected function action_applyNewTemplate($request, $response, $blog)
     {
         if (!$template_id = $request->getString('template_id', false)) {
-            $response->redirect('/settings/template/' . $blog->id, 'Template not found', 'error');
+            $response->redirect('/cms/settings/template/' . $blog->id, 'Template not found', 'error');
         }
 
-        $templateDirectory = SERVER_PATH_TEMPLATES . "/" . $template_id;
+        $templateDirectory = SERVER_PATH_TEMPLATES .'/'. $template_id;
+        $blogDirectory = SERVER_PATH_BLOGS .'/'. $blog->id;
         if (!is_dir($templateDirectory)) {
-            $response->redirect('/settings/template/' . $blog->id, 'Template not found', 'error');
+            $response->redirect('/cms/settings/template/' . $blog->id, 'Template not found', 'error');
         }
 
         // Update default.css
-        $copy_css = $templateDirectory . "/stylesheet.css";
-        $new_css  = SERVER_PATH_BLOGS . "/{$blog->id}/default.css";
-        if (!copy($copy_css, $new_css)) die(showError('failed to copy stylesheet.css'));
-        
+        $copy_css = $templateDirectory .'/stylesheet.css';
+        if (!copy($copy_css, $blogDirectory .'/default.css')) {
+            die(showError('Failed to copy stylesheet.css'));
+        }
+
         // Update template_config.json
-        $copy_json = $templateDirectory . "/config.json";
-        $new_json  = SERVER_PATH_BLOGS . "/{$blog->id}/template_config.json";
-        if (!copy($copy_json, $new_json)) die(showError('failed to copy config.json'));
+        $copy_json = $templateDirectory .'/config.json';
+        if (!copy($copy_json, $blogDirectory .'/template_config.json')) {
+            die(showError('Failed to copy config.json'));
+        }
+
+        // Copy templates (if exist)
+        if (!file_exists($blogDirectory .'/templates')) {
+            mkdir($blogDirectory .'/templates');
+        }
+        $teaserTemplate = $templateDirectory .'/teaser.tpl';
+        if (file_exists($teaserTemplate)) {
+            if(!copy($teaserTemplate, $blogDirectory .'/templates/teaser.tpl')) die('Failed to copy teaser.tpl');
+        }
+        $fullTemplate = $templateDirectory .'/singlepost.tpl';
+        if (file_exists($fullTemplate)) {
+            if(!copy($fullTemplate, $blogDirectory .'/templates/singlepost.tpl')) die('Failed to copy singlepost.tpl');
+        }
 
         // Delete the widgets.json (as columns may have changed and no way to tell what current template is)
         // maybe do this differently in future updates
