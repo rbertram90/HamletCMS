@@ -122,10 +122,6 @@ class Settings extends GenericController
         else $response->setVar('blogconfig', []);
 
         $response->setVar('blog', $blog);
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbrtf.css');
-        $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Header - ' . $blog->name);
         $response->write('header.tpl', 'Settings');        
     }
@@ -145,10 +141,6 @@ class Settings extends GenericController
         else $response->setVar('blogconfig', []);
 
         $response->setVar('blog', $blog);
-        $response->addScript('/resources/js/rbwindow.js');
-        $response->addScript('/resources/js/rbrtf.js');
-        $response->addStylesheet('/resources/css/rbrtf.css');
-        $response->addStylesheet('/resources/css/rbwindow.css');
         $response->setTitle('Customise Blog Footer - ' . $blog->name);
         $response->write('footer.tpl', 'Settings');
     }
