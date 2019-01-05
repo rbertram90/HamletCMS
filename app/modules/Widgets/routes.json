@@ -15,7 +15,7 @@
     },
     {
         "key": "widgets.render",
-        "path": "/cms/widgets/render",
+        "path": "/widgets/render",
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Widgets\\Controller\\WidgetsView",
         "action": "generateWidget"

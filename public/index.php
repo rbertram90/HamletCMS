@@ -52,7 +52,16 @@ use rbwebdesigns\blogcms\Website\controller\Site;
   Setup controller
 ****************************************************************/
 
-    $controller = new Site($request, $response);
+    if ($action == 'widgets') {
+        // @todo make this go through proper routing system
+        $controller = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView($request, $response);
+        $action = 'generateWidget';
+        $applyTemplate = false;
+    }
+    else {
+        $controller = new Site($request, $response);
+        $applyTemplate = true;
+    }
 
     // Check that the route exists
     if (!method_exists($controller, $action)) {
@@ -85,4 +94,9 @@ use rbwebdesigns\blogcms\Website\controller\Site;
 ****************************************************************/
 
     // Run Template here
-    $response->writeTemplate('wrapper.tpl', 'Website');
+    if ($applyTemplate) {
+        $response->writeTemplate('wrapper.tpl', 'Website');
+    }
+    else {
+        $response->writeBody();
+    }

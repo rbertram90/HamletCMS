@@ -52,7 +52,7 @@ class WidgetsView extends GenericController
                 $params = json_encode($params);
                 $widgets[$sectionlower].= "<script>
                     $('#{$id}').html('<img src=\"/images/ajax-loader.gif\">');
-                    $.get('{$cmsDomain}/cms/widgets/render', {$params}, function(response) {
+                    $.get('{$cmsDomain}/widgets/render', {$params}, function(response) {
                         $('#{$id}').html(response);
                     });
                 </script>";

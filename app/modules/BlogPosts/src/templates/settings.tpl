@@ -49,9 +49,9 @@
                                         ace_editor_full.setTheme("ace/theme/textmate");
                                         ace_editor_full.session.setMode("ace/mode/smarty");
                                         $(".ace_editor").height('50vh');
-                                        var textarea = $('textarea[name="fld_post_full_template"]');
+                                        var textarea_full = $('textarea[name="fld_post_full_template"]');
                                         ace_editor_full.getSession().on("change", function () {
-                                            textarea.val(ace_editor_full.getSession().getValue());
+                                            textarea_full.val(ace_editor_full.getSession().getValue());
                                         });
                                     </script>
                                 </div>
