@@ -111,20 +111,26 @@ class Settings extends GenericController
     /**
      * Handles /settings/header/<blogid>
      */
-    public function header(&$request, &$response)
+    public function header()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        if ($request->method() == 'POST') return $this->action_updateHeaderContent($request, $response, $blog);
+        if ($this->request->method() == 'POST') return $this->updateHeaderContent();
         
-        $blogconfig = $blog->config();
-        if (isset($blogconfig['header'])) $response->setVar('blogconfig', $blogconfig['header']);
-        else $response->setVar('blogconfig', []);
+        $blogconfig = $this->blog->config();
+        if (isset($blogconfig['header'])) $this->response->setVar('blogconfig', $blogconfig['header']);
+        else $this->response->setVar('blogconfig', []);
 
-        $response->setVar('blog', $blog);
-        $response->setTitle('Customise Blog Header - ' . $blog->name);
-        $response->write('header.tpl', 'Settings');        
+        $headerTemplate = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/header.tpl';
+        if (file_exists($headerTemplate)) {
+            $this->response->setVar('headerTemplate', file_get_contents($headerTemplate));
+        }
+        else {
+            $defaultTemplate = SERVER_MODULES_PATH .'/BlogView/src/templates/header.tpl';
+            $this->response->setVar('headerTemplate', file_get_contents($defaultTemplate));
+        }
+        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Customise Blog Header - ' . $this->blog->name);
+        $this->response->write('header.tpl', 'Settings');
     }
 
     /**
@@ -202,18 +208,14 @@ class Settings extends GenericController
     /**
      * Handles /settings/stylesheet/<blogid>
      */
-    public function stylesheet(&$request, &$response)
+    public function stylesheet()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if($this->request->method() == 'POST') return $this->saveStylesheet();
 
-        if($request->method() == 'POST') return $this->action_saveStylesheet($request, $response, $blog);
-
-        $response->addScript('/resources/ace/ace.js');
-        $response->setVar('serverroot', SERVER_ROOT);
-        $response->setVar('blog', $blog);
-        $response->setTitle('Edit Stylesheet - ' . $blog->name);
-        $response->write('stylesheet.tpl', 'Settings');
+        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->setVar('serverroot', SERVER_ROOT);
+        $this->response->setTitle('Edit Stylesheet - ' . $this->blog->name);
+        $this->response->write('stylesheet.tpl', 'Settings');
     }
 
     /**
@@ -340,23 +342,32 @@ class Settings extends GenericController
     /**
      * Update the content in the header
      */
-    protected function action_updateHeaderContent(&$request, &$response, $blog)
+    protected function updateHeaderContent()
     {
-        $update = $blog->updateConfig([
+        // Update config file
+        $update = $this->blog->updateConfig([
             'header' => [
-                'background_image'          => $request->getString('fld_headerbackgroundimage'),
-                'bg_image_post_horizontal'  => $request->getString('fld_horizontalposition'),
-                'bg_image_post_vertical'    => $request->getString('fld_veritcalposition'),
-                'bg_image_align_horizontal' => $request->getString('fld_horizontalalign'),
-                'hide_title'                => $request->getString('fld_hidetitle'),
-                'hide_description'          => $request->getString('fld_hidedescription')
+                'background_image'          => $this->request->getString('fld_headerbackgroundimage'),
+                'bg_image_post_horizontal'  => $this->request->getString('fld_horizontalposition'),
+                'bg_image_post_vertical'    => $this->request->getString('fld_veritcalposition'),
+                'bg_image_align_horizontal' => $this->request->getString('fld_horizontalalign'),
+                'hide_title'                => $this->request->getString('fld_hidetitle'),
+                'hide_description'          => $this->request->getString('fld_hidedescription')
             ]
         ]);
+        
+        // Check update worked
+        if (!$update) $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header config', 'error');
 
-        if(!$update) $response->redirect('/cms/settings/header/' . $blog->id, 'Updated failed', 'error');
+        // Save template file
+        $templatePath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/header.tpl';
+        $save = file_put_contents($templatePath, $this->request->get('header_template'));
+        if ($save === FALSE) {
+            $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header template file', 'error');
+        }
 
         BlogCMS::runHook('onHeaderSettingsUpdated', ['blog' => $this->blog]);
-        $response->redirect('/cms/settings/header/' . $blog->id, 'Header updated', 'success');
+        $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Header updated', 'success');
     }
     
     /**
@@ -540,18 +551,18 @@ class Settings extends GenericController
     /**
      * Save changes made to the stylesheet
      */
-    protected function action_saveStylesheet($request, $response, $blog)
+    protected function saveStylesheet()
     {
         // Sanitize Variables
-        $css_string = strip_tags($request->get('fld_css'));
+        $css_string = strip_tags($this->request->get('fld_css'));
 
-        if (is_dir(SERVER_PATH_BLOGS . "/{$blog->id}") &&
-            file_put_contents(SERVER_PATH_BLOGS. "/{$blog->id}/default.css", $css_string)) {
-            BlogCMS::runHook('onStylesheetUpdated', ['blog' => $blog]);
-            $response->redirect("/cms/settings/stylesheet/{$blog->id}", "Stylesheet updated", "success");
+        if (is_dir(SERVER_PATH_BLOGS . "/{$this->blog->id}") &&
+            file_put_contents(SERVER_PATH_BLOGS. "/{$this->blog->id}/default.css", $css_string)) {
+            BlogCMS::runHook('onStylesheetUpdated', ['blog' => $this->blog]);
+            $this->response->redirect("/cms/settings/stylesheet/{$this->blog->id}", "Stylesheet updated", "success");
         }
         else {
-            $response->redirect("/cms/settings/stylesheet/{$blog->id}", "Update failed", "error");
+            $this->response->redirect("/cms/settings/stylesheet/{$this->blog->id}", "Update failed", "error");
         }
     }
 

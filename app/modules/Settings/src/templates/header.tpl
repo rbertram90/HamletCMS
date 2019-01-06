@@ -10,6 +10,22 @@
 
             <form method="post" id="frm_updateheader" class="ui form">
                 <div class="field">
+                    <label>Template</label>
+                    <textarea id="ace_edit_view" name="ace_edit_view" rows="20" style="font-family: monospace;">{$headerTemplate}</textarea>
+                    <textarea name="header_template" style="display: none;">{$headerTemplate}</textarea>
+                    <script>
+                        var ace_editor = ace.edit("ace_edit_view");
+                        ace_editor.setTheme("ace/theme/textmate");
+                        ace_editor.session.setMode("ace/mode/smarty");
+                        $(".ace_editor").height('50vh');
+                        var textarea = $('textarea[name="header_template"]');
+                        ace_editor.getSession().on("change", function () {
+                            textarea.val(ace_editor.getSession().getValue());
+                        });
+                    </script>
+                </div>
+
+                <div class="field">
                     <label for="fld_backgroundimage">Background Image</label>
 
                     <div id="current-profile-image" class="rtfeditor">

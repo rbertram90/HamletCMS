@@ -277,6 +277,40 @@ class BlogContent
     }
     
     /**
+     * Generate the HTML to be shown in the header
+     */
+    public function generateHeader()
+    {
+        $headerResponse = new BlogCMSResponse();
+        $headerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/header.tpl';
+        // Check if blog template is overriding the teaser
+        // @todo - find this once and store in config?!
+        if (file_exists($headerTemplate)) {
+            $templatePath = 'file:'. $headerTemplate;
+            $source = '';
+        }
+        else {
+            // Use system default
+            $templatePath = 'header.tpl';
+            $source = 'BlogView';
+        }
+
+        // Copy accross sub-set of variables from main template
+        $headerResponse = new BlogCMSResponse();
+        $headerResponse->setVar('blog_root_url', $this->response->getVar('blog_root_url'));
+        $headerResponse->setVar('blog_file_dir', $this->response->getVar('blog_file_dir'));
+        $headerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
+        $headerResponse->setVar('user', BlogCMS::session()->$currentUser);
+        $headerResponse->setVar('blog', $this->blog);
+        $headerResponse->setVar('hide_title', $this->header_hideTitle);
+        $headerResponse->setVar('hide_description', $this->header_hideDescription);
+        $headerResponse->setVar('page_navigation', $this->generateNavigation());
+        $headerResponse->setVar('widgets', $this->response->getVar('widgets')['Header']);
+
+        return $headerResponse->write($templatePath, $source, false);
+    }
+
+    /**
      * Generate the HTML to be shown in the footer
      * @return string html
      */

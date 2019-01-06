@@ -92,10 +92,8 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
     $response->setVar('user_is_contributor', BlogCMS::$userGroup !== false);
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());
+    $response->setVar('header_content', $page_controller->generateHeader());
     $response->setVar('page_footercontent', $page_controller->generateFooter());
-    $response->setVar('page_navigation', $page_controller->generateNavigation());
-    $response->setVar('header_hide_title', $page_controller->header_hideTitle);
-    $response->setVar('header_hide_description', $page_controller->header_hideDescription);
 
     $templateConfig = $page_controller->getTemplateConfig();
     $response->setVar('template_config', $templateConfig);

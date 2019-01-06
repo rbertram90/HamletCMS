@@ -30,23 +30,7 @@
 <body id="blog">
     <div class="ui stackable grid container page-wrapper">
         <div class="row">
-            <div class="sixteen wide column page-header">
-                {if !$header_hide_title}
-                    <h1><a href="{$blog->reletivePath()}">{$blog->name}</a></h1>
-                {/if}
-                
-                {if !$header_hide_description}
-                    <h2>{$blog->description}</h2>
-                {/if}
-                
-                {if isset($widgets.header)}
-                    {$widgets.header}
-                {/if}
-                
-                {if strlen($page_navigation) > 0}
-                    <div class="ui menu">{$page_navigation}</div>
-                {/if}
-            </div>
+            {$header_content}
         </div>
         
         {$columncount = 2}
