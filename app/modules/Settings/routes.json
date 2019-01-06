@@ -77,10 +77,10 @@
         "action": "template"
     },
     {
-        "key": "settings.blogdesigner",
-        "path": "/cms/settings/blogdesigner/{BLOG_ID}",
+        "key": "settings.templateconfig",
+        "path": "/cms/settings/templateConfig/{BLOG_ID}",
         "permissions": ["change_settings"],
         "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "blogdesigner"
+        "action": "templateConfig"
     }
 ]

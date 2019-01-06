@@ -60,6 +60,7 @@ class Settings extends GenericController
     {
         $currentUser = BlogCMS::session()->currentUser;
         $this->blog = BlogCMS::getActiveBlog();
+        $this->response->setVar('blog', $this->blog);
 
         $access = true;
 
@@ -216,7 +217,7 @@ class Settings extends GenericController
     }
 
     /**
-     * Handles /settings/stylesheet/<blogid>
+     * Handles /settings/template/<blogid>
      */
     public function template(&$request, &$response)
     {
@@ -230,6 +231,34 @@ class Settings extends GenericController
         $response->write('template.tpl', 'Settings');
     }
     
+    /**
+     * Handles /settings/templateConfig/<blogid>
+     */
+    public function templateConfig()
+    {
+        if ($this->request->method() == 'POST') return $this->saveTemplateConfig();
+
+        $configFile = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json';
+        if (file_exists($configFile)) {
+            $config = JSONhelper::JSONFileToArray($configFile);
+            $this->response->setVar('config', $config);
+        }
+        else {
+            $this->response->setVar('config', [
+                'Layout' => [
+                    'ColumnCount' => 2,
+                    'PostsColumn' => 1
+                ],
+                'Includes' => [
+                    'semantic-ui' => true
+                ]
+            ]);
+        }
+
+        $this->response->setTitle('Template settings - '. $this->blog->name);
+        $this->response->write('templateConfig.tpl', 'Settings');
+    }
+
     /******************************************************************
         POST - Blog Settings
     ******************************************************************/
@@ -253,6 +282,36 @@ class Settings extends GenericController
         }
         else {
             $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Error saving to database", "error");
+        }
+    }
+
+    /**
+     * Save config for template
+     */
+    public function saveTemplateConfig()
+    {
+        $imports = array_values($this->request->get('imports', []));
+        $imports = array_filter($imports);
+
+        $newConfig = [
+            'Layout' => [
+                'ColumnCount' => $this->request->getInt('column_count', 2),
+                'PostsColumn' => $this->request->getInt('post_column', 1)
+            ]
+        ];
+
+        $configFile = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json';
+        $oldConfig = JSONhelper::JSONFileToArray($configFile);
+
+        $config = array_replace_recursive($oldConfig, $newConfig);
+
+        $config['Imports'] = $imports;
+
+        if (file_put_contents($configFile, JSONhelper::arrayToJSON($config))) {
+            $this->response->redirect('/cms/settings/templateConfig/'. $this->blog->id, 'Template settings saved', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/settings/templateConfig/'. $this->blog->id, 'Error saving template settings', 'error');
         }
     }
     

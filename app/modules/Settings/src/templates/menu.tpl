@@ -76,6 +76,15 @@
         <div class="column">
             <div class="ui segment clearing">
                 <h4 class="ui header">
+                    <i class="calculator icon"></i>
+                    <div class="content">
+                        <a href="/cms/settings/templateConfig/{$blog->id}">Configure template</a>
+                        <div class="sub header">Configure settings for the selected template</div>
+                    </div>
+                </h4>
+            </div>
+            <div class="ui segment clearing">
+                <h4 class="ui header">
                     <i class="code icon"></i>
                     <div class="content">
                         <a href="/cms/settings/stylesheet/{$blog->id}">Edit Stylesheet</a>

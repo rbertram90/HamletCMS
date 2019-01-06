@@ -28,7 +28,7 @@
     </script>
 </head>
 <body id="blog">
-    <div class="ui grid container page-wrapper">
+    <div class="ui stackable grid container page-wrapper">
         <div class="row">
             <div class="sixteen wide column page-header">
                 {if !$header_hide_title}

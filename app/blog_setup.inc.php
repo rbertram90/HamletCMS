@@ -107,6 +107,11 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
             $response->addScript($host . '/js/semantic.js');
         }
     }
+    if (isset($templateConfig['Imports'])) {
+        foreach ($templateConfig['Imports'] as $file) {
+            $response->addStylesheet($file);
+        }
+    }
 
     // Store any output in a buffer
     ob_start();
