@@ -11,31 +11,19 @@
             <form method="post" id="frm_updatefooter" class="ui form">
 
                 <div class="field">
-                    <label for="fld_numcolumns">Number of Columns</label>
-                    <select name="fld_numcolumns" id="fld_numcolumns" class="ui dropdown">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </div>
-                
-                <div class="field">
-                    <label for="fld_contentcol1">Content - Column 1</label>
-                    <textarea name="fld_contentcol1" id="fld_contentcol1">{strip}
-                        {if isset($blogconfig['content_col1'])}
-                            {$blogconfig.content_col1}
-                        {/if}
-                    {/strip}</textarea>
-                </div>
-                
-                <div class="field">
-                    <div id="wrap_cc2">
-                        <label for="fld_contentcol2">Content - Column 2</label>
-                        <textarea name="fld_contentcol2" id="fld_contentcol2">{strip}
-                            {if isset($blogconfig['content_col2'])}
-                                {$blogconfig.content_col2}
-                            {/if}
-                        {/strip}</textarea>
-                    </div>
+                    <label>Template</label>
+                    <textarea id="ace_edit_view" name="ace_edit_view" rows="20" style="font-family: monospace;">{$footerTemplate}</textarea>
+                    <textarea name="footer_template" style="display: none;">{$footerTemplate}</textarea>
+                    <script>
+                        var ace_editor = ace.edit("ace_edit_view");
+                        ace_editor.setTheme("ace/theme/textmate");
+                        ace_editor.session.setMode("ace/mode/smarty");
+                        $(".ace_editor").height('50vh');
+                        var textarea = $('textarea[name="footer_template"]');
+                        ace_editor.getSession().on("change", function () {
+                            textarea.val(ace_editor.getSession().getValue());
+                        });
+                    </script>
                 </div>
                 
                 <div class="field">
@@ -92,7 +80,6 @@
 </div>
 
 <script type="text/javascript">
-    
     {if array_key_exists('bg_image_post_vertical', $blogconfig)}
         $("#fld_veritcalposition").val("{$blogconfig.bg_image_post_vertical}");
     {/if}
@@ -101,50 +88,25 @@
         $("#fld_horizontalposition").val("{$blogconfig.bg_image_post_horizontal}");
     {/if}
     
-    function removeImage()
-    {ldelim}
+    function removeImage() {
         $("#current-profile-image").html("");
         return false;
-    {rdelim}
-
-    var checkFields = function ()
-    {ldelim}
-        if($("#fld_numcolumns").val() == 1)
-        {ldelim}
-            $("#wrap_cc2").hide();
-        {rdelim}
-        else
-        {ldelim}
-            $("#wrap_cc2").show();
-        {rdelim}
-    {rdelim};
+    }   
     
-    {if isset($blogconfig['numcols']) and $blogconfig['numcols'] == '2'}
-        $("#fld_numcolumns").val(2);
-    {/if}
-    
-    $("#fld_numcolumns").change(checkFields);
-    // Init
-    checkFields();
-    
-    
-    $("#frm_updatefooter").submit(function()
-    {ldelim}
+    $("#frm_updatefooter").submit(function() {
         // add the new image location to the hidden field
         //var newimagesrc = ;
-        if(typeof $("#current-profile-image > img").attr("src") == "string")
-        {ldelim}
+        if(typeof $("#current-profile-image > img").attr("src") == "string") {
             var text = $("#current-profile-image > img").attr("src");
             $("#fld_footerbackgroundimage").attr("value", text);
-        {rdelim}
-        else if($("#current-profile-image").html() == '')
-        {ldelim}
+        }
+        else if($("#current-profile-image").html() == '') {
             // Make sure it is actually removed
             $("#fld_footerbackgroundimage").attr("value", "");
-        {rdelim}
+        }
         //$("#fld_footerbackgroundimage").val("" + newimagesrc);
         //return false;
-    {rdelim});
+    });
 
     $('select.dropdown').dropdown();
 </script>

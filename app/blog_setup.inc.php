@@ -93,7 +93,7 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());
     $response->setVar('header_content', $page_controller->generateHeader());
-    $response->setVar('page_footercontent', $page_controller->generateFooter());
+    $response->setVar('footer_content', $page_controller->generateFooter());
 
     $templateConfig = $page_controller->getTemplateConfig();
     $response->setVar('template_config', $templateConfig);

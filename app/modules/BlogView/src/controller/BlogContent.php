@@ -320,32 +320,14 @@ class BlogContent
         $blogConfig = $this->blog->config();
         
         // Check that the footer key exists
-        if(strtolower(gettype($blogConfig)) !== 'array' || !array_key_exists('footer', $blogConfig)) return '';
+        if(!is_array($blogConfig) || !array_key_exists('footer', $blogConfig)) return '';
         
         // Get data from config
         $configReader = new Codeliner\ArrayReader\ArrayReader($blogConfig);
-        $numcols = $configReader->integerValue('footer.numcols', 1);                     // Number of columns
-        $contentColumn1 = $configReader->stringValue('footer.content_col1', false);      // Content for column 1
-        $contentColumn2 = $configReader->stringValue('footer.content_col2', false);      // Content for column 2
         $backgroundImage = $configReader->stringValue('footer.background_image', false); // Background Image
         
-        // Generate Content HTML
-        if ($numcols == 1 && $contentColumn1) {
-            // Single Column
-            $footerContent = $contentColumn1;
-            
-        } elseif ($numcols == 2 && $contentColumn1 && $contentColumn2) {
-            // Two Column Layout
-            $footerContent = '<div class="cols2_1">'.$contentColumn1.'</div><div class="col_sep"></div>';
-            $footerContent.= '<div class="cols2_2">'.$contentColumn2.'</div>';
-        } else {
-            // No content
-            $footerContent = '';
-        }
-        
         // Generate Background CSS
-        if ($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0)
-        {
+        if ($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0) {
             // Background position
             $h = $configReader->stringValue('footer.bg_image_post_horizontal', false);
             $v = $configReader->stringValue('footer.bg_image_post_vertical', false);
@@ -366,8 +348,31 @@ class BlogContent
                 }
             </style>';
         }
-        
-        return $footerContent;
+
+        $footerResponse = new BlogCMSResponse();
+        $footerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/footer.tpl';
+        // Check if blog template is overriding the teaser
+        // @todo - find this once and store in config?!
+        if (file_exists($footerTemplate)) {
+            $templatePath = 'file:'. $footerTemplate;
+            $source = '';
+        }
+        else {
+            // Use system default
+            $templatePath = 'footer.tpl';
+            $source = 'BlogView';
+        }
+
+        // Copy accross sub-set of variables from main template
+        $footerResponse = new BlogCMSResponse();
+        $footerResponse->setVar('blog_root_url', $this->response->getVar('blog_root_url'));
+        $footerResponse->setVar('blog_file_dir', $this->response->getVar('blog_file_dir'));
+        $footerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
+        $footerResponse->setVar('user', BlogCMS::session()->$currentUser);
+        $footerResponse->setVar('blog', $this->blog);
+        $footerResponse->setVar('widgets', $this->response->getVar('widgets')['Footer']);
+
+        return $footerResponse->write($templatePath, $source, false) . $footerContent;
     }
     
     /**

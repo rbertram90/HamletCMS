@@ -100,7 +100,7 @@ class Settings extends GenericController
      */
     public function general()
     {
-        if ($this->request->method() == 'POST') return $this->action_updateBlogGeneral();
+        if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('General Settings - ' . $this->blog->name);
@@ -128,7 +128,6 @@ class Settings extends GenericController
             $this->response->setVar('headerTemplate', file_get_contents($defaultTemplate));
         }
         $this->response->addScript('/resources/ace/ace.js');
-        $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Customise Blog Header - ' . $this->blog->name);
         $this->response->write('header.tpl', 'Settings');
     }
@@ -136,50 +135,53 @@ class Settings extends GenericController
     /**
      * Handles /settings/footer/<blogid>
      */
-    public function footer(&$request, &$response)
+    public function footer()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        if ($request->method() == 'POST') return $this->action_updateFooterContent($request, $response, $blog);
+        if ($this->request->method() == 'POST') return $this->updateFooter();
         
-        $blogconfig = $blog->config();
-        if (isset($blogconfig['footer'])) $response->setVar('blogconfig', $blogconfig['footer']);
-        else $response->setVar('blogconfig', []);
+        $blogconfig = $this->blog->config();
+        if (isset($blogconfig['footer'])) $this->response->setVar('blogconfig', $blogconfig['footer']);
+        else $this->response->setVar('blogconfig', []);
 
-        $response->setVar('blog', $blog);
-        $response->setTitle('Customise Blog Footer - ' . $blog->name);
-        $response->write('footer.tpl', 'Settings');
+        $footerTemplate = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/footer.tpl';
+        if (file_exists($footerTemplate)) {
+            $this->response->setVar('footerTemplate', file_get_contents($footerTemplate));
+        }
+        else {
+            $defaultTemplate = SERVER_MODULES_PATH .'/BlogView/src/templates/footer.tpl';
+            $this->response->setVar('footerTemplate', file_get_contents($defaultTemplate));
+        }
+
+        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->setTitle('Customise Blog Footer - ' . $this->blog->name);
+        $this->response->write('footer.tpl', 'Settings');
     }
 
     /**
      * Handles /settings/pages/<blogid>
      */
-    public function pages(&$request, &$response)
+    public function pages()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
-
-        $action = $request->getUrlParameter(2);
+        $action = $this->request->getUrlParameter(2);
         $actionTaken = true;
 
         switch ($action) {
-            case 'add'    : $result = $this->action_addPage($request, $response, $blog); break;
-            case 'up'     : $result = $this->action_movePageUp($request, $response, $blog); break;
-            case 'down'   : $result = $this->action_movePageDown($request, $response, $blog); break;
-            case 'remove' : $result = $this->action_removePage($request, $response, $blog); break;
+            case 'add'    : $result = $this->addPage(); break;
+            case 'up'     : $result = $this->movePageUp(); break;
+            case 'down'   : $result = $this->movePageDown(); break;
+            case 'remove' : $result = $this->removePage(); break;
             default: $actionTaken = false;
         }
 
         if($actionTaken && $result) {
-            BlogCMS::runHook('onPageSettingsUpdated', ['blog' => $blog]);
+            BlogCMS::runHook('onPageSettingsUpdated', ['blog' => $this->blog]);
             BlogCMS::Session()->addMessage('Page list updated', 'success');
         }
         elseif($actionTaken && !$result) {
             BlogCMS::Session()->addMessage('Failed to update page list', 'error');
         }
 
-        $pagelist = explode(',', $blog->pagelist);
+        $pagelist = explode(',', $this->blog->pagelist);
         $pages = $taglist = [];
 
         foreach ($pagelist as $postID) {
@@ -192,17 +194,17 @@ class Settings extends GenericController
             }
         }
         
-        $tags = $this->modelPosts->getAllTagsByBlog($blog->id);
-        $posts = $this->modelPosts->get(['id', 'title'], ['blog_id' => $blog->id]);
+        $tags = $this->modelPosts->getAllTagsByBlog($this->blog->id);
+        $posts = $this->modelPosts->get(['id', 'title'], ['blog_id' => $this->blog->id]);
 
-        $response->setVar('pagelist', $pagelist);
-        $response->setVar('pages', $pages);
-        $response->setVar('taglist', $taglist);
-        $response->setVar('tags', $tags);
-        $response->setVar('posts', $posts);
-        $response->setVar('blog', $blog);
-        $response->setTitle('Manage Pages - ' . $blog->name);
-        $response->write('pages.tpl', 'Settings');
+        $this->response->setVar('pagelist', $pagelist);
+        $this->response->setVar('pages', $pages);
+        $this->response->setVar('taglist', $taglist);
+        $this->response->setVar('tags', $tags);
+        $this->response->setVar('posts', $posts);
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Manage Pages - ' . $blog->name);
+        $this->response->write('pages.tpl', 'Settings');
     }
 
     /**
@@ -221,16 +223,13 @@ class Settings extends GenericController
     /**
      * Handles /settings/template/<blogid>
      */
-    public function template(&$request, &$response)
+    public function template()
     {
-        $blogID = $request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        if ($this->request->method() == 'POST') return $this->applyNewTemplate();
 
-        if ($request->method() == 'POST') return $this->action_applyNewTemplate($request, $response, $blog);
-
-        $response->setVar('blog', $blog);
-        $response->setTitle('Choose Template - ' . $blog->name);
-        $response->write('template.tpl', 'Settings');
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle('Choose Template - ' . $this->blog->name);
+        $this->response->write('template.tpl', 'Settings');
     }
     
     /**
@@ -268,7 +267,7 @@ class Settings extends GenericController
     /**
      * Run update for name and description of a blog
      */
-    public function action_updateBlogGeneral()
+    public function updateBlogGeneral()
     {
         $update = $this->modelBlogs->update(['id' => $this->blog->id], [
             'name'        => $this->request->getString('fld_blogname'),
@@ -320,23 +319,27 @@ class Settings extends GenericController
     /**
      * Update the content in the footer
      */
-    protected function action_updateFooterContent(&$request, &$response, $blog)
+    protected function updateFooter()
     {
-        $update = $blog->updateConfig([
+        $update = $this->blog->updateConfig([
             'footer' => [
-                'numcols'                  => $request->getString('fld_numcolumns'),
-                'content_col1'             => $request->getString('fld_contentcol1'),
-                'content_col2'             => $request->getString('fld_contentcol2'),
-                'background_image'         => $request->getString('fld_footerbackgroundimage'),
-                'bg_image_post_horizontal' => $request->getString('fld_horizontalposition'),
-                'bg_image_post_vertical'   => $request->getString('fld_veritcalposition')
+                'background_image'         => $this->request->getString('fld_footerbackgroundimage'),
+                'bg_image_post_horizontal' => $this->request->getString('fld_horizontalposition'),
+                'bg_image_post_vertical'   => $this->request->getString('fld_veritcalposition')
             ]
         ]);
 
-        if(!$update) $response->redirect('/cms/settings/footer/' . $blog->id, 'Updated failed', 'error');
+        if (!$update) $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Updated failed', 'error');
         
-        BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $blog]);
-        $response->redirect('/cms/settings/footer/' . $blog->id, 'Footer updated', 'success');
+        // Save template file
+        $templatePath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/footer.tpl';
+        $save = file_put_contents($templatePath, $this->request->get('footer_template'));
+        if ($save === FALSE) {
+            $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Unable to save footer template file', 'error');
+        }
+
+        BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
+        $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Footer updated', 'success');
     }
     
     /**
@@ -373,28 +376,24 @@ class Settings extends GenericController
     /**
      * Add a page to the list of pages to show on menu
      * 
-     * @param $request
-     * @param $response
-     * @param array $blog
-     * 
      * @return bool Was the page added successfully?
      */
-    protected function action_addPage(&$request, &$response, &$blog)
+    protected function addPage()
     {
-        if (!$pageType = $request->getString('fld_pagetype', false)) return false;
+        if (!$pageType = $this->request->getString('fld_pagetype', false)) return false;
         
         switch ($pageType) {
             case 'p':
                 // Check that post we're adding is valid
-                $newpageID = $request->getInt('fld_postid');
+                $newpageID = $this->request->getInt('fld_postid');
                 $targetpost = $this->modelPosts->get(['blog_id'], ['id' => $newpageID], '', '', false);
-                if (!$targetpost || $targetpost->blog_id != $blog->id) {
+                if (!$targetpost || $targetpost->blog_id != $this->blog->id) {
                     return false;
                 }
                 break;
                 
             case 't':
-                if (!$tag = $request->getString('fld_tag', false)) return false;
+                if (!$tag = $this->request->getString('fld_tag', false)) return false;
                 $tag = str_replace(',', '', $tag);
                 $newpageID = 't:' . $tag;
                 break;
@@ -418,18 +417,14 @@ class Settings extends GenericController
     }
     
     /**
-     * @param $request
-     * @param $response
-     * @param array $blog
-     * 
      * @return bool Was the page removed successfully?
      */
-    protected function action_removePage(&$request, &$response, &$blog)
+    protected function removePage()
     {
-        if (!$page = $request->getString('fld_postid', false)) return false;
+        if (!$page = $this->request->getString('fld_postid', false)) return false;
         
         // Get position of page in the comma seperated list
-        $pagelist = explode(',', $blog->pagelist);
+        $pagelist = explode(',', $this->blog->pagelist);
         $idKey = array_search($page, $pagelist);
         if ($idKey === false) return false;
 
@@ -437,25 +432,21 @@ class Settings extends GenericController
         array_splice($pagelist, $idKey, 1);
         
         // Make sure we've got the most recent data for this request
-        $blog->pagelist = implode(',', $pagelist);
+        $this->blog->pagelist = implode(',', $pagelist);
 
-        return $this->modelBlogs->update(['id' => $blog->id], [
-            'pagelist' => $blog->pagelist
+        return $this->modelBlogs->update(['id' => $this->blog->id], [
+            'pagelist' => $this->blog->pagelist
         ]);
     }
     
     /**
-     * @param $request
-     * @param $response
-     * @param array $blog
-     * 
      * @return bool Was the page moved successfully?
      */
-    protected function action_movePageUp(&$request, &$response, &$blog)
+    protected function movePageUp()
     {
-        if (!$page = $request->getString('fld_postid', false)) return false;
+        if (!$page = $this->request->getString('fld_postid', false)) return false;
         
-        $pagelist = explode(',', $blog->pagelist);
+        $pagelist = explode(',', $this->blog->pagelist);
         $idKey = array_search($page, $pagelist);
         
         if ($idKey !== false && $idKey > 0) {
@@ -463,26 +454,22 @@ class Settings extends GenericController
             $pagelist[$idKey - 1] = $page;
             $pagelist = implode(',', $pagelist);
 
-            $blog->pagelist = $pagelist;
+            $this->blog->pagelist = $pagelist;
 
-            return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
+            return $this->modelBlogs->update(['id' => $this->blog->id], ['pagelist' => $pagelist]);
         }
 
         return false;
     }
     
     /**
-     * @param $request
-     * @param $response
-     * @param array $blog
-     * 
      * @return bool Was the page moved successfully?
      */
-    protected function action_movePageDown(&$request, &$response, &$blog)
+    protected function movePageDown()
     {
-        if (!$page = $request->getString('fld_postid', false)) return false;
+        if (!$page = $this->request->getString('fld_postid', false)) return false;
         
-        $pagelist = explode(',', $blog->pagelist);
+        $pagelist = explode(',', $this->blog->pagelist);
         $idKey = array_search($page, $pagelist);
         
         if ($idKey !== false && $idKey < count($pagelist) - 1) {
@@ -490,9 +477,9 @@ class Settings extends GenericController
             $pagelist[$idKey + 1] = $page;
             $pagelist = implode(',', $pagelist);
             
-            $blog->pagelist = $pagelist;
+            $this->blog->pagelist = $pagelist;
 
-            return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
+            return $this->modelBlogs->update(['id' => $this->blog->id], ['pagelist' => $pagelist]);
         }
         
         return false;
@@ -501,16 +488,16 @@ class Settings extends GenericController
     /**
      * Apply a completely new template from the predefined templates
      */
-    protected function action_applyNewTemplate($request, $response, $blog)
+    protected function applyNewTemplate()
     {
-        if (!$template_id = $request->getString('template_id', false)) {
-            $response->redirect('/cms/settings/template/' . $blog->id, 'Template not found', 'error');
+        if (!$template_id = $this->request->getString('template_id', false)) {
+            $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
         }
 
         $templateDirectory = SERVER_PATH_TEMPLATES .'/'. $template_id;
-        $blogDirectory = SERVER_PATH_BLOGS .'/'. $blog->id;
+        $blogDirectory = SERVER_PATH_BLOGS .'/'. $this->blog->id;
         if (!is_dir($templateDirectory)) {
-            $response->redirect('/cms/settings/template/' . $blog->id, 'Template not found', 'error');
+            $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
         }
 
         // Update default.css
@@ -540,12 +527,12 @@ class Settings extends GenericController
 
         // Delete the widgets.json (as columns may have changed and no way to tell what current template is)
         // maybe do this differently in future updates
-        if (file_exists(SERVER_PATH_BLOGS . "/{$blog->id}/widgets.json")) {
-            unlink(SERVER_PATH_BLOGS . "/{$blog->id}/widgets.json");
+        if (file_exists(SERVER_PATH_BLOGS . "/{$this->blog->id}/widgets.json")) {
+            unlink(SERVER_PATH_BLOGS . "/{$this->blog->id}/widgets.json");
         }
 
-        BlogCMS::runHook('onTemplateChanged', ['blog' => $blog]);
-        $response->redirect('/cms/settings/template/' . $blog->id, 'Template changed', 'success');
+        BlogCMS::runHook('onTemplateChanged', ['blog' => $this->blog]);
+        $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template changed', 'success');
     }
     
     /**

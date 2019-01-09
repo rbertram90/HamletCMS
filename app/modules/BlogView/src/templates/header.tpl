@@ -7,7 +7,7 @@
  * $widgets
  * $page_navigation
  *}
-<div class="sixteen wide column page-header">
+<div class="sixteen wide column">
     {if !$hide_title}
         <h1><a href="{$blog->reletivePath()}">{$blog->name}</a></h1>
     {/if}

@@ -29,7 +29,7 @@
 </head>
 <body id="blog">
     <div class="ui stackable grid container page-wrapper">
-        <div class="row">
+        <div class="row page-header">
             {$header_content}
         </div>
         
@@ -60,13 +60,12 @@
             {/if}
         {/if}
 
-        <div class="row">
-            <div class="sixteen wide column page-footer">
-                {if isset($widgets.footer)}
-                    {$widgets.footer}
-                {/if}
+        <div class="row page-footer">
+            {$footer_content}
+        </div>
 
-                <div class="custom_footer_content">{$page_footercontent}</div>
+        <div class="row page-bookend">
+            <div class="sixteen wide column">       
                 <div>Powered by Blog CMS from <a href="https://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a></div>
             </div>
         </div>
