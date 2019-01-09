@@ -29,9 +29,8 @@
 </head>
 <body id="blog">
     <div class="ui stackable grid container page-wrapper">
-        <div class="row page-header">
-            {$header_content}
-        </div>
+        {* Dynamic header template *}
+        {$header_content}
         
         {$columncount = 2}
         {$postcolumn = 1}
@@ -59,10 +58,9 @@
                 {include file='body/twocolumnsright.tpl'}
             {/if}
         {/if}
-
-        <div class="row page-footer">
-            {$footer_content}
-        </div>
+        
+        {* Dynamic footer template *}
+        {$footer_content}
 
         <div class="row page-bookend">
             <div class="sixteen wide column">       
