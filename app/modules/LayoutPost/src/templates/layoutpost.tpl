@@ -53,7 +53,7 @@
                 });
                 </script>
 
-                <textarea name="post_content" id="post_content" style="display: none;">{$fieldContent}</textarea>
+                <textarea name="post_content" id="post_content" style="display: none;">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
