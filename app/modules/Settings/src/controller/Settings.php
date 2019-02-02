@@ -246,6 +246,9 @@ class Settings extends GenericController
         }
         else {
             $this->response->setVar('config', [
+                'Zones' => [
+                    'header', 'footer', 'leftpanel', 'rightpanel'
+                ],
                 'Layout' => [
                     'ColumnCount' => 2,
                     'PostsColumn' => 1
@@ -294,6 +297,14 @@ class Settings extends GenericController
         $imports = array_values($this->request->get('imports', []));
         $imports = array_filter($imports);
 
+        $zones = array_values($this->request->get('zones', []));
+        $zones = array_filter($zones);
+        array_push($zones, 'leftpanel', 'rightpanel');
+        $zones = array_unique($zones);
+
+        // var_dump($zones);
+        // die();
+
         $newConfig = [
             'Layout' => [
                 'ColumnCount' => $this->request->getInt('column_count', 2),
@@ -307,6 +318,8 @@ class Settings extends GenericController
         $config = array_replace_recursive($oldConfig, $newConfig);
 
         $config['Imports'] = $imports;
+        $config['Zones'] = $zones;
+
 
         if (file_put_contents($configFile, JSONhelper::arrayToJSON($config))) {
             $this->response->redirect('/cms/settings/templateConfig/'. $this->blog->id, 'Template settings saved', 'success');

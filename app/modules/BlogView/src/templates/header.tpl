@@ -17,8 +17,8 @@
             <h2>{$blog->description}</h2>
         {/if}
         
-        {if isset($widgets)}
-            {$widgets}
+        {if isset($widgets.header)}
+            {$widgets.header}
         {/if}
         
         {if strlen($page_navigation) > 0}

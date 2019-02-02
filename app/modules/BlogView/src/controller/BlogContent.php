@@ -305,7 +305,7 @@ class BlogContent
         $headerResponse->setVar('hide_title', $this->header_hideTitle);
         $headerResponse->setVar('hide_description', $this->header_hideDescription);
         $headerResponse->setVar('page_navigation', $this->generateNavigation());
-        $headerResponse->setVar('widgets', $this->response->getVar('widgets')['Header']);
+        $headerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
         return $headerResponse->write($templatePath, $source, false);
     }
@@ -370,7 +370,7 @@ class BlogContent
         $footerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
         $footerResponse->setVar('user', BlogCMS::session()->$currentUser);
         $footerResponse->setVar('blog', $this->blog);
-        $footerResponse->setVar('widgets', $this->response->getVar('widgets')['Footer']);
+        $footerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
         return $footerResponse->write($templatePath, $source, false) . $footerContent;
     }

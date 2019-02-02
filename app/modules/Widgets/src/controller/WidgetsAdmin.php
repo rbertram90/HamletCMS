@@ -140,7 +140,23 @@ class WidgetsAdmin extends GenericController
         $widgetSettingsFilePath = SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json';
         
         if(file_exists($widgetSettingsFilePath) && filesize($widgetSettingsFilePath) > 0) {
-            return JSONHelper::JSONFileToArray($widgetSettingsFilePath);
+            // Make sure the groups match the template settings
+            $widgets = JSONhelper::JSONFileToArray($widgetSettingsFilePath);
+            $newWidgets = [];
+
+            $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            if (array_key_exists('Zones', $templateConfig)) {
+                foreach ($templateConfig['Zones'] as $zone) {
+                    if (array_key_exists($zone, $widgets)) {
+                        $newWidgets[$zone] = $widgets[$zone];
+                    }
+                    else {
+                        $newWidgets[$zone] = [];
+                    }
+                }
+            }
+
+            return $newWidgets;
         }
         
         return $this->createWidgetSettingsFile($blogID);
@@ -155,27 +171,22 @@ class WidgetsAdmin extends GenericController
     {
         if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
         {
-            $defaultWidgetConfig = array('Header' => []);
+            $defaultWidgetConfig = [];
             $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
-            $arrayReader = new ArrayReader($templateConfig);
-
-            if($columnCount = $arrayReader->integerValue('Layout.ColumnCount')) {
-                switch($columnCount) {
-                    case 3:
-                        $defaultWidgetConfig['RightPanel'] = [];
-                        $defaultWidgetConfig['LeftPanel'] = [];
-                        break;
-                        
-                    case 2:
-                        if($postsColumn = $arrayReader->integerValue('Layout.PostsColumn')) {
-                            if($postsColumn == 2) $defaultWidgetConfig['LeftPanel'] = [];
-                            else $defaultWidgetConfig['RightPanel'] = [];
-                        }
-                        break;
+            
+            if (array_key_exists('Zones', $templateConfig)) {
+                foreach ($templateConfig['Zones'] as $zone) {
+                    $defaultWidgetConfig[$zone] = [];
                 }
             }
-            
-            $defaultWidgetConfig['Footer'] = [];
+            else {
+                $defaultWidgetConfig['header'] = [];
+                $defaultWidgetConfig['footer'] = [];
+            }
+
+            // Currently left and right columns always exist!
+            $defaultWidgetConfig['rightpanel'] = [];
+            $defaultWidgetConfig['leftpanel'] = [];
             
             fwrite($widgetConfigFile, JSONhelper::arrayToJSON($defaultWidgetConfig));
             fclose($widgetConfigFile);
@@ -204,15 +215,26 @@ class WidgetsAdmin extends GenericController
         $configPath = SERVER_PATH_BLOGS . '/' . $this->blog->id . '/widgets.json';
         if (!file_exists($configPath)) die('Cannot find widget config file');
         $config = JSONhelper::JSONFileToArray($configPath);
+
+        $templateConfigPath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json';
+        $templateConfig = JSONhelper::JSONFileToArray($templateConfigPath);
+        if (array_key_exists('Zones', $templateConfig)) {
+            $zones = $templateConfig['Zones'];
+        }
+        else {
+            $zones = ['header', 'footer', 'rightpanel', 'leftpanel'];
+        }
         
         // Clear all existing widgets
-        foreach ($config as $sectionName => $section) {
-            $config[$sectionName] = [];
+        foreach ($zones as $zone) {
+            $config[$zone] = [];
         }
 
-        foreach ($_POST['widgets'] as $sectionName => $section) {
-            foreach ($section as $widgettype => $widgetconfig) {
-                $config[$sectionName][$widgettype] = JSONhelper::jsonToArray($widgetconfig);
+        $widgets = $this->request->get('widgets');
+
+        foreach ($widgets as $zoneName => $zoneWidgets) {
+            foreach ($zoneWidgets as $widgetType => $widgetConfig) {
+                $config[$zoneName][$widgetType] = JSONhelper::jsonToArray($widgetConfig);
             }
         }
         
