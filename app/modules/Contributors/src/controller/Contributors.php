@@ -130,7 +130,7 @@ class Contributors extends GenericController
         }
 
         $checkUser = $this->modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
-        if($checkUser && $checkUser['id']) {
+        if($checkUser && $checkUser->id) {
             $response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
         }
 
@@ -142,7 +142,7 @@ class Contributors extends GenericController
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error creating account', 'error');
         }
 
-        if (!$this->model->addBlogContributor($user['id'], 'p', $blog->id)) {
+        if (!$this->model->addBlogContributor($user->id, $blog->id, 0)) {
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error assigning contributor', 'error');
         }
 
@@ -183,11 +183,11 @@ class Contributors extends GenericController
         if (!$group = $this->modelGroups->getGroupById($groupID)) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
-        if ($group['blog_id'] != $this->blog->id) {
+        if ($group->blog_id != $this->blog->id) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
 
-        if($this->model->update(['user_id' => $contributor['id'], 'blog_id' => $this->blog->id], ['group_id' => $group['id']])) {
+        if($this->model->update(['user_id' => $contributor->id, 'blog_id' => $this->blog->id], ['group_id' => $group->id])) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Update successful', 'success');
         }
         else {
