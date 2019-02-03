@@ -87,22 +87,38 @@ class BlogCMS
     }
 
     /**
+     * @param mixed $instance
+     *  Allow an alternative session object to be provided
+     *  this is for testing purposes as we need to fake a
+     *  request to inject data.
+     * 
      * @return \rbwebdesigns\core\Session
      */
-    public static function session()
+    public static function session($instance = null)
     {
-        if(is_null(self::$session)) {
+        if (!is_null($instance)) {
+            self::$session = $instance;
+        }
+        elseif (is_null(self::$session)) {
             self::$session = new Session();
         }
         return self::$session;
     }
 
     /**
+     * @param mixed $instance
+     *  Allow an alternative request object to be provided
+     *  this is for testing purposes as we need to fake a
+     *  request to inject data.
+     * 
      * @return \rbwebdesigns\core\Request
      */
-    public static function request()
+    public static function request($instance = null)
     {
-        if(is_null(self::$request)) {
+        if (!is_null($instance)) {
+            self::$request = $instance;
+        }
+        elseif (is_null(self::$request)) {
             self::$request = new Request([
                 'defaultControllerName' => 'blog'
             ]);
@@ -111,11 +127,19 @@ class BlogCMS
     }
 
     /**
+     * @param mixed $instance
+     *  Allow an alternative response object to be provided
+     *  this is for testing purposes as we need to fake a
+     *  request to inject data.
+     * 
      * @return \rbwebdesigns\blogcms\BlogCMSResponse
      */
-    public static function response()
+    public static function response($instance = null)
     {
-        if(is_null(self::$response)) {
+        if (!is_null($instance)) {
+            self::$response = $instance;
+        }
+        elseif (is_null(self::$response)) {
             self::$response = new BlogCMSResponse();
         }
         return self::$response;

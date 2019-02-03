@@ -174,33 +174,38 @@ class Blogs extends GenericController
         }
 
         // Hard limit of 4 - need to add option to configuration
+        // @todo all this to be configured!
         if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
             $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
+            return;
         }
-        else {
-            // Create blog db entry
-            $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
+        
+        // Create blog db entry
+        $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
 
-            if (!$newblogkey) {
-                $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
-            }
-
-            // Create admin groups
-            if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
-                $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
-            }
-
-            $adminGroup = $this->modelContributorGroups->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
-
-            if (!$adminGroup) die('No admin found' . $newblogkey);
-
-            // Add the user as contributor
-            if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
-                $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
-            }
-
-            $this->response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
+        if (!$newblogkey) {
+            $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
+            return;
         }
+
+        // Create admin groups
+        // @todo get this function to return the admin group ID!
+        if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
+            $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
+            return;
+        }
+
+        $adminGroup = $this->modelContributorGroups->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
+
+        if (!$adminGroup) die('No admin found' . $newblogkey);
+
+        // Add the user as contributor
+        if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
+            $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
+            return;
+        }
+
+        $this->response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
     }
 
     /**
