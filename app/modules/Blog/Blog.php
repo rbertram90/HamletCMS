@@ -52,4 +52,9 @@ class Blog
 
         $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
     }
+
+    public function runTests()
+    {
+        
+    }
 }

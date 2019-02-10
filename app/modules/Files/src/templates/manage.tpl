@@ -34,6 +34,7 @@
                         <div class="content">
                             <div class="center">
                                 <form action="/cms/files/delete/{$blog->id}/{$image.file}">
+                                    <a href="/blogdata/{$blog->id}/images/{$image.name}" class="ui inverted button" target="_blank">Open</a>
                                     <button class="ui inverted button" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
                                 </form>
                             </div>

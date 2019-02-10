@@ -140,7 +140,7 @@ class Blogs extends RBFactory
      */
     public function countBlogsByUser($userid)
     {
-        return $this->db->count(['user_id' => $userid]);
+        return $this->count(['user_id' => $userid]);
     }
     
     /**
