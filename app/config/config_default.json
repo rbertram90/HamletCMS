@@ -1,4 +1,8 @@
 {
+    "general":
+    {
+        "maxUserBlogLimit": 4
+    },
     "database":
     {
         "server": "localhost",

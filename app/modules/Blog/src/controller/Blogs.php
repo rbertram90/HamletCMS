@@ -173,9 +173,12 @@ class Blogs extends GenericController
             if (!$copy) die("Failed to create root file, please check directory permissions for: ".SERVER_PATH_BLOGS);
         }
 
-        // Hard limit of 4 - need to add option to configuration
-        // @todo all this to be configured!
-        if(!IS_DEVELOPMENT && $this->modelBlogs->countBlogsByUser($currentUser) > 4) {
+        $config = BlogCMS::config();
+        $limit = 999;
+        if (isset($config['general']) && isset($config['general']['maxUserBlogLimit'])) {
+            $limit = $config['general']['maxUserBlogLimit'];
+        }
+        if ($this->modelBlogs->countBlogsByUser($currentUser['id']) > $limit) {
             $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
             return;
         }
@@ -205,7 +208,7 @@ class Blogs extends GenericController
             return;
         }
 
-        $this->response->redirect('/cms/blog/overview/' . $newblogkey, 'Blog created', 'Success');
+        $this->response->redirect('/cms/blog/overview/'. $newblogkey, 'Blog created', 'Success');
     }
 
     /**
