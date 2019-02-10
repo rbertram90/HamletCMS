@@ -122,5 +122,11 @@ class PostComments
         $request = BlogCMS::request();
         $args['post']['allowcomments'] = $request->getInt('comments');
     }
+
+
+    public function onDeleteBlog($args) {
+        $blog = $args['blog'];
+        $this->model->delete(['blog_id' => $blog->id]);
+    }
     
 }

@@ -36,10 +36,6 @@ class Blogs extends GenericController
      */
     protected $modelContributors;
     /**
-     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
-     */
-    protected $modelComments;
-    /**
      * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
      */
     protected $modelUsers;
@@ -62,7 +58,6 @@ class Blogs extends GenericController
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
         $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
 
@@ -231,32 +226,31 @@ class Blogs extends GenericController
         if ($this->request->method() == 'POST') return $this->runDeleteBlog($blog);
 
         $this->response->setTitle('Delete blog');
-        $this->response->write('deleteblog.tpl');
+        $this->response->write('deleteblog.tpl', 'Blog');
     }
 
     /**
      * Action the delete blog
+     * 
+     * @todo postviews not being deleted
      */
     protected function runDeleteBlog($blog)
     {
+        BlogCMS::runHook('onDeleteBlog', ['blog' => $blog]);
+
         // Delete posts
         $this->modelContributors->delete(['blog_id' => $blog->id]);
         $this->modelContributorGroups->delete(['blog_id' => $blog->id]);
         $this->modelPosts->delete(['blog_id' => $blog->id]);
-        $this->modelComments->delete(['blog_id' => $blog->id]);
         $this->modelBlogs->delete(['id' => $blog->id]);
 
         $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
 
-        $this->response->redirect('/cms', 'Blog deleted', 'success');
-
-        // What's not deleted
-        // postviews
-        // favourites (not implemented anyhow)
+        $this->response->redirect('/cms/blog', 'Blog deleted', 'success');
     }
 
     /**
-     * This could be moved into a core function
+     * @todo This could be moved into a core function
      * Source: https://stackoverflow.com/a/3349792
      */
     protected function deleteDir($dirPath)

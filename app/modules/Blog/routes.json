@@ -20,5 +20,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
         "action": "create"
+    },
+    {
+        "key": "blog.delete",
+        "path": "/cms/blog/delete/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
+        "action": "delete"
     }
 ]
