@@ -54,7 +54,7 @@ use rbwebdesigns\core\JSONhelper;
         $split = explode('\\', $class);
         if (count($split) < 4) error_log('Unable to load class '. $class);
         $type = strtolower($split[3]);
-        if (in_array($type, ['controller', 'model', 'widgets', 'forms'])) {
+        if (in_array($type, ['controller', 'model', 'widgets', 'forms', 'tests'])) {
             include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
         }
         else {

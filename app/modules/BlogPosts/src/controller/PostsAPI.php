@@ -52,7 +52,7 @@ class PostsAPI extends GenericController
         // Already validated this as default API request
         $blogID = $this->request->getInt('blogID', false);
         $blog = $this->modelBlogs->getBlogById($blogID);
-
+        
         $posttime = strtotime($this->request->getString('date'));
         
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
@@ -84,7 +84,7 @@ class PostsAPI extends GenericController
 
         // Validate unique title
         $url = $this->model->createSafePostUrl($newPost['title']);
-        if ($post = $this->model->getPostByURL($url, $this->blog->id)) {
+        if ($post = $this->model->getPostByURL($url, $blog->id)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
             $this->response->code(400);
             return;
@@ -100,7 +100,7 @@ class PostsAPI extends GenericController
         }
 
         // Get the post created - with ID and URL
-        $post = $this->model->getPostByURL($url, $this->blog->id);
+        $post = $this->model->getPostByURL($url, $blog->id);
 
         BlogCMS::runHook('onPostCreated', ['post' => $post]);
 

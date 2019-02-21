@@ -68,4 +68,17 @@ class BlogPosts
         $dbc->query("ALTER TABLE `postautosaves` ADD PRIMARY KEY (`post_id`);");
         $dbc->query("ALTER TABLE `postviews` ADD PRIMARY KEY (`postid`, `userip`);");
     }
+
+    /**
+     * Runs all test cases for the posts module
+     */
+    public function runTests($args)
+    {
+        $blogID = $args['blogID'];
+
+        $test = new \rbwebdesigns\blogcms\BlogPosts\tests\CreatePostTest();
+        $test->blogID = $blogID;
+        $test->run();
+        
+    }
 }
