@@ -244,7 +244,17 @@ class Blogs extends GenericController
         $this->modelPosts->delete(['blog_id' => $blog->id]);
         $this->modelBlogs->delete(['id' => $blog->id]);
 
-        $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
+        try {
+            $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
+        }
+        catch (InvalidArgumentException $e) {
+            // It doesn't really matter if the files still
+            // exists in the file system - would be nice to notify
+            // the system administrator though...
+            if (IS_DEVELOPMENT) {
+                die($e->getMessage());
+            }
+        }
 
         $this->response->redirect('/cms/blog', 'Blog deleted', 'success');
     }
@@ -261,12 +271,16 @@ class Blogs extends GenericController
         if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
             $dirPath .= '/';
         }
-        $files = glob($dirPath . '*', GLOB_MARK);
+
+        $files = scandir($dirPath);
         foreach ($files as $file) {
-            if (is_dir($file)) {
-                self::deleteDir($file);
+            if ($file == "." || $file == "..") {
+                continue;
+            }
+            elseif (is_dir($dirPath.$file)) {
+                self::deleteDir($dirPath.$file);
             } else {
-                unlink($file);
+                unlink($dirPath.$file);
             }
         }
         rmdir($dirPath);
