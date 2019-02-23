@@ -21,20 +21,20 @@
                 </div>
 
                 <div class="field">
-                    {if file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->logo}")}
-                        <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="logo">
-                    {/if}
                     <label for="fld_logo">Logo</label>
-                    <small>Max upload size = 100 KB</small>
+                    {if strlen("{$blog->logo}") && file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->logo}")}
+                        <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="logo" style="max-width: 150px; max-height: 150px;">
+                    {/if}
+                    <p><small>Max upload size = 100 KB</small></p>
                     <input type="file" name="fld_logo" id="fld_logo">
                 </div>
 
                 <div class="field">
-                    {if file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->icon}")}
-                        <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="icon">
-                    {/if}
                     <label for="fld_favicon">Favicon</label>
-                    <small>Max upload size = 50 KB, for best results this should be a square image</small>
+                    {if strlen("{$blog->icon}") && file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->icon}")}
+                        <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="icon" style="max-width: 150px; max-height: 150px;">
+                    {/if}
+                    <p><small>Max upload size = 50 KB, for best results this should be a square image</small></p>
                     <input type="file" name="fld_favicon" class="fld_favicon">
                 </div>
 

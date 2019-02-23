@@ -279,29 +279,42 @@ class Settings extends GenericController
             'category'    => $this->request->getString('fld_category'),
             'domain'      => $this->request->getString('fld_domain'),
         ];
-
-        if ($logo = $this->request->getFile('fld_logo')) {
+        $logo = $this->request->getFile('fld_logo');
+        if (strlen($logo['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($logo);
             $imageUpload->maxUploadSize = 100000; // 100 KB
             $fileType = $imageUpload->getFileExtention();
-            $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'logo.'. $fileType);
-            if (!$upload) {
-                BlogCMS::session()::addMessage('Upload of icon failed', 'error');
+            try {
+                $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'logo.'. $fileType);
+
+                if ($upload) {
+                    $blogData['logo'] = 'logo.'. $fileType;
+                }
+                else {
+                    BlogCMS::session()::addMessage('Error while saving logo file', 'error');
+                }
             }
-            else {
-                $blogData['logo'] = 'logo.'. $fileType;
+            catch(\Exception $e) {
+                BlogCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
-        if ($icon = $this->request->getFile('fld_icon')) {
+        $icon = $this->request->getFile('fld_favicon');
+        if (strlen($icon['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($icon);
             $imageUpload->maxUploadSize = 50000; // 50 KB
             $fileType = $imageUpload->getFileExtention();
-            $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'icon.'. $fileType);
-            if (!$upload) {
-                BlogCMS::session()::addMessage('Upload of icon failed', 'error');
+            try {
+                $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'icon.'. $fileType);
+
+                if ($upload) {
+                    $blogData['icon'] = 'icon.'. $fileType;
+                }
+                else {
+                    BlogCMS::session()::addMessage('Error while saving icon file', 'error');
+                }
             }
-            else {
-                $blogData['icon'] = 'icon.'. $fileType;
+            catch(\Exception $e) {
+                BlogCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
 
