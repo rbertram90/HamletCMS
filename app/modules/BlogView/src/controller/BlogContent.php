@@ -149,6 +149,7 @@ class BlogContent
 
         $teaserResponse->setVar('config', $config);
         $teaserResponse->setVar('post', $post);
+        $teaserResponse->setVar('blog', $this->blog);
 
         // Output the content direct - this is inconsistant with the teaser version
         $teaserResponse->write($templatePath, $source, true);
@@ -522,7 +523,7 @@ class BlogContent
         }
 
         // Check conditions in which the user is not allowed to view the post
-        if($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
+        if ($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
             $isContributor = BlogCMS::$userGroup !== false;
             if (($post->draft == 1 || strtotime($post->timestamp) > time()) && !$isContributor) {
                 $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');

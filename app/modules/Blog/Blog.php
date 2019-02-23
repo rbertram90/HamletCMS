@@ -42,10 +42,11 @@ class Blog
             `name` varchar(150) NOT NULL,
             `domain` varchar(150) NOT NULL,
             `description` text NOT NULL,
+            `icon` varchar(25) NOT NULL,
+            `logo` varchar(25) NOT NULL,
             `user_id` int(8) NOT NULL,
             `anon_search` tinyint(1) NOT NULL DEFAULT '1',
             `visibility` enum('anon','private','members','friends') NOT NULL DEFAULT 'anon',
-            `widgetJSON` text NOT NULL,
             `pagelist` varchar(500) NOT NULL,
             `category` varchar(50) NOT NULL DEFAULT 'general'
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
@@ -53,8 +54,16 @@ class Blog
         $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
     }
 
-    public function runTests()
+    public function runTests($args)
     {
-        
+        $blogID = $args['blogID'];
+
+        // Required tests
+        // Overview?
+        // Delete Blog - note - this needs to run after everything else...
+
+        // $test = new \rbwebdesigns\blogcms\Blog\tests\();
+        // $test->blogID = $blogID;
+        // $test->run();
     }
 }

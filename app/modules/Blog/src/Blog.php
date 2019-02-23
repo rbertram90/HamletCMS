@@ -14,9 +14,10 @@ class Blog
     public $user_id;
     public $anon_search;
     public $visibility;
-    public $widgetJSON;
     public $pagelist;
     public $category;
+    public $logo;
+    public $icon;
 
     protected $contributors = null;
     protected $contributorsFactory = null;

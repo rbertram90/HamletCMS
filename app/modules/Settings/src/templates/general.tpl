@@ -8,7 +8,7 @@
         <div class="column">
             {viewPageHeader('General settings', 'sliders horizontal', "{$blog->name}")}
 
-            <form method="POST" class="ui form">
+            <form method="POST" class="ui form" enctype="multipart/form-data">
                 
                 <div class="field">
                     <label for="fld_blogname">Blog Name</label>
@@ -18,6 +18,24 @@
                 <div class="field">
                     <label for="fld_blogdesc">Description</label>
                     <textarea name="fld_blogdesc">{$blog->description}</textarea>
+                </div>
+
+                <div class="field">
+                    {if file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->logo}")}
+                        <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="logo">
+                    {/if}
+                    <label for="fld_logo">Logo</label>
+                    <small>Max upload size = 100 KB</small>
+                    <input type="file" name="fld_logo" id="fld_logo">
+                </div>
+
+                <div class="field">
+                    {if file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->icon}")}
+                        <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="icon">
+                    {/if}
+                    <label for="fld_favicon">Favicon</label>
+                    <small>Max upload size = 50 KB, for best results this should be a square image</small>
+                    <input type="file" name="fld_favicon" class="fld_favicon">
                 </div>
 
                 <div class="field">

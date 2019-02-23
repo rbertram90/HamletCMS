@@ -7,6 +7,7 @@ use rbwebdesigns\blogcms\Menu;
 use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\core\ImageUpload;
 
 /**
  * The controller acts as the intermediatory between the
@@ -102,7 +103,6 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
-        $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('General Settings - ' . $this->blog->name);
         $this->response->setVar('categorylist', BlogCMS::config()['blogcategories']);
         $this->response->write('general.tpl', 'Settings');
@@ -268,17 +268,44 @@ class Settings extends GenericController
     ******************************************************************/
     
     /**
-     * Run update for name and description of a blog
+     * Run update for basic information of a blog
      */
     public function updateBlogGeneral()
     {
-        $update = $this->modelBlogs->update(['id' => $this->blog->id], [
+        $blogData = [
             'name'        => $this->request->getString('fld_blogname'),
             'description' => $this->request->getString('fld_blogdesc'),
             'visibility'  => $this->request->getString('fld_blogsecurity'),
             'category'    => $this->request->getString('fld_category'),
             'domain'      => $this->request->getString('fld_domain'),
-        ]);
+        ];
+
+        if ($logo = $this->request->getFile('fld_logo')) {
+            $imageUpload = new ImageUpload($logo);
+            $imageUpload->maxUploadSize = 100000; // 100 KB
+            $fileType = $imageUpload->getFileExtention();
+            $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'logo.'. $fileType);
+            if (!$upload) {
+                BlogCMS::session()::addMessage('Upload of icon failed', 'error');
+            }
+            else {
+                $blogData['logo'] = 'logo.'. $fileType;
+            }
+        }
+        if ($icon = $this->request->getFile('fld_icon')) {
+            $imageUpload = new ImageUpload($icon);
+            $imageUpload->maxUploadSize = 50000; // 50 KB
+            $fileType = $imageUpload->getFileExtention();
+            $upload = $imageUpload->upload(SERVER_PATH_BLOGS .'/'. $this->blog->id, 'icon.'. $fileType);
+            if (!$upload) {
+                BlogCMS::session()::addMessage('Upload of icon failed', 'error');
+            }
+            else {
+                $blogData['icon'] = 'icon.'. $fileType;
+            }
+        }
+
+        $update = $this->modelBlogs->update(['id' => $this->blog->id], $blogData);
 
         if($update) {
             BlogCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);

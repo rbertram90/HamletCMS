@@ -51,10 +51,11 @@ class Blogs extends RBFactory
             'user_id'     => 'number',
             'anon_search' => 'boolean',
             'visibility'  => 'string',
-            'widgetJSON'  => 'string',
             'pagelist'    => 'string',
             'category'    => 'string',
             'domain'      => 'string',
+            'icon'        => 'string',
+            'logo'        => 'string',
         ];
     }
     
@@ -236,17 +237,5 @@ class Blogs extends RBFactory
         
         return $blog_key;
     }
-    
-    /**
-     * Update just the widget configuration JSON for a blog.
-     * 
-     * @param string $config
-     * 
-     * @param int $blogID
-     */
-    public function updateWidgetJSON($config, $blogID)
-    {
-        return $this->update(['id' => $blogID], ['widgetJSON' => $config]);
-    }
-    
+        
 }

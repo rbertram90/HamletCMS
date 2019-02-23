@@ -76,9 +76,15 @@ class BlogPosts
     {
         $blogID = $args['blogID'];
 
+        // Create post
         $test = new \rbwebdesigns\blogcms\BlogPosts\tests\CreatePostTest();
         $test->blogID = $blogID;
         $test->run();
+
+        // More tests
+        // Update post
+        // Autosave
+        // Clone
         
     }
 }

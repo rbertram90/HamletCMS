@@ -91,7 +91,7 @@ class WidgetsAdmin extends GenericController
      */
     protected function checkWidgetJSON($blog, &$widgetconfig)
     {
-        $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS.'/'.$blog->id.'/template_config.json');
+        $arrayBlogConfig = jsonToArray(SERVER_PATH_BLOGS .'/'. $blog->id .'/template_config.json');
         
         // Config
         //  -> Layout
