@@ -26,6 +26,7 @@
         {if $smarty.foreach.imageloop.index % 3 == 0}
             <div class="three column row">
         {/if}
+        {$imageData = getimagesize("{$smarty.const.SERVER_PATH_BLOGS}/{$blog->id}/images/{$image.name}")}
 
         <div class="column">
             <div class="ui fluid card">
@@ -49,6 +50,7 @@
                     </div>
                 </div>
                 <div class="extra content">
+                    <div class="right floated"><i class="image icon"></i> {$imageData.0} x {$imageData.1}</div>
                     <div><i class="image icon"></i> {$image.size} KB</div>
                 </div>
             </div>
