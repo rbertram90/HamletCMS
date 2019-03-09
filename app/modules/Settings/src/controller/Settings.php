@@ -385,8 +385,7 @@ class Settings extends GenericController
         if (!$update) $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Updated failed', 'error');
         
         // Save template file
-        $templatePath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/footer.tpl';
-        $save = file_put_contents($templatePath, $this->request->get('footer_template'));
+        $save = $this->saveTemplateFile('footer.tpl', $this->request->get('footer_template'));
         if ($save === FALSE) {
             $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Unable to save footer template file', 'error');
         }
@@ -395,6 +394,18 @@ class Settings extends GenericController
         $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Footer updated', 'success');
     }
     
+    /**
+     * Save smarty template for blog
+     */
+    protected function saveTemplateFile($fileName, $content)
+    {
+        $templatesDir = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates';
+        if (!file_exists($templatesDir)) {
+            mkdir($templatesDir);
+        }
+        return file_put_contents($templatesDir .'/'. $fileName, $content);
+    }
+
     /**
      * Update the content in the header
      */
@@ -416,10 +427,9 @@ class Settings extends GenericController
         if (!$update) $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header config', 'error');
 
         // Save template file
-        $templatePath = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/header.tpl';
-        $save = file_put_contents($templatePath, $this->request->get('header_template'));
+        $save = $this->saveTemplateFile('header.tpl', $this->request->get('header_template'));
         if ($save === FALSE) {
-            $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header template file', 'error');
+            $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header template file to '.$templatePath, 'error');
         }
 
         BlogCMS::runHook('onHeaderSettingsUpdated', ['blog' => $this->blog]);
