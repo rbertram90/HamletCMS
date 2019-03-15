@@ -106,7 +106,7 @@ $(document).ready(function () {
     });
 
     {if $mode == 'edit'}
-        $('#video_source').dropdown('set selected', '{$post.videosource}');
+        $('#video_source').dropdown('set selected', '{$post->videosource}');
     {/if}
 });
 

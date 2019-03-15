@@ -139,11 +139,12 @@ class WidgetsAdmin extends GenericController
     {
         $widgetSettingsFilePath = SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json';
         
-        if(file_exists($widgetSettingsFilePath) && filesize($widgetSettingsFilePath) > 0) {
+        if (file_exists($widgetSettingsFilePath) && filesize($widgetSettingsFilePath) > 0) {
             // Make sure the groups match the template settings
             $widgets = JSONhelper::JSONFileToArray($widgetSettingsFilePath);
-            $newWidgets = [];
-
+            return $widgets;
+            // $newWidgets = [];
+/*
             $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
             if (array_key_exists('Zones', $templateConfig)) {
                 foreach ($templateConfig['Zones'] as $zone) {
@@ -155,8 +156,8 @@ class WidgetsAdmin extends GenericController
                     }
                 }
             }
-
-            return $newWidgets;
+*/
+            // return $newWidgets;
         }
         
         return $this->createWidgetSettingsFile($blogID);
