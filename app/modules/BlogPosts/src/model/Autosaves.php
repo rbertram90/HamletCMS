@@ -15,6 +15,8 @@ class Autosaves extends RBFactory
     /** @var string $subClass */
     protected $subClass;
 
+    protected $modelPosts;
+
     /**
      * Autosaves factory constructor
      * 
@@ -24,8 +26,9 @@ class Autosaves extends RBFactory
     {
         // Access to the database class
         $this->db = $modelManager->getDatabaseConnection();
-        $this->tblautosave = TBL_AUTOSAVES;
+        $this->tableName = TBL_AUTOSAVES;
         $this->subClass = '\\rbwebdesigns\\blogcms\\BlogPosts\\Autosave';
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         
         $this->fields = [
             'post_id' => 'number',
@@ -51,11 +54,11 @@ class Autosaves extends RBFactory
 
         if($postID <= 0) {
             // Post is not saved into the main table - create it as a draft
-            $this->insert([
+            $this->modelPosts->insert([
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
+                'allowcomments'   => 0, //$data['allowcomments'],
                 'type'            => $data['type'],
                 'blog_id'         => $data['blogID'],
                 'author_id'       => $currentUser['id'],
@@ -64,34 +67,34 @@ class Autosaves extends RBFactory
                 'link'            => Posts::createSafePostUrl($data['title']),
                 'timestamp'       => date('Y-m-d H:i:s')
             ]);
-                        
+            
             $postID = $this->db->getLastInsertID();
         }
         else {
-            $arrayPost = $this->get('initialautosave', ['id' => $postID], '', '', false);
+            $arrayPost = $this->modelPosts->get('initialautosave', ['id' => $postID], '', '', false);
         
-            if($arrayPost['initialautosave'] == 1) {
+            if($arrayPost->initialautosave == 1) {
                 // Update the post
                 $update = $this->update(['id' => $postID], [
                     'content'         => $data['content'],
                     'title'           => $data['title'],
                     'link'            => Posts::createSafePostUrl($data['title']),
                     'tags'            => $newTags,
-                    'allowcomments'   => $data['allowcomments']
+                    'allowcomments'   => 0, //$data['allowcomments'],
                 ]);
             }
         }
         
         // Check for existing save for this post
-        $autosaveCheck = $this->db->countRows($this->tblautosave, ["post_id" => $postID]);
+        $autosaveCheck = $this->db->countRows($this->tableName, ["post_id" => $postID]);
         
         if($autosaveCheck == 1) {
             // Found - Update
-            $update = $this->db->updateRow($this->tblautosave, ['post_id' => $postID], [
+            $update = $this->db->updateRow($this->tableName, ['post_id' => $postID], [
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
+                'allowcomments'   => 0, //$data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
             ]);
             if($update === false) return $false;
@@ -99,12 +102,12 @@ class Autosaves extends RBFactory
         }
         else {
             // Not Found - Create
-            $insert = $this->db->insertRow($this->tblautosave, array(
+            $insert = $this->db->insertRow($this->tableName, array(
                 'post_id'         => $postID,
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => $data['allowcomments'],
+                'allowcomments'   => 0, //$data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
             ));
             if($insert === false) return $false;
@@ -115,13 +118,13 @@ class Autosaves extends RBFactory
     public function removeAutosave($postID)
     {
         $postID = Sanitize::int($postID);
-        return $this->db->deleteRow($this->tblautosave, ['post_id' => $postID]);
+        return $this->db->deleteRow($this->tableName, ['post_id' => $postID]);
     }
     
     public function autosaveExists($postID)
     {
         $postID = Sanitize::int($postID);
-        $savecount = $this->db->countRows($this->tblautosave, ['post_id' => $postID]);
+        $savecount = $this->db->countRows($this->tableName, ['post_id' => $postID]);
         if($savecount == 1) return true;
         else return false;
     }
@@ -129,7 +132,7 @@ class Autosaves extends RBFactory
     public function getAutosave($postID)
     {
         $postid = Sanitize::int($postID);
-        return $this->db->selectSingleRow($this->tblautosave, '*', ['post_id' => $postID]);
+        return $this->db->selectSingleRow($this->tableName, '*', ['post_id' => $postID]);
     }
 
 }

@@ -84,10 +84,19 @@
 <script>
 var content_changed = false;
 
-var addToFormData = function(postData) {
-    postData.videoid = $("#video_id").val();
-    postData.videosource = $("#video_source").val();
-    return postData;
+var getFormData = function() {
+    return {
+        "postID": parseInt($("#post_id").val()),
+        "blogID": {$blog->id},
+        "content": $("#post_content").val(),
+        "title": $("#post_title").val(),
+        "type": $("#post_type").val(),
+        // "comments": parseInt($("#allow_comment").val()),
+        "tags": $("#post_tags").val(),
+        "videoid": $("#video_id").val(),
+        "videosource": $("#video_source").val(),
+        "token": CSRFTOKEN
+    };
 };
 
 $(document).ready(function () {

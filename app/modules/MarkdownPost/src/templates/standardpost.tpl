@@ -71,7 +71,20 @@
 
 <script>
 var content_changed = false;
-    
+
+var getFormData = function() {
+    return {
+        "postID": parseInt($("#post_id").val()),
+        "blogID": {$blog->id},
+        "content": $("#post_content").val(),
+        "title": $("#post_title").val(),
+        "type": $("#post_type").val(),
+        // "comments": parseInt($("#allow_comment").val()),
+        "tags": $("#post_tags").val(),
+        "token": CSRFTOKEN
+    };
+};
+
 $(document).ready(function () {
 
     $("#upload_post_image").click(function() {

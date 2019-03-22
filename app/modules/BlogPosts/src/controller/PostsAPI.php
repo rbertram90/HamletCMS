@@ -248,6 +248,8 @@ class PostsAPI extends GenericController
     
     /**
      * Handles /api/posts/autosave/<postID>
+     * 
+     * @todo Has access been checked?
      */
     public function autosave()
     {
@@ -262,15 +264,18 @@ class PostsAPI extends GenericController
             'blogID'        => $this->request->getInt('blogID'),
         ];
 
-        $updateDB = $this->model->autosavePost($postID, $data);
+        // Populate custom fields
+        BlogCMS::runHook('onBeforeAutosave', ['data' => &$data]);
 
-        if($updateDB === false) {
+        $updateDB = $this->modelAutosaves->autosavePost($postID, $data);
+
+        if ($updateDB === false) {
             echo json_encode([
                 'status' => 'failed',
                 'message' => 'Could not run autosave - DB Update Error'
             ]);
         }
-        elseif($updateDB > 0 && $updateDB !== $postID) {
+        elseif ($updateDB > 0 && $updateDB !== $postID) {
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Post autosaved at ' . date('H:i'),

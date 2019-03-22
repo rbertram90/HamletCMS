@@ -100,8 +100,12 @@
         }
 
         // Allow custom modules to add to data
-        if (typeof addToFormData == 'function') { 
-            formData = addToFormData(formData);
+        if (typeof getFormData == 'function') { 
+            formData = getFormData();
+        }
+        else {
+            console.log('Error: function getFormData has not been defined');
+            return false;
         }
 
         // Quick client side validation

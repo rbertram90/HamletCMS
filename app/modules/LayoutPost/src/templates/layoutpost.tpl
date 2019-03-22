@@ -85,6 +85,20 @@
 
 
 <script>
+
+    var getFormData = function() {
+        return {
+            "postID": parseInt($("#post_id").val()),
+            "blogID": {$blog->id},
+            "content": $("#post_content").val(),
+            "title": $("#post_title").val(),
+            "type": $("#post_type").val(),
+            // "comments": parseInt($("#allow_comment").val()),
+            "tags": $("#post_tags").val(),
+            "token": CSRFTOKEN
+        };
+    };
+
     // Get where to redirect to when the cancel
     // button is pressed. Will be different depending
     // on if the autosave has run

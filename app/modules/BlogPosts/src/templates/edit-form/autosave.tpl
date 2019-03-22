@@ -39,43 +39,46 @@
 $(document).ready(function() {
     
     // Auto save
-    var runsave = function()
-    {
-        if(content_changed)
-        {
-            jQuery.post("/api/posts/autosave",
-            {
-                "postID": parseInt($("#post_id").val()),
-                "blogID": {$blog->id},
-                "content": $("#post_content").val(),
-                "title": $("#post_title").val(),
-                "type": $("#post_type").val(),
-                "comments": parseInt($("#allow_comment").val()),
-                "tags": $("#post_tags").val(),
-                "token": CSRFTOKEN
+    var runsave = function() {
 
-            }, function(data)
-            {
-                if(typeof data.newpostid != "null" && typeof data.newpostid != "undefined")
-                {
-                    $("#post_id").val(data.newpostid);
-                }
-                $("#autosave_status").html(data.message);
-                $("#autosave_status").show();
+        // Check a change has been made
+        if (!content_changed) return;
 
-                content_changed = false;
+        // Function that needs to be implemented for each post type
+        // Should return an object with each of the fields values
+        var formData = getFormData();
+        
+        // Collect form data and send to server
+        jQuery.post("/api/posts/autosave", formData, function(data) {
+            // Populate post id field if just created
+            if(typeof data.newpostid != "null" && typeof data.newpostid != "undefined") {
+                $("#post_id").val(data.newpostid);
+            }
+            $("#autosave_status").html(data.message);
+            $("#autosave_status").show();
 
-            }, "json");
-        }
-    }
+            content_changed = false;
+
+        }, "json");
+    };
 
     // Run on key down of content
     $("#post_content").on("keyup", function() { content_changed = true; });
     $("#post_title").on("keyup", function() { content_changed = true; });
     $("#tags").on("keyup", function() { content_changed = true; });
 
-    // Saves every 10 seconds if something has changed
-    var save_interval = setInterval(runsave, 5000);
+    // Autosave requires implementation of a couple of js functions
+    // for each post type as different post types will have different
+    // fields. If a required function does not exist then don't bother
+    // trying to autosave.
+
+    if (typeof getFormData == 'function') {
+        // Try and save every 5 seconds
+        var save_interval = setInterval(runsave, 5000);
+    }
+    else {
+        console.log('Info: Not enabling autosave, function getFormData has not been defined');
+    }
 
 });
 </script>
