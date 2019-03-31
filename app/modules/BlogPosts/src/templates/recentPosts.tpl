@@ -2,7 +2,7 @@
 <div id="js-postlist-data" class="ui bulleted list">
     {foreach $posts as $post}
         <div class="item">
-            <a href="/blogs/{$post->blog_id}/posts/{$post->link}">{$post->title}</a>
+            <a href="{$blogUrl}/posts/{$post->link}">{$post->title}</a>
         </div>
     {/foreach}
 </div>

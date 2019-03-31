@@ -12,8 +12,6 @@ class PostSettings extends GenericController
         parent::__construct();
 
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-
-        $currentUser = BlogCMS::session()->currentUser;
         $this->blog = BlogCMS::getActiveBlog();
 
         if (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
@@ -29,61 +27,82 @@ class PostSettings extends GenericController
      */
     public function posts()
     {
-        if ($this->request->method() == 'POST') return $this->action_updatePostsSettings();
+        if ($this->request->method() == 'POST') return $this->updatePostsSettings();
 
-        $postConfig = $this->blog->config();
-
-        if (isset($postConfig['posts'])) {
-            // Default values where needed
-            if(!isset($postConfig['posts']['postsperpage'])) $postConfig['posts']['postsperpage'] = 5;
-            if(!isset($postConfig['posts']['postsummarylength'])) $postConfig['posts']['postsummarylength'] = 200;
-            $this->response->setVar('postConfig', $postConfig['posts']);
-        }
-        else {
-            // No posts config exists - send defaults
-            $this->response->setVar('postConfig', ['postsperpage' => 5, 'postsummarylength' => 200]);
-        }
-
-        $customTemplateFile = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl';
-        if (file_exists($customTemplateFile)) {
-            $this->response->setVar('postTemplate', file_get_contents($customTemplateFile));
-        }
-        else {
-            $this->response->setVar('postTemplate', file_get_contents(SERVER_MODULES_PATH .'/BlogView/src/templates/posts/teaser.tpl'));
-        }
-
-        $customFullTemplate = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl';
-        if (file_exists($customFullTemplate)) {
-            $this->response->setVar('postFullTemplate', file_get_contents($customFullTemplate));
-        }
-        else {
-            $this->response->setVar('postFullTemplate', file_get_contents(SERVER_MODULES_PATH .'/BlogView/src/templates/posts/singlepost.tpl'));
-        }
-
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->setVar('postConfig', $this->getPostConfig());
+        $this->response->setVar('postTemplate', $this->getPostTeaserTemplate());
+        $this->response->setVar('postFullTemplate', $this->getFullPostTemplate());
         $this->response->setVar('blog', $this->blog);
+        $this->response->addScript('/resources/ace/ace.js');
         $this->response->setTitle('Post Settings - ' . $this->blog->name);
         $this->response->write('settings.tpl', 'BlogPosts');
     }
 
     /**
+     * Get the post settings config
+     * 
+     * @return array
+     */
+    protected function getPostConfig()
+    {
+        $config = $this->blog->config();
+
+        if (isset($config['posts'])) {
+            // Default values where needed
+            if (!isset($config['posts']['postsperpage'])) $config['posts']['postsperpage'] = 5;
+            if (!isset($config['posts']['postsummarylength'])) $config['posts']['postsummarylength'] = 200;
+            return $config['posts'];
+        }
+        else {
+            // No posts config exists - send defaults
+            return ['postsperpage' => 5, 'postsummarylength' => 200];
+        }
+    }
+
+    /**
+     * Get the Smarty full page post template file
+     * 
+     * @return string
+     */
+    protected function getFullPostTemplate()
+    {
+        $customFullTemplate  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl';
+        $defaultFullTemplate = SERVER_MODULES_PATH .'/BlogView/src/templates/posts/singlepost.tpl';
+        $postFullTemplate = file_exists($customFullTemplate) ? $customFullTemplate : $defaultFullTemplate;
+        return file_get_contents($postFullTemplate);
+    }
+
+    /**
+     * Get the Smarty post teaser template file
+     * 
+     * @return string
+     */
+    protected function getPostTeaserTemplate()
+    {
+        $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/BlogView/src/templates/posts/teaser.tpl';
+        $postTemplate = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
+        return file_get_contents($postTemplate);
+    }
+
+    /**
      *  Update how posts are displayed on the blog
      */
-    protected function action_updatePostsSettings()
+    protected function updatePostsSettings()
     {
         $update = $this->blog->updateConfig([
             'posts' => [
                 'postsperpage'      => $this->request->getInt('fld_postsperpage'),
-                'allowcomments'     => $this->request->getInt('fld_commentapprove'),
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
                 'showtags'          => $this->request->getString('fld_showtags'),
                 'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
-                'shownumcomments'   => $this->request->getString('fld_shownumcomments')
+                // 'allowcomments'     => $this->request->getInt('fld_commentapprove'), // these need adding to comments module settings
+                // 'shownumcomments'   => $this->request->getString('fld_shownumcomments')
             ]
         ]);
 
         if (!$update) {
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error saving to database", "error");
+            $this->response->redirect('/cms/settings/posts/'. $this->blog->id, 'Error saving to database', 'error');
         }
         
         if (!is_dir(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates')) {
@@ -98,10 +117,10 @@ class PostSettings extends GenericController
 
         if ($update) {
             BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Post settings updated", "success");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, 'Post settings updated', 'success');
         }
         else {
-            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, "Error writing teaser template file", "error");
+            $this->response->redirect('/cms/settings/posts/' . $this->blog->id, 'Error writing template file', 'error');
         }
     }
 

@@ -84,22 +84,7 @@ use rbwebdesigns\core\Sanitize;
     }
 
     if (!$found) {
-        // Core result
-        // Check if we've got a valid controller
-        $controllerFilePath = SERVER_ROOT . '/app/controller/' . $controllerName . '_controller.inc.php';
-
-        if(!file_exists($controllerFilePath)) {
-            $response->redirect('/cms', 'Page not found', 'error');
-        }
-        
-        // Get controller class file
-        require_once $controllerFilePath;
-        
-        // Dynamically instantiate new class
-        $controllerClassName = '\rbwebdesigns\blogcms\\' . ucfirst($controllerName) . 'Controller';
-        $controller = new $controllerClassName();
-
-        $action = $request->getUrlParameter(0, 'defaultAction');
+        $response->redirect('/cms', 'Page not found', 'error');
     }
 
 

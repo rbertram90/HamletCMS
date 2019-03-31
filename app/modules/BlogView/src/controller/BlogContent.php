@@ -223,25 +223,6 @@ class BlogContent
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');
     }
-
-    /**
-     * View the search page which allows you to free text search blog posts for this blog
-     */
-    public function search($DATA, $queryParams)
-    {
-        // Perform Search
-        if(isset($_GET['q'])) {
-            $search_string = Sanitize::string($_GET['q']);
-            $search_results = $this->modelPosts->search($this->blogID, $search_string);
-        }
-        else $search_string = null;
-        
-        // Output results
-        require_once SERVER_ROOT.'/app/view/search_blog_posts.php';
-        
-        $DATA['page_title'] = "Search";
-        return $DATA;
-    }
     
     /**
      * Output the top menu of pages which the user has selected

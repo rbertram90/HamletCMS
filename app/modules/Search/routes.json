@@ -1,0 +1,9 @@
+[
+    {
+        "key": "blogs.search",
+        "path": "/blogs/{BLOG_ID}/search",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Search\\Controller\\Search",
+        "action": "search"
+    }
+]

@@ -66,7 +66,8 @@ class Blog
      * 
      * @return \rbwebdesigns\blogcms\User[]
      */
-    public function contributors() {
+    public function contributors()
+    {
         if ($this->contributors) {
             return $this->contributors;
         }

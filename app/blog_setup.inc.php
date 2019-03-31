@@ -113,31 +113,34 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
 
     // Store any output in a buffer
     ob_start();
-
-    switch ($action) {
-        case "posts":
-            $page_controller->viewPost($request, $response);
-            break;
-            
-        case "addcomment":
-            // Add a comment to this post
-            $page_controller->addComment($request, $response);
-            break;
-            
-        case "tags":
-            // Search for posts with tag
-            $page_controller->viewPostsByTag($request, $response);
-            break;
-            
-        case "search":
-            // Search for posts with tag
-            $page_controller->search($request, $response);
-            break;
-
-        default:
-            // View Homepage
-            $page_controller->viewHome($request, $response);
-            break;
+    
+    if ($route = BlogCMS::pathMatch()) {
+        // New dynamic routes
+        $contentController = new $route['controller']();
+        $contentController->{$route['action']}();
+    }
+    else {
+        // Older static routes - @todo change to dynamic routing
+        switch ($action) {
+            case "posts":
+                $page_controller->viewPost($request, $response);
+                break;
+                
+            case "addcomment":
+                // Add a comment to this post
+                $page_controller->addComment($request, $response);
+                break;
+                
+            case "tags":
+                // Search for posts with tag
+                $page_controller->viewPostsByTag($request, $response);
+                break;
+                
+            default:
+                // View Homepage
+                $page_controller->viewHome($request, $response);
+                break;
+        }
     }
 
     $response->setBody(ob_get_contents());

@@ -272,9 +272,14 @@ class BlogCMS
     {
         // todo
         $routeCache = self::getCache('routes');
-
-        $requestPath = [self::$function, self::request()->getControllerName()];
-
+        $controllerName = self::request()->getControllerName();
+        if ($controllerName == 'blogs') {
+            $requestPath = ['blogs'];
+        }
+        else {
+            $requestPath = [self::$function, $controllerName];
+        }
+        
         $e = 0;
         while ($elem = self::request()->getUrlParameter($e, false)) {
             $requestPath[] = $elem;

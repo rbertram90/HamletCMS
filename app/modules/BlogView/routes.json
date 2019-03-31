@@ -1,6 +1,3 @@
 [
-    {
-        "key": "blogs.view",
-        "path": "/blogs/{BLOG_ID}"
-    }
+
 ]
