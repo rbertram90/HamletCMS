@@ -90,6 +90,7 @@ var getFormData = function() {
         "blogID": {$blog->id},
         "content": $("#post_content").val(),
         "title": $("#post_title").val(),
+        "summary": $("#summary").val(),
         "type": $("#post_type").val(),
         // "comments": parseInt($("#allow_comment").val()),
         "tags": $("#post_tags").val(),
