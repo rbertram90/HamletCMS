@@ -443,6 +443,7 @@ class Settings extends GenericController
      */
     protected function addPage()
     {
+        // fld_pagetype could either be a tag "t" or a post "p"
         if (!$pageType = $this->request->getString('fld_pagetype', false)) return false;
         
         switch ($pageType) {
@@ -450,6 +451,7 @@ class Settings extends GenericController
                 // Check that post we're adding is valid
                 $newpageID = $this->request->getInt('fld_postid');
                 $targetpost = $this->modelPosts->get(['blog_id'], ['id' => $newpageID], '', '', false);
+                // Also check blog matches
                 if (!$targetpost || $targetpost->blog_id != $this->blog->id) {
                     return false;
                 }
@@ -466,17 +468,17 @@ class Settings extends GenericController
         }
 
         // Update Current Page List
-        if (array_key_exists('pagelist', $blog) && strlen($blog->pagelist) > 0) {
-            $pagelist = $blog->pagelist . ',' . $newpageID;
+        if (array_key_exists('pagelist', $this->blog) && strlen($this->blog->pagelist) > 0) {
+            $pagelist = $this->blog->pagelist . ',' . $newpageID;
         }
         else {
             $pagelist = $newpageID;
         }
 
         // Make sure we've got the most recent data for this request
-        $blog->pagelist = $pagelist;
+        $this->blog->pagelist = $pagelist;
         
-        return $this->modelBlogs->update(['id' => $blog->id], ['pagelist' => $pagelist]);
+        return $this->modelBlogs->update(['id' => $this->blog->id], ['pagelist' => $pagelist]);
     }
     
     /**
