@@ -94,6 +94,7 @@ var getFormData = function() {
         "type": $("#post_type").val(),
         // "comments": parseInt($("#allow_comment").val()),
         "tags": $("#post_tags").val(),
+        "date": $("#post_date").val(),
         "videoid": $("#video_id").val(),
         "videosource": $("#video_source").val(),
         "token": CSRFTOKEN

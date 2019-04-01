@@ -94,6 +94,7 @@
             "title": $("#post_title").val(),
             "summary": $("#summary").val(),
             "type": $("#post_type").val(),
+            "date": $("#post_date").val(),
             // "comments": parseInt($("#allow_comment").val()),
             "tags": $("#post_tags").val(),
             "token": CSRFTOKEN
