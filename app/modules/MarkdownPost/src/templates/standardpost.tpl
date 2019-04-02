@@ -74,16 +74,18 @@ var content_changed = false;
 
 var getFormData = function() {
     return {
-        "postID": parseInt($("#post_id").val()),
-        "blogID": {$blog->id},
-        "content": $("#post_content").val(),
-        "summary": $("#summary").val(),
-        "title": $("#post_title").val(),
-        "type": $("#post_type").val(),
+        postID: parseInt($("#post_id").val()),
+        blogID: {$blog->id},
+        content: $("#post_content").val(),
+        summary: $("#summary").val(),
+        title: $("#post_title").val(),
+        type: $("#post_type").val(),
         // "comments": parseInt($("#allow_comment").val()),
-        "tags": $("#post_tags").val(),
-        "date": $("#post_date").val(),
-        "token": CSRFTOKEN
+        tags: $("#post_tags").val(),
+        date: $("#post_date").val(),
+        draft: parseInt($("#draft").val()),
+        teaserImage: $("input[name='teaser_image']").val(),
+        token: CSRFTOKEN
     };
 };
 

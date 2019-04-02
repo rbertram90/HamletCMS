@@ -76,29 +76,6 @@
 
         event.preventDefault();
 
-        var formData = {
-            blogID: {$blog->id},
-            postID: parseInt($("#post_id").val()),
-            title: $("#post_title").val(),
-            summary: $("#summary").val(),
-            content: $("#post_content").val(),
-            tags: $("#post_tags").val(),
-            type: $("#post_type").val(),
-            date: $("#post_date").val(),
-            draft: parseInt($("#draft").val()),
-            teaserImage: false
-        };
-
-        if ($("#allow_comment")) {
-            formData.comments = parseInt($("#allow_comment").val());
-        }
-
-        if ($("#teaser_image_image img").length > 0) {
-            var imageSrc = $("#teaser_image_image img").attr('src');
-            srcSplit = imageSrc.split('/');
-            formData.teaserImage = srcSplit.pop();
-        }
-
         // Allow custom modules to add to data
         if (typeof getFormData == 'function') { 
             formData = getFormData();
@@ -106,6 +83,12 @@
         else {
             console.log('Error: function getFormData has not been defined');
             return false;
+        }
+
+        if ($("#teaser_image_image img").length > 0) {
+            var imageSrc = $("#teaser_image_image img").attr('src');
+            srcSplit = imageSrc.split('/');
+            formData.teaserImage = srcSplit.pop();
         }
 
         // Quick client side validation
