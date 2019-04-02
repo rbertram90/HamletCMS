@@ -247,7 +247,14 @@ function submitRemoveWidget(buttonElement) {
     
 
 // Define the droppable areas
-var drake = dragula([document.querySelector("#Header-widgetlist"), document.querySelector("#Footer-widgetlist"), document.querySelector("#LeftPanel-widgetlist"),document.querySelector("#RightPanel-widgetlist")], {
+// document.querySelector("#Header-widgetlist");
+// document.querySelector("#Footer-widgetlist");
+// document.querySelector("#LeftPanel-widgetlist");
+// document.querySelector("#RightPanel-widgetlist");
+
+var dropzones = Array.prototype.slice.call(document.querySelectorAll("div[id$='-widgetlist']"));
+
+var drake = dragula(dropzones, {
     revertOnSpill: true
     
 }).on('drop', function(el, target, source, sibling)
