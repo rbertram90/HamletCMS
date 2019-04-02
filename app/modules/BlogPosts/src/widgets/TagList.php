@@ -20,7 +20,7 @@ class TagList extends AbstractWidget
         $model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
 
         $this->response->setVar('tags', $model->countAllTagsByBlog($this->blog->id, $this->sort));
-        $this->response->write('tagsList.tpl', 'BlogPosts');
+        $this->response->write('widgets/tagsList.tpl', 'BlogPosts');
     }
 
 }

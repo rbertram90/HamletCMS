@@ -8,6 +8,14 @@
         "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\RecentPostsList"
     },
     {
+        "key": "trendingPosts",
+        "name": "Trending posts",
+        "description": "List recently popular posts on the blog",
+        "version": 1.0,
+        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureRecentPostsList",
+        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\TrendingPosts"
+    },
+    {
         "key": "tagList",
         "name": "Tags list",
         "description": "List tags on the blog",

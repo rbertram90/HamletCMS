@@ -566,4 +566,40 @@ class Posts extends RBFactory
     }
     
 
+    /**
+     * Get posts with the most views between 2 dates
+     * 
+     * @param int $blogID
+     * @param string $startDate
+     * @param string $endDate
+     * 
+     * @return \rbwebdesigns\blogcms\BlogPosts\Post[]
+     */
+    public function getTrendingPosts($blogID, $startDate=null, $endDate=null)
+    {
+        if (is_null($startDate)) {
+            // Default to 1 week ago
+            $date1 = new \DateTime('2000-01-20');
+            $date1->sub(new \DateInterval('P1W'));
+            $startDate = $date1->format('Y-m-d H:i:s');
+        }
+        if (is_null($endDate)) {
+            // Default to now
+            $date2 = new \DateTime();
+            $endDate = $date2->format('Y-m-d H:i:s');
+        }
+
+        $sql = "SELECT tp.*, count(*) as userviewcount
+            FROM {$this->tblviews} as tv
+            LEFT JOIN {$this->tableName} AS tp ON tv.postid = tp.id
+            WHERE postid IN (SELECT id FROM {$this->tableName} WHERE blog_id='{$blogID}')
+            AND last_viewed < '{$endDate}'
+            AND last_viewed > '{$startDate}'
+            GROUP BY postid
+            ORDER BY userviewcount DESC";
+
+        $statement = $this->db->query($sql);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+    }
+
 }

@@ -5,7 +5,7 @@ namespace rbwebdesigns\blogcms\BlogPosts\widgets;
 use rbwebdesigns\blogcms\Widgets\AbstractWidget;
 use rbwebdesigns\blogcms\BlogCMS;
 
-class RecentPostsList extends AbstractWidget
+class TrendingPosts extends AbstractWidget
 {
 
     public function render()
@@ -13,7 +13,7 @@ class RecentPostsList extends AbstractWidget
         $model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
 
         $this->response->setVar('blogUrl', $this->blog->url());
-        $this->response->setVar('posts', $model->getPostsByBlog($this->blog->id));
+        $this->response->setVar('posts', $model->getTrendingPosts($this->blog->id));
         $this->response->write('widgets/recentPosts.tpl', 'BlogPosts');
     }
 
