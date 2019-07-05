@@ -99,8 +99,10 @@ class Contributors extends GenericController
         if ($this->request->method() == 'POST') return $this->runCreate();
 
         $blog = BlogCMS::getActiveBlog();
+        $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
 
         $this->response->setVar('blog', $blog);
+        $this->response->setVar('groups', $groups);
         $this->response->setTitle('Create Contributor');
         $this->response->write('create.tpl', 'Contributors');
     }
@@ -137,6 +139,8 @@ class Contributors extends GenericController
             'emailConfirm'    => $this->request->getString('fld_email_2'),
         ];
 
+        $groupID = $this->request->getInt('group', false);
+
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
@@ -156,7 +160,7 @@ class Contributors extends GenericController
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error creating account', 'error');
         }
 
-        if (!$this->model->addBlogContributor($user->id, $blog->id, 0)) {
+        if (!$this->model->addBlogContributor($user->id, $blog->id, $groupID)) {
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error assigning contributor', 'error');
         }
 

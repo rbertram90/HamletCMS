@@ -55,6 +55,16 @@
         <input type="password" required name="fld_password_2">
     </div>
 
+    <div class="field">
+        <label for="group">Group</label>
+        <select required name="group" id="field_group">
+            <option>- Select -</option>
+            {foreach $groups as $group}
+                <option value="{$group->id}">{$group->name}</option>
+            {/foreach}
+        </select>
+    </div>
+
     <input type="button" name="fld_cancel_registration" value="Cancel" class="ui button right floated" onclick="window.history.back();">
     <input type="submit" name="fld_submit_registration" value="Submit" class="ui button teal right floated" style='font-weight:bold;'>
 </form>
