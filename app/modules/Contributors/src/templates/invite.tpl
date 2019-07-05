@@ -16,6 +16,16 @@
     </div>
 
     <div class="field">
+        <label for="group">Group</label>
+        <select required name="group" id="field_group">
+            <option>- Select -</option>
+            {foreach $groups as $group}
+                <option value="{$group->id}">{$group->name}</option>
+            {/foreach}
+        </select>
+    </div>
+
+    <div class="field">
         <label for="username">Username</label>
         <input type="text" required name="username" id="field_username">
     </div>
@@ -24,6 +34,7 @@
 
     <input type="hidden" value="" name="selected_user" id="selected_user">
     <div id="user_preview"></div>
+
 </form>
 
 <script>

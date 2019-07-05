@@ -111,8 +111,10 @@ class Contributors extends GenericController
     public function invite()
     {
         if ($this->request->method() == 'POST') return $this->runInvite();
-
-        $this->response->setVar('blog', BlogCMS::getActiveBlog());
+        $blog = BlogCMS::getActiveBlog();
+        $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
+        $this->response->setVar('blog', $blog);
+        $this->response->setVar('groups', $groups);
         $this->response->setTitle('Invite Contributor');
         $this->response->write('invite.tpl', 'Contributors');
     }
@@ -164,10 +166,12 @@ class Contributors extends GenericController
     /**
      * Handles POST /contributors/invite/<blogid>
      */
-    protected function runInvite() {
+    protected function runInvite()
+    {
         $blog = BlogCMS::getActiveBlog();
 
         $userID = $this->request->getInt('selected_user', false);
+        $groupID = $this->request->getInt('group', false);
 
         if (!$userID) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
 
@@ -175,7 +179,7 @@ class Contributors extends GenericController
 
         if (!$user) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
         
-        if (!$this->model->addBlogContributor($user->id, $blog->id, 0)) {
+        if (!$this->model->addBlogContributor($user->id, $blog->id, $groupID)) {
             $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'Error assigning contributor', 'error');
         }
         
