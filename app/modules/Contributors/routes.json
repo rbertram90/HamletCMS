@@ -14,6 +14,13 @@
         "action": "create"
     },
     {
+        "key": "contributors.invite",
+        "path": "/cms/contributors/invite/{BLOG_ID}",
+        "permissions": ["manage_contributors"],
+        "controller": "\\rbwebdesigns\\blogcms\\Contributors\\Controller\\Contributors",
+        "action": "invite"
+    },
+    {
         "key": "contributors.edit",
         "path": "/cms/contributors/edit/{BLOG_ID}/{CONTRIBUTOR_ID}",
         "permissions": ["manage_contributors"],

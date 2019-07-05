@@ -106,6 +106,18 @@ class Contributors extends GenericController
     }
 
     /**
+     * Handles /contributors/invite/<blogid>
+     */
+    public function invite()
+    {
+        if ($this->request->method() == 'POST') return $this->runInvite();
+
+        $this->response->setVar('blog', BlogCMS::getActiveBlog());
+        $this->response->setTitle('Invite Contributor');
+        $this->response->write('invite.tpl', 'Contributors');
+    }
+
+    /**
      * Handles POST /contributors/create/<blogid>
      */
     protected function runCreate()
@@ -130,7 +142,7 @@ class Contributors extends GenericController
         }
 
         $checkUser = $this->modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
-        if($checkUser && $checkUser->id) {
+        if ($checkUser && $checkUser->id) {
             $response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
         }
 
@@ -147,6 +159,27 @@ class Contributors extends GenericController
         }
 
         $this->response->redirect('/cms/contributors/manage/' . $blog->id, 'Contributor created', 'success');
+    }
+
+    /**
+     * Handles POST /contributors/invite/<blogid>
+     */
+    protected function runInvite() {
+        $blog = BlogCMS::getActiveBlog();
+
+        $userID = $this->request->getInt('selected_user', false);
+
+        if (!$userID) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
+
+        $user = $this->modelUsers->get('id', ['id' => $userID], '', '', false);
+
+        if (!$user) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
+        
+        if (!$this->model->addBlogContributor($user->id, $blog->id, 0)) {
+            $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'Error assigning contributor', 'error');
+        }
+        
+        $this->response->redirect('/cms/contributors/manage/'. $blog->id, 'Contributor added', 'success');
     }
     
     /**

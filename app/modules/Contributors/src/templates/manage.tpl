@@ -29,7 +29,7 @@
 
             <div class="ui hidden divider"></div>
 
-            <a href="/cms/contributors/creategroup/{$blog->id}" class="ui teal button">Add Group</a>
+            <a href="/cms/contributors/creategroup/{$blog->id}" class="ui labeled icon teal button"><i class="plus icon"></i>Add Group</a>
         </div>
     </div>
     <div class="row">
@@ -77,7 +77,8 @@
 
             <div class="ui hidden divider"></div>
 
-            <a href="/cms/contributors/create/{$blog->id}" class="ui teal button">Add Contributor</a>
+            <a href="/cms/contributors/create/{$blog->id}" class="ui labeled icon teal button"><i class="plus icon"></i>Add Contributor</a>
+            <a href="/cms/contributors/invite/{$blog->id}" class="ui labeled icon teal button"><i class="plus icon"></i> Invite Contributor</a>
         </div>
     </div>
 </div>

@@ -68,5 +68,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
         "action": "card"
+    },
+    {
+        "key": "user.data",
+        "path": "/api/user/get",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAPI",
+        "action": "get"
     }
 ]
