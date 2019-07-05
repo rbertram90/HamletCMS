@@ -26,6 +26,20 @@ class ConfigureRecentPostsList extends Form
             "attributes" => [
                 "id" => "widget[maxposts]"
             ]
+        ],
+        "widget[style]" => [
+            "type" => "dropdown",
+            "label" => "List style",
+            "options" => [
+                "bullet_list" => "Bulleted list",
+                "numbered_list" => "Numbered list",
+                "divided_list" => "Divided list",
+                "none" => "None",
+            ],
+            "value" => "",
+            "attributes" => [
+                "id" => "widget[style]"
+            ]
         ]
     ];
 
