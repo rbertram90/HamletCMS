@@ -68,7 +68,7 @@ class PostComments
      */
     public function dashboardCounts($args)
     {
-        $args['counts']['comments'] = $this->model->getCount(['blog_id' => $args['blogID']]);
+        $args['counts']['comments'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
     }
 
     /**

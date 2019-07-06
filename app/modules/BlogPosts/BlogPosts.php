@@ -4,6 +4,11 @@ namespace rbwebdesigns\blogcms;
 
 class BlogPosts
 {
+    public function __construct()
+    {
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+    }
+
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
@@ -86,5 +91,16 @@ class BlogPosts
         // Autosave
         // Clone
         
+    }
+
+    /**
+     * Adds a total post count to the blog dashboard
+     */
+    public function dashboardCounts($args)
+    {
+        $modelPostViews = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\PostViews');
+
+        $args['counts']['posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
+        $args['counts']['totalviews'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);
     }
 }

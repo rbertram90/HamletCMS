@@ -12,35 +12,26 @@
         </div>
     </div>
 
-    <div class="four column row">
+    {if count($counts) is div by 4}
+        {$columnCount = 'four'}
+    {elseif count($counts) is div by 3}
+        {$columnCount = 'three'}
+    {elseif count($counts) is div by 2}
+        {$columnCount = 'two'}
+    {else}
+        {$columnCount = 'one'}
+    {/if}
+
+    <div class="{$columnCount} column row">
+        {foreach $counts as $name => $count}
         <div class="center aligned column">
             <div class="ui teal segment">
                 <a href="/cms/posts/manage/{$blog->id}" title="Manage Posts">
-                    <span class="ui header huge">{$counts.posts}</span><br><span>Posts</span>
+                    <span class="ui header huge">{$count}</span><br><span>{$name}</span>
                 </a>
             </div>
         </div>
-        <div class="center aligned column">
-            <div class="ui teal segment">
-                <a href="/cms/comments/all/{$blog->id}" title="View Comments">
-                    <span class="ui header huge">{$counts.comments}</span><br><span>Comments</span>
-                </a>
-            </div>
-        </div>
-        <div class="center aligned column">
-            <div class="ui teal segment">
-                <a href="/cms/contributors/manage/{$blog->id}" title="Manage Contributors">
-                    <span class="ui header huge">{$counts.contributors}</span><br><span>Contributors</span>
-                </a>
-            </div>
-        </div>
-        <div class="center aligned column">
-            <div class="ui teal segment">
-                <a href="/cms/posts/manage/{$blog->id}" title="Manage Posts">
-                    <span class="ui header huge">{$counts.totalviews}</span><br><span>Total Post Views</span>
-                </a>
-            </div>
-        </div>
+        {/foreach}
     </div>
 
     <div class="stackable two column row">

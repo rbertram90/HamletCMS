@@ -122,17 +122,10 @@ class Blogs extends GenericController
             $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
         }
 
+        // Dynamically get stats for dashboard
         $counts = [];
-        BlogCMS::runHook('dashboardCounts', ['blogID' => $blogID, 'counts' => &$counts]);
-
-        $modelPostViews = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\PostViews');
-
-        // Get count statistics
-        $this->response->setVar('counts', array_merge($counts, [
-            'posts' => $this->modelPosts->countPostsOnBlog($blogID, true),
-            'contributors' => $this->modelContributors->getCount(array('blog_id' => $blogID)),
-            'totalviews' => $modelPostViews->getTotalPostViewsByBlog($blogID),
-        ]));
+        BlogCMS::runHook('dashboardCounts', ['blog' => $blog, 'counts' => &$counts]);
+        $this->response->setVar('counts', $counts);
         
         $panels = [];
         BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);

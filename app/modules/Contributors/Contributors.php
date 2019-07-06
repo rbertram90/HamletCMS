@@ -4,6 +4,11 @@ namespace rbwebdesigns\blogcms;
 
 class Contributors
 {
+    public function __construct()
+    {
+        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+    }
+
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
@@ -44,4 +49,13 @@ class Contributors
         $dbc->query("ALTER TABLE `contributorgroups` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
         $dbc->query("ALTER TABLE `contributors` ADD PRIMARY KEY (`user_id`,`blog_id`);");
     }
+
+    /**
+     * Adds a total contributor count to the blog dashboard
+     */
+    public function dashboardCounts($args)
+    {
+        $args['counts']['contributors'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
+    }
+
 }
