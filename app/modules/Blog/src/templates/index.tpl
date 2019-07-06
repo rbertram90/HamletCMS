@@ -10,9 +10,10 @@
 {* Check if this user contributes/ owns to at least 1 blog *}
 {if count($blogs) > 0}
 
-<table class="ui padded table">
+<table class="ui padded table blogs-table">
     <thead>
         <tr>
+            <th></th>
             <th>Blog Name</th>
             <th>Contributors</th>
             <th class="collapsing"></th>
@@ -23,6 +24,11 @@
         {* Loop through all the blogs this user can contribute to *}
         {foreach from=$blogs item=blog}
             <tr>
+                <td width="50">
+                    {if $blog->icon}
+                        <img src="/blogdata/{$blog->id}/{$blog->icon}" class="blog-icon">
+                    {/if}
+                </td>
                 <td>
                     <a href="/cms/blog/overview/{$blog->id}" title="{$blog->name}" style="font-size:120%;">{$blog->name}</a>
                     {$lastestPost = $blog->latestpost()}
@@ -62,20 +68,25 @@
                     </script>
                 </td>
                 <td>
-                    <div class="ui compact menu">
-                        <div class="ui simple dropdown item single line blue">
-                            - Actions -
-                            <i class="dropdown icon"></i>
-                            <div class="menu">
-                                {foreach $blog->actions as $action}
-                                    <a href="{$action->url}" class="item">{$action->text}</a>
-                                {/foreach}
-                            </div>
+                    <div class="ui selection dropdown">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">- Actions -</div>
+                        <div class="menu">
+                            {foreach $blog->actions as $action}
+                                <a href="{$action->url}" class="item">{$action->text}</a>
+                            {/foreach}
                         </div>
                     </div>
+                    <script>$('.ui.dropdown').dropdown({
+                        onChange: function () {
+                            $(this).addClass('loading')
+                        }
+                    });</script>
                 </td>
                 <td>
-                    <a href="/blogs/{$blog->id}" class="ui button teal single line" target="_blank">View Blog</a>
+                    <a href="/blogs/{$blog->id}" class="ui teal icon button" target="_blank">
+                        <i class="home icon"></i>
+                    </a>
                 </td>
             </div>
 
@@ -83,7 +94,7 @@
     </tbody>
 </table>
 
-<a href="/cms/blog/create" class="ui right floated teal button">Create Blog</a>
+<a href="/cms/blog/create" class="ui right floated labeled icon teal button"><i class="plus icon"></i>Create blog</a>
 
 {* This user doesn't have any blogs *}
 {else}

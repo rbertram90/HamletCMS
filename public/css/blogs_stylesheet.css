@@ -105,6 +105,10 @@ p {
     padding:4px;
 }
 
+.blogs-table .blog-icon {
+    max-height: 50px;
+}
+
 /* blog summary? */
 .summary_table {
     margin-bottom:30px;
