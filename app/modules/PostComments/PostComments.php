@@ -49,6 +49,7 @@ class PostComments
         $dbc->query("ALTER TABLE `comments` MODIFY `id` int(8) NOT NULL AUTO_INCREMENT;");
 
         $dbc->query("ALTER TABLE `posts` ADD `allowcomments` tinyint(1);");
+        $dbc->query("ALTER TABLE `postautosaves` ADD `allowcomments` tinyint(1);");
     }
 
     /**
@@ -61,6 +62,14 @@ class PostComments
         $dbc->query("DROP TABLE IF EXISTS `comments`;");
 
         $dbc->query("ALTER TABLE `posts` DROP COLUMN `allowcomments`;");
+        $dbc->query("ALTER TABLE `postautosaves` DROP COLUMN `allowcomments`;");
+    }
+
+    /**
+     * 
+     */
+    public function modelSchema($args) {
+        $args['model']->registerField('allowcomments', 'boolean');
     }
 
     /**

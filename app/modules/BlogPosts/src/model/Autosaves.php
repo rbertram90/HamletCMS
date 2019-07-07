@@ -30,15 +30,17 @@ class Autosaves extends RBFactory
         $this->subClass = '\\rbwebdesigns\\blogcms\\BlogPosts\\Autosave';
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         
+        // @todo can we determine these dynamically?
         $this->fields = [
             'post_id' => 'number',
             'content' => 'string',
             'summary' => 'string',
             'title'   => 'string',
             'tags'    => 'string',
-            'allowcomments' => 'boolean',
             'date_last_saved' => 'timestamp'
         ];
+
+        BlogCMS::runHook('modelSchema', ['model' => $this]);
     }
 
     /**
@@ -58,7 +60,6 @@ class Autosaves extends RBFactory
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => 0, //$data['allowcomments'],
                 'type'            => $data['type'],
                 'blog_id'         => $data['blogID'],
                 'author_id'       => $currentUser['id'],
@@ -75,12 +76,11 @@ class Autosaves extends RBFactory
         
             if($arrayPost->initialautosave == 1) {
                 // Update the post
-                $update = $this->update(['id' => $postID], [
+                $update = $this->modelPosts->update(['id' => $postID], [
                     'content'         => $data['content'],
                     'title'           => $data['title'],
                     'link'            => Posts::createSafePostUrl($data['title']),
                     'tags'            => $newTags,
-                    'allowcomments'   => 0, //$data['allowcomments'],
                 ]);
             }
         }
@@ -94,7 +94,6 @@ class Autosaves extends RBFactory
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => 0, //$data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
             ]);
             if($update === false) return $false;
@@ -107,7 +106,6 @@ class Autosaves extends RBFactory
                 'content'         => $data['content'],
                 'title'           => $data['title'],
                 'tags'            => $newTags,
-                'allowcomments'   => 0, //$data['allowcomments'],
                 'date_last_saved' => date('Y-m-d H:i:s')
             ));
             if($insert === false) return $false;
