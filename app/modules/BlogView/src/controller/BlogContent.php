@@ -133,7 +133,12 @@ class BlogContent
         // Get custom content to be displayed in post
         // Example - number of comments
         $post->after = [];
-        BlogCMS::runHook('runTemplate', ['template' => 'singlePost', 'post' => &$post, 'config' => &$config]);
+        BlogCMS::runHook('runTemplate', [
+            'template' => 'singlePost',
+            'post' => &$post,
+            'config' => &$config,
+            'response' => $teaserResponse
+        ]);
 
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -514,22 +519,17 @@ class BlogContent
             $response->redirect($this->pathPrefix, 'Cannot find this post', 'error');
         }
         
-        // Get all data required
-        // if ($post['allowcomments']) {
-        //     $response->setVar('comments', $this->modelComments->getCommentsByPost($post['id'], false));
-        // }
-
         // Record the view
         $this->addView($post->id);
 
         $this->generatePostTemplate($post, null, 'full');
 
-        $response->addScript('/resources/ace/ace.js');
-        $response->setVar('mdContent', $mdContent);
-        $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
-        $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
         $response->setTitle($post->title);
-        $response->write('posts/singlepost.tpl', 'BlogView');
+        // $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
+        // $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
+        // $response->addScript('/resources/ace/ace.js');
+        // $response->setVar('mdContent', $mdContent);
+        // $response->write('posts/singlepost.tpl', 'BlogView');
     }
         
     /**

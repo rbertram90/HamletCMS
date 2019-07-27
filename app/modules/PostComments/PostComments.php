@@ -100,6 +100,8 @@ class PostComments
         if ($args['template'] == 'singlePost' && $args['post']->allowcomments) {
             $args['post']->after[] = 'file:[PostComments]postcomments.tpl';
             $args['post']->after[] = 'file:[PostComments]newcommentform.tpl';
+
+            $args['response']->setVar('comments', $this->model->getCommentsByPost($args['post']->id, false));
         }
     }
 
