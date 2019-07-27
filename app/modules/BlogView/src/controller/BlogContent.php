@@ -591,41 +591,4 @@ class BlogContent
         return trim($trimmedContent);
     }
 
-    /**
-     * Add a comment to a blog post
-     * 
-     * @todo Check that the user hasn't submitted more than 5 comments in last 30 seconds?
-     *   Or if the last X comments were from the same user? to prevent comment spamming
-     */
-    public function addComment(&$request, &$response)
-    {
-        $postID = $request->getInt('fld_postid', -1);
-        $post = $this->modelPosts->getPostByID($postID, $this->blogID);
-        $commentText = $request->getString('fld_comment');
-        $currentUser = BlogCMS::session()->currentUser;
-
-        if (!$currentUser) {
-            $response->redirect("/blogs/{$this->blogID}", 'You must be logged in to add a comment', 'error');
-        }
-
-        if (!$post) {
-            $response->redirect("/blogs/{$this->blogID}", 'Post not found', 'error');
-        }
-        
-        if (!isset($commentText) || strlen($commentText) == 0) {
-            $response->redirect("/blogs/{$this->blogID}/posts/{$post['link']}", 'Please enter a comment', 'error');
-        }        
-        
-        // Check that post allows reader comments
-        if ($post['allowcomments'] == 0) {
-            $response->redirect("/blogs/{$this->blogID}/posts/{$post['link']}", 'Comments are not allowed here', 'error');
-        }
-
-        if ($this->modelComments->addComment($commentText, $post['id'], $this->blogID, $currentUser['id'])) {
-            $response->redirect("/blogs/{$this->blogID}/posts/{$post['link']}", 'Comment submitted - awaiting approval', 'success');
-        }
-        else {
-            $response->redirect("/blogs/{$this->blogID}/posts/{$post['link']}", 'Error adding comment', 'error');
-        }
-    }
 }

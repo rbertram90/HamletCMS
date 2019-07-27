@@ -4,6 +4,7 @@ namespace rbwebdesigns\blogcms;
 
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
+use Athens\CSRF;
 
 /**
  * blog_setup.inc.php
@@ -24,7 +25,10 @@ require_once SERVER_ROOT .'/app/vendor/autoload.php';
 
 // Setup - Stage 1
 require_once SERVER_ROOT .'/app/envsetup.inc.php';
-    
+
+// Intialize CSRF tokens
+CSRF::init();
+
 
 /****************************************************************
     Setup and route page content
@@ -125,12 +129,7 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
             case "posts":
                 $page_controller->viewPost($request, $response);
                 break;
-                
-            case "addcomment":
-                // Add a comment to this post
-                $page_controller->addComment($request, $response);
-                break;
-                
+                                
             case "tags":
                 // Search for posts with tag
                 $page_controller->viewPostsByTag($request, $response);
@@ -148,3 +147,4 @@ require_once SERVER_ROOT .'/app/envsetup.inc.php';
     ob_end_clean();
 
     $response->writeTemplate('main.tpl', 'BlogView');
+

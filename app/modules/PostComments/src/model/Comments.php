@@ -21,6 +21,7 @@ class Comments extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'comments';
+        $this->subClass = '\\rbwebdesigns\\blogcms\\PostComments\\Comment';
 
         $this->fields = array(
             'id' => 'number',
@@ -35,7 +36,7 @@ class Comments extends RBFactory
     // Get stored information on a single blog
     public function getCommentById($commentid)
     {
-        return $this->get('*', ['id' => $commentid], '', '', false);
+        return $this->get('*', ['id' => $commentid], null, null, false);
     }
     
     // Get all the posts from $blog

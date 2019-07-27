@@ -19,5 +19,12 @@
         "permissions": ["administer_comments"],
         "controller": "\\rbwebdesigns\\blogcms\\PostComments\\Controller\\Comments",
         "action": "delete"
+    },
+    {
+        "key": "comments.add",
+        "path": "/cms/comments/add",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\PostComments\\Controller\\Comments",
+        "action": "add"
     }
 ]

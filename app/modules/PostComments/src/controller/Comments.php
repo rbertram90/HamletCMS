@@ -15,25 +15,22 @@ use rbwebdesigns\blogcms\BlogCMS;
  */
 class Comments extends GenericController
 {
-    /**
-     * @var \rbwebdesigns\blogcms\PostComments\model\Comments
-     */
+    /** @var \rbwebdesigns\blogcms\PostComments\model\Comments */
     protected $model;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
+    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
+    protected $modelPosts = null;
+    /** @var \rbwebdesigns\blogcms\Contributors\model\Permissions */
+    protected $modelPermissions = null;
+
+    /** @var \rbwebdesigns\core\Request */
     protected $request;
-    /**
-     * @var \rbwebdesigns\core\Response
-     */
+    /** @var \rbwebdesigns\core\Response */
     protected $response;
-    /**
-     * @var array Active blog
-     */
+
+    /** @var array Active blog */
     protected $blog = null;
-    /**
-     * @var array Active comment
-     */
+
+    /** @var array Active comment */
     protected $comment = null;
 
 
@@ -41,6 +38,7 @@ class Comments extends GenericController
     {
         $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
         $this->blog = BlogCMS::getActiveBlog();
 
         BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog->id;
@@ -56,7 +54,7 @@ class Comments extends GenericController
         if (!$comment = $this->model->getCommentById($commentID)) {
             return false;
         }
-        BlogCMS::$blogID = $comment['blog_id'];
+        BlogCMS::$blogID = $comment->blog_id;
         return $this->modelPermissions->userHasPermission('administer_comments');
     }
 
@@ -101,17 +99,58 @@ class Comments extends GenericController
     public function approve()
     {
         $commentID = $this->request->getUrlParameter(1);
+        $comment = $this->model->getCommentById($commentID);
 
         if (!$this->canAdminister($commentID)) {
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
-        elseif ($this->model->approve($this->comment['id'])) {
+        elseif ($this->model->approve($comment->id)) {
             $blog = BlogCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/' . $blog->id, 'Comment approved', 'success');
         }
         else {
             $blog = BlogCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/' . $blog->id, 'Unable to approve comment', 'error');
+        }
+    }
+
+    
+    /**
+     * Add a comment to a blog post
+     * 
+     * @todo Check that the user hasn't submitted more than 5 comments in last 30 seconds?
+     *   Or if the last X comments were from the same user? to prevent comment spamming
+     */
+    public function add()
+    {
+        $postID = $this->request->getInt('fld_postid', -1);
+        $post = $this->modelPosts->getPostByID($postID);
+        $blogID = $post->blog_id;
+        $commentText = $this->request->getString('fld_comment');
+        $currentUser = BlogCMS::session()->currentUser;
+
+        if (!$currentUser) {
+            $this->response->redirect("/blogs/{$blogID}", 'You must be logged in to add a comment', 'error');
+        }
+
+        if (!$post) {
+            $this->response->redirect("/blogs/{$blogID}", 'Post not found', 'error');
+        }
+        
+        if (!isset($commentText) || strlen($commentText) == 0) {
+            $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Please enter a comment', 'error');
+        }        
+        
+        // Check that post allows reader comments
+        if ($post->allowcomments == 0) {
+            $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comments are not allowed here', 'error');
+        }
+
+        if ($this->model->addComment($commentText, $post->id, $blogID, $currentUser['id'])) {
+            $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comment submitted - awaiting approval', 'success');
+        }
+        else {
+            $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Error adding comment', 'error');
         }
     }
     
