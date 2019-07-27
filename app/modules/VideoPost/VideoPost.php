@@ -27,7 +27,7 @@ class VideoPost
                 break;
         }
 
-        switch ($args['template']) { 
+        switch ($args['template']) {
             case 'singlePost':
                 $content = Markdown::defaultTransform($post->content);
                 $args['post']->trimmedContent = $videoContent . $content;
@@ -43,6 +43,16 @@ class VideoPost
         if ($args['post']['type'] == 'video') {
             $args['post']['videosource'] = $request->getString('videosource', 'youtube');
             $args['post']['videoid'] = $request->getString('videoid', '');
+            $args['post']['class'] = 'rbwebdesigns\\blogcms\\VideoPost\\VideoPost';
+        }
+    }
+
+    public function onBeforeAutosave(&$args) {
+        $request = BlogCMS::request();
+        if ($args['post']['type'] == 'video') {
+            $args['post']['videosource'] = $request->getString('videosource', 'youtube');
+            $args['post']['videoid'] = $request->getString('videoid', '');
+            // $args['post']['class'] = 'rbwebdesigns\\blogcms\\VideoPost\\VideoPost'; // needed?
         }
     }
 
@@ -50,6 +60,7 @@ class VideoPost
     {
         $dbc = BlogCMS::databaseConnection();
         $dbc->query("ALTER TABLE `posts` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
+        $dbc->query("ALTER TABLE `postautosaves` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
     }
 
     /**
@@ -61,5 +72,6 @@ class VideoPost
     {
         $dbc = BlogCMS::databaseConnection();
         $dbc->query("ALTER TABLE `posts` DROP COLUMN `videoid`, DROP COLUMN `videosource`;");
+        $dbc->query("ALTER TABLE `postautosaves` DROP COLUMN `videoid`, DROP COLUMN `videosource`;");
     }
 }

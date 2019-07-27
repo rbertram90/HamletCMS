@@ -31,7 +31,7 @@ class AbstractPostType extends GenericController
         $this->response->setTitle('Create blog post');
 
         $extraFields = [];
-        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);
+        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => [], 'fields' => &$extraFields]);
         $this->response->setVar('customSettingFields', $extraFields);
     }
 

@@ -24,7 +24,7 @@
                 <img src="/images/logo.png" alt="Blog CMS" class="logo">
             </div>
 
-            <nav class="ui fluid vertical pointing menu">
+            <nav class="ui fluid vertical pointing menu" id="cms_main_menu">
                 {foreach from=$page_sidemenu->getLinks() item=link}
                     {if isset($link->url) and strlen($link->url)}
                         {if $link->active}

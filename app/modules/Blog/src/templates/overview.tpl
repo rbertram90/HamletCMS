@@ -74,16 +74,18 @@
     <div class="row">
         <div class="column">
             <h3 class="ui header">Recent activity</h3>
-            <div class="ui segments">
-            {foreach $activitylog as $activity}
-                <div class="ui segment">
-                    <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
-                    <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
+            {if count($activitylog) > 0}
+                <div class="ui segments">
+                    {foreach $activitylog as $activity}
+                        <div class="ui segment">
+                            <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
+                            <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
+                        </div>                
+                    {/foreach}
                 </div>
-            {foreachelse}
-                <p>No activity has been recorded for this blog</p>
-            {/foreach}
-            </div>
+            {else}
+                <p class="ui message info">No activity has been recorded for this blog</p>
+            {/if}
         </div>
     </div> 
 </div>

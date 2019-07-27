@@ -34,6 +34,10 @@ class Post
     /** @var string $teaser_image */
     public $teaser_image;
 
+    protected $customFunctions = [];
+
+    protected $author = null;
+
     /** @var rbwebdesigns\blogcms\BlogPosts\model\Posts $factory */
     protected $factory;
 
@@ -49,6 +53,20 @@ class Post
 
         foreach ($data as $key => $item) {
             $this->$key = $item;
+        }
+
+        // get callable functions from external modules
+        BlogCMS::runHook('onPostConstruct', ['post' => $this, 'functions' => &$this->customFunctions]);
+    }
+
+    public function __call($closure, $args) {
+        // var_dump($closure);
+        // var_dump($args);
+
+        if (array_key_exists($closure, $this->customFunctions)) {
+            array_unshift($args, $this);
+
+            return call_user_func_array($this->customFunctions[$closure], $args);
         }
     }
 
@@ -109,5 +127,16 @@ class Post
             $fields[$field] = $this->$key;
         }
         return $fields;
+    }
+
+    /**
+     * Get the user record for a post
+     */
+    public function author() {
+        if (is_null($this->author)) {
+            $usersModel = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+            $this->author = $usersModel->getById($this->author_id);
+        }
+        return $this->author;
     }
 }

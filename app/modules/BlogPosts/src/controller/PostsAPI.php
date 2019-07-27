@@ -262,10 +262,11 @@ class PostsAPI extends GenericController
             'tags'          => $this->request->getString('tags'),
             'type'          => $this->request->getString('type'),
             'blogID'        => $this->request->getInt('blogID'),
+            'timestamp'     => $this->request->getInt('date'),
         ];
 
         // Populate custom fields
-        BlogCMS::runHook('onBeforeAutosave', ['data' => &$data]);
+        BlogCMS::runHook('onBeforeAutosave', ['post' => &$data]);
 
         $updateDB = $this->modelAutosaves->autosavePost($postID, $data);
 

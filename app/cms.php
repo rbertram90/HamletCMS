@@ -175,7 +175,7 @@ class BlogCMS
             self::$modelManager->setDatabaseClass(new \rbwebdesigns\core\ObjectDatabase());
         }
 
-        if(!self::$modelManager->getDatabaseConnection()->isConnected()) {
+        if (!self::$modelManager->getDatabaseConnection()->isConnected()) {
             self::$modelManager->getDatabaseConnection()->connect(self::$config['database']['server'],
                 self::$config['database']['name'],
                 self::$config['database']['user'],

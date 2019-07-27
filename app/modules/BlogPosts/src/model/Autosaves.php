@@ -54,7 +54,7 @@ class Autosaves extends RBFactory
         $newTags = Posts::createSafeTagList($data['tags']);
         $currentUser = BlogCMS::session()->currentUser;
 
-        if($postID <= 0) {
+        if ($postID <= 0) {
             // Post is not saved into the main table - create it as a draft
             $this->modelPosts->insert([
                 'content'         => $data['content'],
@@ -74,7 +74,7 @@ class Autosaves extends RBFactory
         else {
             $arrayPost = $this->modelPosts->get('initialautosave', ['id' => $postID], '', '', false);
         
-            if($arrayPost->initialautosave == 1) {
+            if ($arrayPost->initialautosave == 1) {
                 // Update the post
                 $update = $this->modelPosts->update(['id' => $postID], [
                     'content'         => $data['content'],
@@ -88,7 +88,7 @@ class Autosaves extends RBFactory
         // Check for existing save for this post
         $autosaveCheck = $this->db->countRows($this->tableName, ["post_id" => $postID]);
         
-        if($autosaveCheck == 1) {
+        if ($autosaveCheck == 1) {
             // Found - Update
             $update = $this->db->updateRow($this->tableName, ['post_id' => $postID], [
                 'content'         => $data['content'],

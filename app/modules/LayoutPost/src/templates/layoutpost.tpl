@@ -93,10 +93,11 @@
             content: $("#post_content").val(),
             title: $("#post_title").val(),
             summary: $("#summary").val(),
+            overrideLink: document.getElementById('field_override_url').checked,
+            link: $("#post_url").val(),
             type: $("#post_type").val(),
             draft: parseInt($("#draft").val()),
             date: $("#post_date").val(),
-            // "comments": parseInt($("#allow_comment").val()),
             tags: $("#post_tags").val(),
             teaserImage: $("input[name='teaser_image']").val(),
             token: CSRFTOKEN

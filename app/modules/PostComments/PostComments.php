@@ -132,10 +132,30 @@ class PostComments
         $args['post']['allowcomments'] = $request->getInt('comments');
     }
 
+    public function onBeforeAutosave(&$args) {
+        $request = BlogCMS::request();
+        $args['post']['allowcomments'] = $request->getInt('comments');
+    }
 
     public function onDeleteBlog($args) {
         $blog = $args['blog'];
         $this->model->delete(['blog_id' => $blog->id]);
     }
     
+
+    public function onPostConstruct($args) {
+        // $args['post']->allowcomments = ;
+
+        $args['functions']['getComments'] = function($post) {
+            return $this->model->getCommentsByPost($post->id, false);
+        };
+        $args['functions']['commentsEnabled'] = function($post) {
+            return $post->allowComments;
+        };
+        
+    }
+
+    public function onPostFactoryConstruct($args) {
+        $args['class']->fields[] = 'allowcomments';
+    }
 }

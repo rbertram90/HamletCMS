@@ -76,9 +76,25 @@
 
         event.preventDefault();
 
-        // Allow custom modules to add to data
+        // Get the data that needs to be pased to ther server
+        // Can either be a form field with class 'post-field'
+        // or explicitly defined in a getFormData function
+        // Likely will take out the getFormData process soon
+        // in favour of the class based method as this makes it
+        // easier for other modules to inject fields
         if (typeof getFormData == 'function') { 
             formData = getFormData();
+
+            var fields = {};
+
+            $(".post-field").each(function() {
+                var key;
+                if ($(this).data('key')) key = $(this).data('key');
+                else key = $(this).attr('name');
+                fields[key] = $(this).val();
+            });
+
+            Object.assign(fields, formData);
         }
         else {
             console.log('Error: function getFormData has not been defined');

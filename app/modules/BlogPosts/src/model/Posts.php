@@ -49,6 +49,8 @@ class Posts extends RBFactory
             'type'              => 'string',
             'initialautosave'   => 'boolean'
         ];
+
+        BlogCMS::runHook('onPostFactoryConstruct', ['class' => $this]);
     }
     
     /**
@@ -142,13 +144,13 @@ class Posts extends RBFactory
     public function search($blogID, $searchterm)
     {
         // Search posts by title & tags
-        $query_string = "SELECT * FROM {$this->tableName} ";
+        $query_string = "SELECT tp.class as classType, tp.* FROM {$this->tableName} as tp";
         $query_string.= "WHERE blog_id='{$blogID}' ";
         $query_string.= "AND (title LIKE '%".Sanitize::string($searchterm)."%' OR tags LIKE '%".Sanitize::string($searchterm)."%') ";
         $query_string.= "AND draft=0 AND timestamp <= CURRENT_TIMESTAMP";
 
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
     
     /**
@@ -174,7 +176,7 @@ class Posts extends RBFactory
      */
     public function getPostCountByUser($blogID)
     {
-        $query_string = "SELECT author_id, count(*) as post_count, 
+        $query_string = "SELECT a.class as classType, a.author_id, count(a.*) as post_count, 
         (
             SELECT `timestamp`
             FROM {$this->tableName} as b
@@ -192,7 +194,7 @@ class Posts extends RBFactory
         ORDER BY `timestamp` DESC";
         
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
     
     /**
@@ -205,7 +207,7 @@ class Posts extends RBFactory
     public function getAllPostsOnBlog($blogID, $drafts=0, $future=0)
     {
         $tc = TBL_COMMENTS;
-        $sql = "SELECT p.* ";
+        $sql = "SELECT p.class as classType, p.* ";
         $sql.= "FROM " . TBL_POSTS . " as p ";
         $sql.= "WHERE p.blog_id = '".$blogID."' ";
         if ($drafts == 0) $sql.= "AND p.draft='0' ";
@@ -213,7 +215,7 @@ class Posts extends RBFactory
         $sql.= "ORDER BY p.timestamp DESC ";
 
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
     
     /**
@@ -235,14 +237,14 @@ class Posts extends RBFactory
     {
         $start = ($page-1) * $num;
         $tp = TBL_POSTS; $tc = TBL_COMMENTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
-        $sql = "SELECT $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
+        $sql = "SELECT $tp.class as classType, $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
         $sql.= "FROM $tp ";
-        // (SELECT count(*) from $tc WHERE $tc.post_id = $tp.id) as numcomments
         $sql.= "WHERE $tp.blog_id = '".$blogID."' ";
+
         if($drafts == 0) $sql.= "AND $tp.draft='0' ";
         if($future == 0) $sql.= "AND $tp.timestamp<='".date('Y-m-d H:i:s')."' ";
         
-        $fields = array_merge($this->fields, ['uniqueviews' => 'number', 'hits' => 'number']); // 'numcomments' => 'number', 
+        $fields = array_merge($this->fields, ['uniqueviews' => 'number', 'hits' => 'number']);
         
         $splitSort = explode(' ', $sort);
         if(count($splitSort) == 2) {
@@ -264,7 +266,7 @@ class Posts extends RBFactory
         
         $sql.= "LIMIT $start,$num";
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
         
     /**
@@ -280,7 +282,7 @@ class Posts extends RBFactory
      */
     public function getRecentPosts($blogs, $daysSincePostLimit=7)
     {
-        $query_string = 'SELECT '.$this->tableName.'.*, '.TBL_BLOGS.'.name as blog_name FROM '.$this->tableName.' LEFT JOIN '.TBL_BLOGS.' ON '.$this->tableName.'.blog_id = '.TBL_BLOGS.'.id WHERE '.$this->tableName.'.timestamp >= DATE_SUB(NOW(), INTERVAL '.$daysSincePostLimit.' DAY) AND timestamp<="'.date('Y-m-d H:i:s').'" AND '.$this->tableName.'.draft = 0 ';
+        $query_string = 'SELECT '.$this->tableName.'.class as classType, '.$this->tableName.'.*, '.TBL_BLOGS.'.name as blog_name FROM '.$this->tableName.' LEFT JOIN '.TBL_BLOGS.' ON '.$this->tableName.'.blog_id = '.TBL_BLOGS.'.id WHERE '.$this->tableName.'.timestamp >= DATE_SUB(NOW(), INTERVAL '.$daysSincePostLimit.' DAY) AND timestamp<="'.date('Y-m-d H:i:s').'" AND '.$this->tableName.'.draft = 0 ';
 
         if(gettype($blogs) == "array") {
             if(count($blogs) == 0) return false;
@@ -299,7 +301,7 @@ class Posts extends RBFactory
         
         $query_string.= " ORDER BY ".$this->tableName.".timestamp DESC LIMIT 30";
         $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
     
     /**
@@ -589,7 +591,7 @@ class Posts extends RBFactory
             $endDate = $date2->format('Y-m-d H:i:s');
         }
 
-        $sql = "SELECT tp.*, count(*) as userviewcount
+        $sql = "SELECT tp.class as classType, tp.*, count(*) as userviewcount
             FROM {$this->tblviews} as tv
             LEFT JOIN {$this->tableName} AS tp ON tv.postid = tp.id
             WHERE postid IN (SELECT id FROM {$this->tableName} WHERE blog_id='{$blogID}')
@@ -599,7 +601,7 @@ class Posts extends RBFactory
             ORDER BY userviewcount DESC";
 
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
 
 }

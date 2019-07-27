@@ -37,8 +37,6 @@
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
 
-            {include 'edit-form/url.tpl'}
-
             {include 'edit-form/teaser-summary.tpl'}
 
             <div class="field"> 
@@ -72,6 +70,8 @@
 
         <div class="six wide column">
             {include 'edit-form/post-date.tpl'}
+
+            {include 'edit-form/url.tpl'}
  
             {include 'edit-form/custom-fields.tpl'}
 
@@ -84,6 +84,9 @@
 <script>
 var content_changed = false;
 
+$("#video_source").on("keyup", function() { content_changed = true; });
+$("#video_id").on("keyup", function() { content_changed = true; });
+
 var getFormData = function() {
     return {
         postID: parseInt($("#post_id").val()),
@@ -91,8 +94,9 @@ var getFormData = function() {
         content: $("#post_content").val(),
         title: $("#post_title").val(),
         summary: $("#summary").val(),
+        overrideLink: document.getElementById('field_override_url').checked,
+        link: $("#post_url").val(),
         type: $("#post_type").val(),
-        // "comments": parseInt($("#allow_comment").val()),
         tags: $("#post_tags").val(),
         draft: parseInt($("#draft").val()),
         date: $("#post_date").val(),

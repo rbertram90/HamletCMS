@@ -8,5 +8,10 @@
             <input type="text" name="post_date" id="post_date" placeholder="Date/Time" value="{$postdate}">
         </div>
     </div>
-    <script>$('#post_date_wrapper').calendar();</script>
+    <script>
+    $('#post_date_wrapper').calendar({
+        monthFirst: false,
+        formatInput: true
+    });
+    </script>
 </div>
