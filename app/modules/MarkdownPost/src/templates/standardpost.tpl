@@ -45,12 +45,12 @@
                     <i class="camera icon"></i>
                 </button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="post_content" id="post_content" style="height:30vh;">{$post->content}</textarea>
+                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
             
-            <input type="hidden" name="post_type" id="post_type" value="standard">
+            <input type="hidden" name="post_type" id="post_type" value="standard" class="post-data-field" data-key="type">
 
             {* Submit button + hidden fields *}
             {include 'edit-form/actions.tpl'}
@@ -71,24 +71,6 @@
 
 <script>
 var content_changed = false;
-
-var getFormData = function() {
-    return {
-        postID: parseInt($("#post_id").val()),
-        blogID: {$blog->id},
-        content: $("#post_content").val(),
-        summary: $("#summary").val(),
-        title: $("#post_title").val(),
-        overrideLink: document.getElementById('field_override_url').checked,
-        link: $("#post_url").val(),
-        type: $("#post_type").val(),
-        tags: $("#post_tags").val(),
-        date: $("#post_date").val(),
-        draft: parseInt($("#draft").val()),
-        teaserImage: $("input[name='teaser_image']").val(),
-        token: CSRFTOKEN
-    };
-};
 
 $(document).ready(function () {
 

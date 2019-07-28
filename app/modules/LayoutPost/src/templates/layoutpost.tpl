@@ -53,12 +53,12 @@
                 });
                 </script>
 
-                <textarea name="post_content" id="post_content" style="display: none;">{$post->content}</textarea>
+                <textarea name="post_content" id="post_content" style="display: none;" class="post-data-field" data-key="content">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
 
-            <input type="hidden" name="post_type" id="post_type" value="layout">
+            <input type="hidden" name="post_type" id="post_type" value="layout" class="post-data-field" data-key="type">
             
             {* Submit button + hidden fields *}
             {include 'edit-form/actions.tpl'}
@@ -85,25 +85,6 @@
 
 
 <script>
-
-    var getFormData = function() {
-        return {
-            postID: parseInt($("#post_id").val()),
-            blogID: {$blog->id},
-            content: $("#post_content").val(),
-            title: $("#post_title").val(),
-            summary: $("#summary").val(),
-            overrideLink: document.getElementById('field_override_url').checked,
-            link: $("#post_url").val(),
-            type: $("#post_type").val(),
-            draft: parseInt($("#draft").val()),
-            date: $("#post_date").val(),
-            tags: $("#post_tags").val(),
-            teaserImage: $("input[name='teaser_image']").val(),
-            token: CSRFTOKEN
-        };
-    };
-
     // Get where to redirect to when the cancel
     // button is pressed. Will be different depending
     // on if the autosave has run

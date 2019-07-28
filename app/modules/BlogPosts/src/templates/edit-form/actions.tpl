@@ -1,10 +1,12 @@
 <div id="autosave_status" class="ui positive message" style="display:none;"></div>
 
 {if $mode == 'edit'}
-    <input type="hidden" id="post_id" name="post_id" value="{$post->id}">
+    <input type="hidden" id="post_id" name="post_id" value="{$post->id}" class="post-data-field" data-key="postID">
 {else}
-    <input type="hidden" id="post_id" name="post_id" value="0">
+    <input type="hidden" id="post_id" name="post_id" value="0" class="post-data-field" data-key="postID">
 {/if}
+
+<input type="hidden" id="blog_id" name="blog_id" value="{$blog->id}" class="post-data-field" data-key="blogID">
 
 <input type="button" value="Cancel" id="cancel_create_post" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = getCancelLocation(); window.content_changed = false; {rdelim}" class="ui button right floated">
 
@@ -76,30 +78,36 @@
 
         event.preventDefault();
 
-        // Get the data that needs to be pased to ther server
-        // Can either be a form field with class 'post-field'
-        // or explicitly defined in a getFormData function
-        // Likely will take out the getFormData process soon
-        // in favour of the class based method as this makes it
-        // easier for other modules to inject fields
-        if (typeof getFormData == 'function') { 
-            formData = getFormData();
+        // Build up the fields object with properties to
+        // pass to the server to be saved
+        var formData = {
+            token: CSRFTOKEN
+        };
 
-            var fields = {};
+        $(".post-data-field").each(function() {
+            var key, type;
 
-            $(".post-field").each(function() {
-                var key;
-                if ($(this).data('key')) key = $(this).data('key');
-                else key = $(this).attr('name');
-                fields[key] = $(this).val();
-            });
+            if ($(this).data('key')) key = $(this).data('key');
+            else key = $(this).attr('name');
 
-            Object.assign(fields, formData);
-        }
-        else {
-            console.log('Error: function getFormData has not been defined');
-            return false;
-        }
+            if ($(this).data('type')) type = $(this).data('type');
+            else type = 'string';
+
+            switch (type) {
+                case 'checkbox':
+                    formData[key] = this.checked;
+                    break;
+
+                case 'int':
+                    formData[key] = parseInt($(this).val());
+                    break;
+
+                default:
+                case 'string':
+                    formData[key] = $(this).val();
+                    break;
+            }
+        });
 
         if ($("#teaser_image_image img").length > 0) {
             var imageSrc = $("#teaser_image_image img").attr('src');

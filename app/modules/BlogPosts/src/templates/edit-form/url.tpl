@@ -1,7 +1,7 @@
 <div class="field">
     <label for="post_url">URL</label>
-    <p><input type="checkbox" name="field_override_url" id="field_override_url"> Manually set URL?</p>
-    <input type="text" name="post_url" id="post_url" required size="50" autocomplete="off" value="{$post->link}" />
+    <p><input type="checkbox" name="field_override_url" id="field_override_url" class="post-data-field" data-key="overrideLink" data-type="checkbox"> Manually set URL?</p>
+    <input type="text" name="post_url" id="post_url" required size="50" autocomplete="off" value="{$post->link}" class="post-data-field" data-key="link">
 </div>
 <script>
     $("#field_override_url").change(function() {

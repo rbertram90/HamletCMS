@@ -44,9 +44,36 @@ $(document).ready(function() {
         // Check a change has been made
         if (!content_changed) return;
 
-        // Function that needs to be implemented for each post type
-        // Should return an object with each of the fields values
-        var formData = getFormData();
+        // Build up the fields object with properties to
+        // pass to the server to be saved
+        var formData = {
+            token: CSRFTOKEN
+        };
+
+        $(".post-data-field").each(function() {
+            var key, type;
+
+            if ($(this).data('key')) key = $(this).data('key');
+            else key = $(this).attr('name');
+
+            if ($(this).data('type')) type = $(this).data('type');
+            else type = 'string';
+
+            switch (type) {
+                case 'checkbox':
+                    formData[key] = this.checked;
+                    break;
+
+                case 'int':
+                    formData[key] = parseInt($(this).val());
+                    break;
+
+                default:
+                case 'string':
+                    formData[key] = $(this).val();
+                    break;
+            }
+        });
         
         // Collect form data and send to server
         jQuery.post("/api/posts/autosave", formData, function(data) {
@@ -67,18 +94,7 @@ $(document).ready(function() {
     $("#post_title").on("keyup", function() { content_changed = true; });
     $("#tags").on("keyup", function() { content_changed = true; });
 
-    // Autosave requires implementation of a couple of js functions
-    // for each post type as different post types will have different
-    // fields. If a required function does not exist then don't bother
-    // trying to autosave.
-
-    if (typeof getFormData == 'function') {
-        // Try and save every 5 seconds
-        var save_interval = setInterval(runsave, 5000);
-    }
-    else {
-        console.log('Info: Not enabling autosave, function getFormData has not been defined');
-    }
-
+    // Try and save every 5 seconds
+    var save_interval = setInterval(runsave, 5000);
 });
 </script>

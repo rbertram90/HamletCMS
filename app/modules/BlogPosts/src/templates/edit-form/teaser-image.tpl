@@ -12,7 +12,7 @@
     <button type="button" id="remove_teaser_image" class="ui icon button">
         <i class="remove icon"></i>
     </button>
-    <input type="hidden" name="teaser_image" value="{$post->teaser_image}">
+    <input type="hidden" name="teaser_image" value="{$post->teaser_image}" class="post-data-field" data-key="teaserImage">
 </div>
 
 <script>

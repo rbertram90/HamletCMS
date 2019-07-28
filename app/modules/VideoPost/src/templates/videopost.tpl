@@ -41,14 +41,14 @@
 
             <div class="field"> 
                 <label for="video_source">Video Source</label>
-                <select name="video_source" id="video_source" class="ui dropdown">
+                <select name="video_source" id="video_source" class="ui dropdown" class="post-data-field" data-key="videosource">
                     <option value="youtube">YouTube</option>
                     <option value="vimeo">Vimeo</option>
                 </select>
             </div>
             <div class="field"> 
                 <label for="video_id">Video ID <a href="#" onclick="alert('Youtube ID are found in the URL youtube.com/user/?v={ldelim}URL{rdelim}'); return false;">[?]</a></label>
-                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$post->videoid}" />
+                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$post->videoid}"  class="post-data-field" data-key="videoid">
             </div>
 
             <div class="field">
@@ -57,12 +57,12 @@
                     <i class="camera icon"></i>
                 </button>
                 <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="post_content" id="post_content" style="height:30vh;">{$post->content}</textarea>
+                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{$post->content}</textarea>
             </div>
             
             {include 'edit-form/tags.tpl'}
             
-            <input type="hidden" name="post_type" id="post_type" value="video">
+            <input type="hidden" name="post_type" id="post_type" value="video" class="post-data-field" data-key="type">
 
             {* Submit button + hidden fields *}
             {include 'edit-form/actions.tpl'}
