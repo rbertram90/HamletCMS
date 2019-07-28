@@ -359,10 +359,7 @@ class Contributors extends GenericController
             $this->response->redirect('/cms', 'Data error', 'error');
         }
 
-        $permissionsList = [
-            "create_posts","publish_posts","edit_all_posts","delete_posts",
-            "delete_files","change_settings","manage_contributors"
-        ];
+        $permissionsList = [];
 
         $cache = BlogCMS::getCache('permissions');
         foreach ($cache as $permission) {
@@ -380,7 +377,7 @@ class Contributors extends GenericController
             }
         }
 
-        $update = $this->modelGroups->update(['id' => $group['id']], [
+        $update = $this->modelGroups->update(['id' => $group->id], [
             'name'        => $this->request->getString('fld_name'),
             'description' => $this->request->getString('fld_description'),
             'data'        => JSONHelper::arrayToJSON($data)

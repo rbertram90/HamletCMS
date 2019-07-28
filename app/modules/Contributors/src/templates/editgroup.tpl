@@ -31,19 +31,19 @@
                 {$currentGroup = ""}
 
                 {foreach from=$permissions item=$permission}
-                    {if $currentGroup != $permission->group}
-                        <h4 class="ui header">{ucfirst($permission->group)}</h4>
+                    {if $currentGroup != $permission.group}
+                        <h4 class="ui header">{ucfirst($permission.group)}</h4>
                     {/if}
-                    {$currentGroup = $permission->group}
+                    {$currentGroup = $permission.group}
 
                     <div class="inline field">
                         <div class="ui checkbox">
-                            <input class="hidden" id="perm_{$permission->key}" type="checkbox" name="fld_permission[{$permission->key}]">
-                            <label>{$permission->label}</label>
+                            <input class="hidden" id="perm_{$permission.key}" type="checkbox" name="fld_permission[{$permission.key}]">
+                            <label>{$permission.label}</label>
                             <script>
                                 // Apply defaults
-                                {if $group->permissions[$permission->key]}
-                                    $('#perm_{$permission->key}').attr("checked", "checked");
+                                {if $group->permissions[$permission.key]}
+                                    $('#perm_{$permission.key}').attr("checked", "checked");
                                 {/if}
                             </script>
                         </div>
