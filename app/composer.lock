@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c87a8ba8bed8816ad34ea2200b327eb4",
+    "content-hash": "4e8916bdf3b5a0d8579eeb8c471ae7f3",
     "packages": [
         {
             "name": "athens/csrf",
@@ -140,12 +140,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rbertram90/core.git",
-                "reference": "1740f8067bca3c141c835897d32828bb0a7daa46"
+                "reference": "1a6391641a0d1c59b63782b75a9fd34378b02445"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rbertram90/core/zipball/1740f8067bca3c141c835897d32828bb0a7daa46",
-                "reference": "1740f8067bca3c141c835897d32828bb0a7daa46",
+                "url": "https://api.github.com/repos/rbertram90/core/zipball/1a6391641a0d1c59b63782b75a9fd34378b02445",
+                "reference": "1a6391641a0d1c59b63782b75a9fd34378b02445",
                 "shasum": ""
             },
             "type": "library",
@@ -162,7 +162,7 @@
                 "source": "https://github.com/rbertram90/core/tree/master",
                 "issues": "https://github.com/rbertram90/core/issues"
             },
-            "time": "2018-12-28T14:38:51+00:00"
+            "time": "2019-07-28T08:56:02+00:00"
         },
         {
             "name": "smarty/smarty",
