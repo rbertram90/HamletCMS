@@ -38,6 +38,7 @@ class BlogPosts
 
         $dbc->query("CREATE TABLE `posts` (
             `id` int(8) NOT NULL,
+            `class` varchar(255) NOT NULL DEFAULT 'rbwebdesigns\\blogcms\\BlogPosts\\Post',
             `title` varchar(255) NOT NULL,
             `summary` text NOT NULL,
             `content` text NOT NULL,
