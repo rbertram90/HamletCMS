@@ -11,7 +11,28 @@
     <script>
     $('#post_date_wrapper').calendar({
         monthFirst: false,
-        formatInput: true
+        formatInput: true,
+        formatter: {
+            date: function (date, settings) {
+                if (!date) return '';
+                var day = '00' + date.getDate();
+                day = day.substring(day.length - 2);
+                var month = '00' + (date.getMonth() + 1)
+                month = month.substring(month.length - 2);
+                var year = date.getFullYear();
+
+                return year + '-' + month + '-' + day;
+            },
+            time: function (date, settings, forCalendar) {
+                if (!date) return '';
+                var hour = '00' + date.getHours();
+                var minute = '00' + date.getMinutes();
+                hour = hour.substring(hour.length - 2);
+                minute = minute.substring(minute.length - 2);
+
+                return hour + ':' + minute;
+            }
+        }
     });
     </script>
 </div>

@@ -113,6 +113,8 @@ class PostsAPI extends GenericController
      */
     public function edit()
     {
+        $debug = '';
+
         $postID = $this->request->getInt('postID');
         $blogID = $this->request->getInt('blogID');
 
@@ -132,6 +134,8 @@ class PostsAPI extends GenericController
 
         // Check & Format date
         $posttime = strtotime($this->request->getString('date'));
+
+        $debug .= date('Y-m-d', $posttime);
 
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
@@ -183,7 +187,7 @@ class PostsAPI extends GenericController
 
         BlogCMS::runHook('onPostUpdated', ['post' => $post]);
 
-        $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
+        $this->response->setBody('{ "success": true, "post": '. json_encode($post) .', "debug": "'.$debug.'" }');
     }
     
     /**
