@@ -247,6 +247,8 @@ class BlogCMS
 
         // Check links applicable to the blog
         if (self::$blogID) {
+
+
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
                 $modelPermissions = self::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');

@@ -12,7 +12,6 @@ class BlogPosts
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
-
             $link = new MenuLink();
             $link->url = BlogCMS::route('posts.manage', [
                 'BLOG_ID' => $args['blog']->id
