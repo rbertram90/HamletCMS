@@ -234,13 +234,13 @@ class PostsAPI extends GenericController
         $blogID = $this->request->getInt('blogID');
         $post = $this->model->getPostById($postID);
 
-        if (!$post || !isset($post['blog_id']) || $blogID != $post['blog_id']) {
+        if (!$post || !isset($post->blog_id) || $blogID != $post->blog_id) {
             $this->response->setBody('{ "success": false, "errorMessage": "Blog ID Mismatch" }');
             $this->response->code(400);
             return;
         }
 
-        if($this->model->delete(['id' => $post['id']]) && $this->model->removeAutosave($post['id'])) {
+        if($this->model->delete(['id' => $post->id]) && $this->model->removeAutosave($post->id)) {
             BlogCMS::runHook('onPostDeleted', ['post' => $post]);
             $this->response->setBody('{ "success": true }');
         }
