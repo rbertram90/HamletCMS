@@ -95,6 +95,12 @@ class BlogPosts
             $cloneTest->postToClone = $test->postID;
             $cloneTest->run();
 
+            // Delete post
+            $deleteTest = new BlogPosts\tests\DeletePostTest();
+            $deleteTest->blogID = $blogID;
+            $deleteTest->postToDelete = $cloneTest->postID;
+            $deleteTest->run();
+
             BlogCMS::runHook('runUnitTests', ['context' => 'post', 'blogID' => $blogID, 'post' => $test->postID]);
         }
         

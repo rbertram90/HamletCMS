@@ -240,7 +240,7 @@ class PostsAPI extends GenericController
             return;
         }
 
-        if($this->model->delete(['id' => $post->id]) && $this->model->removeAutosave($post->id)) {
+        if ($this->model->delete(['id' => $post->id]) && $this->modelAutosaves->removeAutosave($post->id)) {
             BlogCMS::runHook('onPostDeleted', ['post' => $post]);
             $this->response->setBody('{ "success": true }');
         }
