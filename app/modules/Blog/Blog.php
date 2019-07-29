@@ -54,9 +54,18 @@ class Blog
         $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
     }
 
-    public function runTests($args)
+    public function runUnitTests($args)
     {
-        $blogID = $args['blogID'];
+        $context = $args['context'];
+
+        if ($context === 'root') {
+
+            $createBlogTest = new blog\tests\CreateBlogTest();
+            $createBlogTest->run();
+        
+            // Run every other test!
+            BlogCMS::runHook('runUnitTests', ['context' => 'blog', 'blogID' => $createBlogTest->blogID]);
+        }
 
         // Required tests
         // Overview?

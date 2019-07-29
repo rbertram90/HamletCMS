@@ -26,12 +26,7 @@
         'admin' => 1
     ];
 
-    require __DIR__ .'/CreateBlogTest.php';
-
-    $createBlogTest = new CreateBlogTest();
-    $createBlogTest->run();
-
     // Run every other test!
-    BlogCMS::runHook('runTests', ['blogID' => $createBlogTest->blogID]);
+    BlogCMS::runHook('runUnitTests', ['context' => 'root']);
 
     print "Done!";

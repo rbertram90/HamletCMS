@@ -13,6 +13,7 @@ use rbwebdesigns\blogcms\BlogPosts\controller\PostsAPI;
 class CreatePostTest extends TestResult
 {
     public $blogID = 0;
+    public $postID = 0;
 
     /**
      * @todo This uses the standard post to test but right now
@@ -38,11 +39,15 @@ class CreatePostTest extends TestResult
         $responseBody = $this->response->getBody();
         $outcome = json_decode($responseBody, true);
 
+        $this->postID = $outcome['post']['id'];
+
+        print "Created post with ID = " . $this->postID . PHP_EOL;
+
         if ($outcome['success']) {
             print "Info: Test passed". PHP_EOL;
         }
         else {
-            print "Info: Test failed - " . $errorMessage . PHP_EOL;
+            print "Error: Test failed - " . $errorMessage . PHP_EOL;
             exit;
         }
     }

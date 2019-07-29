@@ -1,16 +1,15 @@
 <?php
-namespace rbwebdesigns\blogcms\tests;
+namespace rbwebdesigns\blogcms\Blog\tests;
 
 use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\blogcms\tests\TestResult;
 
 /**
- * This test has been seperated out from modules directory as it is essential to run and
- * extract the newly created BlogID from as all other tests will likely need this to have
- * run.
+ * Creates a new blog, stores the newly created ID in the $blogID variable, accessible
+ * from the calling code so we can use this blog to run further tests
  */
 class CreateBlogTest extends TestResult
 {
-
     public $blogID = 0;
 
     public function run()
@@ -35,6 +34,7 @@ class CreateBlogTest extends TestResult
                     print "Info: Test passed". PHP_EOL;
                     $locationParts = explode('/', $redirect['location']);
                     $this->blogID = array_pop($locationParts);
+                    print "Created blog with ID = " . $this->blogID . PHP_EOL;
                     break;
             }
         }

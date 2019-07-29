@@ -77,15 +77,27 @@ class BlogPosts
     /**
      * Runs all test cases for the posts module
      */
-    public function runTests($args)
+    public function runUnitTests($args)
     {
-        $blogID = $args['blogID'];
+        $context = $args['context'];
 
-        // Create post
-        $test = new \rbwebdesigns\blogcms\BlogPosts\tests\CreatePostTest();
-        $test->blogID = $blogID;
-        $test->run();
+        if ($context === 'blog') {
+            $blogID = $args['blogID'];
 
+            // Create post
+            $test = new BlogPosts\tests\CreatePostTest();
+            $test->blogID = $blogID;
+            $test->run();
+
+            // Clone post
+            $cloneTest = new BlogPosts\tests\ClonePostTest();
+            $cloneTest->blogID = $blogID;
+            $cloneTest->postToClone = $test->postID;
+            $cloneTest->run();
+
+            BlogCMS::runHook('runUnitTests', ['context' => 'post', 'blogID' => $blogID, 'post' => $test->postID]);
+        }
+        
         // More tests
         // Update post
         // Autosave
