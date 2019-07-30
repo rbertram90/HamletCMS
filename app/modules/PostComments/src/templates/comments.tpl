@@ -33,19 +33,19 @@
     {foreach $comments as $comment}{strip}
         <tr>
             <td>
-                {$comment.message}
+                {$comment->message}
             </td>
             <td>
-                {$comment.timestamp|date_format}
+                {$comment->timestamp|date_format}
             </td>
             <td>
-                <a href="/cms/account/user/{$comment.userid}">{$comment.username}</a>
+                <a href="/cms/account/user/{$comment->userid}">{$comment->username}</a>
             </td>
             <td>
-                <a href="/blogs/{$comment.blog_id}/posts/{$comment.link}">{$comment.title}</a>
+                <a href="/blogs/{$comment->blog_id}/posts/{$comment->link}">{$comment->title}</a>
             </td>
             <td class="single line">
-                {if $comment['approved'] == 1}
+                {if $comment->approved == 1}
                     <div class="ui label green"><i class="icon checkmark"></i> Approved</div>
                 {else}
                     <div class="ui label yellow">Pending Approval</div>
@@ -53,10 +53,10 @@
             </td>
             <td class="single line right aligned">
                 
-                {if $comment['approved'] == 0}
-                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/cms/comments/approve/{$comment.id}'{rdelim}" title="Approve Comment">Approve</button>
+                {if $comment->approved == 0}
+                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/cms/comments/approve/{$comment->id}'{rdelim}" title="Approve Comment">Approve</button>
                 {/if}
-                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/cms/comments/delete/{$comment.id}'{rdelim}" title="Remove Comment">Delete</button>
+                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/cms/comments/delete/{$comment->id}'{rdelim}" title="Remove Comment">Delete</button>
             </td>
         </tr>
     {/strip}{/foreach}

@@ -33,13 +33,26 @@ class Comments extends RBFactory
         );
     }
     
-    // Get stored information on a single blog
-    public function getCommentById($commentid)
+    /**
+     * Get a comment by ID
+     * 
+     * @param int $commentID
+     * 
+     * @return \rbwebdesigns\blogcms\PostCommments\Comment
+     */
+    public function getCommentById($commentID)
     {
-        return $this->get('*', ['id' => $commentid], null, null, false);
+        return $this->get('*', ['id' => $commentID], null, null, false);
     }
     
-    // Get all the posts from $blog
+    /**
+     * Get all comments made on a blog
+     * 
+     * @param int $blogID
+     * @param bool $limit
+     * 
+     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     */
     public function getCommentsByBlog($blogID, $limit=0)
     {
         $tp = TBL_POSTS;
@@ -54,62 +67,106 @@ class Comments extends RBFactory
         if ($limit > 0) $sql.= ' LIMIT '. Sanitize::int($limit);
         
         $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
-    // Get all the comments from $post
-    public function getCommentsByPost($post, $includeApprovals=true)
+    /**
+     * Get all comments made on a post
+     * 
+     * @param int $postID
+     * @param bool $includeApprovals
+     *   Include comments awaiting approval?
+     * 
+     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     */
+    public function getCommentsByPost($postID, $includeApprovals=true)
     {
-        $query_string = 'SELECT c.*, u.name, u.username, CONCAT(u.name, \'\', u.surname) as fullname FROM ' . $this->tableName . ' as c, users as u WHERE u.id = c.user_id AND post_id="'.$post.'"';
+        $query_string = "SELECT c.*, u.name, u.username, CONCAT(u.name, ' ', u.surname) as fullname
+            FROM {$this->tableName} as c, users as u
+            WHERE u.id = c.user_id
+            AND post_id='{$postID}'";
 
-        if(!$includeApprovals) $query_string .= ' AND approved = 1';
+        if (!$includeApprovals) $query_string .= ' AND approved = 1';
         $statement = $this->db->query($query_string);
 
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
 
-    // Get all the comments from $post
+    /**
+     * Get all comments made by a user
+     * 
+     * @param int $userID
+     * @param bool $includeApprovals
+     *   Include comments awaiting approval?
+     * 
+     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     */
     public function getCommentsByUser($userID, $includeApprovals=true)
     {
-        $query_string = 'SELECT c.*, u.name, u.username, p.title, p.link, CONCAT(u.name, \'\', u.surname) as fullname FROM ' . $this->tableName . ' as c, users as u, posts as p WHERE c.user_id = u.id AND p.id = c.post_id AND u.id = ' . $userID;
+        $sql = "SELECT c.*, u.name, u.username, p.title, p.link, CONCAT(u.name, ' ', u.surname) as fullname
+            FROM {$this->tableName} as c, users as u, posts as p
+            WHERE c.user_id = u.id
+            AND p.id = c.post_id
+            AND u.id = {$userID}";
 
-        if(!$includeApprovals) $query_string .= ' AND approved = 1';
-        $statement = $this->db->query($query_string);
+        if (!$includeApprovals) $sql .= ' AND approved = 1';
+        $statement = $this->db->query($sql);
 
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
-    // Count the number of comments for this post
-    function countPostComments($postid)
+    /**
+     * Count the number of comments for a blog post
+     * 
+     * @param int $postID
+     * 
+     * @return int record count
+     */
+    function countPostComments($postID)
     {
-        return $this->db->countRows($this->tableName, array('post_id' => $postid));
+        return $this->db->countRows($this->tableName, ['post_id' => $postID]);
     }
-    
-    
-    // Count the total number of comments made for all posts on a blog - NO LONGER NEEDED - USE $modelcomments->getCount();
-    function countBlogComments()
-    {
-    
-    }
-    
-    // Create a new comment
-    public function addComment($comment, $postid, $blogid, $userid)
+        
+    /**
+     * Create a new comment
+     * 
+     * @param string $comment
+     * @param int $postID
+     * @param int $blogID
+     * @param int $userID
+     * 
+     * @return boolean was the insert successful?
+     */
+    public function addComment($comment, $postID, $blogID, $userID)
     {
         return $this->insert([
             'message' => $comment,
-            'blog_id' => $blogid,
-            'post_id' => $postid,
+            'blog_id' => $blogID,
+            'post_id' => $postID,
             'timestamp' => date("Y-m-d H:i:s"),
-            'user_id' => $userid,
+            'user_id' => $userID,
         ]);
     }
     
-    // Delete an existing comment - should there be more checking here?
+    /**
+     * Delete a comment
+     * 
+     * @param int $commentID
+     * 
+     * @return bool was the delete successful?
+     */
     public function deleteComment($commentID)
     {
         return $this->delete(['id' => $commentID]);
     }
     
+    /**
+     * Approve a comment
+     * 
+     * @param int $commentID
+     * 
+     * @return bool was the approval successful?
+     */
     public function approve($commentID)
     {
         return $this->update(['id' => $commentID], ['approved' => 1]);

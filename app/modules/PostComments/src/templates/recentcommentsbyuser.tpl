@@ -3,12 +3,12 @@
 <h2>Recent Comments</h2>
 {foreach from=$comments item=comment}
     <div class="ui segment">
-        &quot;{$comment.message}&quot;
+        &quot;{$comment->message}&quot;
         <div class="comment-date">
-            {formatdate($comment.timestamp)}
+            {formatdate($comment->timestamp)}
         </div>
         <div class="comment-info">
-            <a href="/blogs/{$blog->id}/posts/{$comment.link}">{$comment.title}</a>
+            <a href="/blogs/{$blog->id}/posts/{$comment->link}">{$comment->title}</a>
         </div>
     </div>
 {foreachelse}
