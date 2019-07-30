@@ -17,7 +17,6 @@ class BlogContent
 {
     protected $modelBlogs;       // Blogs Model
     protected $modelPosts;       // Posts Model
-    protected $modelComments;    // Comments Model
     protected $modelUsers;       // Users Model
     protected $blog;             // Current viewing blog
     protected $blogID;           // ID of current blog
@@ -36,7 +35,6 @@ class BlogContent
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelComments = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
         $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
         
         // Cached information for this blog

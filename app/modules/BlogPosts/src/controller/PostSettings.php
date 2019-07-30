@@ -96,8 +96,6 @@ class PostSettings extends GenericController
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
                 'showtags'          => $this->request->getString('fld_showtags'),
                 'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
-                // 'allowcomments'     => $this->request->getInt('fld_commentapprove'), // these need adding to comments module settings
-                // 'shownumcomments'   => $this->request->getString('fld_shownumcomments')
             ]
         ]);
 

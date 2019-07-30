@@ -17,8 +17,6 @@ class Autosave
     public $content;
     /** @var string $tags */
     public $tags;
-    /** @var boolean $allowcomments */
-    public $allowcomments;
     /** @var string $date_last_saved */
     public $date_last_saved;
 

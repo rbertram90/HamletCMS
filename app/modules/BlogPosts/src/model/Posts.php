@@ -206,7 +206,6 @@ class Posts extends RBFactory
      */
     public function getAllPostsOnBlog($blogID, $drafts=0, $future=0)
     {
-        $tc = TBL_COMMENTS;
         $sql = "SELECT p.class as classType, p.* ";
         $sql.= "FROM " . TBL_POSTS . " as p ";
         $sql.= "WHERE p.blog_id = '".$blogID."' ";
@@ -219,7 +218,7 @@ class Posts extends RBFactory
     }
     
     /**
-     * Get posts by blog including number of comments for each post
+     * Get posts by blog
      * 
      * @param int $blogID
      * @param int $page
@@ -236,7 +235,7 @@ class Posts extends RBFactory
     public function getPostsByBlog($blogID, $page=1, $num=10, $drafts=0, $future=0, $sort='')
     {
         $start = ($page-1) * $num;
-        $tp = TBL_POSTS; $tc = TBL_COMMENTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
+        $tp = TBL_POSTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
         $sql = "SELECT $tp.class as classType, $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
         $sql.= "FROM $tp ";
         $sql.= "WHERE $tp.blog_id = '".$blogID."' ";

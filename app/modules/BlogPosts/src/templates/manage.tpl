@@ -40,8 +40,10 @@
                                 <option value="hits ASC">Views (Least First)</option>
                                 <option value="uniqueviews DESC">Visitors (Most First)</option>
                                 <option value="uniqueviews ASC">Visitors (Least First)</option>
+                                <!--
                                 <option value="numcomments DESC">Comments (Most First)</option>
                                 <option value="numcomments ASC">Comments (Least First)</option>
+                                -->
                             </select>
                         </div>
                     </div>

@@ -309,7 +309,6 @@ class PostsAPI extends GenericController
      *    author_id ASC/DESC
      *    hits ASC/DESC
      *    uniqueviews ASC/DESC
-     *    numcomments ASC/DESC
      *  showdrafts (optional) - include draft posts (true / false)
      *  showscheduled (optional) - include scheduled posts (true / false)
      */

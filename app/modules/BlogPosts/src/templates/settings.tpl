@@ -76,7 +76,7 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                            
+<!--
                             <div class="field">
                                 <label for="fld_shownumcomments">Show Number of Comments</label>
                                 <select id="fld_shownumcomments" name="fld_shownumcomments" class="ui dropdown">
@@ -84,7 +84,7 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-
+-->
                             <div class="field">
                                 <label for="fld_postsummarylength">Length of Post Summary (Characters)</label>
                                 <input type="text" value="{$postConfig.postsummarylength}" name="fld_postsummarylength"  placeholder="Number of Characters" />

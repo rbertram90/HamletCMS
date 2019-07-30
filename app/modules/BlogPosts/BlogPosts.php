@@ -64,7 +64,6 @@ class BlogPosts
             `summary` text NOT NULL,
             `title` varchar(255) NOT NULL,
             `tags` varchar(255) NOT NULL,
-            `allowcomments` int(11) NOT NULL,
             `date_last_saved` datetime NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
@@ -103,12 +102,6 @@ class BlogPosts
 
             BlogCMS::runHook('runUnitTests', ['context' => 'post', 'blogID' => $blogID, 'post' => $test->postID]);
         }
-        
-        // More tests
-        // Update post
-        // Autosave
-        // Clone
-        
     }
 
     /**
