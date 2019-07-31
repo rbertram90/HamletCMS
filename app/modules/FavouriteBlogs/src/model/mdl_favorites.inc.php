@@ -16,15 +16,7 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class Favourites extends RBFactory
 {
-    /** @var \rbwebdesigns\core\Database Database ORM class */
-    protected $db;
-
-    /** @var string Database table name this model directly relates to */
-    protected $tableName;
-
-    /** @var array Keyed with field names and datatype as value to match database definition */
-    protected $fields;
-
+    
     /**
      * Instantiate the Factory passing in access to the database.
      * 

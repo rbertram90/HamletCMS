@@ -8,13 +8,6 @@ use rbwebdesigns\core\Sanitize;
 
 class Autosaves extends RBFactory
 {
-    /** @var \rbwebdesigns\core\Database $db */
-    protected $db;
-    /** @var string $tableName */
-    protected $tableName;
-    /** @var string $subClass */
-    protected $subClass;
-
     protected $modelPosts;
 
     /**

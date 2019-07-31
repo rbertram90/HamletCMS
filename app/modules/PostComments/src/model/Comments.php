@@ -12,7 +12,6 @@ use rbwebdesigns\core\Sanitize;
  */
 class Comments extends RBFactory
 {
-    protected $db, $tableName;
 
     /**
      * @param \rbwebdesigns\core\model\ModelManager $modelFactory
@@ -53,21 +52,9 @@ class Comments extends RBFactory
      * 
      * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
      */
-    public function getCommentsByBlog($blogID, $limit=0)
+    public function getCommentsByBlog($blogID, $limit=null)
     {
-        $tp = TBL_POSTS;
-        $tu = TBL_USERS;
-        $sql = "SELECT tc.*, tu.id as userid, tu.username, tp.title, tp.link
-            FROM $this->tableName as tc, $tp as tp, $tu as tu
-            WHERE tc.post_id = tp.id
-            AND tc.user_id = tu.id
-            AND tc.blog_id='{$blogID}'
-            ORDER BY tc.timestamp DESC";
-        
-        if ($limit > 0) $sql.= ' LIMIT '. Sanitize::int($limit);
-        
-        $statement = $this->db->query($sql);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        return $this->get('*', ['blog_id' => $blogID], null, $limit);
     }
     
     /**
@@ -81,15 +68,9 @@ class Comments extends RBFactory
      */
     public function getCommentsByPost($postID, $includeApprovals=true)
     {
-        $query_string = "SELECT c.*, u.name, u.username, CONCAT(u.name, ' ', u.surname) as fullname
-            FROM {$this->tableName} as c, users as u
-            WHERE u.id = c.user_id
-            AND post_id='{$postID}'";
-
-        if (!$includeApprovals) $query_string .= ' AND approved = 1';
-        $statement = $this->db->query($query_string);
-
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        $where = ['post_id' => $postID];
+        if (!$includeApprovals) $where['approved'] = 1;
+        return $this->get('*', $where);
     }
 
     /**
@@ -103,16 +84,9 @@ class Comments extends RBFactory
      */
     public function getCommentsByUser($userID, $includeApprovals=true)
     {
-        $sql = "SELECT c.*, u.name, u.username, p.title, p.link, CONCAT(u.name, ' ', u.surname) as fullname
-            FROM {$this->tableName} as c, users as u, posts as p
-            WHERE c.user_id = u.id
-            AND p.id = c.post_id
-            AND u.id = {$userID}";
-
-        if (!$includeApprovals) $sql .= ' AND approved = 1';
-        $statement = $this->db->query($sql);
-
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        $where = ['user_id' => $userID];
+        if (!$includeApprovals) $where['approved'] = 1;
+        return $this->get('*', $where);
     }
     
     /**

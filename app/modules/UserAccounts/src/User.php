@@ -19,4 +19,10 @@ class User
     public $signup_date;
     public $security_q;
     public $security_a;
+
+    public function fullName()
+    {
+        return $this->name . ' ' . $this->surname;
+    }
+
 }

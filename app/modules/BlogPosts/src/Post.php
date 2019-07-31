@@ -36,9 +36,13 @@ class Post
 
     protected $customFunctions = [];
 
+    /** @var \rbwebdesigns\blogcms\UserAccounts\User|null */
     protected $author = null;
 
-    /** @var rbwebdesigns\blogcms\BlogPosts\model\Posts $factory */
+    /** @var \rbwebdesigns\blogcms\Blog\Blog|null */
+    protected $blog = null;
+
+    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
     protected $factory;
 
     /**
@@ -131,12 +135,49 @@ class Post
 
     /**
      * Get the user record for a post
+     * 
+     * @return \rbwebdesigns\blogcms\UserAccounts\User
      */
-    public function author() {
+    public function author()
+    {
         if (is_null($this->author)) {
             $usersModel = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
             $this->author = $usersModel->getById($this->author_id);
         }
         return $this->author;
+    }
+
+    /**
+     * Get the blog record for this post
+     * 
+     * @return \rbwebdesigns\blogcms\Blog\Blog
+     */
+    public function blog()
+    {
+        if (is_null($this->blog)) {
+            $blogsModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+            $this->blog = $blogsModel->getBlogById($this->blog_id);
+        }
+        return $this->blog;
+    }
+
+    /**
+     * Get the URL path for this post
+     * 
+     * @return string
+     */
+    public function reletivePath()
+    {
+        return "{$this->blog()->reletivePath()}/posts/{$this->link}";
+    }
+
+    /**
+     * Get the absolute URL for this post
+     * 
+     * @return string
+     */
+    public function url()
+    {
+        return "{$this->blog()->url()}/posts/{$this->link}";
     }
 }

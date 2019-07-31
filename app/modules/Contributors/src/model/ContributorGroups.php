@@ -14,7 +14,6 @@ use rbwebdesigns\core\Sanitize;
 class ContributorGroups extends RBFactory
 {
     protected $db;
-    protected $tableName;
     
     public function __construct($modelFactory)
     {

@@ -18,20 +18,6 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class Blogs extends RBFactory
 {
-
-    /**
-     * @var \rbwebdesigns\core\Database Database ORM object
-     */
-    protected $db;
-    /**
-     * @var string Database table name this model directly relates to
-     */
-    protected $tableName;
-    /**
-     * @var array Keyed with field names and datatype as value to match database definition
-     */
-    protected $fields;
-
     /**
      * Instantiate the Factory passing in access to the database.
      * 
@@ -39,7 +25,6 @@ class Blogs extends RBFactory
      */
     function __construct($modelManager)
     {
-        $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
@@ -57,6 +42,8 @@ class Blogs extends RBFactory
             'icon'        => 'string',
             'logo'        => 'string',
         ];
+
+        parent::__construct($modelManager);
     }
     
     /**

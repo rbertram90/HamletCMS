@@ -39,10 +39,10 @@
                 {$comment->timestamp|date_format}
             </td>
             <td>
-                <a href="/cms/account/user/{$comment->userid}">{$comment->username}</a>
+                <a href="/cms/account/user/{$comment->author()->id}">{$comment->author()->fullName()}</a>
             </td>
             <td>
-                <a href="/blogs/{$comment->blog_id}/posts/{$comment->link}">{$comment->title}</a>
+                <a href="{$comment->post()->reletivePath()}">{$comment->post()->title}</a>
             </td>
             <td class="single line">
                 {if $comment->approved == 1}

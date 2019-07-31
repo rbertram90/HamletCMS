@@ -10,7 +10,6 @@ use rbwebdesigns\core\model\RBFactory;
 class Modules extends RBFactory
 {
     protected $db;
-    protected $tableName;
     protected $subClass;
 
     /**

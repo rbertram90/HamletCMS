@@ -13,8 +13,7 @@ class Posts extends RBFactory
 {
     /** @var \rbwebdesigns\core\Database $db */
     protected $db;
-    /** @var string $tableName */
-    protected $tableName;
+
     /** @var string $subClass */
     protected $subClass;
 
@@ -50,7 +49,7 @@ class Posts extends RBFactory
             'initialautosave'   => 'boolean'
         ];
 
-        BlogCMS::runHook('onPostFactoryConstruct', ['class' => $this]);
+        BlogCMS::runHook('modelSchema', ['model' => $this]);
     }
     
     /**

@@ -23,7 +23,7 @@ class PostComments
     {
         if ($args['key'] == 'userProfile') {
             $tempResponse = new BlogCMSResponse();
-            $tempResponse->setVar('comments', $this->model->getCommentsByUser($args['user']['id'], 0));
+            $tempResponse->setVar('comments', $this->model->getCommentsByUser($args['user']->id, 0));
             $args['content'] .= $tempResponse->write('recentcommentsbyuser.tpl', 'PostComments', false);
         }
     }
@@ -69,7 +69,14 @@ class PostComments
      * 
      */
     public function modelSchema($args) {
-        $args['model']->registerField('allowcomments', 'boolean');
+        $targetClasses = [
+            'rbwebdesigns\blogcms\BlogPosts\model\Autosaves',
+            'rbwebdesigns\blogcms\BlogPosts\model\Posts'
+        ];
+
+        if (in_array(get_class($args['model']), $targetClasses) !== FALSE) {
+            $args['model']->registerField('allowcomments', 'boolean');
+        }
     }
 
     /**
@@ -143,7 +150,6 @@ class PostComments
         $blog = $args['blog'];
         $this->model->delete(['blog_id' => $blog->id]);
     }
-    
 
     public function onPostConstruct($args) {
         // $args['post']->allowcomments = ;
@@ -157,7 +163,4 @@ class PostComments
         
     }
 
-    public function onPostFactoryConstruct($args) {
-        $args['class']->fields[] = 'allowcomments';
-    }
 }

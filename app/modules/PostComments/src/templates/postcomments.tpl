@@ -1,14 +1,11 @@
 <div class="comments">
     <h2>Comments</h2>
-    
-    {if count($comments) == 0}
-        <p class="ui message info">No comments have been made on this post</p>
-    {/if}
-    
+
     {foreach $comments as $comment}
-        {* $user = $modelUers->getUserById($comment['user_id']); *}
-        <p><b>{$comment->name} ({$comment->fullname})</b></p>
+        <p><b>{$comment->author()->fullName()} ({$comment->author()->username})</b></p>
         <p><i>&quot;{$comment->message}&quot;</i></p>
+    {foreachelse}
+        <p class="ui message info">No comments have been made on this post</p>
     {/foreach}
     
 </div>

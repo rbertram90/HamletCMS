@@ -14,7 +14,6 @@ class Contributors extends RBFactory
 {
     protected $db;
     protected $tblbloguser;
-    protected $tableName;
 
     public function __construct($modelFactory)
     {

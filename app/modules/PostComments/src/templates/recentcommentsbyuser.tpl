@@ -8,7 +8,7 @@
             {formatdate($comment->timestamp)}
         </div>
         <div class="comment-info">
-            <a href="/blogs/{$blog->id}/posts/{$comment->link}">{$comment->title}</a>
+            <a href="{$comment->post()->relativeUrl()}">{$comment->post()->title}</a>
         </div>
     </div>
 {foreachelse}
