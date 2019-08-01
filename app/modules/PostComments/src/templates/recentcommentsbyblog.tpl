@@ -7,9 +7,9 @@
         </div>
         <div class="comment-info">
             {if $comment->user_id == $currentUser->id}
-                Added by <a href="/cms/account/user/{$comment->author()->id}">You</a> on <a href="{$comment->post()->reletivePath()}">{$comment->title}</a>
+                Added by <a href="/cms/account/user/{$comment->author()->id}">You</a> on <a href="{$comment->post()->relativePath()}">{$comment->title}</a>
             {else}
-                Added by <a href="/cms/account/user/{$comment->author()->id}">{$comment->author()->fullName()}</a> on <a href="{$comment->post()->reletivePath()}">{$comment->post()->title}</a>
+                Added by <a href="/cms/account/user/{$comment->author()->id}">{$comment->author()->fullName()}</a> on <a href="{$comment->post()->relativePath()}">{$comment->post()->title}</a>
             {/if}
         </div>
     </div>

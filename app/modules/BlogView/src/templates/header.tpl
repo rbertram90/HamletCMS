@@ -10,7 +10,7 @@
 <div class="row page-header">
     <div class="sixteen wide column">
         {if !$hide_title}
-            <h1><a href="{$blog->reletivePath()}">{$blog->name}</a></h1>
+            <h1><a href="{$blog->relativePath()}">{$blog->name}</a></h1>
         {/if}
         
         {if !$hide_description}

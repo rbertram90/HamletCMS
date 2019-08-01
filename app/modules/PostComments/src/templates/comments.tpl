@@ -42,7 +42,7 @@
                 <a href="/cms/account/user/{$comment->author()->id}">{$comment->author()->fullName()}</a>
             </td>
             <td>
-                <a href="{$comment->post()->reletivePath()}">{$comment->post()->title}</a>
+                <a href="{$comment->post()->relativePath()}">{$comment->post()->title}</a>
             </td>
             <td class="single line">
                 {if $comment->approved == 1}

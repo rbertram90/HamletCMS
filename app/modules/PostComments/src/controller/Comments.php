@@ -129,26 +129,31 @@ class Comments extends GenericController
         $commentText = $this->request->getString('fld_comment');
         $currentUser = BlogCMS::session()->currentUser;
 
+        // User not logged in
         if (!$currentUser) {
             $this->response->redirect("/blogs/{$blogID}", 'You must be logged in to add a comment', 'error');
         }
 
+        // Couldn't find blog post
         if (!$post) {
             $this->response->redirect("/blogs/{$blogID}", 'Post not found', 'error');
         }
         
+        // No comment text
         if (!isset($commentText) || strlen($commentText) == 0) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Please enter a comment', 'error');
-        }        
+        }
         
         // Check that post allows reader comments
         if ($post->allowcomments == 0) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comments are not allowed here', 'error');
         }
 
+        // Success
         if ($this->model->addComment($commentText, $post->id, $blogID, $currentUser['id'])) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comment submitted - awaiting approval', 'success');
         }
+        // Failed to save
         else {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Error adding comment', 'error');
         }

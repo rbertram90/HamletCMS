@@ -166,9 +166,9 @@ class Post
      * 
      * @return string
      */
-    public function reletivePath()
+    public function relativePath()
     {
-        return "{$this->blog()->reletivePath()}/posts/{$this->link}";
+        return "{$this->blog()->relativePath()}/posts/{$this->link}";
     }
 
     /**

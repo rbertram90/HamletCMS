@@ -38,7 +38,7 @@ class Blog
      * 
      * @return string
      */
-    public function reletivePath()
+    public function relativePath()
     {
         return strlen($this->domain) ? "" : "/blogs/{$this->id}";
     }
