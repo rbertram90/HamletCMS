@@ -27,5 +27,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
         "action": "delete"
+    },
+    {
+        "key": "blog.search",
+        "path": "/api/blog/search",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Blog\\Controller\\Blogs",
+        "action": "search"
     }
 ]

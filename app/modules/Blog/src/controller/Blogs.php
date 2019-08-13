@@ -6,6 +6,7 @@ use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\core\AppSecurity;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
+use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\blogcms\Menu;
 
 /**
@@ -279,4 +280,27 @@ class Blogs extends GenericController
         rmdir($dirPath);
     }
 
+    public function search() {
+        $search = $this->request->getString('q', false);
+
+        if (!$search || strlen($search) == 0) {
+            $results = [];
+        }
+        else {
+            $results = $this->modelBlogs->search($search);
+        }
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[] = [
+                'name' => $result->name,
+                'value' => $result->id,
+            ];
+        }
+
+        $this->response->setBody(JSONhelper::arrayToJSON(['success' => true,
+            'results' => $data
+        ]));
+    }
 }

@@ -180,4 +180,15 @@ class Post
     {
         return "{$this->blog()->url()}/posts/{$this->link}";
     }
+
+    /**
+     * Is the post visible to anonymous users?
+     * 
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->draft == 0 && strtotime($this->timestamp) <= time();
+    }
+    
 }

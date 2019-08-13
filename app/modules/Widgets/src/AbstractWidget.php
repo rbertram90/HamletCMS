@@ -12,6 +12,9 @@ class AbstractWidget
     protected $blog;
     protected $config = null;
 
+    public $section;
+    public $widget;
+
     public function __construct()
     {
         $this->request = BlogCMS::request();
@@ -26,7 +29,8 @@ class AbstractWidget
         if (is_null($this->config)) {
             $file = SERVER_PATH_BLOGS ."/{$this->blog->id}/widgets.json";
             if (file_exists($file)) {
-                $this->config = JSONhelper::JSONFileToArray($file);
+                $widgetsConfig = JSONhelper::JSONFileToArray($file);
+                $this->config = $widgetsConfig[$this->section][$this->widget];
             }
         }
         return $this->config;

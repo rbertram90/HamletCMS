@@ -1,0 +1,9 @@
+{
+    "name": "Blog CMS Widgets",
+    "package": "Core",
+    "version": "0.0.1",
+    "author": "Ricky",
+    "dependencies": [
+        
+    ]
+}

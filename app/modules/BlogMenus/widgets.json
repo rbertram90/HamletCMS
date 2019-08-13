@@ -1,0 +1,10 @@
+[
+    {
+        "key": "menu",
+        "name": "Menu",
+        "description": "Dynamic menu",
+        "version": 0.1,
+        "form": "rbwebdesigns\\blogcms\\BlogMenus\\forms\\ConfigureMenuWidget",
+        "class": "rbwebdesigns\\blogcms\\BlogMenus\\widgets\\MenuWidget"
+    }
+]

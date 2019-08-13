@@ -143,7 +143,7 @@ class Posts extends RBFactory
     public function search($blogID, $searchterm)
     {
         // Search posts by title & tags
-        $query_string = "SELECT tp.class as classType, tp.* FROM {$this->tableName} as tp";
+        $query_string = "SELECT tp.class as classType, tp.* FROM {$this->tableName} as tp ";
         $query_string.= "WHERE blog_id='{$blogID}' ";
         $query_string.= "AND (title LIKE '%".Sanitize::string($searchterm)."%' OR tags LIKE '%".Sanitize::string($searchterm)."%') ";
         $query_string.= "AND draft=0 AND timestamp <= CURRENT_TIMESTAMP";
@@ -463,7 +463,7 @@ class Posts extends RBFactory
     /**
      * Get all unique tags that have been applied
      * to posts for this blog
-    **/
+     */
     public function getAllTagsByBlog($blogId)
     {
         $posts = $this->getAllPostsOnBlog($blogId);
@@ -475,11 +475,14 @@ class Posts extends RBFactory
             if(count($tags) === 0) continue;
             
             foreach ($tags as $tag) {
+
                 $tag = trim($tag);
                 if(strlen($tag) === 0) continue;
+
+                $tag = str_replace("+", " ", $tag);
                 
                 // Add to array if not already there
-                if(!in_array($tag, $allTags)) $allTags[] = strtolower($tag);
+                if (!in_array($tag, $allTags)) $allTags[] = strtolower($tag);
             }
         }
         
@@ -522,7 +525,7 @@ class Posts extends RBFactory
             foreach($tags as $tag) {
                 $tag = str_replace("+", " ", $tag);
                 // Compare - Case Insensitive
-                if(strtolower(trim($tag)) == strtolower(trim($ptag))) $res[] = $post;
+                if (strtolower(trim($tag)) == strtolower(trim($ptag))) $res[] = $post;
             }
         }
         return $res;

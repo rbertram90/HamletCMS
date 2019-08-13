@@ -1,0 +1,58 @@
+[
+    {
+        "key": "menus.manage",
+        "description": "Show the manage menus page",
+        "path": "/cms/menus/manage/{BLOG_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "listMenus"
+    },
+    {
+        "key": "menus.create",
+        "description": "Create a new menu",
+        "path": "/cms/menus/create/{BLOG_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "createMenu"
+    },
+    {
+        "key": "menus.editlinks",
+        "description": "Edit the links in a menu",
+        "path": "/cms/menus/edit/{BLOG_ID}/{MENU_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "editLinks"
+    },
+    {
+        "key": "menus.addlink",
+        "description": "Add a link to a menu",
+        "path": "/cms/menus/addlink/{BLOG_ID}/{MENU_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "createLink"
+    },
+    {
+        "key": "menus.editlink",
+        "description": "Edit a link properties",
+        "path": "/cms/menus/editlink/{BLOG_ID}/{LINK_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "editLink"
+    },
+    {
+        "key": "menus.deletelink",
+        "description": "Delete a menu link",
+        "path": "/cms/menus/deletelink/{BLOG_ID}/{LINK_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "deleteLink"
+    },
+    {
+        "key": "menus.delete",
+        "description": "Delete a menu",
+        "path": "/cms/menus/delete/{BLOG_ID}/{MENU_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogMenus\\controller\\Menus",
+        "action": "deleteMenu"
+    }
+]

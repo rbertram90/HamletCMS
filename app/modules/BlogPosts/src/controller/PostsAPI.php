@@ -342,4 +342,33 @@ class PostsAPI extends GenericController
         $this->response->setBody(JSONhelper::arrayToJSON($result));
     }
 
+    /**
+     * Results are keyed for a semantic ui dropdown
+     */
+    public function lookupTitle()
+    {
+        $blogID = $this->request->getInt('blogID', false);
+        $search = $this->request->getString('q', false);
+
+        if (!$blogID || !$search || strlen($search) == 0) {
+            $results = [];
+        }
+        else {
+            $results = $this->model->search($blogID, $search);
+        }
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[] = [
+                'name' => $result->title,
+                'value' => $result->id,
+            ];
+        }
+
+        $this->response->setBody(JSONhelper::arrayToJSON(['success' => true,
+            'results' => $data
+        ]));
+    }
+
 }

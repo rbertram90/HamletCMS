@@ -80,7 +80,11 @@ class WidgetsAdmin extends GenericController
         
         $this->response->setTitle('Customise Widgets - '. $this->blog->name);
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('widgetconfig', $this->getWidgetConfig($this->blog->id));
+
+        $config = $this->getWidgetConfig($this->blog->id);
+        $this->checkWidgetJSON($this->blog, $config);
+
+        $this->response->setVar('widgetconfig', $config);
         $this->response->setVar('installedwidgets', $this->getInstalledWidgets());
         $this->response->write('widgets3.tpl', 'Widgets');
     }
@@ -143,21 +147,6 @@ class WidgetsAdmin extends GenericController
             // Make sure the groups match the template settings
             $widgets = JSONhelper::JSONFileToArray($widgetSettingsFilePath);
             return $widgets;
-            // $newWidgets = [];
-/*
-            $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
-            if (array_key_exists('Zones', $templateConfig)) {
-                foreach ($templateConfig['Zones'] as $zone) {
-                    if (array_key_exists($zone, $widgets)) {
-                        $newWidgets[$zone] = $widgets[$zone];
-                    }
-                    else {
-                        $newWidgets[$zone] = [];
-                    }
-                }
-            }
-*/
-            // return $newWidgets;
         }
         
         return $this->createWidgetSettingsFile($blogID);

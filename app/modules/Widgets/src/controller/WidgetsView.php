@@ -105,6 +105,9 @@ class WidgetsView extends GenericController
             $this->response->setVar($name, $value);
         }
         $this->response->setVar('blog', $this->blog);
+
+        $widgetClass->section = $section;
+        $widgetClass->widget = $widget;
         $widgetClass->render();
 
         $this->request->isAjax = true;

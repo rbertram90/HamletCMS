@@ -29,9 +29,7 @@ class BlogContent
     
     public function __construct($blog_key)
     {
-        $currentUser = BlogCMS::session()->currentUser;
-
-        // Create Models
+        // Instantiate models
         $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
         $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
         $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
@@ -237,8 +235,21 @@ class BlogContent
 
     /**
      * Each link is a blog post which has been marked as a 'page' through the settings menus
-     * @return string html for a top navigation bar
-    **/
+     * 
+     * Opportunity to really flesh this out here - we could have store these in a sepearate table
+     * give the user the opportunity to really customise the links that appear in the navigation
+     * - external links
+     * - mailto
+     * - posts
+     * - tags
+     * - custom classes / attributes
+     * - custom label
+     * 
+     * Could we take this one step further and have a menus table
+     * need to work out how we would be able to inject other menus into the template?
+     * 
+     * @return string html for the top navigation bar
+     */
     public function generateNavigation()
     {
         if (strlen($this->blog->pagelist) == 0) {
@@ -249,13 +260,15 @@ class BlogContent
 
         foreach ($pagelist as $postid) {
             if (is_numeric($postid)) {
+                // Single post
                 $arrayPosts = $this->modelPosts->get('*', ['id' => $postid]);
                 $post = $arrayPosts[0];
-                $navigation.= "<a href='{$this->pathPrefix}/posts/{$post->link}' class='item'>{$post->title}</a>";
+                $navigation.= "<a href='{$this->blog->relativePath()}/posts/{$post->link}' class='item'>{$post->title}</a>";
             }
             elseif (substr($postid, 0, 2) == 't:') {
+                // Tag
                 $tag = substr($postid, 2);
-                $navigation.= "<a href='{$this->pathPrefix}/tags/{$tag}' class='item'>".ucfirst($tag)."</a>";
+                $navigation.= "<a href='{$this->blog->relativePath()}/tags/{$tag}' class='item'>".ucfirst($tag)."</a>";
             }
         }
         return $navigation;
@@ -480,15 +493,15 @@ class BlogContent
         $userip = $_SERVER['REMOTE_ADDR'];
         $countUpdated = false;
                 
-        foreach($arrayVisitors as $visitor) {
-            if($userip == $visitor['userip']) {
+        foreach ($arrayVisitors as $visitor) {
+            if ($userip == $visitor['userip']) {
                 $this->modelPosts->incrementUserView($postid, $userip);
                 $countUpdated = true;
                 break;
             }
         }
         
-        if(!$countUpdated) {
+        if (!$countUpdated) {
             // New Visitor
             $this->modelPosts->recordUserView($postid, $userip);
         }
@@ -499,25 +512,23 @@ class BlogContent
      */
     public function viewPost(&$request, &$response)
     {
-        if (CUSTOM_DOMAIN) {
-            $postUrl = $request->getUrlParameter(0);
-        }
-        else {
-            $postUrl = $request->getUrlParameter(2);
-        }
+        $postUrl = $request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
 
-        // Check conditions in which the user is not allowed to view the post
-        if ($post = $this->modelPosts->getPostByURL($postUrl, $this->blogID)) {
-            $isContributor = BlogCMS::$userGroup !== false;
-            if (($post->draft == 1 || strtotime($post->timestamp) > time()) && !$isContributor) {
-                $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
-            }
-        }
-        else {
+        $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
+        
+        if (!$post) {
             $response->redirect($this->pathPrefix, 'Cannot find this post', 'error');
         }
+
+        // Check access
+        $isContributor = BlogCMS::$userGroup !== false;
+
+        // Is the post still a draft or not scheduled to be released yet
+        if (!$post->isPublic() && !$isContributor) {
+            $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
+        }
         
-        // Record the view
+        // Record the post view
         $this->addView($post->id);
 
         $this->generatePostTemplate($post, null, 'full');

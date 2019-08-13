@@ -225,4 +225,18 @@ class Blogs extends RBFactory
         return $blog_key;
     }
         
+    /**
+     * Search for a blog by name
+     */
+    public function search($searchterm)
+    {
+        // Search posts by title & tags
+        $sql = "SELECT blogs.* FROM {$this->tableName} as blogs ";
+        $sql.= "WHERE name LIKE '%". Sanitize::string($searchterm) ."%' ";
+        $sql.= "AND anon_search=1";
+
+        $statement = $this->db->query($sql);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+    }
+    
 }

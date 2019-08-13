@@ -272,7 +272,6 @@ class BlogCMS
      */
     public static function pathMatch()
     {
-        // todo
         $routeCache = self::getCache('routes');
         $controllerName = self::request()->getControllerName();
         if ($controllerName == 'blogs') {

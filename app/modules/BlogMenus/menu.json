@@ -1,0 +1,11 @@
+[
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "menus.manage",
+        "weight": 35,
+        "text": "Menus",
+        "subtext": "Create menu structures",
+        "icon": "sitemap"
+    }
+]

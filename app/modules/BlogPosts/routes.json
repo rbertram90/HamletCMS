@@ -37,6 +37,13 @@
         "action": "getList"
     },
     {
+        "key": "api.posts.searchtitle",
+        "path": "/api/posts/search",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
+        "action": "lookupTitle"
+    },
+    {
         "key": "api.posts.create",
         "path": "/api/posts/create",
         "permissions": ["create_posts"],
