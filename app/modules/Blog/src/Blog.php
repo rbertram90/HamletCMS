@@ -14,7 +14,6 @@ class Blog
     public $user_id;
     public $anon_search;
     public $visibility;
-    public $pagelist;
     public $category;
     public $logo;
     public $icon;

@@ -28,41 +28,6 @@
         "action": "footer"
     },
     {
-        "key": "settings.pages",
-        "path": "/cms/settings/pages/{BLOG_ID}",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "pages"
-    },
-    {
-        "key": "settings.pages.remove",
-        "path": "/cms/settings/pages/{BLOG_ID}/remove",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "pages"
-    },
-    {
-        "key": "settings.pages.up",
-        "path": "/cms/settings/pages/{BLOG_ID}/up",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "pages"
-    },
-    {
-        "key": "settings.pages.down",
-        "path": "/cms/settings/pages/{BLOG_ID}/down",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "pages"
-    },
-    {
-        "key": "settings.pages.add",
-        "path": "/cms/settings/pages/{BLOG_ID}/add",
-        "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\blogcms\\Settings\\Controller\\Settings",
-        "action": "pages"
-    },
-    {
         "key": "settings.stylesheet",
         "path": "/cms/settings/stylesheet/{BLOG_ID}",
         "permissions": ["change_settings"],

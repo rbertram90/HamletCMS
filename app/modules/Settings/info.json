@@ -2,7 +2,7 @@
     "name": "Blog CMS Settings",
     "package": "Core",
     "version": "0.0.1",
-    "author": "Ricky",
+    "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
     "dependencies": [
 
     ]

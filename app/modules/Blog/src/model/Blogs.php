@@ -36,7 +36,6 @@ class Blogs extends RBFactory
             'user_id'     => 'number',
             'anon_search' => 'boolean',
             'visibility'  => 'string',
-            'pagelist'    => 'string',
             'category'    => 'string',
             'domain'      => 'string',
             'icon'        => 'string',

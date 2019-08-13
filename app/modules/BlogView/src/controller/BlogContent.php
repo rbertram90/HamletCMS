@@ -226,14 +226,6 @@ class BlogContent
     }
     
     /**
-     * Output the top menu of pages which the user has selected
-     */
-    public function generatePagelist()
-    {
-        echo $this->blog->pagelist;
-    }
-
-    /**
      * Each link is a blog post which has been marked as a 'page' through the settings menus
      * 
      * Opportunity to really flesh this out here - we could have store these in a sepearate table
@@ -252,26 +244,7 @@ class BlogContent
      */
     public function generateNavigation()
     {
-        if (strlen($this->blog->pagelist) == 0) {
-            return '';
-        }
-        $navigation = '';
-        $pagelist = explode(',', $this->blog->pagelist);
 
-        foreach ($pagelist as $postid) {
-            if (is_numeric($postid)) {
-                // Single post
-                $arrayPosts = $this->modelPosts->get('*', ['id' => $postid]);
-                $post = $arrayPosts[0];
-                $navigation.= "<a href='{$this->blog->relativePath()}/posts/{$post->link}' class='item'>{$post->title}</a>";
-            }
-            elseif (substr($postid, 0, 2) == 't:') {
-                // Tag
-                $tag = substr($postid, 2);
-                $navigation.= "<a href='{$this->blog->relativePath()}/tags/{$tag}' class='item'>".ucfirst($tag)."</a>";
-            }
-        }
-        return $navigation;
     }
     
     /**

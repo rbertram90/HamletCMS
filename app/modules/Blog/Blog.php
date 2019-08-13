@@ -47,7 +47,6 @@ class Blog
             `user_id` int(8) NOT NULL,
             `anon_search` tinyint(1) NOT NULL DEFAULT '1',
             `visibility` enum('anon','private','members','friends') NOT NULL DEFAULT 'anon',
-            `pagelist` varchar(500) NOT NULL,
             `category` varchar(50) NOT NULL DEFAULT 'general'
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
