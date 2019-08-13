@@ -93,6 +93,7 @@ CSRF::init();
 
     $widgetsController = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView();
     $response->setVar('widgets', $widgetsController->generatePlaceholders());
+    
     $response->setVar('user_is_contributor', BlogCMS::$userGroup !== false);
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());

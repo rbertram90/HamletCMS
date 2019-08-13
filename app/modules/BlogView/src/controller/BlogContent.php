@@ -224,29 +224,7 @@ class BlogContent
         $response->setVar('blog', $this->blog);
         $response->write('posts/postshome.tpl', 'BlogView');
     }
-    
-    /**
-     * Each link is a blog post which has been marked as a 'page' through the settings menus
-     * 
-     * Opportunity to really flesh this out here - we could have store these in a sepearate table
-     * give the user the opportunity to really customise the links that appear in the navigation
-     * - external links
-     * - mailto
-     * - posts
-     * - tags
-     * - custom classes / attributes
-     * - custom label
-     * 
-     * Could we take this one step further and have a menus table
-     * need to work out how we would be able to inject other menus into the template?
-     * 
-     * @return string html for the top navigation bar
-     */
-    public function generateNavigation()
-    {
-
-    }
-    
+        
     /**
      * Generate the HTML to be shown in the header
      */
@@ -275,7 +253,6 @@ class BlogContent
         $headerResponse->setVar('blog', $this->blog);
         $headerResponse->setVar('hide_title', $this->header_hideTitle);
         $headerResponse->setVar('hide_description', $this->header_hideDescription);
-        $headerResponse->setVar('page_navigation', $this->generateNavigation());
         $headerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
         return $headerResponse->write($templatePath, $source, false);

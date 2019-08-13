@@ -25,12 +25,15 @@ use Athens\CSRF;
         'SiteAdmin' => ['optional' => 0],
         'UserAccounts' => ['optional' => 0],
         'Website' => ['optional' => 0],
+        'Widgets' => ['optional' => 0],
+        'Search' => ['optional' => 1],
         'EventLogger' => ['optional' => 1],
         'LayoutPost' => ['optional' => 1],
         'MarkdownPost' => ['optional' => 1],
         'VideoPost' => ['optional' => 1],
         'PostComments' => ['optional' => 1],
         'FavouriteBlogs' => ['optional' => 1],
+        'BlogMenus' => ['optional' => 1],
     ];
 
     if ($request->method() == 'POST') {
