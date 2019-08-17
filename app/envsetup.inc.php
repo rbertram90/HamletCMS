@@ -74,7 +74,7 @@ use rbwebdesigns\core\JSONhelper;
     require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
         
     // Import view functions
-    require_once SERVER_ROOT .'/app/view/page_header.php';
+    require_once SERVER_ROOT .'/app/view/helper_functions.php';
 
     // Store the configuration
     BlogCMS::addToConfig($config);

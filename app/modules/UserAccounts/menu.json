@@ -1,32 +1,26 @@
 [
     {
-        "menu": "cms_main_actions",
-        "type": "text",
-        "text": "My account",
-        "weight": 50
-    },
-    {
-        "menu": "cms_main_actions",
+        "menu": "cms_user_actions",
         "type": "route",
         "route": "user.current",
         "icon": "user",
-        "text": "View my profile",
+        "text": "View profile",
         "weight": 52
     },
     {
-        "menu": "cms_main_actions",
+        "menu": "cms_user_actions",
         "type": "route",
         "route": "user.settings",
         "icon": "cogs",
-        "text": "Settings",
+        "text": "Account settings",
         "weight": 54
     },
     {
-        "menu": "cms_main_actions",
+        "menu": "cms_user_actions",
         "type": "route",
         "route": "user.logout",
         "icon": "sign-out",
-        "text": "Logout",
+        "text": "Log out",
         "weight": 56
     }
 ]

@@ -40,7 +40,8 @@ class SiteAdmin extends GenericController
         BlogCMS::runHook('onReloadCache', []);
 
         if ($redirect) {
-            $this->response->redirect('/cms/admin/modules', 'System caches reloaded', 'success');
+            $location = $_SERVER['HTTP_REFERER'] ?: '/cms/admin/modules';
+            $this->response->redirect($location, 'System caches rebuilt', 'success');
         }
     }
 

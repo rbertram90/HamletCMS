@@ -18,7 +18,7 @@ function viewPageHeader($title, $icon, $subtitle='') {
     }
 
     return <<<HTML
-        <h1 class="ui header">
+        <h1 class="ui header cms-page-header">
             <i class="{$icon} icon"></i>
             <div class="content">
                 {$title}
@@ -55,4 +55,26 @@ EOD;
     endfor;
     
     return $output.'<i class="right angle icon divider"></i><div class="active section">'.$currentpage.'</div></div>';
+}
+
+/**
+ * Default menu
+ * 
+ * @param \rbwebdesigns\blogcms\Menu $menu
+ * @param string $id
+ * @param string $classList
+ */
+function viewMenu($menu, $id='', $classList='') {
+    $output = "";
+    foreach ($menu->getLinks() as $link) {
+        if (isset($link->url) and strlen($link->url)) {
+            $active = $link->active ? 'active': '';
+
+            $output .= "<a href='{$link->url}' class='{$active} teal item' target='{$link->target}' title='{$link->text}'><i class='{$link->icon} icon'></i> {$link->text}</a>";
+        }
+        else {
+            $output .= "<div class='header item'>{$link->text}</div>";
+        }
+    }
+    return "<nav class='ui {$classList} menu' id='{$id}'>" . $output . "</nav>";
 }

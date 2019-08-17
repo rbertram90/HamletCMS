@@ -16,42 +16,60 @@
     {$stylesheets}
     {$scripts}
 </head>
-<body>
+<body id="cms">
 
-    <div class="ui stackable two column grid">
-        <div class="four wide tablet three wide computer column">
-            <div class="ui center aligned inverted teal segment">
-                <img src="/images/logo.png" alt="Blog CMS" class="logo">
-            </div>
+<div class="ui top fixed menu">
+    <a class="item" href="/cms" style="background-color:#00B5AD;" title="CMS home">
+        <img src="/images/square_small_logo.png" alt="Blog CMS">
+    </a>
 
-            <nav class="ui fluid vertical pointing menu" id="cms_main_menu">
-                {foreach from=$page_sidemenu->getLinks() item=link}
-                    {if isset($link->url) and strlen($link->url)}
-                        {if $link->active}
-                            {$active = 'active'}
-                        {else}
-                            {$active = ''}
-                        {/if}
-                        <a href="{$link->url}" class="{$active} teal item" target="{$link->target}"><i class="{$link->icon} icon"></i> {$link->text}</a>
-                    {else}
-                        <div class="header item">{$link->text}</div>
-                    {/if}
+    {if count($blogs)}
+        <div class="ui dropdown item blog-menu">
+            Blogs <i class="dropdown icon"></i>
+            <div class="menu">
+                {foreach from=$blogs item=blog}
+                    <a href="/cms/blog/overview/{$blog->id}" class="{$active} item">{$blog->name}</a>
                 {/foreach}
-            </nav>
+            </div>
         </div>
-        <div class="twelve wide tablet thirteen wide computer column">
+    {/if}
+    
+    <div class="right menu">
+        {if $user->admin}
+            <div class="ui dropdown item blog-menu">
+                Admin tools <i class="dropdown icon"></i>
+                {viewMenu($page_admin_menu)}
+            </div>
+        {/if}
+        <div class="ui dropdown item user-menu" title="Account menu">
+            <img src="/avatars/thumbs/{$user->profile_picture}" alt="Profile image" class="user-icon"> {$user->username} <i class="dropdown icon"></i>
+            {viewMenu($page_user_menu)}
+        </div>
+    </div>
+</div>
+<script>
+    $(".user-menu").dropdown();
+    $(".blog-menu").dropdown();
+</script>
 
-            {if count($messages) > 0}
-                <div id="messages">
-                    {foreach from=$messages item=$message}                
-                        <p class="ui message {$message.type}">{$message.text}</p>
-                    {/foreach}
-                </div>
-            {/if}
-            
+    <div class="ui stackable two column grid cms-body">
+        <div class="four wide tablet three wide computer column">
+            {viewMenu($page_side_menu, "cms_main_menu", "fluid vertical pointing")}
+        </div>
+        <div class="twelve wide tablet thirteen wide computer column">            
             {* Output main content *}
             {$body_content}
         </div>
     </div>
+
+    {if count($messages) > 0}
+        <div class="messages-wrapper">
+            {foreach from=$messages item=$message}
+                <div class="status-message notify do-show" data-notification-status="{$message.type}">{$message.text}</div>
+            {/foreach}
+        </div>
+    {/if}
+
+    <script src="/js/messages.js"></script>
 </body>
 </html>

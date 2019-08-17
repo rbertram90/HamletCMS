@@ -2,6 +2,7 @@ body {
     min-width:              600px;
     background-color:     hsl(45, 20%, 97%);
     margin:                 16px;
+    height:                 auto;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -24,6 +25,14 @@ p {
 
 .logo {
     max-width: 100%;
+}
+
+#cms .user-icon {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+#cms .cms-body {
+    margin-top: 60px;
 }
 
 .ui.vertical.menu .header.item {

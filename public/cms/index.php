@@ -98,6 +98,7 @@ use rbwebdesigns\core\Sanitize;
     $response->addStylesheet('/resources/css/header.css');
     // $this->addStylesheet('/resources/css/forms');
     $response->addStylesheet('/css/blogs_stylesheet.css');
+    $response->addStylesheet('/css/messages.css');
 
     // Add default script(s)
     $response->addScript('/resources/js/jquery-1.8.0.min.js');
@@ -134,10 +135,14 @@ use rbwebdesigns\core\Sanitize;
     if ($user['admin'] == 1) {
         $adminMenu = new Menu('cms_admin_actions');
         BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_admin_actions', 'menu' => &$adminMenu]);
-        $sideMenu->setLinks(array_merge($adminMenu->getLinks(), $sideMenu->getLinks()));
+        $response->setVar('page_admin_menu', $adminMenu);
     }
 
-    $response->setVar('page_sidemenu', $sideMenu);
+    $userMenu = new Menu('cms_user_actions');
+    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_user_actions', 'menu' => &$userMenu]);
+
+    $response->setVar('page_side_menu', $sideMenu);
+    $response->setVar('page_user_menu', $userMenu);
 
     
 /****************************************************************
@@ -145,4 +150,10 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     // Run Template here
+    $userModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\UserAccounts\\model\\UserAccounts');
+    $response->setVar('user', $userModel->getById($user['id']));
+
+    $blogsModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\Blog\\model\\Blogs');
+    $response->setVar('blogs', $blogsModel->getBlogsByUser($user['id']));
+    
     $response->writeTemplate('template.tpl');

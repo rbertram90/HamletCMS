@@ -8,9 +8,9 @@ use Athens\CSRF;
 
 /**
  * blog_setup.inc.php
- * set-up code for blogs within the cms, need
- * seperate file as the include paths are different.
- * @author R Bertram
+ * set-up code when viewing blogs
+ * 
+ * @author Ricky Bertram
  * @date MAR 2013
  *  
  * Session Handling
@@ -39,6 +39,7 @@ CSRF::init();
         define('BLOG_KEY', array_pop($parts));
     }
 
+    // Feed the blog ID to CMS class
     BlogCMS::$blogID = BLOG_KEY;
 
     $modelPermissions = BlogCMS::model('rbwebdesigns\blogcms\Contributors\model\Permissions');
@@ -49,7 +50,7 @@ CSRF::init();
     $blog = BlogCMS::getActiveBlog();
     $config = BlogCMS::config();
     $page_controller = new BlogContent(BLOG_KEY);
-        
+    
     if (CUSTOM_DOMAIN) {
         $host = $config['environment']['canonical_domain'];
         $action = $request->getControllerName();
@@ -89,7 +90,6 @@ CSRF::init();
     $response->setVar('custom_domain', CUSTOM_DOMAIN);
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
-    // $response->setVar('custom_css', ''); // $page_controller->getBlogCustomCSS()
 
     $widgetsController = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView();
     $response->setVar('widgets', $widgetsController->generatePlaceholders());
@@ -130,7 +130,7 @@ CSRF::init();
             case "posts":
                 $page_controller->viewPost($request, $response);
                 break;
-                                
+                
             case "tags":
                 // Search for posts with tag
                 $page_controller->viewPostsByTag($request, $response);
