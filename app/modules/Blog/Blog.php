@@ -2,6 +2,8 @@
 
 namespace rbwebdesigns\blogcms;
 
+use rbwebdesigns\blogcms\Link;
+
 class Blog
 {
     public function onGenerateMenu($options)
@@ -25,6 +27,13 @@ class Blog
                 else {
                     $newLinks[] = $link;
                 }
+            }
+            if ($blog = BlogCMS::getActiveBlog()) {
+                $viewBlogLink = new MenuLink();
+                $viewBlogLink->text = 'View blog';
+                $viewBlogLink->url = $blog->url();
+                $viewBlogLink->icon = 'book';
+                $newLinks[] = $viewBlogLink;
             }
             $options['menu']->setLinks($newLinks);
         }
