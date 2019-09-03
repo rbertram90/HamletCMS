@@ -128,17 +128,17 @@ CSRF::init();
         // Older static routes - @todo change to dynamic routing
         switch ($action) {
             case "posts":
-                $page_controller->viewPost($request, $response);
+                $page_controller->viewPost();
                 break;
                 
             case "tags":
                 // Search for posts with tag
-                $page_controller->viewPostsByTag($request, $response);
+                $page_controller->viewPostsByTag();
                 break;
                 
             default:
                 // View Homepage
-                $page_controller->viewHome($request, $response);
+                $page_controller->viewHome();
                 break;
         }
     }

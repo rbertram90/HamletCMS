@@ -20,7 +20,7 @@
                     <div class="ui clearing segment">
                         <a href="/cms/menus/deletelink/{$blog->id}/{$item->id}" class="ui labeled icon right floated button" onclick="return confirm('Are you sure you want to delete this link?');"><i class="delete icon"></i>Delete</a>
                         <a href="/cms/menus/editlink/{$blog->id}/{$item->id}" class="ui labeled icon right floated button"><i class="edit icon"></i>Edit</a>
-                        {$item->link_target} ({$item->type})
+                        {$item->text}
                     </div>
                 {foreachelse}
                     <p class="ui message info">This menu doesn't contain any links</p>

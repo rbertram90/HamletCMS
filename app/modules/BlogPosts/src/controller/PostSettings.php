@@ -51,6 +51,7 @@ class PostSettings extends GenericController
             // Default values where needed
             if (!isset($config['posts']['postsperpage'])) $config['posts']['postsperpage'] = 5;
             if (!isset($config['posts']['postsummarylength'])) $config['posts']['postsummarylength'] = 200;
+            if (!isset($config['posts']['listtype'])) $config['posts']['listtype'] = 'items';
             return $config['posts'];
         }
         else {
@@ -94,8 +95,7 @@ class PostSettings extends GenericController
             'posts' => [
                 'postsperpage'      => $this->request->getInt('fld_postsperpage'),
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
-                'showtags'          => $this->request->getString('fld_showtags'),
-                'showsocialicons'   => $this->request->getString('fld_showsocialicons'),
+                'listtype'          => $this->request->getString('fld_listtype'),
             ]
         ]);
 

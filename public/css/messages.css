@@ -35,7 +35,13 @@
   }
 }
 .status-message.do-show {
-  animation: slide-in-right 1s ease-in-out forwards, slide-in-right 1s ease-in-out reverse forwards 3s;
+  /* animation: slide-in-right 1s ease-in-out forwards, slide-in-right 1s ease-in-out reverse forwards 3s; */
+  animation-name: slide-in-right, slide-in-right;
+  animation-duration: 1s, 1s;
+  animation-timing-function: ease-in-out, ease-in-out;
+  animation-delay: 0, 3s;
+  animation-direction: forwards, reverse;
+  animation-fill-mode: none, forwards; /* this doesn't seem to work in firefox */
 }
 .status-message[data-notification-status="notice"] {
   background-color: #29B6F6;

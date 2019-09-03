@@ -9,9 +9,8 @@ use rbwebdesigns\blogcms\BlogCMS;
 use rbwebdesigns\blogcms\BlogCMSResponse;
 
 /**
- * blog_content_controller
- * this class is for front end actions on the blogs within blog_cms
- * i.e. viewing posts, making comments etc.
+ * Class BlogContent handles the generation of output for
+ * the front-end of the blog
  */
 class BlogContent
 {
@@ -108,7 +107,6 @@ class BlogContent
         return $teaserResponse->write($templatePath, $source, false);
     }
 
-
     /**
      * Generate the output for a single post view
      * 
@@ -184,17 +182,16 @@ class BlogContent
     }
 
     /**
-     *  View blog homepage
-     *  @return <array> data for template
+     * View blog homepage
+     * 
+     * Handles route: /
      */
-    public function viewHome(&$request, &$response)
+    public function viewHome()
     {
-        $pageNum = $request->getInt('s', 1);
+        $pageNum = $this->request->getInt('s', 1);
 
         $blogConfig = $this->blog->config();
         $postConfig = null;
-        $showTags = 1;
-        $shownumcomments = 1;
         $showsocialicons = 1;
         $summarylength = 150;
         $postsperpage = 5;
@@ -202,31 +199,36 @@ class BlogContent
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
+            if (!key_exists('extraclasses', $postConfig)) $postConfig['extraclasses'] = 'ui items';
+
+            $this->response->setVar('postConfig', $postConfig);
         }
 
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
         $output = "";
 
         $isContributor = BlogCMS::$userGroup !== false;
-        $response->setVar('userIsContributor', $isContributor);
+        $this->response->setVar('userIsContributor', $isContributor);
 
         foreach ($postlist as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
         
         // Pagination
-        $response->setVar('postsperpage', $postsperpage);
-        $response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
+        $this->response->setVar('postsperpage', $postsperpage);
+        $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
-        $response->setTitle($this->blog->name);
-        $response->setVar('posts', $output);
-        $response->setVar('paginator', new Pagination());
-        $response->setVar('blog', $this->blog);
-        $response->write('posts/postshome.tpl', 'BlogView');
+        $this->response->setTitle($this->blog->name);
+        $this->response->setVar('posts', $output);
+        $this->response->setVar('paginator', new Pagination());
+        $this->response->setVar('blog', $this->blog);
+        $this->response->write('posts/postshome.tpl', 'BlogView');
     }
         
     /**
      * Generate the HTML to be shown in the header
+     * 
+     * @return string html for header
      */
     public function generateHeader()
     {
@@ -260,7 +262,8 @@ class BlogContent
 
     /**
      * Generate the HTML to be shown in the footer
-     * @return string html
+     * 
+     * @return string html for footer
      */
     public function generateFooter()
     {
@@ -325,6 +328,7 @@ class BlogContent
     
     /**
      * Generate the CSS for the header background
+     * 
      * @return string html style tag for header
      */
     public function generateHeaderBackground()
@@ -382,11 +386,13 @@ class BlogContent
     
     /**
      * Show all posts matching tag
+     * 
+     * Handles route: /tags
      */
-    public function viewPostsByTag(&$request, &$response)
+    public function viewPostsByTag()
     {
-        $tag = $request->getUrlParameter(2);
-        $pageNum = $request->getInt('s', 1);
+        $tag = $this->request->getUrlParameter(2);
+        $pageNum = $this->request->getInt('s', 1);
         $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag);
 
         $isContributor = false;
@@ -396,15 +402,13 @@ class BlogContent
 
         $blogConfig = $this->blog->config();
         $postConfig = null;
-        $showTags = 1;
-        $shownumcomments = 1;
-        $showsocialicons = 1;
         $summarylength = 150;
         $postsperpage = 5;
 
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
             if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+            $this->response->setVar('postConfig', $postConfig);
         }
 
         $output = "";
@@ -413,20 +417,25 @@ class BlogContent
         }
 
         // Pagination
-        $response->setVar('postsperpage', $postsperpage);
-        $response->setVar('currentPage', $pageNum);
-        $response->setVar('totalnumposts', count($postlist));
+        $this->response->setVar('postsperpage', $postsperpage);
+        $this->response->setVar('currentPage', $pageNum);
+        $this->response->setVar('totalnumposts', count($postlist));
 
         // Set Page Title
-        $response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
-        $response->setVar('userIsContributor', $isContributor);
-        $response->setVar('tagName', $tag);
-        $response->setVar('posts', $output);
-        $response->setVar('paginator', new Pagination());
-        $response->setVar('blog', $this->blog);
-        $response->write('posts/postsbytag.tpl', 'BlogView');
+        $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
+        $this->response->setVar('userIsContributor', $isContributor);
+        $this->response->setVar('tagName', $tag);
+        $this->response->setVar('posts', $output);
+        $this->response->setVar('paginator', new Pagination());
+        $this->response->setVar('blog', $this->blog);
+        $this->response->write('posts/postsbytag.tpl', 'BlogView');
     }
-        
+    
+    /**
+     * Get template configuration data from file
+     * 
+     * @return array
+     */
     public function getTemplateConfig()
     {
         $settings = file_get_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json');
@@ -434,8 +443,9 @@ class BlogContent
     }
     
     /**
-     * addView($postid as int)
-     * Record that user has viewed the post
+     * Increment the view count for a post
+     * 
+     * @param int $postid
      */
     public function addView($postid)
     {
@@ -458,11 +468,17 @@ class BlogContent
     }
     
     /**
-     * View Individual Post
+     * Handle routes:
+     *   /posts
+     *   /posts/{post-url}
      */
-    public function viewPost(&$request, &$response)
+    public function viewPost()
     {
-        $postUrl = $request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
+        $postUrl = $this->request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
+
+        if (!$postUrl) {
+            return $this->viewHome();
+        }
 
         $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
         
@@ -475,7 +491,7 @@ class BlogContent
 
         // Is the post still a draft or not scheduled to be released yet
         if (!$post->isPublic() && !$isContributor) {
-            $response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
+            $this->response->redirect($this->pathPrefix, 'Cannot view this post', 'error');
         }
         
         // Record the post view
@@ -483,14 +499,14 @@ class BlogContent
 
         $this->generatePostTemplate($post, null, 'full');
 
-        $response->setTitle($post->title);
+        $this->response->setTitle($post->title);
         // $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
         // $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
         // $response->addScript('/resources/ace/ace.js');
         // $response->setVar('mdContent', $mdContent);
         // $response->write('posts/singlepost.tpl', 'BlogView');
     }
-        
+    
     /**
      * trimContent
      * This function provides (needs improvement) a HTML friendly summary of post

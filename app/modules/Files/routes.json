@@ -33,5 +33,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\Files",
         "action": "uploadimages"
+    },
+    {
+        "key": "files.settings",
+        "path": "/cms/files/settings/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\rbwebdesigns\\blogcms\\Files\\Controller\\FileSettings",
+        "action": "settings"
     }
 ]

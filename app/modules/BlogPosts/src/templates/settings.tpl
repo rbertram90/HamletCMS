@@ -1,3 +1,4 @@
+{* todo - add option to reset template to default *}
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
@@ -58,51 +59,41 @@
                             </div>
                             <script>
                                 $('.templates .item').tab();
-                            </script>                            
+                            </script>
                         </div>
                     </div>
                     <div class="one column row">
                         <div class="column">
-                            <h2>Other settings</h2>
+                            <h2>Options</h2>
                         </div>
                     </div> 
                     <div class="two column row">
                         
                         <div class="column">
                             <div class="field">
-                                <label for="fld_showtags">Show Post Tags?</label>
-                                <select id="fld_showtags" name="fld_showtags" class="ui dropdown">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-<!--
-                            <div class="field">
-                                <label for="fld_shownumcomments">Show Number of Comments</label>
-                                <select id="fld_shownumcomments" name="fld_shownumcomments" class="ui dropdown">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
--->
-                            <div class="field">
                                 <label for="fld_postsummarylength">Length of Post Summary (Characters)</label>
                                 <input type="text" value="{$postConfig.postsummarylength}" name="fld_postsummarylength"  placeholder="Number of Characters" />
                             </div>
                         </div>
                         
-                        <div class="column">
-                            <div class="field">
-                                <label for="fld_showsocialicons">Show 'Share to Social Media' Icons</label>
-                                <select id="fld_showsocialicons" name="fld_showsocialicons" class="ui dropdown">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                            
+                        <div class="column">                            
                             <div class="field">
                                 <label for="fld_postsperpage">Number of Posts Per Page</label>
                                 <input type="text" value="{$postConfig.postsperpage}" name="fld_postsperpage" />
+                            </div>
+                        </div>
+
+                    </div> 
+                    <div class="two column row">
+
+                        <div class="column">                            
+                            <div class="field">
+                                <label for="fld_listtype">Post list type</label>
+                                <select name="fld_listtype" id="fld_listtype" class="ui dropdown">
+                                    <option value="items">Items</option>
+                                    <option value="cards">Cards</option>
+                                    <option value="none">None</option>
+                                </select>
                             </div>
                         </div>
                         
@@ -114,37 +105,10 @@
                         </div>
                     </div>
                 </div>
-                
-                    <!--
-                            <label for="fld_commentapprove">Who can comment</label>
-                            <select id="fld_commentapprove" name="fld_commentapprove">
-                                <option>Anyone</option>
-                                <option>RBwebdesigns Users</option>
-                                <option>Blog Contributors</option>
-                            </select>
-
-                            <label for="fld_commentapprove">Comment Approval <br/><i style="font-weight:normal;">Select if you want to approve comments before they are displayed on your blog, this can help reduce spam.</i></label>
-                            <select id="fld_commentapprove" name="fld_commentapprove">
-                                <option value="1">Display Automatically (Default)</option>
-                                <option value="0">Manual Approve</option>
-                            </select>
-                        -->                
-                            
                 <script>
                     // Default Values in Dropdowns
-                    {if array_key_exists('showtags', $postConfig)}
-                        $("#fld_showtags").val("{$postConfig.showtags}");
-                    {/if}
-
-                    {if array_key_exists('showsocialicons', $postConfig)}
-                        $("#fld_showsocialicons").val("{$postConfig.showsocialicons}");
-                    {/if}
-
-                    {if array_key_exists('shownumcomments', $postConfig)}
-                        $("#fld_shownumcomments").val("{$postConfig.shownumcomments}");
-                    {/if}
-
                     {*$("#fld_commentapprove").val("$postConfig.allowcomments");*}
+                    $("#fld_listtype").val("{$postConfig.listtype}");
 
                     $('select.dropdown').dropdown();
                 </script>
