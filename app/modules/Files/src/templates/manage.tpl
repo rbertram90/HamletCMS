@@ -20,6 +20,7 @@
             </div>
 
             <button type="button" class="ui labeled icon teal button" title="Add images" id="add_images_button"><i class="upload icon"></i>Add images</button>
+            <a href="/cms/files/settings/{$blog->id}" class="ui labeled icon button"><i class="cogs icon"></i>File settings</a>
         </div>
     </div>
     {foreach $images as $image name=imageloop}
@@ -35,13 +36,19 @@
                         <div class="content">
                             <div class="center">
                                 <form action="/cms/files/delete/{$blog->id}/{$image.file}">
-                                    <a href="/blogdata/{$blog->id}/images/{$image.name}" class="ui inverted button" target="_blank">Open</a>
-                                    <button class="ui inverted button" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
+                                    <a href="/blogdata/{$blog->id}/images/{$image.name}" class="ui tiny inverted button" target="_blank" title="Open original">O</a>
+                                    <a href="/blogdata/{$blog->id}/images/xl/{$image.name}" class="ui tiny orange inverted button" target="_blank" title="Extra large">XL</a>
+                                    <a href="/blogdata/{$blog->id}/images/l/{$image.name}" class="ui tiny yellow inverted button" target="_blank" title="Large">L</a>
+                                    <a href="/blogdata/{$blog->id}/images/m/{$image.name}" class="ui tiny olive inverted button" target="_blank" title="Medium">M</a>
+                                    <a href="/blogdata/{$blog->id}/images/s/{$image.name}" class="ui tiny blue inverted button" target="_blank" title="Small">S</a>
+                                    <a href="/blogdata/{$blog->id}/images/xs/{$image.name}" class="ui tiny violet inverted button" target="_blank" title="Extra small">XS</a>
+                                    <a href="/blogdata/{$blog->id}/images/sq/{$image.name}" class="ui tiny purple inverted button" target="_blank" title="Square">SQ</a><br><br>
+                                    <button class="ui red inverted button" onclick="return confirm('Are you sure you want to delete this image?');" title="Delete image">Delete</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <img src="/blogdata/{$blog->id}/images/{$image.name}">
+                    <img src="/blogdata/{$blog->id}/images/m/{$image.name}">
                 </div>
                 <div class="content">
                     <div class="header">{$image.name}</div>
@@ -85,3 +92,8 @@
         on:'hover'
     });
 </script>
+<style>
+.card .button {
+    margin-bottom: 6px;
+}
+</style>
