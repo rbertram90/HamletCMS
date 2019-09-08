@@ -14,18 +14,14 @@
 <div class="item post">
 
     {if $post->teaser_image and $post->teaser_image != "false"}
-        <div class="image">
-            <div class="teaser-image">
-                <a href="{$blog_root_url}/posts/{$post->link}">
-                    <img src="{$blog_file_dir}/images/{$post->teaser_image}" class="ui fluid image">
-                </a>
-            </div>
-        </div>
+        <a href="{$blog->relativePath()}/posts/{$post->link}" class="image teaser-image">
+            <img src="{$blog->resourcePath()}/images/{$post->teaser_image}" class="ui fluid image">
+        </a>
     {/if}
 
     <div class="content">
 
-        <h2 class="header"><a href="{$blog_root_url}/posts/{$post->link}">{$post->title}</a></h2>
+        <h2 class="header"><a href="{$blog->relativePath()}/posts/{$post->link}">{$post->title}</a></h2>
         
         <div class="description post-content">
             {if $post->type == 'gallery'}
@@ -57,7 +53,7 @@
                     <span class="post-tags">
                         {foreach $post->tags as $tag}
                             {$caption = str_replace("+", " ", $tag)}
-                            <a href="{$blog_root_url}/tags/{$tag}" class="ui tag label">{$caption}</a>
+                            <a href="{$blog->relativePath()}/tags/{$tag}" class="ui tag label">{$caption}</a>
                         {/foreach}
                     </span>
                 {/if}
@@ -75,7 +71,7 @@
                 <!-- Social Media -->
                 {if $showsocialicons}
                     {$encodedTitle = rawurlencode($post->title)}
-                    {$unencodedUrl = "{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}{$blog_root_url}/posts/{$post->link}"}
+                    {$unencodedUrl = "{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}{$blog->relativePath()}/posts/{$post->link}"}
                     {$encodedUrl   = rawurlencode($unencodedUrl)}
 
                     <div class="social-icons">

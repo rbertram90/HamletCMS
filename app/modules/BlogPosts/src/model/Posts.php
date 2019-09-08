@@ -113,7 +113,12 @@ class Posts extends RBFactory
         $result = $this->get('*', $where, 'timestamp ASC', '1', false);
         
         // Only Return Result if the post is not scheduled
-        if ($result->timestamp < date('Y-m-d H:i:s')) return $result;
+        if ($result->timestamp < date('Y-m-d H:i:s')) {
+            return $result;
+        }
+        else {
+            return false;
+        }
     }
     
     /**
@@ -131,7 +136,10 @@ class Posts extends RBFactory
             'timestamp' => '<'. $currentPostTimestamp,
             'draft'     => 0
         ];
-        return $this->get('*', $where, 'timestamp DESC', '1', false);
+
+        $result = $this->get('*', $where, 'timestamp DESC', '1', false);
+
+        return $result;
     }
     
     /**

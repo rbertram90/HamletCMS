@@ -190,5 +190,32 @@ class Post
     {
         return $this->draft == 0 && strtotime($this->timestamp) <= time();
     }
+
+    /**
+     * Get the previous post in chronological order
+     * 
+     * @return \rbwebdesigns\blogcms\BlogPosts\Post|null
+     */
+    public function previous()
+    {
+        return $this->factory->getPreviousPost($this->blog_id, $this->timestamp);
+    }
+
+    /**
+     * Get the next post in chronological order
+     * 
+     * @return \rbwebdesigns\blogcms\BlogPosts\Post|null
+     */
+    public function next()
+    {
+        return $this->factory->getNextPost($this->blog_id, $this->timestamp);
+    }
     
+    /**
+     * Determine if the post is not yet visible on the blog
+     */
+    public function isScheduled()
+    {
+        return $this->timestamp > date('Y-m-d H:i:s');
+    }
 }

@@ -500,8 +500,7 @@ class BlogContent
         $this->generatePostTemplate($post, null, 'full');
 
         $this->response->setTitle($post->title);
-        // $response->setVar('previousPost', $this->modelPosts->getPreviousPost($this->blogID, $post->timestamp));
-        // $response->setVar('nextPost', $this->modelPosts->getNextPost($this->blogID, $post->timestamp));
+
         // $response->addScript('/resources/ace/ace.js');
         // $response->setVar('mdContent', $mdContent);
         // $response->write('posts/singlepost.tpl', 'BlogView');
