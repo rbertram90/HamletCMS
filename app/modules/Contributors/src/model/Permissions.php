@@ -44,6 +44,8 @@ class Permissions extends RBFactory
     public function getUserGroup($blogID)
     {
         $userID = BlogCMS::session()->currentUser['id'];
+        
+        if (!$userID) return false;
 
         // Get the group ID for a user
         $groupQuery = $this->get('group_id', [

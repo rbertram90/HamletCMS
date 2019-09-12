@@ -51,7 +51,7 @@ class ConfigureTagList extends Form
             "type"  => "dropdown",
             "options" => [
                 "text" => "Text",
-                "count" => "PostCount"
+                "count" => "Post count"
             ],
             "label" => "How should the tags be ordered?",
             "value" => "count",

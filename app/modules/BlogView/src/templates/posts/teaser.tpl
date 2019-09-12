@@ -2,13 +2,9 @@
  * Default post teaser view
  *
  * Variables:
+ *   - $blog
  *   - $post
  *   - $config
- *   - $blog_root_url
- *   - $blog_file_dir
- *   - $shownumcomments
- *   - $showtags
- *   - $showsocialicons
  *   - $userIsContributor
  *}
 <div class="item post">
@@ -21,7 +17,10 @@
 
     <div class="content">
 
-        <h2 class="header"><a href="{$blog->relativePath()}/posts/{$post->link}">{$post->title}</a></h2>
+        <h2 class="ui header">
+            <a href="{$blog->relativePath()}/posts/{$post->link}">{$post->title}</a>
+            <span class="sub header post-date">Posted {$post->timestamp|date_format:"%d/%m/%Y"} at {$post->timestamp|date_format:"%H:%M"}</span>
+        </h2>
         
         <div class="description post-content">
             {if $post->type == 'gallery'}
@@ -41,46 +40,15 @@
         
         <div class="extra post-footer">
             <div class="meta bottom">
-                <!-- Post Date -->
-                <span class="post-date">Posted {$post->timestamp|date_format:"%Y/%m/%d"} at {$post->timestamp|date_format:"%H:%M"}</span>
-                
-                {if $shownumcomments}
-                    <span class="post-comment-count">{$post->numcomments} comments</span>
-                {/if}
-                
-                <!-- Post Tags -->
-                {if count($post->tags) > 0 && $showtags}
+                {if count($post->tags) > 0}
                     <span class="post-tags">
                         {foreach $post->tags as $tag}
                             {$caption = str_replace("+", " ", $tag)}
-                            <a href="{$blog->relativePath()}/tags/{$tag}" class="ui tag label">{$caption}</a>
+                            <a href="{$blog->relativePath()}/tags/{$tag}" class="ui small tag label">{$caption}</a>
                         {/foreach}
                     </span>
                 {/if}
-            </div>
-
-            <div class="ui hidden divider"></div>
-
-            <div class="extra">
-                <!-- Add / Edit Options -->
-                {if $userIsContributor}
-                    <a href="/cms/posts/delete/{$post->id}" onclick="return confirm('Are you sure?');" class="ui basic right floated button">Delete</a>
-                    <a href="/cms/posts/edit/{$post->id}" class="ui basic right floated button">Edit</a>
-                {/if}
-
-                <!-- Social Media -->
-                {if $showsocialicons}
-                    {$encodedTitle = rawurlencode($post->title)}
-                    {$unencodedUrl = "{$smarty.server.REQUEST_SCHEME}://{$smarty.server.SERVER_NAME}{$blog->relativePath()}/posts/{$post->link}"}
-                    {$encodedUrl   = rawurlencode($unencodedUrl)}
-
-                    <div class="social-icons">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}" onclick="window.open(this.href, 'height=600,width=400'); return false;" class="ui icon facebook button"><i class="facebook icon"></i></a>
-                        <a href="https://twitter.com/intent/tweet?url={$encodedUrl}&text={$encodedTitle}" target="_blank" class="ui icon twitter button"><i class="twitter icon"></i></a>
-                        <a href="mailto:?subject={$encodedTitle}&amp;body={$encodedUrl}" class="ui icon grey button"><i class="mail icon"></i></a>
-                    </div>
-                {/if}
-            </div>
+            </div>       
         </div>
     </div>
 </div>

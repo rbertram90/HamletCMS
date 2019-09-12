@@ -319,13 +319,13 @@ class PostsAPI extends GenericController
         $limit  = $this->request->getInt('limit', 10);
         $sort   = $this->request->getString('sort', 'name ASC');
 
-        $showDrafts = $this->request->getString('showdrafts', 'false');
+        $showDrafts = $this->request->getString('showdrafts', false);
         $showDrafts = ($showDrafts == 'true') ? 1 : 0;
 
-        $showScheduled = $this->request->getString('showscheduled', 'false');
+        $showScheduled = $this->request->getString('showscheduled', false);
         $showScheduled = ($showScheduled == 'true') ? 1 : 0;
 
-        if(!$blog = $this->modelBlogs->getBlogById($blogID)) {
+        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
             die("{ 'error': 'Unable to find blog' }");
         }
         

@@ -80,6 +80,9 @@ class UserAccounts extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->runLogin();
 
+        $config = BlogCMS::config();
+
+        $this->response->setVar('registerAllowed', $config['users']['allow_anon_registration']);
         $this->response->setTitle('Login required');
         $this->response->writeTemplate('login.tpl', 'UserAccounts');
     }
@@ -91,6 +94,13 @@ class UserAccounts extends GenericController
      */
     public function register()
     {
+        $config = BlogCMS::config();
+
+        // Check if anonymous user registrations have been disabled
+        if (!$config['users']['allow_anon_registration']) {
+            $this->response->redirect('/');
+        }
+
         if($this->request->method() == 'POST') return $this->runRegister();
 
         $this->response->setTitle('Create a new account');

@@ -18,7 +18,7 @@
                 <div class="ui error message"></div>
                 
                 <div class="field">
-                    <label for="fld_blogname">Blog Name</label>
+                    <label for="fld_blogname">Blog name</label>
                     <input type="text" name="fld_blogname" id="fld_blogname" size="50" autocomplete="off" />
                 </div>
 
@@ -27,7 +27,7 @@
                     <textarea name="fld_blogdesc" id="fld_blogdesc" rows="5"></textarea>
                 </div>
 
-                <input type="submit" class="ui button teal" name="submit_blog" value="Submit" />
+                <button type="submit" class="ui button labeled icon teal" name="submit_blog"><i class="check icon"></i>Create</button>
                 
                 <input type="text" name="fld_generic" id="fld_generic" class="nobots" />
                 

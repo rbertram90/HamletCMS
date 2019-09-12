@@ -23,6 +23,20 @@ use rbwebdesigns\blogcms\Website\controller\Site;
     ]);
     $response = new BlogCMSResponse();
 
+
+    // Add default stylesheet(s)
+    $response->addStylesheet('/css/semantic.css');
+    // $response->addStylesheet('/css/blogs_stylesheet.css');
+
+    // Add default script(s)
+    $response->addScript('/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/js/semantic.js');
+    
+    // Set default meta data
+    $response->setTitle('Default title');
+    $response->setDescription('Default page description');
+    
+
     // Usually this would be the controller name
     // In this case we're keeping it simple with
     // single level urls e.g /about, /contact
@@ -72,18 +86,6 @@ use rbwebdesigns\blogcms\Website\controller\Site;
 /****************************************************************
   Get body content
 ****************************************************************/
-
-    // Add default stylesheet(s)
-    $response->addStylesheet('/css/semantic.css');
-    $response->addStylesheet('/css/blogs_stylesheet.css');
-
-    // Add default script(s)
-    $response->addScript('/resources/js/jquery-1.8.0.min.js');
-    $response->addScript('/js/semantic.js');
-    
-    // Set default meta data
-    $response->setTitle('Default title');
-    $response->setDescription('Default page description');
 
     ob_start();
     $controller->$action($request, $response);

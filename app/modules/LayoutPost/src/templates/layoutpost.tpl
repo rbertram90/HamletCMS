@@ -29,6 +29,8 @@
             {include 'edit-form/autosave.tpl'}
         </div>
     </div>
+    
+    <div class="form_status"></div>
 
     <form action="{$formAction}" method="post" name="form_create_post" id="form_create_post" class="two column row ui form">
         

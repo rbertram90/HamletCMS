@@ -22,6 +22,10 @@
         "upload_bytes_limit": 50000000,
         "single_upload_limit": 2000000
     },
+    "users":
+    {
+        "allow_anon_registration": true
+    },
     "blogcategories":
     [
         "general",

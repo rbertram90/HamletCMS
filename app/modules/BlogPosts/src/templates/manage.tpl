@@ -4,13 +4,13 @@
     
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Manage Posts')}
+            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Manage posts')}
         </div>
     </div>
     
     <div class="two column row">
         <div class="column">
-            {viewPageHeader('Manage Posts', 'copy outline', "{$blog->name}")}
+            {viewPageHeader('Manage posts', 'copy outline', "{$blog->name}")}
         </div>
         <div class="column">
             <div class="ui form">
@@ -18,7 +18,7 @@
                     <div class="ui segment">
                         <div class="field">
                             <label for="numtoshow">Show</label>
-                            <select id="numtoshow" name="numtoshow" class="ui dropdown">
+                            <select id="numtoshow" name="numtoshow" class="ui fluid dropdown">
                                 <option>5</option>
                                 <option selected>10</option>
                                 <option>15</option>
@@ -29,41 +29,38 @@
                     <div class="ui segment">
                         <div class="field">
                             <label for="sortby">Sort</label>
-                            <select id="sortby" name="sortby" class="ui dropdown">
-                                <option value="timestamp DESC">Date Posted (Newest First)</option>
-                                <option value="timestamp ASC">Date Posted (Oldest First)</option>
-                                <option value="title ASC">Title (A First)</option>
-                                <option value="title DESC">Title (Z First)</option>
-                                <option value="author_id ASC">Author ID (Low -> High)</option>
-                                <option value="author_id DESC">Author ID (High -> Low)</option>
-                                <option value="hits DESC">Views (Most First)</option>
-                                <option value="hits ASC">Views (Least First)</option>
-                                <option value="uniqueviews DESC">Visitors (Most First)</option>
-                                <option value="uniqueviews ASC">Visitors (Least First)</option>
-                                <!--
-                                <option value="numcomments DESC">Comments (Most First)</option>
-                                <option value="numcomments ASC">Comments (Least First)</option>
-                                -->
+                            <select id="sortby" name="sortby" class="ui fluid dropdown">
+                                <option value="timestamp DESC">Date posted (newest first)</option>
+                                <option value="timestamp ASC">Date posted (oldest first)</option>
+                                <option value="title ASC">Title (A - Z)</option>
+                                <option value="title DESC">Title (Z - A)</option>
+                                <option value="author_id ASC">Author ID (low > high)</option>
+                                <option value="author_id DESC">Author ID (high > low)</option>
+                                <option value="hits DESC">Views (most first)</option>
+                                <option value="hits ASC">Views (least first)</option>
+                                <option value="uniqueviews DESC">Visitors (most first)</option>
+                                <option value="uniqueviews ASC">Visitors (least first)</option>
                             </select>
                         </div>
                     </div>
                     <div class="ui segment">
-                    <div class="inline field">
-                        <div class="ui checkbox">
-                            <input type="checkbox" class="hidden" id="filterdrafts" name="filterdrafts" checked>
-                            <label>Show Drafts</label>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" class="hidden" id="filterdrafts" name="filterdrafts" checked>
+                                <label>Show drafts</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="inline field">
-                        <div class="ui checkbox">
-                            <input type="checkbox" class="hidden" id="filterscheduled" name="filterscheduled" checked />
-                            <label>Show Scheduled</label>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" class="hidden" id="filterscheduled" name="filterscheduled" checked />
+                                <label>Show scheduled</label>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
             <script>$('.ui.checkbox').checkbox();</script>
+            <script>$('.ui.dropdown').dropdown();</script>
         </div>
     </div>
     
@@ -123,10 +120,8 @@
                 showscheduled:  filterscheduled
 
             }, function(data) {
-                // $("#posts_display").html(data);
-                
                 var start = pagenum * numtoshow - (numtoshow - 1);
-                var end   = pagenum * numtoshow;
+                var end   = (pagenum * numtoshow) > data.postcount ? data.postcount : pagenum * numtoshow;
                 var numpages = Math.ceil(data.postcount / numtoshow);
                 output = "<p>Showing " + start + " - " + end + " of " + data.postcount + "</p>";
                 
@@ -137,7 +132,7 @@
     
                 output += "<th>Views <a href='#' class='helptext' onclick='javascript:alert(\"This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable\");'>[?]</a></th>";
     
-                output += "<th>Type</th><th>Word Count</th><th></th></tr></thead>";
+                output += "<th>Type</th><th>Word count</th><th></th></tr></thead>";
             
                 for(var i=0; i<numtoshow; i++) {
                                         
@@ -232,7 +227,7 @@
             
                 output += '</div>';
             
-                output += '<a href="/cms/posts/create/' + data.blog.id + '" class="ui button teal right floated">New Post</a>';
+                output += '<a href="/cms/posts/create/' + data.blog.id + '" class="ui button teal labeled icon right floated"><i class="plus icon"></i>New post</a>';
                 
                 output += '<script>';
                 output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';

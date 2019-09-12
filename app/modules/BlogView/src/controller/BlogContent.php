@@ -72,20 +72,12 @@ class BlogContent
         $summarylength = 150;
         $postsperpage = 5;
 
-        if (isset($config['showtags']))
-            $teaserResponse->setVar('showtags', $config['showtags']);
-        if (isset($config['shownumcomments']))
-            $teaserResponse->setVar('shownumcomments', $config['shownumcomments']);
-        if (isset($config['showsocialicons']))
-            $teaserResponse->setVar('showsocialicons', $config['showsocialicons']);
         if (isset($config['postsperpage']))
             $teaserResponse->setVar('postsperpage', $config['postsperpage']);
 
         // Copy accross sub-set of variables from main template
         $globalResponse = BlogCMS::response();
-        $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
-        $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
-        $teaserResponse->setVar('user_is_contributor', $globalResponse->getVar('userIsContributor'));
+        $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('userIsContributor'));
 
         BlogCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
 
@@ -103,6 +95,7 @@ class BlogContent
 
         $teaserResponse->setVar('config', $config);
         $teaserResponse->setVar('post', $post);
+        $teaserResponse->setVar('blog', $this->blog);
 
         return $teaserResponse->write($templatePath, $source, false);
     }

@@ -40,7 +40,7 @@ class LayoutPost extends AbstractPostType
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 
                 if ($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                    $imagesHTML .= "<img src='/blogdata/{$blog->id}/images/{$file}' height='100' data-name='{$filename}' class='selectableimage' />";
+                    $imagesHTML .= "<img src='/blogdata/{$blog->id}/images/sq/{$file}' height='100' data-name='{$filename}' class='selectableimage'>";
                 }
             }
             closedir($handle);

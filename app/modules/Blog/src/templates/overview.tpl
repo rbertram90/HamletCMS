@@ -8,7 +8,17 @@
     </div>
     <div class="one column row">
         <div class="column">
-            {viewPageHeader("{$blog->name}", 'book')}
+
+        <h1 class="ui header cms-page-header">
+            {if $blog->logo}
+                <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="Blog logo">
+            {else}
+                <i class="book icon"></i>
+            {/if}
+            <div class="content">
+                {$blog->name}
+            </div>
+        </h1>
         </div>
     </div>
 
@@ -74,13 +84,14 @@
     <div class="row">
         <div class="column">
             <h3 class="ui header">Recent activity</h3>
+
             {if count($activitylog) > 0}
                 <div class="ui segments">
                     {foreach $activitylog as $activity}
                         <div class="ui segment">
                             <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
                             <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
-                        </div>                
+                        </div>
                     {/foreach}
                 </div>
             {else}

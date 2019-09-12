@@ -1,11 +1,12 @@
-{if $user_is_contributor}
+{if $userIsContributor}
     <div class="ui fluid vertical menu actions">
         <a href="/cms/blog/overview/{$blog->id}" class="item">Dashboard</a>
-        <a href="/cms/posts/create/{$blog->id}" class="item">Create New Post</a>
-        <a href="/cms/posts/manage/{$blog->id}" class="item">Manage Posts</a>
+        <a href="/cms/posts/create/{$blog->id}" class="item">Create new post</a>
+        <a href="/cms/posts/manage/{$blog->id}" class="item">Manage posts</a>
     </div>
 
 {elseif $user_is_logged_in}
+{* todo - re-create favourite blogs behaviour *}
     <div class="ui fluid vertical menu actions">
         <a href="/cms/blog/overview/{$blog->id}" class="item">Dashboard</a>
         {if $is_favourite}

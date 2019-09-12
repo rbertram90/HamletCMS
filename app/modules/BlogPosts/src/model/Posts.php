@@ -433,29 +433,31 @@ class Posts extends RBFactory
      */
     public function countAllTagsByBlog($blogid, $sortby='text')
     {
-        // Get the posts from this blog
         $posts = $this->getAllPostsOnBlog($blogid);
         $res = array();
         
-        // Loop through the posts
         foreach ($posts as $post) {
-            // Create array from CSV string
             $tags = explode(",", $post->tags);
-            // Check this post has tags
             if (count($tags) === 0) continue;
-            // Loop through tags
+            
             foreach ($tags as $tag) {
                 $tag = trim($tag);
-                // Check tag is not empty
-                if(strlen($tag) === 0) continue;
-                // Is this tag already part of the array?
+                
+                if (strlen($tag) === 0) continue;
+
+                // Check if tag already in the array
                 $countadded = $this->searchForTag($res, $tag);
-                // Increment count depending on if it key already exists
-                if($countadded === false) $res[] = [
-                    'text' => strtolower($tag),
-                    'count' => 1
-                ];
-                else $res[$countadded]['count'] += 1;
+
+                if ($countadded === false) {
+                    $res[] = [
+                        'text' => str_replace('+', ' ', $tag),
+                        'slug' => strtolower($tag),
+                        'count' => 1
+                    ];
+                }
+                else {
+                    $res[$countadded]['count'] += 1;
+                }
             }
         }
         
@@ -509,7 +511,7 @@ class Posts extends RBFactory
     private function searchForTag($tags, $tag)
     {
         for ($i = 0; $i < count($tags); $i++) {
-            if($tags[$i]['text'] == strtolower($tag)) return $i;
+            if($tags[$i]['slug'] == strtolower($tag)) return $i;
         }
         return false;
     }

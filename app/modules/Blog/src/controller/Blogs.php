@@ -133,7 +133,10 @@ class Blogs extends GenericController
         $this->response->setVar('panels', $panels);
         $this->response->setVar('blog', $blog);
         $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
-        // $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
+        
+        if (BlogCMS::getModule('EventLogger')) {
+            $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
+        }
 
         BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
         $this->response->setTitle('Dashboard - '. $blog->name);
