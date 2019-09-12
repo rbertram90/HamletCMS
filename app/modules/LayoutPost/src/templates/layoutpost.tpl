@@ -4,14 +4,14 @@
     {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
     {$mode = 'edit'}
-    {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
+    {$postdate = date('d/m/Y H:i', strtotime($post->timestamp))}
 {else}
     {* This must be a new post *}
     {$formAction = "/cms/posts/create/{$blog->id}/layout"}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
     {$mode = 'create'}
-    {$postdate = date('m/d/Y g:ia')}
+    {$postdate = date('d/m/Y H:i')}
 {/if}
 
 <div class="ui grid">

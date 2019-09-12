@@ -10,4 +10,5 @@
 {if $mode == 'edit'}
     $("#allow_comment").val({$post->allowcomments});
 {/if}
+$("#allow_comment").dropdown();
 </script>

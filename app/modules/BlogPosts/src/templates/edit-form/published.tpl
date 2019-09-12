@@ -10,4 +10,5 @@
 {if $mode == 'edit'}
     $("#draft").val({$post->draft});
 {/if}
+$("#draft").dropdown();
 </script>

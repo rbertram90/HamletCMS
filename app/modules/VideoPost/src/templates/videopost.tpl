@@ -3,14 +3,14 @@
     {$formAction = "/cms/posts/edit/{$post->id}"}
     {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
-    {$postdate = date('m/d/Y g:ia', strtotime($post->timestamp))}
+    {$postdate = date('d/m/Y H:i', strtotime($post->timestamp))}
     {$mode = 'edit'}
 {else}
     {* This must be a new post *}
     {$formAction = "/cms/posts/create/{$blog->id}/video"}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
-    {$postdate = date('m/d/Y g:ia')}
+    {$postdate = date('d/m/Y H:i')}
     {$mode = 'create'}
 {/if}
 
