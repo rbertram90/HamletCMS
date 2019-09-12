@@ -101,7 +101,7 @@ class Posts extends GenericController
         // Check action specific permissions
         switch ($action) {
             case 'edit':
-                if ($this->post->author_id != $currentUser['id']) {
+                if ($this->post->author_id !== $currentUser['id']) {
                     $access = $this->modelPermissions->userHasPermission('edit_all_posts', $this->blog->id);
                 }
                 elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
@@ -124,7 +124,7 @@ class Posts extends GenericController
         }
 
         if (!$access) {
-            $this->response->redirect('/cms', '403 Access Denied', 'error');
+            $this->response->redirect('/cms', 'Access Denied', 'error');
         }
     }
 

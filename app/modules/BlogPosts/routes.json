@@ -18,7 +18,7 @@
     {
         "key": "posts.edit",
         "path": "/cms/posts/edit/{POST_ID}",
-        "permissions": ["edit_all_posts"],
+        "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\Posts",
         "action": "edit"
     },
@@ -53,7 +53,7 @@
     {
         "key": "api.posts.update",
         "path": "/api/posts/update",
-        "permissions": ["edit_all_posts"],
+        "permissions": [],
         "controller": "\\rbwebdesigns\\blogcms\\BlogPosts\\Controller\\PostsAPI",
         "action": "edit"
     },

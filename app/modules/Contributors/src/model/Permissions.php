@@ -63,17 +63,18 @@ class Permissions extends RBFactory
      */
     public function userHasPermission($requiredPermissions, $blogID = 0)
     {
+        if (gettype($requiredPermissions) == 'string') $requiredPermissions = [$requiredPermissions];
         if ($blogID == 0) $blogID = BlogCMS::$blogID;
         if (!$groupID = $this->getUserGroup($blogID)) return false;
-
+        
         $group = $this->modelContributorGroups->getGroupById($groupID);
-    
+        
         // Override for all permissions
         if ($group->super == 1) return true;
 
         $userPermissions = JSONHelper::JSONtoArray($group->data);
         $userPermissions['is_contributor'] = $this->modelContributors->isBlogContributor($userID, $blogID);
-        
+
         foreach ($requiredPermissions as $permission) {
             if (!array_key_exists($permission, $userPermissions) || 
               $userPermissions[$permission] == 0) {

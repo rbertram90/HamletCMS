@@ -44,11 +44,7 @@ class AbstractPostType extends GenericController
         $post = $this->model->getPostById($postID);
 
         if (!$post) {
-            $this->response->redirect('/', 'Could not find post', 'error');
-        }
-
-        if (!$this->modelPermissions->userHasPermission('edit_all_posts', $post->blog_id)) {
-            $this->response->redirect('/', 'You do not have permission to edit this post', 'error');
+            $this->response->redirect('/cms', 'Could not find post', 'error');
         }
 
         $blog = $this->modelBlogs->getBlogById($post->blog_id);
