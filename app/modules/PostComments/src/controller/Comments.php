@@ -149,6 +149,12 @@ class Comments extends GenericController
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comments are not allowed here', 'error');
         }
 
+        // Check that the user isn't comment spamming
+        // Maximum 5 posts per minute - any post
+        if ($this->model->count(['user_id' => $currentUser['id'], 'timestamp' => '>' . date('Y-m-d H:i:s', strtotime('-1 minute'))]) >= 5) {
+            $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Maximum 5 comments per minute', 'error');
+        }
+
         // Success
         if ($this->model->addComment($commentText, $post->id, $blogID, $currentUser['id'])) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comment submitted - awaiting approval', 'success');
