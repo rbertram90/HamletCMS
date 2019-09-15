@@ -87,10 +87,16 @@
         $(".post-data-field").each(function() {
             var key, type;
 
-            if ($(this).data('key')) key = $(this).data('key');
-            else key = $(this).attr('name');
+            // Accomodate for semantic UI dropdown
+            var field = $(this);
+            if (this.tagName === 'DIV') {
+                field = $(this).find('select');
+            }
 
-            if ($(this).data('type')) type = $(this).data('type');
+            if (field.data('key')) key = field.data('key');
+            else key = field.attr('name');
+
+            if (field.data('type')) type = field.data('type');
             else type = 'string';
 
             switch (type) {
@@ -99,12 +105,12 @@
                     break;
 
                 case 'int':
-                    formData[key] = parseInt($(this).val());
+                    formData[key] = parseInt(field.val());
                     break;
 
                 default:
                 case 'string':
-                    formData[key] = $(this).val();
+                    formData[key] = field.val();
                     break;
             }
         });
