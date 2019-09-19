@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
-use rbwebdesigns\blogcms\Link;
+use rbwebdesigns\HamletCMS\Link;
 
 class Blog
 {
@@ -19,7 +19,7 @@ class Blog
                         $newLinks[] = $link;
                     }
                 }
-                elseif (!BlogCMS::$blogID && strtolower($link->text) == 'blog actions') {
+                elseif (!HamletCMS::$blogID && strtolower($link->text) == 'blog actions') {
                     // Yes this is not clean - difficult scenario...
                     // don't want to show the "blog actions" label when no blog is selected
                     // @todo maybe add a new key to menu link for dependency?
@@ -28,7 +28,7 @@ class Blog
                     $newLinks[] = $link;
                 }
             }
-            if ($blog = BlogCMS::getActiveBlog()) {
+            if ($blog = HamletCMS::getActiveBlog()) {
                 $viewBlogLink = new MenuLink();
                 $viewBlogLink->text = 'View blog';
                 $viewBlogLink->url = $blog->url();
@@ -44,7 +44,7 @@ class Blog
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `blogs` (
             `id` bigint(10) NOT NULL,
@@ -72,14 +72,14 @@ class Blog
             $createBlogTest->run();
         
             // Run every other test!
-            BlogCMS::runHook('runUnitTests', ['context' => 'blog', 'blogID' => $createBlogTest->blogID]);
+            HamletCMS::runHook('runUnitTests', ['context' => 'blog', 'blogID' => $createBlogTest->blogID]);
         }
 
         // Required tests
         // Overview?
         // Delete Blog - note - this needs to run after everything else...
 
-        // $test = new \rbwebdesigns\blogcms\Blog\tests\();
+        // $test = new \rbwebdesigns\HamletCMS\Blog\tests\();
         // $test->blogID = $blogID;
         // $test->run();
     }

@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\Website\controller;
+namespace rbwebdesigns\HamletCMS\Website\controller;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * Website controller
@@ -16,11 +16,11 @@ use rbwebdesigns\blogcms\BlogCMS;
 class Site
 {
     /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
+     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
+     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
@@ -28,20 +28,20 @@ class Site
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\blogcms\BlogCMSResponse
+     * @var \rbwebdesigns\HamletCMS\HamletCMSResponse
      */
     protected $response;
 
     /**
      * @param \rbwebdesigns\core\Request $request
-     * @param \rbwebdesigns\blogcms\BlogCMSResponse $response
+     * @param \rbwebdesigns\HamletCMS\HamletCMSResponse $response
      */
     public function __construct(&$request, &$response)
     {
         $this->request = $request;
         $this->response = $response;
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
     }
 
     /**

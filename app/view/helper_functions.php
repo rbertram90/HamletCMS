@@ -60,7 +60,7 @@ EOD;
 /**
  * Default menu
  * 
- * @param \rbwebdesigns\blogcms\Menu $menu
+ * @param \rbwebdesigns\HamletCMS\Menu $menu
  * @param string $id
  * @param string $classList
  */

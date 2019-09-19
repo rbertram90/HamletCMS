@@ -1,7 +1,7 @@
 <?php
-    namespace rbwebdesigns\blogcms\tests;
+    namespace rbwebdesigns\HamletCMS\tests;
 
-    use rbwebdesigns\blogcms\BlogCMS;
+    use rbwebdesigns\HamletCMS\HamletCMS;
 
     // 0 = User ID
     if (!isset($argv[1]) || $argv[1] <= 0) {
@@ -21,12 +21,12 @@
     }
     
     // Assign the user passed into the script through CLI
-    BlogCMS::session()->currentUser = [
+    HamletCMS::session()->currentUser = [
         'id' => $argv[1],
         'admin' => 1
     ];
 
     // Run every other test!
-    BlogCMS::runHook('runUnitTests', ['context' => 'root']);
+    HamletCMS::runHook('runUnitTests', ['context' => 'root']);
 
     print "Done!";

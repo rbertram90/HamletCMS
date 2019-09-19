@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class BlogMenus
 {
@@ -10,7 +10,7 @@ class BlogMenus
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
         
         $dbc->query("CREATE TABLE `menus` (
             `id` int(11) NOT NULL,
@@ -42,7 +42,7 @@ class BlogMenus
      */
     public function uninstall()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
         $dbc->query("DROP TABLE IF EXISTS `menuitems`;");
         $dbc->query("DROP TABLE IF EXISTS `menus`;");
     }

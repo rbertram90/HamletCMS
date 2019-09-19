@@ -6,15 +6,15 @@
     "database":
     {
         "server": "localhost",
-        "name": "blog_cms",
+        "name": "hamlet",
         "user": "root",
         "password": ""
     },
     "environment":
     {
         "development_mode": false,
-        "canonical_domain": "http://blogcms.localhost",
-        "root_directory": "/var/www/blog_cms",
+        "canonical_domain": "http://hamlet.localhost",
+        "root_directory": "/var/www/hamlet",
         "timezone": "Europe/London"
     },
     "files":

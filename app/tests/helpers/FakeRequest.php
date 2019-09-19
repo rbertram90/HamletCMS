@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\tests;
+namespace rbwebdesigns\HamletCMS\tests;
 
 use rbwebdesigns\core\Request;
 

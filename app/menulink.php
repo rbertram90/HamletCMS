@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 /**
  * This class provides a structure for menu items within blog cms
@@ -49,12 +49,12 @@ class MenuLink
     {
         if (count($this->permissions) == 0) return true;
 
-        if (!BlogCMS::$blogID) {
+        if (!HamletCMS::$blogID) {
             trigger_error('No Blog ID was set in CMS core when checking menu item permissions', E_USER_WARNING);
             return false;
         }
 
-        $modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        $modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
         return $modelPermissions->userHasPermission($this->permissions);
     }
 

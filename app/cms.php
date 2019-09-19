@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
@@ -12,7 +12,7 @@ use rbwebdesigns\core\JSONHelper;
  * Keeps static global variables to be used everywhere
  * a multi-singleton factory, yey for design patterns!
  */
-class BlogCMS
+class HamletCMS
 {
     /**
      * @var \rbwebdesigns\core\Session
@@ -44,7 +44,7 @@ class BlogCMS
      */
     public static $blogID = 0;
     /**
-     * @var \rbwebdesigns\blogcms\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS
+     * @var \rbwebdesigns\HamletCMS\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS
      */
     public static $blog = null;
     /**
@@ -79,7 +79,7 @@ class BlogCMS
     {
         if (self::$blog) return self::$blog;
         if (self::$blogID) {
-            $blogsModel = self::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+            $blogsModel = self::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
             self::$blog = $blogsModel->getBlogById(self::$blogID);
             return self::$blog;
         }
@@ -132,7 +132,7 @@ class BlogCMS
      *  this is for testing purposes as we need to fake a
      *  request to inject data.
      * 
-     * @return \rbwebdesigns\blogcms\BlogCMSResponse
+     * @return \rbwebdesigns\HamletCMS\HamletCMSResponse
      */
     public static function response($instance = null)
     {
@@ -140,7 +140,7 @@ class BlogCMS
             self::$response = $instance;
         }
         elseif (is_null(self::$response)) {
-            self::$response = new BlogCMSResponse();
+            self::$response = new HamletCMSResponse();
         }
         return self::$response;
     }
@@ -251,7 +251,7 @@ class BlogCMS
 
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
-                $modelPermissions = self::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+                $modelPermissions = self::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
                 $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;
             }

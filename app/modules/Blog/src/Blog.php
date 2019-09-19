@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Blog;
+namespace rbwebdesigns\HamletCMS\Blog;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 class Blog
@@ -28,8 +28,8 @@ class Blog
      */
     public function __construct()
     {
-        $this->contributorsFactory = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->postsFactory = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->contributorsFactory = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->postsFactory = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
     }
 
     /**
@@ -63,7 +63,7 @@ class Blog
     /**
      * Get all the users that can contribute to this blog
      * 
-     * @return \rbwebdesigns\blogcms\User[]
+     * @return \rbwebdesigns\HamletCMS\User[]
      */
     public function contributors()
     {
@@ -81,7 +81,7 @@ class Blog
     public function isContributor($userID = 0)
     {
         if ($userID == 0) {
-            $userID = BlogCMS::session()->currentUser['id'];
+            $userID = HamletCMS::session()->currentUser['id'];
         }
         return $this->contributorsFactory->isBlogContributor($userID, $this->id);
     }
@@ -100,7 +100,7 @@ class Blog
     /**
      * Get the latest post on the blog
      * 
-     * @return rbwebdesigns\blogcms\BlogPosts\Post|bool
+     * @return rbwebdesigns\HamletCMS\BlogPosts\Post|bool
      */
     public function latestPost()
     {

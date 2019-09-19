@@ -1,13 +1,13 @@
 <?php
-namespace rbwebdesigns\blogcms\Blog\controller;
+namespace rbwebdesigns\HamletCMS\Blog\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\AppSecurity;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\DateFormatter;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\blogcms\Menu;
+use rbwebdesigns\HamletCMS\Menu;
 
 /**
  * /app/controller/blog_controller.inc.php
@@ -25,19 +25,19 @@ use rbwebdesigns\blogcms\Menu;
 class Blogs extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
+     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
+     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
-     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
+     * @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors
      */
     protected $modelContributors;
     /**
-     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
+     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
      */
     protected $modelUsers;
     /**
@@ -45,7 +45,7 @@ class Blogs extends GenericController
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\blogcms\BlogCMSResponse
+     * @var \rbwebdesigns\HamletCMS\HamletCMSResponse
      */
     protected $response;
 
@@ -54,16 +54,16 @@ class Blogs extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
-        $this->modelActivityLog = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelContributorGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelActivityLog = HamletCMS::model('\rbwebdesigns\HamletCMS\EventLogger\model\EventLogger');
 
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
     }
 
     public function defaultAction()
@@ -76,18 +76,18 @@ class Blogs extends GenericController
      */
     public function home()
     {
-        $user = BlogCMS::session()->currentUser;
+        $user = HamletCMS::session()->currentUser;
         $blogs = $this->modelContributors->getContributedBlogs($user['id']);
         
         // Add in extra information
-        foreach($blogs as $key => $blog) {
+        foreach ($blogs as $key => $blog) {
             // Get all menu items
             $blogActions = new Menu('bloglist');
-            BlogCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
+            HamletCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
             $blogs[$key]->actions = $blogActions->getLinks();
         }
         
-        BlogCMS::$activeMenuLink = '/cms/blog';
+        HamletCMS::$activeMenuLink = '/cms/blog';
 
         // Add to template
         $this->response->setVar('blogs', $blogs);
@@ -125,20 +125,20 @@ class Blogs extends GenericController
 
         // Dynamically get stats for dashboard
         $counts = [];
-        BlogCMS::runHook('dashboardCounts', ['blog' => $blog, 'counts' => &$counts]);
+        HamletCMS::runHook('dashboardCounts', ['blog' => $blog, 'counts' => &$counts]);
         $this->response->setVar('counts', $counts);
         
         $panels = [];
-        BlogCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
+        HamletCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
         $this->response->setVar('blog', $blog);
         $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
         
-        if (BlogCMS::getModule('EventLogger')) {
+        if (HamletCMS::getModule('EventLogger')) {
             $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
         }
 
-        BlogCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
+        HamletCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
         $this->response->setTitle('Dashboard - '. $blog->name);
         $this->response->write('overview.tpl', 'Blog');
     }
@@ -150,22 +150,22 @@ class Blogs extends GenericController
      */
     public function runCreateBlog()
     {
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
 
         // Check we've got the root.inc.php file under blogdata root
         if (!file_exists(SERVER_PATH_BLOGS .'/root.inc.php')) {
             // Replace contents
             $fileContents = file_get_contents(SERVER_ROOT.'/app/root.default.php');
 
-            $fileContents = str_replace("{SERVER_ROOT}", BlogCMS::config()['environment']['root_directory'], $fileContents);
-            $fileContents = str_replace("{CMS_DOMAIN}", BlogCMS::config()['environment']['canonical_domain'], $fileContents);
+            $fileContents = str_replace("{SERVER_ROOT}", HamletCMS::config()['environment']['root_directory'], $fileContents);
+            $fileContents = str_replace("{CMS_DOMAIN}", HamletCMS::config()['environment']['canonical_domain'], $fileContents);
 
             // Copy file
             $copy = file_put_contents(SERVER_PATH_BLOGS.'/root.inc.php', $fileContents);
             if (!$copy) die("Failed to create root file, please check directory permissions for: ".SERVER_PATH_BLOGS);
         }
 
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
         $limit = 999;
         if (isset($config['general']) && isset($config['general']['maxUserBlogLimit'])) {
             $limit = $config['general']['maxUserBlogLimit'];
@@ -208,7 +208,7 @@ class Blogs extends GenericController
      */
     public function delete()
     {
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
         $blogID = $this->request->getUrlParameter(1);
 
         if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
@@ -233,7 +233,7 @@ class Blogs extends GenericController
      */
     protected function runDeleteBlog($blog)
     {
-        BlogCMS::runHook('onDeleteBlog', ['blog' => $blog]);
+        HamletCMS::runHook('onDeleteBlog', ['blog' => $blog]);
 
         // Delete posts
         $this->modelContributors->delete(['blog_id' => $blog->id]);

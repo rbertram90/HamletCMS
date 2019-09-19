@@ -1,26 +1,26 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class BlogPosts
 {
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
     }
 
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
             $link = new MenuLink();
-            $link->url = BlogCMS::route('posts.manage', [
+            $link->url = HamletCMS::route('posts.manage', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Manage posts';
             $args['menu']->addLink($link);
 
             $link = new MenuLink();
-            $link->url = BlogCMS::route('posts.create', [
+            $link->url = HamletCMS::route('posts.create', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Create new post';
@@ -33,11 +33,11 @@ class BlogPosts
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `posts` (
             `id` int(8) NOT NULL,
-            `class` varchar(255) NOT NULL DEFAULT 'rbwebdesigns\\blogcms\\BlogPosts\\Post',
+            `class` varchar(255) NOT NULL DEFAULT 'rbwebdesigns\\HamletCMS\\BlogPosts\\Post',
             `title` varchar(255) NOT NULL,
             `summary` text NOT NULL,
             `content` text NOT NULL,
@@ -100,7 +100,7 @@ class BlogPosts
             $deleteTest->postToDelete = $cloneTest->postID;
             $deleteTest->run();
 
-            BlogCMS::runHook('runUnitTests', ['context' => 'post', 'blogID' => $blogID, 'post' => $test->postID]);
+            HamletCMS::runHook('runUnitTests', ['context' => 'post', 'blogID' => $blogID, 'post' => $test->postID]);
         }
     }
 
@@ -109,7 +109,7 @@ class BlogPosts
      */
     public function dashboardCounts($args)
     {
-        $modelPostViews = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\PostViews');
+        $modelPostViews = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\PostViews');
 
         $args['counts']['posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
         $args['counts']['totalviews'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);

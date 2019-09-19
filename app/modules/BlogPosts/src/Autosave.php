@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogPosts;
+namespace rbwebdesigns\HamletCMS\BlogPosts;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class Autosave
 {
@@ -20,7 +20,7 @@ class Autosave
     /** @var string $date_last_saved */
     public $date_last_saved;
 
-    /** @var rbwebdesigns\blogcms\BlogPosts\model\Posts $factory */
+    /** @var rbwebdesigns\HamletCMS\BlogPosts\model\Posts $factory */
     protected $factory;
 
     /**
@@ -31,7 +31,7 @@ class Autosave
      */
     public function __construct($data = [])
     {
-        $this->factory = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
+        $this->factory = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
 
         foreach ($data as $key => $item) {
             $this->$key = $item;

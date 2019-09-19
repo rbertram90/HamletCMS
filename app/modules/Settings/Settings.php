@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class Settings
 {
@@ -9,7 +9,7 @@ class Settings
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
-            $link->url = BlogCMS::route('settings.menu', [
+            $link->url = HamletCMS::route('settings.menu', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Settings';

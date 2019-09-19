@@ -1,10 +1,10 @@
 <?php
 
-namespace rbwebdesigns\blogcms\SiteAdmin\controller;
+namespace rbwebdesigns\HamletCMS\SiteAdmin\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
-use rbwebdesigns\blogcms\Module;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
+use rbwebdesigns\HamletCMS\Module;
 
 class SiteAdmin extends GenericController
 {
@@ -15,13 +15,13 @@ class SiteAdmin extends GenericController
         parent::__construct();
 
         // Important check if user is admin!
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
 
         if (!$currentUser || $currentUser['admin'] != 1) {
             $this->response->redirect('/');
         }
 
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\SiteAdmin\model\Modules');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\SiteAdmin\model\Modules');
     }
 
     public function modules()
@@ -33,11 +33,11 @@ class SiteAdmin extends GenericController
 
     public function reloadCache($redirect = true)
     {
-        BlogCMS::generateRouteCache();
-        BlogCMS::generateMenuCache();
-        BlogCMS::generatePermissionCache();
-        BlogCMS::generateTemplateCache();
-        BlogCMS::runHook('onReloadCache', []);
+        HamletCMS::generateRouteCache();
+        HamletCMS::generateMenuCache();
+        HamletCMS::generatePermissionCache();
+        HamletCMS::generateTemplateCache();
+        HamletCMS::runHook('onReloadCache', []);
 
         if ($redirect) {
             $location = $_SERVER['HTTP_REFERER'] ?: '/cms/admin/modules';
@@ -107,7 +107,7 @@ class SiteAdmin extends GenericController
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\blogcms\\'. $module->name;
+            $className = '\\rbwebdesigns\\HamletCMS\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 
@@ -149,7 +149,7 @@ class SiteAdmin extends GenericController
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\blogcms\\'. $module->name;
+            $className = '\\rbwebdesigns\\HamletCMS\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 
@@ -185,7 +185,7 @@ class SiteAdmin extends GenericController
         $this->model->update(['name' => $module->key], ['enabled' => 1]);
 
         // Run hook
-        BlogCMS::runHook('onModuleInstalled', ['module' => $module]);
+        HamletCMS::runHook('onModuleInstalled', ['module' => $module]);
 
         $this->response->redirect('/cms/admin/modules', 'Module installed', 'success');
     }
@@ -196,7 +196,7 @@ class SiteAdmin extends GenericController
     public function uninstallModule()
     {
         $moduleName = $this->request->getUrlParameter(1);
-        $module = BlogCMS::getModule($moduleName);
+        $module = HamletCMS::getModule($moduleName);
 
         // Run uninstall method (if exists)
         if (!is_null($module) && !is_null($module->instance)) {
@@ -208,7 +208,7 @@ class SiteAdmin extends GenericController
         // Update module database
         $this->model->update(['name' => $module->key], ['enabled' => 0]);
 
-        BlogCMS::runHook('onModuleUninstalled', ['module' => $module]);
+        HamletCMS::runHook('onModuleUninstalled', ['module' => $module]);
 
         $this->response->redirect('/cms/admin/modules', 'Module uninstalled', 'success');
     }

@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\blogcms\Files\controller;
+namespace rbwebdesigns\HamletCMS\Files\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\ImageUpload;
 
 class FileSettings extends GenericController
@@ -12,14 +12,14 @@ class FileSettings extends GenericController
     {
         parent::__construct();
 
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->blog = HamletCMS::getActiveBlog();
 
         if (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
     }
 
     public function settings()

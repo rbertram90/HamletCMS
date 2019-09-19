@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms\Settings\controller;
+namespace rbwebdesigns\HamletCMS\Settings\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
-use rbwebdesigns\blogcms\Menu;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
+use rbwebdesigns\HamletCMS\Menu;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\ImageUpload;
@@ -16,13 +16,13 @@ use rbwebdesigns\core\ImageUpload;
  */
 class Settings extends GenericController
 {
-    /** @var \rbwebdesigns\blogcms\Blog\model\Blogs */
+    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
-    /** @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts */
+    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
-    /** @var \rbwebdesigns\blogcms\Contributors\model\Contributors */
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
     /** @var \rbwebdesigns\core\Request */
@@ -38,13 +38,13 @@ class Settings extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
 
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
 
         $this->setup();
     }
@@ -59,14 +59,14 @@ class Settings extends GenericController
      */
     protected function setup()
     {
-        $currentUser = BlogCMS::session()->currentUser;
-        $this->blog = BlogCMS::getActiveBlog();
+        $currentUser = HamletCMS::session()->currentUser;
+        $this->blog = HamletCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
 
         $access = true;
 
         // Check the user is a contributor of the blog to begin with
-        if (!BlogCMS::$userGroup) {
+        if (!HamletCMS::$userGroup) {
             $access = false;
         }
         elseif (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
@@ -77,7 +77,7 @@ class Settings extends GenericController
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
     }
     
     /**
@@ -87,7 +87,7 @@ class Settings extends GenericController
     {
         $settingsMenu = new Menu('settings');
 
-        BlogCMS::runHook('onGenerateMenu', ['id' => 'settings', 'menu' => &$settingsMenu]);
+        HamletCMS::runHook('onGenerateMenu', ['id' => 'settings', 'menu' => &$settingsMenu]);
 
         $this->response->setVar('menu', $settingsMenu->getLinks());
         $this->response->setVar('blog', $this->blog);
@@ -104,7 +104,7 @@ class Settings extends GenericController
         if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
         $this->response->setTitle('General Settings - ' . $this->blog->name);
-        $this->response->setVar('categorylist', BlogCMS::config()['blogcategories']);
+        $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
         $this->response->write('general.tpl', 'Settings');
     }
 
@@ -241,11 +241,11 @@ class Settings extends GenericController
                     $blogData['logo'] = 'logo.'. $fileType;
                 }
                 else {
-                    BlogCMS::session()::addMessage('Error while saving logo file', 'error');
+                    HamletCMS::session()::addMessage('Error while saving logo file', 'error');
                 }
             }
             catch(\Exception $e) {
-                BlogCMS::session()::addMessage($e->getMessage(), 'error');
+                HamletCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
         $icon = $this->request->getFile('fld_favicon');
@@ -260,18 +260,18 @@ class Settings extends GenericController
                     $blogData['icon'] = 'icon.'. $fileType;
                 }
                 else {
-                    BlogCMS::session()::addMessage('Error while saving icon file', 'error');
+                    HamletCMS::session()::addMessage('Error while saving icon file', 'error');
                 }
             }
             catch(\Exception $e) {
-                BlogCMS::session()::addMessage($e->getMessage(), 'error');
+                HamletCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
 
         $update = $this->modelBlogs->update(['id' => $this->blog->id], $blogData);
 
         if($update) {
-            BlogCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);
+            HamletCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);
             $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Blog settings updated", "success");
         }
         else {
@@ -340,7 +340,7 @@ class Settings extends GenericController
             $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Unable to save footer template file', 'error');
         }
 
-        BlogCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
+        HamletCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
         $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Footer updated', 'success');
     }
     
@@ -382,7 +382,7 @@ class Settings extends GenericController
             $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Unable to save header template file to '.$templatePath, 'error');
         }
 
-        BlogCMS::runHook('onHeaderSettingsUpdated', ['blog' => $this->blog]);
+        HamletCMS::runHook('onHeaderSettingsUpdated', ['blog' => $this->blog]);
         $this->response->redirect('/cms/settings/header/' . $this->blog->id, 'Header updated', 'success');
     }
         
@@ -432,7 +432,7 @@ class Settings extends GenericController
             unlink(SERVER_PATH_BLOGS . "/{$this->blog->id}/widgets.json");
         }
 
-        BlogCMS::runHook('onTemplateChanged', ['blog' => $this->blog]);
+        HamletCMS::runHook('onTemplateChanged', ['blog' => $this->blog]);
         $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template changed', 'success');
     }
     
@@ -446,7 +446,7 @@ class Settings extends GenericController
 
         if (is_dir(SERVER_PATH_BLOGS . "/{$this->blog->id}") &&
             file_put_contents(SERVER_PATH_BLOGS. "/{$this->blog->id}/default.css", $css_string)) {
-            BlogCMS::runHook('onStylesheetUpdated', ['blog' => $this->blog]);
+            HamletCMS::runHook('onStylesheetUpdated', ['blog' => $this->blog]);
             $this->response->redirect("/cms/settings/stylesheet/{$this->blog->id}", "Stylesheet updated", "success");
         }
         else {

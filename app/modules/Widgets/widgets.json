@@ -4,7 +4,7 @@
         "name": "Custom HTML",
         "description": "Static HTML code",
         "version": 1.0,
-        "form": "rbwebdesigns\\blogcms\\Widgets\\forms\\ConfigureCustomHTML",
-        "class": "rbwebdesigns\\blogcms\\Widgets\\widgets\\CustomHTML"
+        "form": "rbwebdesigns\\HamletCMS\\Widgets\\forms\\ConfigureCustomHTML",
+        "class": "rbwebdesigns\\HamletCMS\\Widgets\\widgets\\CustomHTML"
     }
 ]

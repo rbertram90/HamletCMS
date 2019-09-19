@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use Athens\CSRF;
 
@@ -11,8 +11,8 @@ use Athens\CSRF;
     require_once __DIR__ . '/../../app/setup.inc.php';
 
         
-    $request = BlogCMS::request();
-    $response = BlogCMS::response();
+    $request = HamletCMS::request();
+    $response = HamletCMS::response();
 
     $modules = [
         'API' => ['optional' => 0],
@@ -43,7 +43,7 @@ use Athens\CSRF;
             if (!$blogdata) die('Unable to create directory for blog data - check /public directory permissions');
         }
 
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         // Create modules table
         $dbc->query("CREATE TABLE `modules` (
@@ -89,7 +89,7 @@ use Athens\CSRF;
             $classPath = SERVER_ROOT .'/app/modules/'. $key .'/'. $key .'.php';
             if (file_exists($classPath)) {
                 require_once $classPath;
-                $className = '\\rbwebdesigns\\blogcms\\'. $key;
+                $className = '\\rbwebdesigns\\HamletCMS\\'. $key;
                 $class = new $className();
                 if (method_exists($class, 'install')) {
                     $class->install();
@@ -102,17 +102,17 @@ use Athens\CSRF;
                 'locked' => !$module['optional']
             ]);
 
-            BlogCMS::registerModule($key);
+            HamletCMS::registerModule($key);
         }
 
-        BlogCMS::generateRouteCache();
-        BlogCMS::generateMenuCache();
-        BlogCMS::generatePermissionCache();
-        BlogCMS::generateTemplateCache();
+        HamletCMS::generateRouteCache();
+        HamletCMS::generateMenuCache();
+        HamletCMS::generatePermissionCache();
+        HamletCMS::generateTemplateCache();
 
-        BlogCMS::runHook('onReloadCache', []);
+        HamletCMS::runHook('onReloadCache', []);
 
-        // $adminController = new \rbwebdesigns\blogcms\SiteAdmin\controller\SiteAdmin();
+        // $adminController = new \rbwebdesigns\HamletCMS\SiteAdmin\controller\SiteAdmin();
         // $adminController->reloadCache(false);
 
         // Create admin user
@@ -128,7 +128,7 @@ use Athens\CSRF;
             'admin'           => 1
         ];
 
-        $modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+        $modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
 
         // Misc folders
         if (!file_exists(SERVER_AVATAR_FOLDER)) {
@@ -154,8 +154,8 @@ use Athens\CSRF;
         $response->redirect('/cms', 'Installation complete', 'success');
     }
 
-    $response->setVar('messages', BlogCMS::session()->getAllMessages());
-    $response->setVar('config', BlogCMS::config());
+    $response->setVar('messages', HamletCMS::session()->getAllMessages());
+    $response->setVar('config', HamletCMS::config());
     $response->setVar('modules', $modules);
     $response->write('install.tpl');
 

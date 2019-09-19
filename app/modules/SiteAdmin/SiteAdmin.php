@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class SiteAdmin
 {

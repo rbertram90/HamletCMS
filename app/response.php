@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Response;
 use rbwebdesigns\core\JSONHelper;
 
-class BlogCMSResponse extends Response
+class HamletCMSResponse extends Response
 {
     protected $smarty;
 
@@ -16,9 +16,9 @@ class BlogCMSResponse extends Response
             'main' => SERVER_ROOT.'/app/view/smarty/'
         ];
 
-        $cacheDir = BlogCMS::getCacheDirectory();
+        $cacheDir = HamletCMS::getCacheDirectory();
         if (!is_file($cacheDir. '/templates.json')) {
-            BlogCMS::generateTemplateCache();
+            HamletCMS::generateTemplateCache();
         }
         $templateCache = JSONHelper::jsonFileToArray($cacheDir. '/templates.json');
         foreach ($templateCache as $key => $dir) {
@@ -35,7 +35,7 @@ class BlogCMSResponse extends Response
      */
     public function write($templatePath, $source='main', $output = true)
     {
-        $session = BlogCMS::session();
+        $session = HamletCMS::session();
         $currentUser = $session->currentUser;
         
         // Don't validate if the full file path has been passed in - this
@@ -66,7 +66,7 @@ class BlogCMSResponse extends Response
      */
     public function writeTemplate($templatePath, $source='main')
     {
-        $session = BlogCMS::session();
+        $session = HamletCMS::session();
 
         $this->setVar('scripts', $this->prepareScripts());
         $this->setVar('stylesheets', $this->prepareStylesheets());

@@ -1,21 +1,21 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Widgets\controller;
+namespace rbwebdesigns\HamletCMS\Widgets\controller;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\HamletCMS\GenericController;
 
 class WidgetsView extends GenericController
 {
     /**
-     * @var rbwebdesigns\blogcms\Blog;
+     * @var rbwebdesigns\HamletCMS\Blog;
      */
     protected $blog;
 
     public function __construct()
     {
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->blog = HamletCMS::getActiveBlog();
         parent::__construct();
     }
 
@@ -31,7 +31,7 @@ class WidgetsView extends GenericController
         $widgets = [];
 
         if (CUSTOM_DOMAIN) {
-            $config = BlogCMS::config();
+            $config = HamletCMS::config();
             $cmsDomain = $config['environment']['canonical_domain'];
         }
         else {
@@ -72,8 +72,8 @@ class WidgetsView extends GenericController
         $section = $this->request->getString('section');
         $widget = $this->request->getString('widget');
 
-        BlogCMS::$blogID = $blog;
-        $this->blog = BlogCMS::getActiveBlog();
+        HamletCMS::$blogID = $blog;
+        $this->blog = HamletCMS::getActiveBlog();
 
         $widgetsConfig = $this->getWidgetConfig();
         
@@ -84,7 +84,7 @@ class WidgetsView extends GenericController
             die('widget "'.$widget.'" not found');
         }
 
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
         if (CUSTOM_DOMAIN) {
             $cmsDomain = $config['environment']['canonical_domain'];
             $pathPrefix = '';

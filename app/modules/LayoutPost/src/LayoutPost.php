@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\LayoutPost;
+namespace rbwebdesigns\HamletCMS\LayoutPost;
 
-use rbwebdesigns\blogcms\BlogPosts\Post;
+use rbwebdesigns\HamletCMS\BlogPosts\Post;
 
 class LayoutPost extends Post {
     

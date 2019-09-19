@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use Michelf\Markdown;
 
@@ -39,26 +39,26 @@ class VideoPost
     }
 
     public function onBeforePostSaved(&$args) {
-        $request = BlogCMS::request();
+        $request = HamletCMS::request();
         if ($args['post']['type'] == 'video') {
             $args['post']['videosource'] = $request->getString('videosource', 'youtube');
             $args['post']['videoid'] = $request->getString('videoid', '');
-            $args['post']['class'] = 'rbwebdesigns\\blogcms\\VideoPost\\VideoPost';
+            $args['post']['class'] = 'rbwebdesigns\\HamletCMS\\VideoPost\\VideoPost';
         }
     }
 
     public function onBeforeAutosave(&$args) {
-        $request = BlogCMS::request();
+        $request = HamletCMS::request();
         if ($args['post']['type'] == 'video') {
             $args['post']['videosource'] = $request->getString('videosource', 'youtube');
             $args['post']['videoid'] = $request->getString('videoid', '');
-            // $args['post']['class'] = 'rbwebdesigns\\blogcms\\VideoPost\\VideoPost'; // needed?
+            // $args['post']['class'] = 'rbwebdesigns\\HamletCMS\\VideoPost\\VideoPost'; // needed?
         }
     }
 
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
         $dbc->query("ALTER TABLE `posts` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
         $dbc->query("ALTER TABLE `postautosaves` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
     }
@@ -70,7 +70,7 @@ class VideoPost
      */
     public function uninstall()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
         $dbc->query("ALTER TABLE `posts` DROP COLUMN `videoid`, DROP COLUMN `videosource`;");
         $dbc->query("ALTER TABLE `postautosaves` DROP COLUMN `videoid`, DROP COLUMN `videosource`;");
     }

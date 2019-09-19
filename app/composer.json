@@ -1,5 +1,5 @@
 {
-  "name": "rbwebdesigns/blogcms",
+  "name": "rbwebdesigns/HamletCMS",
   "description": "PHP Blog content management system, using a modular MVC framework with Smarty templates",
   "repositories":
   [

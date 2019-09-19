@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\VideoPost;
+namespace rbwebdesigns\HamletCMS\VideoPost;
 
-use rbwebdesigns\blogcms\BlogPosts\Autosave;
+use rbwebdesigns\HamletCMS\BlogPosts\Autosave;
 
 class VideoPostAutosave extends Autosave {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 /**
  * class PostComments
@@ -13,7 +13,7 @@ class PostComments
 
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\PostComments\model\Comments');
     }
 
     /**
@@ -22,7 +22,7 @@ class PostComments
     public function content($args)
     {
         if ($args['key'] == 'userProfile') {
-            $tempResponse = new BlogCMSResponse();
+            $tempResponse = new HamletCMSResponse();
             $tempResponse->setVar('comments', $this->model->getCommentsByUser($args['user']->id, 0));
             $args['content'] .= $tempResponse->write('recentcommentsbyuser.tpl', 'PostComments', false);
         }
@@ -33,7 +33,7 @@ class PostComments
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `comments` (
             `id` int(8) NOT NULL,
@@ -58,7 +58,7 @@ class PostComments
     public function uninstall()
     {
         // delete database
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
         $dbc->query("DROP TABLE IF EXISTS `comments`;");
 
         $dbc->query("ALTER TABLE `posts` DROP COLUMN `allowcomments`;");
@@ -70,8 +70,8 @@ class PostComments
      */
     public function modelSchema($args) {
         $targetClasses = [
-            'rbwebdesigns\blogcms\BlogPosts\model\Autosaves',
-            'rbwebdesigns\blogcms\BlogPosts\model\Posts'
+            'rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves',
+            'rbwebdesigns\HamletCMS\BlogPosts\model\Posts'
         ];
 
         if (in_array(get_class($args['model']), $targetClasses) !== FALSE) {
@@ -92,9 +92,9 @@ class PostComments
      */
     public function dashboardPanels($args)
     {
-        $tempResponse = new BlogCMSResponse();
+        $tempResponse = new HamletCMSResponse();
         $tempResponse->setVar('blog', $args['blog']);
-        $tempResponse->setVar('currentUser', BlogCMS::session()->currentUser);
+        $tempResponse->setVar('currentUser', HamletCMS::session()->currentUser);
         $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']->id, 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
@@ -124,7 +124,7 @@ class PostComments
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
-            $link->url = BlogCMS::route('comments.all', [
+            $link->url = HamletCMS::route('comments.all', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Comments';
@@ -137,7 +137,7 @@ class PostComments
      */
     public function onBeforePostSaved($args)
     {
-        $request = BlogCMS::request();
+        $request = HamletCMS::request();
         $args['post']['allowcomments'] = $request->getInt('comments');
     }
 
@@ -145,7 +145,7 @@ class PostComments
      * Save allowcomments flag into posts table when autosave created/updated
      */
     public function onBeforeAutosave(&$args) {
-        $request = BlogCMS::request();
+        $request = HamletCMS::request();
         $args['post']['allowcomments'] = $request->getInt('comments');
     }
 

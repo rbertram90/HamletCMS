@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\blogcms\BlogView\controller\BlogContent;
+use rbwebdesigns\HamletCMS\BlogView\controller\BlogContent;
 use Athens\CSRF;
 
 /**
@@ -40,15 +40,15 @@ CSRF::init();
     }
 
     // Feed the blog ID to CMS class
-    BlogCMS::$blogID = BLOG_KEY;
+    HamletCMS::$blogID = BLOG_KEY;
 
-    $modelPermissions = BlogCMS::model('rbwebdesigns\blogcms\Contributors\model\Permissions');
-    BlogCMS::$userGroup = $modelPermissions->getUserGroup(BLOG_KEY);
+    $modelPermissions = HamletCMS::model('rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+    HamletCMS::$userGroup = $modelPermissions->getUserGroup(BLOG_KEY);
 
-    $request = BlogCMS::request();
-    $response = BlogCMS::response();
-    $blog = BlogCMS::getActiveBlog();
-    $config = BlogCMS::config();
+    $request = HamletCMS::request();
+    $response = HamletCMS::response();
+    $blog = HamletCMS::getActiveBlog();
+    $config = HamletCMS::config();
     $page_controller = new BlogContent(BLOG_KEY);
     
     if (CUSTOM_DOMAIN) {
@@ -63,7 +63,7 @@ CSRF::init();
         $blogDir = "/blogdata/{$blog->id}";
     }
 
-    $session = BlogCMS::session();
+    $session = HamletCMS::session();
 
     // Check if we are logged in
     if (gettype($session->currentUser) == 'array') {
@@ -89,10 +89,10 @@ CSRF::init();
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
 
-    $widgetsController = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView();
+    $widgetsController = new \rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView();
     $response->setVar('widgets', $widgetsController->generatePlaceholders());
     
-    $response->setVar('user_is_contributor', BlogCMS::$userGroup !== false);
+    $response->setVar('user_is_contributor', HamletCMS::$userGroup !== false);
     $response->setVar('user_is_logged_in', USER_AUTHENTICATED);
     $response->setVar('page_headerbackground', $page_controller->generateHeaderBackground());
     $response->setVar('header_content', $page_controller->generateHeader());
@@ -117,7 +117,7 @@ CSRF::init();
     // Store any output in a buffer
     ob_start();
     
-    if ($route = BlogCMS::pathMatch()) {
+    if ($route = HamletCMS::pathMatch()) {
         // New dynamic routes
         $contentController = new $route['controller']();
         $contentController->{$route['action']}();

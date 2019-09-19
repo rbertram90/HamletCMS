@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\blogcms\Files\controller;
+namespace rbwebdesigns\HamletCMS\Files\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\ImageUpload;
 
@@ -13,9 +13,9 @@ class Files extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->blog = HamletCMS::getActiveBlog();
 
         parent::__construct();
     }
@@ -62,7 +62,7 @@ class Files extends GenericController
      */
     public function manage(&$request, &$response)
     {
-        if(!$blog = BlogCMS::getActiveBlog()) {
+        if(!$blog = HamletCMS::getActiveBlog()) {
             $response->redirect('/cms', 'Could not find blog', 'error');
         }
         elseif(!$this->modelContributors->canWrite($blog->id)) {
@@ -87,13 +87,13 @@ class Files extends GenericController
                 }
             }
         }
-        BlogCMS::$activeMenuLink = '/cms/files/manage/'. $blog->id;
+        HamletCMS::$activeMenuLink = '/cms/files/manage/'. $blog->id;
         
         $response->setVar('blog', $blog);
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
         $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);        
         $response->setTitle('Manage Files - ' . $blog->name);
         $response->write('manage.tpl', 'Files');
@@ -105,7 +105,7 @@ class Files extends GenericController
      */
     public function delete()
     {
-        $blog = BlogCMS::getActiveBlog();
+        $blog = HamletCMS::getActiveBlog();
         
         if (is_null($blog)) {
             $this->response->redirect('/cms', 'Could not find blog', 'error');
@@ -156,7 +156,7 @@ class Files extends GenericController
     {
         $request->isAjax = true;
         $blog = $this->blog;
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
         $maxDirectorySize = $config['files']['upload_bytes_limit'];
         
         if (!$blog && $blogID = $request->getInt('blogid')) {

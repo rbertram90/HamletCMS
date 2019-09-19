@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogMenus\widgets;
+namespace rbwebdesigns\HamletCMS\BlogMenus\widgets;
 
-use rbwebdesigns\blogcms\Widgets\AbstractWidget;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class MenuWidget extends AbstractWidget
 {
@@ -12,7 +12,7 @@ class MenuWidget extends AbstractWidget
     {   
         $menuID = $this->config()['menu'];
 
-        $menusModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogMenus\model\Menus');
+        $menusModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
         $this->response->setVar('menu', $menusModel->getMenuById($menuID));
         $this->response->write('menu.tpl', 'BlogMenus');
     }

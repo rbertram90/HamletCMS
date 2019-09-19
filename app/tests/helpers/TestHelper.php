@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms\tests;
+namespace rbwebdesigns\HamletCMS\tests;
 
 class TestHelper
 {

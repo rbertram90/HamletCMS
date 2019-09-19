@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\EventLogger\model;
+namespace rbwebdesigns\HamletCMS\EventLogger\model;
 
 use rbwebdesigns\core\model\RBFactory;
 

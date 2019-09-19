@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Contributors;
+namespace rbwebdesigns\HamletCMS\Contributors;
 
 class Contributor
 {

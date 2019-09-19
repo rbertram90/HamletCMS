@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\JSONHelper;
 
@@ -27,7 +27,7 @@ class Menu
     }
 
     /**
-     * @param \rbwebdesigns\blogcms\MenuLink $link
+     * @param \rbwebdesigns\HamletCMS\MenuLink $link
      * 
      * @return self
      */
@@ -60,7 +60,7 @@ class Menu
         $cacheFilePath = SERVER_ROOT . '/cache/menus.json';
 
         if (!file_exists($cacheFilePath)) {
-            BlogCMS::generateMenuCache();
+            HamletCMS::generateMenuCache();
         }
 
         $cache = JSONHelper::JSONFileToArray($cacheFilePath);
@@ -72,7 +72,7 @@ class Menu
 
             switch ($linkData['type']) {
                 case 'route':
-                    $link->url = BlogCMS::route($linkData['route']);
+                    $link->url = HamletCMS::route($linkData['route']);
                     if (!$link->url) continue 2;
                     break;
             }
@@ -86,7 +86,7 @@ class Menu
             if (array_key_exists('icon', $linkData)) {
                 $link->icon = $linkData['icon'];
             }
-            if (BlogCMS::$activeMenuLink && $link->url == BlogCMS::$activeMenuLink) {
+            if (HamletCMS::$activeMenuLink && $link->url == HamletCMS::$activeMenuLink) {
                 $link->active = true;
             }
 

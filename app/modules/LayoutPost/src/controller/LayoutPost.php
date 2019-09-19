@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\LayoutPost\controller;
+namespace rbwebdesigns\HamletCMS\LayoutPost\controller;
 
-use rbwebdesigns\blogcms\BlogPosts\controller\AbstractPostType;
+use rbwebdesigns\HamletCMS\BlogPosts\controller\AbstractPostType;
 
 class LayoutPost extends AbstractPostType
 {

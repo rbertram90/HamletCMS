@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Request;
-use rbwebdesigns\blogcms\BlogCMSResponse;
-use rbwebdesigns\blogcms\Website\controller\Site;
+use rbwebdesigns\HamletCMS\HamletCMSResponse;
+use rbwebdesigns\HamletCMS\Website\controller\Site;
 
 
 /****************************************************************
@@ -21,7 +21,7 @@ use rbwebdesigns\blogcms\Website\controller\Site;
     $request = new Request([
         'defaultControllerName' => 'home'
     ]);
-    $response = new BlogCMSResponse();
+    $response = new HamletCMSResponse();
 
 
     // Add default stylesheet(s)
@@ -69,7 +69,7 @@ use rbwebdesigns\blogcms\Website\controller\Site;
 
     if ($action == 'widgets') {
         // @todo make this go through proper routing system
-        $controller = new \rbwebdesigns\blogcms\Widgets\controller\WidgetsView($request, $response);
+        $controller = new \rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView($request, $response);
         $action = 'generateWidget';
         $applyTemplate = false;
     }

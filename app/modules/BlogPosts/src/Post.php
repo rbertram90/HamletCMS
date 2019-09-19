@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogPosts;
+namespace rbwebdesigns\HamletCMS\BlogPosts;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class Post
 {
@@ -36,13 +36,13 @@ class Post
 
     protected $customFunctions = [];
 
-    /** @var \rbwebdesigns\blogcms\UserAccounts\User|null */
+    /** @var \rbwebdesigns\HamletCMS\UserAccounts\User|null */
     protected $author = null;
 
-    /** @var \rbwebdesigns\blogcms\Blog\Blog|null */
+    /** @var \rbwebdesigns\HamletCMS\Blog\Blog|null */
     protected $blog = null;
 
-    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $factory;
 
     /**
@@ -53,14 +53,14 @@ class Post
      */
     public function __construct($data = [])
     {
-        $this->factory = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->factory = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
 
         foreach ($data as $key => $item) {
             $this->$key = $item;
         }
 
         // get callable functions from external modules
-        BlogCMS::runHook('onPostConstruct', ['post' => $this, 'functions' => &$this->customFunctions]);
+        HamletCMS::runHook('onPostConstruct', ['post' => $this, 'functions' => &$this->customFunctions]);
     }
 
     public function __call($closure, $args) {
@@ -101,7 +101,7 @@ class Post
     protected function update()
     {
         $data = $this->toArray();
-        BlogCMS::runHook('onBeforePostSaved', ['post' => &$data]);
+        HamletCMS::runHook('onBeforePostSaved', ['post' => &$data]);
         unset($data['id']);
         unset($data['type']); // type cannot be changed
         return $this->factory->update(['id' => $this->id], $data);
@@ -114,7 +114,7 @@ class Post
     protected function create()
     {
         $data = $this->toArray();
-        BlogCMS::runHook('onBeforePostSaved', ['post' => &$data]);
+        HamletCMS::runHook('onBeforePostSaved', ['post' => &$data]);
         unset($data['id']);
         return $this->factory->insert($data);
     }
@@ -136,12 +136,12 @@ class Post
     /**
      * Get the user record for a post
      * 
-     * @return \rbwebdesigns\blogcms\UserAccounts\User
+     * @return \rbwebdesigns\HamletCMS\UserAccounts\User
      */
     public function author()
     {
         if (is_null($this->author)) {
-            $usersModel = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+            $usersModel = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
             $this->author = $usersModel->getById($this->author_id);
         }
         return $this->author;
@@ -150,12 +150,12 @@ class Post
     /**
      * Get the blog record for this post
      * 
-     * @return \rbwebdesigns\blogcms\Blog\Blog
+     * @return \rbwebdesigns\HamletCMS\Blog\Blog
      */
     public function blog()
     {
         if (is_null($this->blog)) {
-            $blogsModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+            $blogsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
             $this->blog = $blogsModel->getBlogById($this->blog_id);
         }
         return $this->blog;
@@ -194,7 +194,7 @@ class Post
     /**
      * Get the previous post in chronological order
      * 
-     * @return \rbwebdesigns\blogcms\BlogPosts\Post|null
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|null
      */
     public function previous()
     {
@@ -204,7 +204,7 @@ class Post
     /**
      * Get the next post in chronological order
      * 
-     * @return \rbwebdesigns\blogcms\BlogPosts\Post|null
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|null
      */
     public function next()
     {

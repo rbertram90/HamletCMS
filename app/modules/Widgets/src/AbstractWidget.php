@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Widgets;
+namespace rbwebdesigns\HamletCMS\Widgets;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 class AbstractWidget
@@ -17,11 +17,11 @@ class AbstractWidget
 
     public function __construct()
     {
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
 
-        BlogCMS::$blogID = $this->request->getInt('blogID');
-        $this->blog = BlogCMS::getActiveBlog();
+        HamletCMS::$blogID = $this->request->getInt('blogID');
+        $this->blog = HamletCMS::getActiveBlog();
     }
 
     public function config()

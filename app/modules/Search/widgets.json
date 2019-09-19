@@ -4,7 +4,7 @@
         "name": "Free text search",
         "description": "Search text within posts",
         "version": 1.0,
-        "form": "rbwebdesigns\\blogcms\\Search\\forms\\ConfigureSearch",
-        "class": "rbwebdesigns\\blogcms\\Search\\widgets\\Search"
+        "form": "rbwebdesigns\\HamletCMS\\Search\\forms\\ConfigureSearch",
+        "class": "rbwebdesigns\\HamletCMS\\Search\\widgets\\Search"
     }
 ]

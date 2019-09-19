@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\VideoPost\controller;
+namespace rbwebdesigns\HamletCMS\VideoPost\controller;
 
-use rbwebdesigns\blogcms\BlogPosts\controller\AbstractPostType;
+use rbwebdesigns\HamletCMS\BlogPosts\controller\AbstractPostType;
 
 class VideoPost extends AbstractPostType
 {

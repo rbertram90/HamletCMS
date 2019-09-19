@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms\UserAccounts\controller;
+namespace rbwebdesigns\HamletCMS\UserAccounts\controller;
 
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * Handles requests relating to user accounts.
@@ -13,7 +13,7 @@ use rbwebdesigns\blogcms\BlogCMS;
 class UserAPI extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
+     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
      */
     protected $model;
     /**
@@ -21,7 +21,7 @@ class UserAPI extends GenericController
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\blogcms\Response
+     * @var \rbwebdesigns\HamletCMS\Response
      */
     protected $response;
     
@@ -30,9 +30,9 @@ class UserAPI extends GenericController
      */
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
     }
     
     /**

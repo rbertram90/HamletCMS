@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms\UserAccounts\controller;
+namespace rbwebdesigns\HamletCMS\UserAccounts\controller;
 
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * Handles requests relating to user accounts.
@@ -13,7 +13,7 @@ use rbwebdesigns\blogcms\BlogCMS;
 class UserAccounts extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\UserAccounts\model\UserAccounts
+     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
      */
     protected $model;
     /**
@@ -21,7 +21,7 @@ class UserAccounts extends GenericController
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\blogcms\Response
+     * @var \rbwebdesigns\HamletCMS\Response
      */
     protected $response;
     
@@ -30,9 +30,9 @@ class UserAccounts extends GenericController
      */
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
     }
     
     /**
@@ -44,7 +44,7 @@ class UserAccounts extends GenericController
     {
         if ($userID = $this->request->getUrlParameter(1)) {}
         else {
-            $userID = BlogCMS::session()->currentUser['id'];
+            $userID = HamletCMS::session()->currentUser['id'];
         }
 
         $user = $this->model->getById($userID);
@@ -53,17 +53,17 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms', 'User not found', 'error');
         }
 
-        $postsModel = BlogCMS::model("rbwebdesigns\blogcms\BlogPosts\model\Posts");
+        $postsModel = HamletCMS::model("rbwebdesigns\HamletCMS\BlogPosts\model\Posts");
         $numberOfPost = $postsModel->count(['author_id' => $userID]);
         $this->response->setVar('postCount', $numberOfPost);
 
-        $contributorModel = BlogCMS::model('rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $contributorModel = HamletCMS::model('rbwebdesigns\HamletCMS\Contributors\model\Contributors');
         $contributedBlogs = $contributorModel->getContributedBlogs($userID);
         $this->response->setVar('blogCount', count($contributedBlogs));
         $this->response->setVar('blogs', $contributedBlogs);
 
         $dynamicContent = "";
-        BlogCMS::runHook('content', ['key' => 'userProfile', 'user' => $user, 'content' => &$dynamicContent]);
+        HamletCMS::runHook('content', ['key' => 'userProfile', 'user' => $user, 'content' => &$dynamicContent]);
         $this->response->setVar('dynamicContent', $dynamicContent);
 
         $this->response->setVar('user', $user);
@@ -80,7 +80,7 @@ class UserAccounts extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->runLogin();
 
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
 
         $this->response->setVar('registerAllowed', $config['users']['allow_anon_registration']);
         $this->response->setTitle('Login required');
@@ -94,7 +94,7 @@ class UserAccounts extends GenericController
      */
     public function register()
     {
-        $config = BlogCMS::config();
+        $config = HamletCMS::config();
 
         // Check if anonymous user registrations have been disabled
         if (!$config['users']['allow_anon_registration']) {
@@ -170,7 +170,7 @@ class UserAccounts extends GenericController
         }
 
         if ($this->model->login($username, $password)) {
-            BlogCMS::runHook('onAccountLogin', []);
+            HamletCMS::runHook('onAccountLogin', []);
 
             $this->response->redirect('/cms', 'Welcome back', 'success');
         }
@@ -209,7 +209,7 @@ class UserAccounts extends GenericController
         }
 
         if ($this->model->register($details)) {
-            BlogCMS::runHook('onAccountCreated', []);
+            HamletCMS::runHook('onAccountCreated', []);
             $this->response->redirect('/cms/account/login', 'Account created', 'success');
         }
         else {
@@ -224,7 +224,7 @@ class UserAccounts extends GenericController
      */
     public function logout()
     {
-        $session = BlogCMS::session();
+        $session = HamletCMS::session();
         $session->delete('user');
         $session->end();
         
@@ -240,7 +240,7 @@ class UserAccounts extends GenericController
     {
         if($this->request->method() == 'POST') return $this->saveAccountSettings();
 
-        $this->response->setVar('user', $this->model->getById(BlogCMS::session()->currentUser['id']));
+        $this->response->setVar('user', $this->model->getById(HamletCMS::session()->currentUser['id']));
         $this->response->setTitle('Profile settings');
         $this->response->write('editdetails.tpl', 'UserAccounts');
     }
@@ -275,7 +275,7 @@ class UserAccounts extends GenericController
         }
         
         if ($this->model->saveSettings($details)) {
-            BlogCMS::runHook('onAccountUpdated', []);
+            HamletCMS::runHook('onAccountUpdated', []);
             $this->response->redirect('/cms/account/settings', 'Account updated', 'success');
         }
         else {
@@ -315,7 +315,7 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/password', 'Passwords did not match', 'error');
         }
 
-        $user = BlogCMS::session()->currentUser;
+        $user = HamletCMS::session()->currentUser;
         $current = $this->model->get('password', ['id' => $user['id']], '', '', false);
 
         if (!$user || !password_verify($details['current_password'], $current['password'])) {
@@ -328,7 +328,7 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/password', 'Failed to save new password', 'error');
         }
         
-        BlogCMS::runHook('onPasswordChanged', []);
+        HamletCMS::runHook('onPasswordChanged', []);
         $this->response->redirect('/cms/account/password', 'Password changed', 'success');
     }
     
@@ -374,7 +374,7 @@ class UserAccounts extends GenericController
         ($_FILES["file"]["type"] == "image/gif")|| || ($_FILES["file"]["type"] == "image/pjpeg") || ($_FILES["file"]["type"] == "image/png")
         RESTRICTED TO JPG
         */
-        $userID = BlogCMS::session()->currentUser['id'];
+        $userID = HamletCMS::session()->currentUser['id'];
         // $user = $this->model->getById($userID);
 
         if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000)) {
@@ -416,7 +416,7 @@ class UserAccounts extends GenericController
         imagecopy($destImage, $srcImage , 0 , 0 , $startX , $startY , $min , $min);
         imagejpeg($destImage, $destLoc);
         
-        BlogCMS::runHook('onAvatarChanged', []);
+        HamletCMS::runHook('onAvatarChanged', []);
         $this->response->redirect('/cms/account/avatar', 'Upload Successful', 'Success');
     }
 

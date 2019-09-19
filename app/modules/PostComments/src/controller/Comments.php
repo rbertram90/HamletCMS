@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms\PostComments\controller;
+namespace rbwebdesigns\HamletCMS\PostComments\controller;
 
-use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
+use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * @method all($request, $response)
@@ -15,11 +15,11 @@ use rbwebdesigns\blogcms\BlogCMS;
  */
 class Comments extends GenericController
 {
-    /** @var \rbwebdesigns\blogcms\PostComments\model\Comments */
+    /** @var \rbwebdesigns\HamletCMS\PostComments\model\Comments */
     protected $model;
-    /** @var \rbwebdesigns\blogcms\BlogPosts\model\Posts */
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts = null;
-    /** @var \rbwebdesigns\blogcms\Contributors\model\Permissions */
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
     protected $modelPermissions = null;
 
     /** @var \rbwebdesigns\core\Request */
@@ -36,12 +36,12 @@ class Comments extends GenericController
 
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\PostComments\model\Comments');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\PostComments\model\Comments');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->blog = HamletCMS::getActiveBlog();
 
-        BlogCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog->id;
 
         parent::__construct();
     }
@@ -54,7 +54,7 @@ class Comments extends GenericController
         if (!$comment = $this->model->getCommentById($commentID)) {
             return false;
         }
-        BlogCMS::$blogID = $comment->blog_id;
+        HamletCMS::$blogID = $comment->blog_id;
         return $this->modelPermissions->userHasPermission('administer_comments');
     }
 
@@ -84,11 +84,11 @@ class Comments extends GenericController
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
         elseif ($this->model->deleteComment($commentID)) {
-            $blog = BlogCMS::getActiveBlog();
+            $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/'. $blog->id, 'Comment removed', 'success');
         }
         else {
-            $blog = BlogCMS::getActiveBlog();
+            $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/'. $blog->id, 'Unable to remove comment', 'error');
         }
     }
@@ -105,11 +105,11 @@ class Comments extends GenericController
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
         elseif ($this->model->approve($comment->id)) {
-            $blog = BlogCMS::getActiveBlog();
+            $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/' . $blog->id, 'Comment approved', 'success');
         }
         else {
-            $blog = BlogCMS::getActiveBlog();
+            $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/all/' . $blog->id, 'Unable to approve comment', 'error');
         }
     }
@@ -127,7 +127,7 @@ class Comments extends GenericController
         $post = $this->modelPosts->getPostByID($postID);
         $blogID = $post->blog_id;
         $commentText = $this->request->getString('fld_comment');
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
 
         // User not logged in
         if (!$currentUser) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogMenus\model;
+namespace rbwebdesigns\HamletCMS\BlogMenus\model;
 
 use rbwebdesigns\core\model\RBFactory;
 
@@ -10,7 +10,7 @@ class MenuItems extends RBFactory {
     {
         $this->tableName = 'menuitems';
 
-        $this->subClass = '\rbwebdesigns\blogcms\BlogMenus\BlogMenuItem';
+        $this->subClass = '\rbwebdesigns\HamletCMS\BlogMenus\BlogMenuItem';
 
         $this->fields = [
             'id' => 'number',

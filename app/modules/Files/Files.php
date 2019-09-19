@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class Files
 {
@@ -9,7 +9,7 @@ class Files
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
-            $link->url = BlogCMS::route('files.manage', [
+            $link->url = HamletCMS::route('files.manage', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Files';

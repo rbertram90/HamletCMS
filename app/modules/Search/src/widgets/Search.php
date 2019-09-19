@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Search\widgets;
+namespace rbwebdesigns\HamletCMS\Search\widgets;
 
-use rbwebdesigns\blogcms\Widgets\AbstractWidget;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class Search extends AbstractWidget
 {

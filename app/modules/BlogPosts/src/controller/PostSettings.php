@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogPosts\controller;
+namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class PostSettings extends GenericController
 {
@@ -11,14 +11,14 @@ class PostSettings extends GenericController
     {
         parent::__construct();
 
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->blog = HamletCMS::getActiveBlog();
 
         if (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
     }
 
     /**
@@ -114,7 +114,7 @@ class PostSettings extends GenericController
         $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl', $postFullTemplate);
 
         if ($update) {
-            BlogCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
+            HamletCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
             $this->response->redirect('/cms/settings/posts/' . $this->blog->id, 'Post settings updated', 'success');
         }
         else {

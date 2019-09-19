@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\Blog\model;
+namespace rbwebdesigns\HamletCMS\Blog\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -28,7 +28,7 @@ class Blogs extends RBFactory
         $this->tableName = TBL_BLOGS;
         $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
-        $this->subClass = '\\rbwebdesigns\\blogcms\\Blog\\Blog';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Blog\\Blog';
         $this->fields = [
             'id'          => 'number',
             'name'        => 'string',
@@ -216,7 +216,7 @@ class Blogs extends RBFactory
             'id' => $blog_key,
             'name' => $name,
             'description' => $desc,
-            'user_id' => BlogCMS::session()->currentUser['id']
+            'user_id' => HamletCMS::session()->currentUser['id']
         ]);
 
         if ($insert == false) return false;

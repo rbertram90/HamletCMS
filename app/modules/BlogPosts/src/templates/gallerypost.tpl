@@ -134,7 +134,7 @@
     
     
     <label for="fld_postcontent">Content</label>
-    <button type="button" onclick="rbrtf_showWindow('{$clientroot_blogcms}/ajax/add_image?blogid={$blog->id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
+    <button type="button" onclick="rbrtf_showWindow('{$clientroot_HamletCMS}/ajax/add_image?blogid={$blog->id}')" title="Insert Image"><img src="/resources/icons/document_image_add_32.png" style="width:15px; height:15px;" /></button>
 
     <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
 

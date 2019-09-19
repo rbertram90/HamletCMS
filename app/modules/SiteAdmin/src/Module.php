@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms\SiteAdmin;
+namespace rbwebdesigns\HamletCMS\SiteAdmin;
 
 class Module
 {

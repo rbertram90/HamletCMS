@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use Codeliner;
 use Athens\CSRF;
@@ -17,8 +17,8 @@ use rbwebdesigns\core\Sanitize;
   Route request
 ****************************************************************/
     
-    $request = BlogCMS::request();
-    $response = BlogCMS::response();
+    $request = HamletCMS::request();
+    $response = HamletCMS::response();
     
     // Controller naming is important!
     // For simplicity, the code makes the following assumptions:
@@ -37,7 +37,7 @@ use rbwebdesigns\core\Sanitize;
         $action = $request->getUrlParameter(0, 'login');
 
         if ($action == 'login' || $action == 'register' || $action == 'resetpassword') {
-            $controller = new \rbwebdesigns\blogcms\UserAccounts\controller\UserAccounts();
+            $controller = new \rbwebdesigns\HamletCMS\UserAccounts\controller\UserAccounts();
             $controller->$action();
             exit;
         }
@@ -48,19 +48,19 @@ use rbwebdesigns\core\Sanitize;
         $response->redirect('/cms/account/login', 'Login required', 'warning');
     }
 
-    $user = BlogCMS::session()->currentUser;
-    $modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+    $user = HamletCMS::session()->currentUser;
+    $modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
     
     // Check the user has access to view/edit this blog
     $blogID = $request->getUrlParameter(1);
     if (strlen($blogID) == 10 && is_numeric($blogID)) {
-        BlogCMS::$blogID = $blogID;
+        HamletCMS::$blogID = $blogID;
 
         // Surely must be an ID for a blog
         // Check the user has edit permissions
-        BlogCMS::$userGroup = $modelPermissions->getUserGroup($blogID);
+        HamletCMS::$userGroup = $modelPermissions->getUserGroup($blogID);
 
-        if (!BlogCMS::$userGroup) {
+        if (!HamletCMS::$userGroup) {
             $response->redirect('/', 'You\'re not a contributor for that blog!', 'error');
         }
     }
@@ -75,7 +75,7 @@ use rbwebdesigns\core\Sanitize;
     
     // New - get the controller from pre-defined routes in modules
     $found = false;
-    if ($route = BlogCMS::pathMatch()) {
+    if ($route = HamletCMS::pathMatch()) {
         if ($route['controller'] && $route['action']) {
             $found = true;
             $controller = new $route['controller']();
@@ -130,16 +130,16 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     $sideMenu = new Menu('cms_main_actions');
-    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
+    HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
 
     if ($user['admin'] == 1) {
         $adminMenu = new Menu('cms_admin_actions');
-        BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_admin_actions', 'menu' => &$adminMenu]);
+        HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_admin_actions', 'menu' => &$adminMenu]);
         $response->setVar('page_admin_menu', $adminMenu);
     }
 
     $userMenu = new Menu('cms_user_actions');
-    BlogCMS::runHook('onGenerateMenu', ['id' => 'cms_user_actions', 'menu' => &$userMenu]);
+    HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_user_actions', 'menu' => &$userMenu]);
 
     $response->setVar('page_side_menu', $sideMenu);
     $response->setVar('page_user_menu', $userMenu);
@@ -150,10 +150,10 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     // Run Template here
-    $userModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\UserAccounts\\model\\UserAccounts');
+    $userModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\UserAccounts\\model\\UserAccounts');
     $response->setVar('user', $userModel->getById($user['id']));
 
-    $blogsModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\Blog\\model\\Blogs');
+    $blogsModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\Blog\\model\\Blogs');
     $response->setVar('blogs', $blogsModel->getBlogsByUser($user['id']));
     
     $response->writeTemplate('template.tpl');

@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\MarkdownPost;
+namespace rbwebdesigns\HamletCMS\MarkdownPost;
 
-use rbwebdesigns\blogcms\BlogPost\Post;
+use rbwebdesigns\HamletCMS\BlogPost\Post;
 
 class MarkdownPost extends Post {
     

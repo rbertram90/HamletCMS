@@ -1,12 +1,12 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogPosts\controller;
+namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
+use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
-use rbwebdesigns\blogcms\Menu;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
+use rbwebdesigns\HamletCMS\Menu;
 use Codeliner\ArrayReader\ArrayReader;
 
 /**
@@ -28,15 +28,15 @@ use Codeliner\ArrayReader\ArrayReader;
 class Posts extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
+     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
      */
     protected $model;
     /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
+     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\blogcms\Contributors\model\Contributors
+     * @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors
      */
     protected $modelContributors;
     /**
@@ -59,13 +59,13 @@ class Posts extends GenericController
 
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
 
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
 
         $this->setup();
     }
@@ -80,18 +80,18 @@ class Posts extends GenericController
      */
     protected function setup()
     {
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
         $action = $this->request->getUrlParameter(0);
         $access = true;
 
-        if (!BlogCMS::$blogID) {
+        if (!HamletCMS::$blogID) {
             $postID = $this->request->getUrlParameter(1);
             $this->post = $this->model->getPostById($postID);
-            BlogCMS::$blogID = $this->post->blog_id;
+            HamletCMS::$blogID = $this->post->blog_id;
         }
 
-        $this->blog = BlogCMS::getActiveBlog();
-        BlogCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog->id;
+        $this->blog = HamletCMS::getActiveBlog();
+        HamletCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog->id;
 
         // Check the user is a contributor of the blog to begin with
         if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog->id)) {
@@ -148,7 +148,7 @@ class Posts extends GenericController
         // if ($this->request->method() == 'POST') return $this->runCreatePost();
 
         $newPostMenu = new Menu('create_post');
-        BlogCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
+        HamletCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('New Post');
@@ -162,7 +162,7 @@ class Posts extends GenericController
     public function edit()
     {
         // Now passing this on individual modules
-        BlogCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
+        HamletCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
 
         /*
         if ($this->post['type'] == 'gallery') {
@@ -195,7 +195,7 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $autosaveModel = BlogCMS::model('rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
+        $autosaveModel = HamletCMS::model('rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
         $autosaveModel->removeAutosave($this->post->id);
 
         if ($this->post['initialautosave'] == 1) {

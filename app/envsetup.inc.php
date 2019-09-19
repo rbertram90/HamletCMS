@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Database;
 use rbwebdesigns\core\JSONhelper;
@@ -77,7 +77,7 @@ use rbwebdesigns\core\JSONhelper;
     require_once SERVER_ROOT .'/app/view/helper_functions.php';
 
     // Store the configuration
-    BlogCMS::addToConfig($config);
+    HamletCMS::addToConfig($config);
 
 // Continue if not installing
 if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
@@ -90,7 +90,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     if(!array_key_exists('database', $config)) die("Setup error - no database config found");
     $databaseCredentials = $config['database'];
 
-    $dbc = BlogCMS::databaseConnection();
+    $dbc = HamletCMS::databaseConnection();
     $checkInstall = $dbc->countRows("information_schema.tables", [
         'table_schema' => $databaseCredentials['name'],
         'table_name' => 'modules'
@@ -98,7 +98,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
 
     // Didn't find any modules - run install!
     if ($checkInstall == 0) {
-        BlogCMS::response()->redirect('/cms/install.php');
+        HamletCMS::response()->redirect('/cms/install.php');
     }
 
     define("TBL_BLOGS", $databaseCredentials['name'] . ".blogs");
@@ -116,12 +116,12 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
 
     // Import all modules
     // $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
-    $moduleModel = BlogCMS::model('\rbwebdesigns\blogcms\SiteAdmin\model\Modules');
+    $moduleModel = HamletCMS::model('\rbwebdesigns\HamletCMS\SiteAdmin\model\Modules');
     $modules = $moduleModel->getList();
 
     foreach ($modules as $module) {
         if ($module->enabled != 1) continue;
-        BlogCMS::registerModule($module->name);
+        HamletCMS::registerModule($module->name);
     }
 
 }

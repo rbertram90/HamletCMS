@@ -1,11 +1,11 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Contributors\controller;
+namespace rbwebdesigns\HamletCMS\Contributors\controller;
 
-use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\HamletCMS\GenericController;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * /app/controller/contributors_controller.inc.php
@@ -25,15 +25,15 @@ class Contributors extends GenericController
     
     public function __construct()
     {
-        $this->modelUsers =  BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        $this->modelUsers =  HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
         
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
 
         $this->setup();
     }
@@ -44,13 +44,13 @@ class Contributors extends GenericController
      */
     protected function setup()
     {
-        if (!$this->blog = BlogCMS::getActiveBlog()) {
+        if (!$this->blog = HamletCMS::getActiveBlog()) {
             // Danger - need to handle permissions seperately!
             return;
         }
 
         $this->checkUserAccess();
-        BlogCMS::$activeMenuLink = '/cms/contributors/manage/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/contributors/manage/'. $this->blog->id;
     }
 
     /**
@@ -98,7 +98,7 @@ class Contributors extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->runCreate();
 
-        $blog = BlogCMS::getActiveBlog();
+        $blog = HamletCMS::getActiveBlog();
         $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
 
         $this->response->setVar('blog', $blog);
@@ -113,7 +113,7 @@ class Contributors extends GenericController
     public function invite()
     {
         if ($this->request->method() == 'POST') return $this->runInvite();
-        $blog = BlogCMS::getActiveBlog();
+        $blog = HamletCMS::getActiveBlog();
         $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
         $this->response->setVar('blog', $blog);
         $this->response->setVar('groups', $groups);
@@ -126,7 +126,7 @@ class Contributors extends GenericController
      */
     protected function runCreate()
     {
-        $blog = BlogCMS::getActiveBlog();
+        $blog = HamletCMS::getActiveBlog();
         
         $accountData = [
             'firstname'       => $this->request->getString('fld_name'),
@@ -172,7 +172,7 @@ class Contributors extends GenericController
      */
     protected function runInvite()
     {
-        $blog = BlogCMS::getActiveBlog();
+        $blog = HamletCMS::getActiveBlog();
 
         $userID = $this->request->getInt('selected_user', false);
         $groupID = $this->request->getInt('group', false);
@@ -270,7 +270,7 @@ class Contributors extends GenericController
         }
 
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('permissions', \rbwebdesigns\blogcms\Contributors\model\Permissions::getList());
+        $this->response->setVar('permissions', \rbwebdesigns\HamletCMS\Contributors\model\Permissions::getList());
         $this->response->setTitle('Add contributors group');
         $this->response->write('creategroup.tpl', 'Contributors');
     }
@@ -291,7 +291,7 @@ class Contributors extends GenericController
             "delete_files","change_settings","manage_contributors"
         ];
 
-        $cache = BlogCMS::getCache('permissions');
+        $cache = HamletCMS::getCache('permissions');
         foreach ($cache as $permission) {
             $permissionsList[] = $permission['key'];
         }
@@ -338,7 +338,7 @@ class Contributors extends GenericController
 
         $this->checkUserAccess();
 
-        BlogCMS::$blogID = $this->blog->id;
+        HamletCMS::$blogID = $this->blog->id;
 
         if ($this->request->method() == 'POST') {
             return $this->runEditGroup($group);
@@ -361,7 +361,7 @@ class Contributors extends GenericController
 
         $permissionsList = [];
 
-        $cache = BlogCMS::getCache('permissions');
+        $cache = HamletCMS::getCache('permissions');
         foreach ($cache as $permission) {
             $permissionsList[] = $permission['key'];
         }

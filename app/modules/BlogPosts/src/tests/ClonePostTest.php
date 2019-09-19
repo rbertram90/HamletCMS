@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogPosts\tests;
+namespace rbwebdesigns\HamletCMS\BlogPosts\tests;
 
-use rbwebdesigns\blogcms\tests\TestResult;
-use rbwebdesigns\blogcms\BlogPosts\controller\PostsAPI;
+use rbwebdesigns\HamletCMS\tests\TestResult;
+use rbwebdesigns\HamletCMS\BlogPosts\controller\PostsAPI;
 
 class ClonePostTest extends TestResult {
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class Contributors
 {
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
     }
 
     public function onGenerateMenu($args)
@@ -14,7 +14,7 @@ class Contributors
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
-            $link->url = BlogCMS::route('contributors.manage', [
+            $link->url = HamletCMS::route('contributors.manage', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Contributors';
@@ -27,7 +27,7 @@ class Contributors
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `contributorgroups` (
             `id` int(11) NOT NULL,

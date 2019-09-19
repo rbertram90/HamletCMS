@@ -4,23 +4,23 @@
         "name": "Recent posts list",
         "description": "List recent entries to the blog",
         "version": 1.0,
-        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureRecentPostsList",
-        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\RecentPostsList"
+        "form": "rbwebdesigns\\HamletCMS\\BlogPosts\\forms\\ConfigureRecentPostsList",
+        "class": "rbwebdesigns\\HamletCMS\\BlogPosts\\widgets\\RecentPostsList"
     },
     {
         "key": "trendingPosts",
         "name": "Trending posts",
         "description": "List recently popular posts on the blog",
         "version": 1.0,
-        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureRecentPostsList",
-        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\TrendingPosts"
+        "form": "rbwebdesigns\\HamletCMS\\BlogPosts\\forms\\ConfigureRecentPostsList",
+        "class": "rbwebdesigns\\HamletCMS\\BlogPosts\\widgets\\TrendingPosts"
     },
     {
         "key": "tagList",
         "name": "Tags list",
         "description": "List tags on the blog",
         "version": 1.0,
-        "form": "rbwebdesigns\\blogcms\\BlogPosts\\forms\\ConfigureTagList",
-        "class": "rbwebdesigns\\blogcms\\BlogPosts\\widgets\\TagList"
+        "form": "rbwebdesigns\\HamletCMS\\BlogPosts\\forms\\ConfigureTagList",
+        "class": "rbwebdesigns\\HamletCMS\\BlogPosts\\widgets\\TagList"
     }
 ]

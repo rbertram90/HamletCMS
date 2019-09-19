@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\Contributors\model;
+namespace rbwebdesigns\HamletCMS\Contributors\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\JSONHelper;
@@ -26,7 +26,7 @@ class ContributorGroups extends RBFactory
             'data'        => 'string',
             'super'       => 'boolean',
         ];
-        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\ContributorGroup';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Contributors\\ContributorGroup';
 
         parent::__construct($modelFactory);
     }

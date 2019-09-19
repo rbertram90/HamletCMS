@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogPosts\model;
+namespace rbwebdesigns\HamletCMS\BlogPosts\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
@@ -32,7 +32,7 @@ class Posts extends RBFactory
         $this->tblviews = TBL_POST_VIEWS;
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->tblautosave = TBL_AUTOSAVES;
-        $this->subClass = '\\rbwebdesigns\\blogcms\\BlogPosts\\Post';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Post';
         
         $this->fields = [
             'id'                => 'number',
@@ -49,7 +49,7 @@ class Posts extends RBFactory
             'initialautosave'   => 'boolean'
         ];
 
-        BlogCMS::runHook('modelSchema', ['model' => $this]);
+        HamletCMS::runHook('modelSchema', ['model' => $this]);
     }
     
     /**
@@ -57,7 +57,7 @@ class Posts extends RBFactory
      * 
      * @param int $postID
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function getPostById($postID)
     {
@@ -71,7 +71,7 @@ class Posts extends RBFactory
      *   Url path of the post
      * @param int $blogID
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function getPostByURL($link, $blogID)
     {
@@ -83,7 +83,7 @@ class Posts extends RBFactory
      * 
      * @param int $blogid
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function getLatestPost($blogID)
     {
@@ -101,7 +101,7 @@ class Posts extends RBFactory
      * @param int $blogID
      * @param string $currentPostTimestamp
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function getNextPost($blogID, $currentPostTimestamp)
     {
@@ -127,7 +127,7 @@ class Posts extends RBFactory
      * @param int $blogID
      * @param string $currentPostTimestamp
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function getPreviousPost($blogID, $currentPostTimestamp)
     {
@@ -179,7 +179,7 @@ class Posts extends RBFactory
     /**
      * Get a count of posts & the last post date for all contributors for a blog
      * 
-     * @return bool|\rbwebdesigns\blogcms\BlogPosts\Post[]
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
     public function getPostCountByUser($blogID)
     {
@@ -316,7 +316,7 @@ class Posts extends RBFactory
      */
     public function createPost($newValues)
     {
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
         
         if(!array_key_exists('title', $newValues) || !array_key_exists('content', $newValues)) {
             return false;
@@ -358,7 +358,7 @@ class Posts extends RBFactory
             'link' => $newPost->link .'-'. $now->format('u'),
             'draft' => 1,
             'timestamp' => date('Y-m-d H:i:s'),
-            'author_id' => BlogCMS::session()->currentUser['id']
+            'author_id' => HamletCMS::session()->currentUser['id']
         ]);
 
         return $newPostID;
@@ -586,7 +586,7 @@ class Posts extends RBFactory
      * @param string $startDate
      * @param string $endDate
      * 
-     * @return \rbwebdesigns\blogcms\BlogPosts\Post[]
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
     public function getTrendingPosts($blogID, $startDate=null, $endDate=null)
     {

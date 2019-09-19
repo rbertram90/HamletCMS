@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 /**
  * app/setup.php
@@ -23,7 +23,7 @@ namespace rbwebdesigns\blogcms;
   Set-Up Users Model & Auth flags
 ****************************************************************/    
     
-    $session = BlogCMS::session();
+    $session = HamletCMS::session();
 
     // Check if we are logged in
     if (gettype($session->currentUser) == 'array') {

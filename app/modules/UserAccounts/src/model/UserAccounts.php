@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\UserAccounts\model;
+namespace rbwebdesigns\HamletCMS\UserAccounts\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -16,7 +16,7 @@ class UserAccounts extends RBFactory
     protected $tableName = 'users';
 
     protected $passwordHash = '';
-    protected $subClass = '\\rbwebdesigns\\blogcms\\UserAccounts\\User';
+    protected $subClass = '\\rbwebdesigns\\HamletCMS\\UserAccounts\\User';
     
     /**
      * Check username and password are a match in database
@@ -41,7 +41,7 @@ class UserAccounts extends RBFactory
             }
 
             // Log the user in
-            BlogCMS::session()->setCurrentUser([
+            HamletCMS::session()->setCurrentUser([
                 'id' => $user->id,
                 'admin' => $user->admin,
             ]);
@@ -108,7 +108,7 @@ class UserAccounts extends RBFactory
      */
     public function saveSettings($fields)
     {        
-        $user = BlogCMS::session()->currentUser;
+        $user = HamletCMS::session()->currentUser;
 
         return $this->update(['id' => $user['id']], $fields);
     }

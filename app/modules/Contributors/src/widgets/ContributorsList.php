@@ -1,15 +1,15 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Contributors\widgets;
+namespace rbwebdesigns\HamletCMS\Contributors\widgets;
 
-use rbwebdesigns\blogcms\Widgets\AbstractWidget;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class ContributorsList extends AbstractWidget
 {
 
     public function render() {
-        $model = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
+        $model = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
 
         $this->response->setVar('contributors', $model->getBlogContributors($this->blog->id));
         $this->response->write('contributorsList.tpl', 'Contributors');

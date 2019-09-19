@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogMenus;
+namespace rbwebdesigns\HamletCMS\BlogMenus;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class BlogMenuItem {
 
@@ -29,7 +29,7 @@ class BlogMenuItem {
 
     public function menu() {
         if (is_null($this->menu)) {
-            $menusModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogMenus\model\Menus');
+            $menusModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
             $this->menu = $menusModel->getMenuById($this->menu_id);
         }
         return $this->menu;
@@ -41,21 +41,21 @@ class BlogMenuItem {
             $this->url = '';
             switch ($this->type) {
                 case 'blog':
-                    $blogModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+                    $blogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
                     if ($blog = $blogModel->getBlogById($this->link_target)) {
                         $this->url = $blog->relativePath();
                     }
                     else $this->url = '#';
                     break;
                 case 'post':
-                    $postModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+                    $postModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
                     if ($post = $postModel->getPostById($this->link_target)) {
                         $this->url = $post->relativePath();
                     }
                     else $this->url = '#';
                     break;
                 case 'tag':
-                    $blog = BlogCMS::getActiveBlog();
+                    $blog = HamletCMS::getActiveBlog();
                     $this->url = $blog->relativePath() ."/tags/{$this->link_target}";
                     break;
                 case 'mail':

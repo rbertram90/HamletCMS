@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\JSONHelper;
 
@@ -30,7 +30,7 @@ class Module
 
         if (file_exists(SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php')) {
             require_once SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php';
-            $className = '\\rbwebdesigns\\blogcms\\' . $this->key;
+            $className = '\\rbwebdesigns\\HamletCMS\\' . $this->key;
             $this->instance = new $className();
         }
     }

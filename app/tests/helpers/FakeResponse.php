@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms\tests;
+namespace rbwebdesigns\HamletCMS\tests;
 
-use rbwebdesigns\blogcms\BlogCMSResponse;
+use rbwebdesigns\HamletCMS\HamletCMSResponse;
 
-class FakeResponse extends BlogCMSResponse
+class FakeResponse extends HamletCMSResponse
 {
     public $redirect;
     

@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\model;
+namespace rbwebdesigns\HamletCMS\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 

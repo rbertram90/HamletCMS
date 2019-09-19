@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class GenericController
 {
@@ -15,8 +15,8 @@ class GenericController
     
     public function __construct() 
     {
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
     }
 
     public function defaultAction() {}

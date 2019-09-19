@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\blogcms\Contributors\model;
+namespace rbwebdesigns\HamletCMS\Contributors\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 /**
  * /app/model/mdl_contributor.inc.php
@@ -20,7 +20,7 @@ class Contributors extends RBFactory
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = TBL_CONTRIBUTORS;
         $this->tableGroups = 'contributorgroups';
-        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\Contributor';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Contributors\\Contributor';
 
         $this->tblusers = TBL_USERS;
         $this->tblblogs = TBL_BLOGS;
@@ -37,7 +37,7 @@ class Contributors extends RBFactory
         // Get all the blog id for this user
         $query_string = 'SELECT a.blog_id, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblblogs.' as b ON a.blog_id = b.id WHERE a.user_id='.$userid;
         $results = $this->db->query($query_string);
-        return $results->fetchAll(\PDO::FETCH_CLASS, '\\rbwebdesigns\\blogcms\\Blog\\Blog');
+        return $results->fetchAll(\PDO::FETCH_CLASS, '\\rbwebdesigns\\HamletCMS\\Blog\\Blog');
     }
     
     // Get all users that can contribute to a $blog
@@ -98,7 +98,7 @@ class Contributors extends RBFactory
     {
         // Only allow contributors to update the blog settings
         // further 'custom restrictions' to be added
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
 
         $rowCount = $this->count([
             'blog_id' => $blogID,

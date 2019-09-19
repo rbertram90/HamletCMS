@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogPosts\model;
+namespace rbwebdesigns\HamletCMS\BlogPosts\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 
 class PostViews extends RBFactory

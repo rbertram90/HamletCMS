@@ -23,7 +23,7 @@ function hideUserProfile(elem)
 
 //
 // example use
-// $(".user-link").mouseenter(showUserProfile($(this), clientroot, clientrootblogcms);
+// $(".user-link").mouseenter(showUserProfile($(this), clientroot, clientrootHamletCMS);
 // $(".user-link").mouseleave(hideUserProfile($(this));
 //
 // markup structure

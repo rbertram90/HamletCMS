@@ -1,23 +1,23 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 class EventLogger
 {
 
     /**
-     * @var rbwebdesigns\blogcms\EventLogger\model\EventLogger
+     * @var rbwebdesigns\HamletCMS\EventLogger\model\EventLogger
      */
     protected $eventLogModel;
 
     public function __construct()
     {
-        $this->eventLogModel = BlogCMS::model('\rbwebdesigns\blogcms\EventLogger\model\EventLogger');
+        $this->eventLogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\EventLogger\model\EventLogger');
     }
 
     public function onPostCreated($data)
     {
         $post = $data['post'];
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
         $text = "created post <a href='/blogs/{$post->blog_id}/posts/{$post->link}'>{$post->title}</a>";
 
         $this->eventLogModel->log($currentUser['id'], $post->blog_id, EventLogger\model\EventLogger::EVENT_POST_CREATED, $text);
@@ -26,7 +26,7 @@ class EventLogger
     public function onPostUpdated($data)
     {
         $post = $data['post'];
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
         $text = "updated post <a href='/blogs/{$post->blog_id}/posts/{$post->link}'>{$post->title}</a>";
 
         $this->eventLogModel->log($currentUser['id'], $post->blog_id, EventLogger\model\EventLogger::EVENT_POST_UPDATED, $text);
@@ -55,7 +55,7 @@ class EventLogger
      */
     public function install()
     {
-        $dbc = BlogCMS::databaseConnection();
+        $dbc = HamletCMS::databaseConnection();
 
         $dbc->query("CREATE TABLE `eventlog` (
             `id` int(11) NOT NULL,

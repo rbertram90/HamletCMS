@@ -1,12 +1,12 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogView\controller;
+namespace rbwebdesigns\HamletCMS\BlogView\controller;
 
 use Codeliner;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\Pagination;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\blogcms\BlogCMS;
-use rbwebdesigns\blogcms\BlogCMSResponse;
+use rbwebdesigns\HamletCMS\HamletCMS;
+use rbwebdesigns\HamletCMS\HamletCMSResponse;
 
 /**
  * Class BlogContent handles the generation of output for
@@ -29,10 +29,10 @@ class BlogContent
     public function __construct($blog_key)
     {
         // Instantiate models
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelUsers = BlogCMS::model('\rbwebdesigns\blogcms\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
         
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
@@ -48,8 +48,8 @@ class BlogContent
             $this->fileDir = "/blogdata/{$this->blogID}";
         }
 
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
     }
         
     /**
@@ -62,7 +62,7 @@ class BlogContent
      */
     public function generatePostTeaser($post, $config)
     {
-        $teaserResponse = new BlogCMSResponse();
+        $teaserResponse = new HamletCMSResponse();
         $teaserResponse->enableSecureMode();
 
         // Config defaults
@@ -76,10 +76,10 @@ class BlogContent
             $teaserResponse->setVar('postsperpage', $config['postsperpage']);
 
         // Copy accross sub-set of variables from main template
-        $globalResponse = BlogCMS::response();
+        $globalResponse = HamletCMS::response();
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('userIsContributor'));
 
-        BlogCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
+        HamletCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
 
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -103,15 +103,15 @@ class BlogContent
     /**
      * Generate the output for a single post view
      * 
-     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
      * @param array $config
      */
     public function generateSinglePost($post, $config)
     {
-        $globalResponse = BlogCMS::response();
+        $globalResponse = HamletCMS::response();
 
         // Copy accross sub-set of variables from main template
-        $teaserResponse = new BlogCMSResponse();
+        $teaserResponse = new HamletCMSResponse();
         $teaserResponse->setVar('blog_root_url', $globalResponse->getVar('blog_root_url'));
         $teaserResponse->setVar('blog_file_dir', $globalResponse->getVar('blog_file_dir'));
         $teaserResponse->setVar('userIsContributor', $globalResponse->getVar('user_is_contributor'));
@@ -120,7 +120,7 @@ class BlogContent
         // Get custom content to be displayed in post
         // Example - number of comments
         $post->after = [];
-        BlogCMS::runHook('runTemplate', [
+        HamletCMS::runHook('runTemplate', [
             'template' => 'singlePost',
             'post' => &$post,
             'config' => &$config,
@@ -150,7 +150,7 @@ class BlogContent
     /**
      * Generate the HTML for a post (either full or teaser)
      * 
-     * @param \rbwebdesigns\blogcms\BlogPosts\Post $post
+     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
      * @param array $config
      * @param string $mode
      *   full / teaser modes accepted
@@ -200,7 +200,7 @@ class BlogContent
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
         $output = "";
 
-        $isContributor = BlogCMS::$userGroup !== false;
+        $isContributor = HamletCMS::$userGroup !== false;
         $this->response->setVar('userIsContributor', $isContributor);
 
         foreach ($postlist as $post) {
@@ -225,7 +225,7 @@ class BlogContent
      */
     public function generateHeader()
     {
-        $headerResponse = new BlogCMSResponse();
+        $headerResponse = new HamletCMSResponse();
         $headerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/header.tpl';
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -240,11 +240,11 @@ class BlogContent
         }
 
         // Copy accross sub-set of variables from main template
-        $headerResponse = new BlogCMSResponse();
+        $headerResponse = new HamletCMSResponse();
         $headerResponse->setVar('blog_root_url', $this->response->getVar('blog_root_url'));
         $headerResponse->setVar('blog_file_dir', $this->response->getVar('blog_file_dir'));
         $headerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
-        $headerResponse->setVar('user', BlogCMS::session()->$currentUser);
+        $headerResponse->setVar('user', HamletCMS::session()->$currentUser);
         $headerResponse->setVar('blog', $this->blog);
         $headerResponse->setVar('hide_title', $this->header_hideTitle);
         $headerResponse->setVar('hide_description', $this->header_hideDescription);
@@ -293,7 +293,7 @@ class BlogContent
             </style>';
         }
 
-        $footerResponse = new BlogCMSResponse();
+        $footerResponse = new HamletCMSResponse();
         $footerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/footer.tpl';
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -308,11 +308,11 @@ class BlogContent
         }
 
         // Copy accross sub-set of variables from main template
-        $footerResponse = new BlogCMSResponse();
+        $footerResponse = new HamletCMSResponse();
         $footerResponse->setVar('blog_root_url', $this->response->getVar('blog_root_url'));
         $footerResponse->setVar('blog_file_dir', $this->response->getVar('blog_file_dir'));
         $footerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
-        $footerResponse->setVar('user', BlogCMS::session()->$currentUser);
+        $footerResponse->setVar('user', HamletCMS::session()->$currentUser);
         $footerResponse->setVar('blog', $this->blog);
         $footerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
@@ -389,7 +389,7 @@ class BlogContent
         $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag);
 
         $isContributor = false;
-        if ($currentUser = BlogCMS::session()->currentUser) {
+        if ($currentUser = HamletCMS::session()->currentUser) {
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
@@ -480,7 +480,7 @@ class BlogContent
         }
 
         // Check access
-        $isContributor = BlogCMS::$userGroup !== false;
+        $isContributor = HamletCMS::$userGroup !== false;
 
         // Is the post still a draft or not scheduled to be released yet
         if (!$post->isPublic() && !$isContributor) {

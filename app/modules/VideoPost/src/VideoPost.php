@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\VideoPost;
+namespace rbwebdesigns\HamletCMS\VideoPost;
 
-use rbwebdesigns\blogcms\BlogPosts\Post;
+use rbwebdesigns\HamletCMS\BlogPosts\Post;
 
 class VideoPost extends Post {
 

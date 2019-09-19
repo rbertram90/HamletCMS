@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\blogcms\PostComments\model;
+namespace rbwebdesigns\HamletCMS\PostComments\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
@@ -20,7 +20,7 @@ class Comments extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'comments';
-        $this->subClass = '\\rbwebdesigns\\blogcms\\PostComments\\Comment';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\PostComments\\Comment';
 
         $this->fields = array(
             'id' => 'number',
@@ -37,7 +37,7 @@ class Comments extends RBFactory
      * 
      * @param int $commentID
      * 
-     * @return \rbwebdesigns\blogcms\PostCommments\Comment
+     * @return \rbwebdesigns\HamletCMS\PostCommments\Comment
      */
     public function getCommentById($commentID)
     {
@@ -50,7 +50,7 @@ class Comments extends RBFactory
      * @param int $blogID
      * @param bool $limit
      * 
-     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     * @return \rbwebdesigns\HamletCMS\PostCommments\Comment[]
      */
     public function getCommentsByBlog($blogID, $limit=null)
     {
@@ -64,7 +64,7 @@ class Comments extends RBFactory
      * @param bool $includeApprovals
      *   Include comments awaiting approval?
      * 
-     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     * @return \rbwebdesigns\HamletCMS\PostCommments\Comment[]
      */
     public function getCommentsByPost($postID, $includeApprovals=true)
     {
@@ -80,7 +80,7 @@ class Comments extends RBFactory
      * @param bool $includeApprovals
      *   Include comments awaiting approval?
      * 
-     * @return \rbwebdesigns\blogcms\PostCommments\Comment[]
+     * @return \rbwebdesigns\HamletCMS\PostCommments\Comment[]
      */
     public function getCommentsByUser($userID, $includeApprovals=true)
     {

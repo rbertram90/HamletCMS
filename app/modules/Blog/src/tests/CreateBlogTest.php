@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\blogcms\Blog\tests;
+namespace rbwebdesigns\HamletCMS\Blog\tests;
 
-use rbwebdesigns\blogcms\BlogCMS;
-use rbwebdesigns\blogcms\tests\TestResult;
+use rbwebdesigns\HamletCMS\HamletCMS;
+use rbwebdesigns\HamletCMS\tests\TestResult;
 
 /**
  * Creates a new blog, stores the newly created ID in the $blogID variable, accessible
@@ -15,7 +15,7 @@ class CreateBlogTest extends TestResult
     public function run()
     {
         // Instantiate the blog controller
-        $controller = new \rbwebdesigns\blogcms\Blog\controller\Blogs();
+        $controller = new \rbwebdesigns\HamletCMS\Blog\controller\Blogs();
 
         print "Info: Running test CreateBlog". PHP_EOL;
 

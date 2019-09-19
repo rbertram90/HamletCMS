@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogPosts\model;
+namespace rbwebdesigns\HamletCMS\BlogPosts\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
@@ -20,8 +20,8 @@ class Autosaves extends RBFactory
         // Access to the database class
         $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_AUTOSAVES;
-        $this->subClass = '\\rbwebdesigns\\blogcms\\BlogPosts\\Autosave';
-        $this->modelPosts = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Autosave';
+        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
         
         // @todo can we determine these dynamically?
         $this->fields = [
@@ -33,7 +33,7 @@ class Autosaves extends RBFactory
             'date_last_saved' => 'timestamp'
         ];
 
-        BlogCMS::runHook('modelSchema', ['model' => $this]);
+        HamletCMS::runHook('modelSchema', ['model' => $this]);
     }
 
     /**
@@ -45,7 +45,7 @@ class Autosaves extends RBFactory
     {
         // $postCheck = $this->count(['id' => $postID]);
         $newTags = Posts::createSafeTagList($data['tags']);
-        $currentUser = BlogCMS::session()->currentUser;
+        $currentUser = HamletCMS::session()->currentUser;
 
         if ($postID <= 0) {
             // Post is not saved into the main table - create it as a draft

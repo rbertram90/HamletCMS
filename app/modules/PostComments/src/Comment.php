@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\PostComments;
+namespace rbwebdesigns\HamletCMS\PostComments;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class Comment {
     public $id;
@@ -19,12 +19,12 @@ class Comment {
     /**
      * Get the comment author
      * 
-     * @return \rbwebdesigns\blogcms\UserAccounts\User
+     * @return \rbwebdesigns\HamletCMS\UserAccounts\User
      */
     public function author()
     {
         if (is_null($this->user)) {
-            $usersModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\UserAccounts\\model\\UserAccounts');
+            $usersModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\UserAccounts\\model\\UserAccounts');
             $this->user = $usersModel->getById($this->user_id);            
         }
         return $this->user;
@@ -33,12 +33,12 @@ class Comment {
     /**
      * Get the post the comment was made on
      * 
-     * @return \rbwebdesigns\blogcms\BlogPosts\Post
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post
      */
     public function post()
     {
         if (is_null($this->post)) {
-            $postModel = BlogCMS::model('\\rbwebdesigns\\blogcms\\BlogPosts\\model\\Posts');
+            $postModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\BlogPosts\\model\\Posts');
             $this->post = $postModel->getPostById($this->post_id);            
         }
         return $this->post;

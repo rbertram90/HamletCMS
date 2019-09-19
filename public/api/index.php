@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\blogcms;
+namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\Response;
-use rbwebdesigns\blogcms\API\controller\Api;
+use rbwebdesigns\HamletCMS\API\controller\Api;
 
 /****************************************************************
   Blog CMS API Start Point
@@ -17,17 +17,17 @@ use rbwebdesigns\blogcms\API\controller\Api;
   Route request
 ****************************************************************/
     
-    BlogCMS::$function = 'api';
+    HamletCMS::$function = 'api';
 
-    $request = BlogCMS::request();
-    $response = BlogCMS::response();
+    $request = HamletCMS::request();
+    $response = HamletCMS::response();
     
 
 /****************************************************************
   Get content
 ****************************************************************/
 
-    $route = BlogCMS::pathMatch();
+    $route = HamletCMS::pathMatch();
 
     $errored = false;
 
@@ -41,8 +41,8 @@ use rbwebdesigns\blogcms\API\controller\Api;
         $errored = true;
     }
 
-    $permissionsModel = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-    $blogModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+    $permissionsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+    $blogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
 
     $blogID = $request->getInt('blogID', false);
 

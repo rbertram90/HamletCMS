@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Contributors\model;
+namespace rbwebdesigns\HamletCMS\Contributors\model;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\JSONHelper;
 
@@ -16,10 +16,10 @@ class Permissions extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'contributors';
-        $this->subClass = '\\rbwebdesigns\\blogcms\\Contributors\\Contributor';
+        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Contributors\\Contributor';
 
-        $this->modelContributors = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Contributors');
-        $this->modelContributorGroups = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\ContributorGroups');
+        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelContributorGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
     }
 
     /**
@@ -29,13 +29,13 @@ class Permissions extends RBFactory
      */
     public static function getList()
     {
-        if ($cache = BlogCMS::getCache('permissions')) {
+        if ($cache = HamletCMS::getCache('permissions')) {
             return $cache;
         }
 
-        BlogCMS::generatePermissionCache();
+        HamletCMS::generatePermissionCache();
 
-        return BlogCMS::getCache('permissions');
+        return HamletCMS::getCache('permissions');
     }
 
     /**
@@ -43,7 +43,7 @@ class Permissions extends RBFactory
      */
     public function getUserGroup($blogID)
     {
-        $userID = BlogCMS::session()->currentUser['id'];
+        $userID = HamletCMS::session()->currentUser['id'];
         
         if (!$userID) return false;
 
@@ -64,7 +64,7 @@ class Permissions extends RBFactory
     public function userHasPermission($requiredPermissions, $blogID = 0)
     {
         if (gettype($requiredPermissions) == 'string') $requiredPermissions = [$requiredPermissions];
-        if ($blogID == 0) $blogID = BlogCMS::$blogID;
+        if ($blogID == 0) $blogID = HamletCMS::$blogID;
         if (!$groupID = $this->getUserGroup($blogID)) return false;
         
         $group = $this->modelContributorGroups->getGroupById($groupID);

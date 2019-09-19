@@ -2,5 +2,5 @@
 <p class="error">Oh No! Something went wrong in processing your request because you do not have sufficient permission to perform the action.</p>
 
 <div style="text-align:center;">
-    <img src="{$clientroot_blogcms}/images/accessdenied.jpg" />
+    <img src="{$clientroot_HamletCMS}/images/accessdenied.jpg" />
 </div>

@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogPosts\controller;
+namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class AbstractPostType extends GenericController
 {
@@ -12,9 +12,9 @@ class AbstractPostType extends GenericController
     protected $modelBlogs;
 
     public function __construct() {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
 
         parent::__construct();
     }
@@ -26,12 +26,12 @@ class AbstractPostType extends GenericController
      */
     public function create()
     {
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->blog = HamletCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Create blog post');
 
         $extraFields = [];
-        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => [], 'fields' => &$extraFields]);
+        HamletCMS::runHook('editPostForm', ['blog' => $blog, 'post' => [], 'fields' => &$extraFields]);
         $this->response->setVar('customSettingFields', $extraFields);
     }
 
@@ -54,7 +54,7 @@ class AbstractPostType extends GenericController
         $this->response->setTitle('Editing - '. $post->title);
 
         $extraFields = [];
-        BlogCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);
+        HamletCMS::runHook('editPostForm', ['blog' => $blog, 'post' => &$post, 'fields' => &$extraFields]);
         $this->response->setVar('customSettingFields', $extraFields);
     }
 

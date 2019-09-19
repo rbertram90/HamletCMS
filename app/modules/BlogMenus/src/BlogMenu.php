@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogMenus;
+namespace rbwebdesigns\HamletCMS\BlogMenus;
 
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\HamletCMS;
 
 class BlogMenu {
     public $id;
@@ -14,7 +14,7 @@ class BlogMenu {
     public function items()
     {
         if (is_null($this->items)) {
-            $itemsModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogMenus\model\MenuItems');
+            $itemsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\MenuItems');
             $this->items = $itemsModel->getByMenu($this->id);
         }
         return $this->items;

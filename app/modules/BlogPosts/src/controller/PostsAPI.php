@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\blogcms\BlogPosts\controller;
+namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 /**
@@ -14,11 +14,11 @@ class PostsAPI extends GenericController
 {
 
     /**
-     * @var \rbwebdesigns\blogcms\BlogPosts\model\Posts
+     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
      */
     protected $model;
     /**
-     * @var \rbwebdesigns\blogcms\Blog\model\Blogs
+     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
      */
     protected $modelBlogs;
     
@@ -27,20 +27,20 @@ class PostsAPI extends GenericController
      */
     public function __construct()
     {
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
-        $this->modelAutosaves = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Autosaves');
-        $this->modelBlogs = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->modelAutosaves = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
+        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
 
         parent::__construct();
 
         /*
-        if (!BlogCMS::$blogID) {
+        if (!HamletCMS::$blogID) {
             $postID = $this->request->getUrlParameter(1);
             $this->post = $this->model->getPostById($postID);
-            BlogCMS::$blogID = $this->post['blog_id'];
+            HamletCMS::$blogID = $this->post['blog_id'];
         }
 
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->blog = HamletCMS::getActiveBlog();
         */
     }
 
@@ -91,7 +91,7 @@ class PostsAPI extends GenericController
         }
         
         // Process custom fields for different post types
-        BlogCMS::runHook('onBeforePostSaved', ['post' => &$newPost]);
+        HamletCMS::runHook('onBeforePostSaved', ['post' => &$newPost]);
 
         if (!$this->model->createPost($newPost)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Error creating post" }');
@@ -102,7 +102,7 @@ class PostsAPI extends GenericController
         // Get the post created - with ID and URL
         $post = $this->model->getPostByURL($url, $blog->id);
 
-        BlogCMS::runHook('onPostCreated', ['post' => $post]);
+        HamletCMS::runHook('onPostCreated', ['post' => $post]);
 
         // todo - add new post ID
         $this->response->setBody('{ "success": "true", "post": '. json_encode($post) .' }');
@@ -177,7 +177,7 @@ class PostsAPI extends GenericController
         }
 
         // Process custom fields for different post types
-        BlogCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
+        HamletCMS::runHook('onBeforePostSaved', ['post' => &$updates]);
 
         $this->model->updatePost($post->id, $updates);
         $this->modelAutosaves->removeAutosave($post->id);
@@ -185,7 +185,7 @@ class PostsAPI extends GenericController
         // Re-fetch post data - will have updated URL alias
         $post = $this->model->getPostByURL($url, $blogID);
 
-        BlogCMS::runHook('onPostUpdated', ['post' => $post]);
+        HamletCMS::runHook('onPostUpdated', ['post' => $post]);
 
         $this->response->setBody('{ "success": true, "post": '. json_encode($post) .', "debug": "'.$debug.'" }');
     }
@@ -214,7 +214,7 @@ class PostsAPI extends GenericController
 
         if ($newPostID = $this->model->clonePost($postID)) {
             $newPost = $this->model->getPostById($newPostID);
-            BlogCMS::runHook('onPostCreated', ['post' => $newPost]);
+            HamletCMS::runHook('onPostCreated', ['post' => $newPost]);
             $this->response->setBody('{ "success": true, "newPostID": '.$newPostID.' }');
         }
         else {
@@ -241,7 +241,7 @@ class PostsAPI extends GenericController
         }
 
         if ($this->model->delete(['id' => $post->id]) && $this->modelAutosaves->removeAutosave($post->id)) {
-            BlogCMS::runHook('onPostDeleted', ['post' => $post]);
+            HamletCMS::runHook('onPostDeleted', ['post' => $post]);
             $this->response->setBody('{ "success": true }');
         }
         else {
@@ -270,7 +270,7 @@ class PostsAPI extends GenericController
         ];
 
         // Populate custom fields
-        BlogCMS::runHook('onBeforeAutosave', ['post' => &$data]);
+        HamletCMS::runHook('onBeforeAutosave', ['post' => &$data]);
 
         $updateDB = $this->modelAutosaves->autosavePost($postID, $data);
 

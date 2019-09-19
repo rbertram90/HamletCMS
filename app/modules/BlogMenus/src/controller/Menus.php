@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\blogcms\BlogMenus\controller;
+namespace rbwebdesigns\HamletCMS\BlogMenus\controller;
 
-use rbwebdesigns\blogcms\BlogCMS;
-use rbwebdesigns\blogcms\GenericController;
+use rbwebdesigns\HamletCMS\HamletCMS;
+use rbwebdesigns\HamletCMS\GenericController;
 
 class Menus extends GenericController {
 
@@ -11,10 +11,10 @@ class Menus extends GenericController {
     {
         parent::__construct();
 
-        $this->model = BlogCMS::model('\rbwebdesigns\blogcms\BlogMenus\model\Menus');
-        $this->modelItems = BlogCMS::model('\rbwebdesigns\blogcms\BlogMenus\model\MenuItems');
+        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
+        $this->modelItems = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\MenuItems');
 
-        $this->blog = BlogCMS::getActiveBlog();
+        $this->blog = HamletCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
     }
 
@@ -88,7 +88,7 @@ class Menus extends GenericController {
         
         $this->response->setTitle('Add menu item - '. $menu->name);
         $this->response->setVar('menu', $menu);
-        $postsModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $postsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
         $this->response->setVar('tags', $postsModel->getAllTagsByBlog($this->blog->id));
         $this->response->write('addLink.tpl', 'BlogMenus');
     }
@@ -138,7 +138,7 @@ class Menus extends GenericController {
         $this->response->setTitle('Edit item - '. $link->text);
         $this->response->setVar('menu', $link->menu());
         $this->response->setVar('link', $link);
-        $postsModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+        $postsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
         $this->response->setVar('tags', $postsModel->getAllTagsByBlog($this->blog->id));
         $this->response->write('addLink.tpl', 'BlogMenus');
     }
@@ -199,7 +199,7 @@ class Menus extends GenericController {
     /**
      * Get the menu using the ID passed in the URL
      * 
-     * @return \rbwebdesigns\blogcms\BlogMenus\BlogMenu|null
+     * @return \rbwebdesigns\HamletCMS\BlogMenus\BlogMenu|null
      */
     protected function requireMenuFromRequest()
     {
@@ -224,12 +224,12 @@ class Menus extends GenericController {
 
         switch ($type) {
             case 'post':
-                $postsModel = BlogCMS::model('\rbwebdesigns\blogcms\BlogPosts\model\Posts');
+                $postsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
                 $postID = $this->request->getInt('post_id', 0);
                 if ($post = $postsModel->getPostById($postID)) $target = $postID;
                 break;
             case 'blog':
-                $blogsModel = BlogCMS::model('\rbwebdesigns\blogcms\Blog\model\Blogs');
+                $blogsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
                 $blogID = $this->request->getInt('blog_id', 0);
                 if ($blog = $blogsModel->getBlogById($blogID)) $target = $blogID;
                 break;

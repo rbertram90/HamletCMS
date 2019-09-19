@@ -1,11 +1,11 @@
 <?php
 
-namespace rbwebdesigns\blogcms\Widgets\controller;
+namespace rbwebdesigns\HamletCMS\Widgets\controller;
 
-use rbwebdesigns\blogcms\GenericController;
-use rbwebdesigns\blogcms\Contributors\model\ContributorGroups;
-use rbwebdesigns\blogcms\Menu;
-use rbwebdesigns\blogcms\BlogCMS;
+use rbwebdesigns\HamletCMS\GenericController;
+use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
+use rbwebdesigns\HamletCMS\Menu;
+use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\HTMLFormTools;
@@ -15,7 +15,7 @@ use Codeliner\ArrayReader\ArrayReader;
 class WidgetsAdmin extends GenericController
 {
     /**
-     * @var \rbwebdesigns\blogcms\Contributors\model\Permissions
+     * @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions
      */
     protected $modelPermissions;
     /**
@@ -34,9 +34,9 @@ class WidgetsAdmin extends GenericController
     public function __construct()
     {
         // Initialise Models
-        $this->modelPermissions = BlogCMS::model('\rbwebdesigns\blogcms\Contributors\model\Permissions');
-        $this->request = BlogCMS::request();
-        $this->response = BlogCMS::response();
+        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->request = HamletCMS::request();
+        $this->response = HamletCMS::response();
 
         $this->setup();
     }
@@ -51,13 +51,13 @@ class WidgetsAdmin extends GenericController
      */
     protected function setup()
     {
-        $currentUser = BlogCMS::session()->currentUser;
-        $this->blog = BlogCMS::getActiveBlog();
+        $currentUser = HamletCMS::session()->currentUser;
+        $this->blog = HamletCMS::getActiveBlog();
 
         $access = true;
 
         // Check the user is a contributor of the blog to begin with
-        if (!BlogCMS::$userGroup) {
+        if (!HamletCMS::$userGroup) {
             $access = false;
         }
         elseif (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {
@@ -68,7 +68,7 @@ class WidgetsAdmin extends GenericController
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        BlogCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
     }
 
     /**
@@ -192,7 +192,7 @@ class WidgetsAdmin extends GenericController
      */
     public function getInstalledWidgets()
     {
-        $cachePath = BlogCMS::getCacheDirectory() .'/widgets.json';
+        $cachePath = HamletCMS::getCacheDirectory() .'/widgets.json';
         if (!file_exists($cachePath)) self::reloadWidgetCache();
         return JSONhelper::JSONFileToArray($cachePath);
     }
@@ -232,7 +232,7 @@ class WidgetsAdmin extends GenericController
         file_put_contents($configPath, JSONhelper::arrayToJSON($config));
         
         // View the widgets page
-        BlogCMS::runHook('onWidgetsUpdated', ['blog' => $this->blog]);
+        HamletCMS::runHook('onWidgetsUpdated', ['blog' => $this->blog]);
         $this->response->redirect('/cms/settings/widgets/' . $this->blog->id, 'Widgets updated', 'success');
     }
     
@@ -267,10 +267,10 @@ class WidgetsAdmin extends GenericController
      */
     public static function reloadWidgetCache()
     {
-        $file = fopen(BlogCMS::getCacheDirectory() .'/widgets.json', 'w');
+        $file = fopen(HamletCMS::getCacheDirectory() .'/widgets.json', 'w');
         $widgetCache = [];
 
-        foreach (BlogCMS::$modules as $module) {
+        foreach (HamletCMS::$modules as $module) {
             $filePath = SERVER_MODULES_PATH .'/'. $module->key .'/widgets.json';
             if (file_exists($filePath)) {
                 $widgets = JSONhelper::JSONFileToArray($filePath);

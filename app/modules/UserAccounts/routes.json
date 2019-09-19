@@ -3,77 +3,77 @@
         "key": "user.view",
         "path": "/cms/account/user/{USER_ID}",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "user"
     },
     {
         "key": "user.current",
         "path": "/cms/account/user",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "user"
     },
     {
         "key": "user.login",
         "path": "/cms/account/login",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "login"
     },
     {
         "key": "user.register",
         "path": "/cms/account/register",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "register"
     },
     {
         "key": "user.resetpassword",
         "path": "/cms/account/resetpassword",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "resetpassword"
     },
     {
         "key": "user.logout",
         "path": "/cms/account/logout",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "logout"
     },
     {
         "key": "user.settings",
         "path": "/cms/account/settings",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "settings"
     },
     {
         "key": "user.password",
         "path": "/cms/account/password",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "password"
     },
     {
         "key": "user.avatar",
         "path": "/cms/account/avatar",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "avatar"
     },
     {
         "key": "user.card",
         "path": "/cms/account/card/{USER_ID}",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
         "action": "card"
     },
     {
         "key": "user.data",
         "path": "/api/user/get",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\blogcms\\UserAccounts\\Controller\\UserAPI",
+        "controller": "\\rbwebdesigns\\HamletCMS\\UserAccounts\\Controller\\UserAPI",
         "action": "get"
     }
 ]
