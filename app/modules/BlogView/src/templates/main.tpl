@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{$page_title} - powered by the Blog CMS from RBwebdesigns</title>
+    <title>{$page_title} - powered by HamletCMS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -67,7 +67,7 @@
 
         <div class="row page-bookend">
             <div class="sixteen wide column">       
-                <div>Powered by Blog CMS from <a href="https://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a></div>
+                <div>Powered by <a href="https://github.com/rbertram90/HamletCMS">HamletCMS</a> from <a href="https://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a></div>
             </div>
         </div>
     </div>

@@ -17,12 +17,12 @@
         
         <div id="loginbox">
             <div id="logoholder">
-                <img src="/images/logo.png" alt="Blog CMS" />
+                <img src="/images/logo.png" alt="HamletCMS" />
             </div>
             
             <form method="POST" class="ui form">
                 <h2 class="ui header">Create an Account</h2>
-                <p>Complete the following fields to get access to Blog CMS. The account is free for life!</p>
+                <p>Complete the following fields to get access to HamletCMS. The account is free for life!</p>
                 
                 <div class="ui error message"></div>
                 

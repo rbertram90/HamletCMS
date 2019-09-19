@@ -52,7 +52,7 @@ class Site
         // Set the page meta title
         $this->response->setTitle('Website homepage');
         // Set the page meta description
-        $this->response->setDescription('Front page to your website powered by Blog CMS');
+        $this->response->setDescription('Front page to your website powered by HamletCMS');
 
         // Get data from the blogs database
         $this->response->setVar('lettercounts', $this->modelBlogs->countBlogsByLetter());

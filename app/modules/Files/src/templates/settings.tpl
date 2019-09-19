@@ -15,7 +15,7 @@
             <h2>Image sizes</h2>
             <div class="ui icon info message">
                 <i class="info circle icon"></i>
-                <div class="content">When uploading an image to Blog CMS, several different versions are saved automatically. These are smaller images, designed to be used on pages which list multiple posts, to save the end-user from having to download large image files.</div>
+                <div class="content">When uploading an image to HamletCMS, several different versions are saved automatically. These are smaller images, designed to be used on pages which list multiple posts, to save the end-user from having to download large image files.</div>
             </div>
             <form method="POST" class="ui form" id="post_settings_form">
                 <div class="ui grid">

@@ -10,7 +10,7 @@
     <div class="ui padded grid">
         <div class="row">
             <div class="teal center aligned column">
-                <img src="/images/logo.png" alt="Blog CMS" />
+                <img src="/images/logo.png" alt="HamletCMS" />
             </div>
         </div>
         <div class="row">

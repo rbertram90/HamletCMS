@@ -3,7 +3,7 @@
 namespace rbwebdesigns\HamletCMS;
 
 /**
- * This class provides a structure for menu items within blog cms
+ * This class provides a structure for menu items within HamletCMS
  * it does not provide any implementation of the markup that will
  * be shown in the final output. This is left to the template file
  * to loop over all the links in the menu.

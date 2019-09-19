@@ -19,7 +19,7 @@
                             <h2>Templates</h2>
                             <div class="ui message">
                                 <p>These template use the Smarty templating engine, for more information see: <a href="https://www.smarty.net/docs/en/smarty.for.designers.tpl" target="_blank">Smarty for template designers</a>.</p>
-                                <p>Consult the <a href="https://github.com/rbertram90/blog_cms/wiki/Writing-custom-post-teaser-templates" target="_blank">Blog CMS wiki</a> for further help and a list of <a href="https://github.com/rbertram90/blog_cms/wiki/Writing-custom-post-teaser-templates" target="_blank">available variables</a> for this template.</p>
+                                <p>Consult the <a href="https://github.com/rbertram90/HamletCMS/wiki/Writing-custom-post-teaser-templates" target="_blank">HamletCMS wiki on GitHub</a> for further help and a list of <a href="https://github.com/rbertram90/HamletCMS/wiki/Writing-custom-post-teaser-templates" target="_blank">available variables</a> for this template.</p>
                             </div>
                             <div class="ui top attached tabular menu templates">
                                 <a class="active item" data-tab="first">Teaser</a>

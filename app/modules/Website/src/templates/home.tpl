@@ -1,6 +1,6 @@
 <div class="ui segment">
     <h2>What is this page?</h2>
-    <p>This is the default front-page for a website using <a href="http://github.com/rbertram90/blog_cms" target="_blank">Blog CMS</a> as a backend content management system. These pages will likely include links to the blogs that have been created within the CMS. There will be a range of example views made available to place on these pages <em>(coming soon!)</em>.</p>
+    <p>This is the default front-page for a website using <a href="http://github.com/rbertram90/HamletCMS" target="_blank">HamletCMS</a> as a backend content management system. These pages will likely include links to the blogs that have been created within the CMS. There will be a range of example views made available to place on these pages <em>(coming soon!)</em>.</p>
 
     <p>To change the contents of this file edit <strong>/app/view/smarty/public/home.tpl</strong></p>
 </div>

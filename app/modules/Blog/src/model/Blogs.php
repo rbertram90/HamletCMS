@@ -12,8 +12,6 @@ use rbwebdesigns\core\model\RBFactory;
  * will likely be accessed elsewhere with complex queries but the common simple
  * ones are handled here.
  * 
- * @package Blog CMS
- * 
  * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
 class Blogs extends RBFactory

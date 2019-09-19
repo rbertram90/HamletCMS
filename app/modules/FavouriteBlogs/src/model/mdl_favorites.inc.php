@@ -10,8 +10,6 @@ use rbwebdesigns\core\model\RBFactory;
  * 
  * @todo Rewrite the whole thing!!!
  * 
- * @package Blog CMS
- * 
  * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
 class Favourites extends RBFactory

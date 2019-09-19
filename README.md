@@ -30,7 +30,7 @@ Data is stored both in MySQL database and within the file system (defaulted to /
 
 ### Installation
 1. Clone repository
-2. Create database (default name = blog_cms)
+2. Create database (default name = hamlet)
 3. Copy app/config/config_default.json -> app/config/config.json
 4. Change database connection details in config.json
 5. Change root_directory in config.json

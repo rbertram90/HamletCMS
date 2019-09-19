@@ -72,7 +72,7 @@ class Blogs extends GenericController
     }
     
     /**
-     * View the blog cms main dashboard which shows all blogs that the user contributes to
+     * View the cms main dashboard which shows all blogs that the user contributes to
      */
     public function home()
     {

@@ -12,7 +12,7 @@
         <div class="row">
             <div class="column">
                 <div class="ui teal inverted center aligned segment">
-                    <a href="/"><img src="/images/logo.png" alt="Blog CMS"></a>
+                    <a href="/"><img src="/images/logo.png" alt="HamletCMS"></a>
                 </div>
 
                 {$body_content}

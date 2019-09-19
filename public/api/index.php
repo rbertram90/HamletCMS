@@ -6,7 +6,7 @@ use rbwebdesigns\core\Response;
 use rbwebdesigns\HamletCMS\API\controller\Api;
 
 /****************************************************************
-  Blog CMS API Start Point
+  HamletCMS API Start Point
 ****************************************************************/
 
     // Include cms setup script

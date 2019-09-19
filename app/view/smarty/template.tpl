@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{$page_title} - Blog CMS from RBwebdesigns</title>
+    <title>{$page_title} - HamletCMS</title>
     <link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
     
     <meta charset="UTF-8"> 
@@ -20,7 +20,7 @@
 
 <div class="ui top fixed menu">
     <a class="item" href="/cms" style="background-color:#00B5AD;" title="CMS home">
-        <img src="/images/square_small_logo.png" alt="Blog CMS">
+        <img src="/images/square_small_logo.png" alt="HamletCMS">
     </a>
 
     {if count($blogs)}

@@ -14,7 +14,7 @@
         </style>
         <div id="loginbox">
             <div id="logoholder">
-                <img src="/images/logo.png" alt="Blog CMS" />
+                <img src="/images/logo.png" alt="HamletCMS" />
             </div>
             
             <h1>Reset password</h1>
