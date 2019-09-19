@@ -1,4 +1,4 @@
-# Blog CMS
+# HamletCMS
 
 ## About
 This is a blogger style content management system for writing articles to blogs. A hobby project, it is not in use in the real world as yet.
