@@ -181,9 +181,20 @@ class BlogContent
      */
     public function viewHome()
     {
-        $pageNum = $this->request->getInt('s', 1);
-
         $blogConfig = $this->blog->config();
+
+        if (isset($blogConfig['blog'])) {
+            if ($blogConfig['blog']['use_post_as_homepage'] === 'on') {
+                $postID = $blogConfig['blog']['homepage_post_id'];
+                $post = $this->modelPosts->getPostById($postID);
+
+                if ($post && $post->blog_id == $this->blog->id) {
+                    return $this->viewPost($post);
+                }
+            }
+        }
+
+        $pageNum = $this->request->getInt('s', 1);
         $postConfig = null;
         $showsocialicons = 1;
         $summarylength = 150;
@@ -465,15 +476,17 @@ class BlogContent
      *   /posts
      *   /posts/{post-url}
      */
-    public function viewPost()
+    public function viewPost($post = null)
     {
-        $postUrl = $this->request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
+        if (is_null($post)) {
+            $postUrl = $this->request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
 
-        if (!$postUrl) {
-            return $this->viewHome();
+            if (!$postUrl) {
+                return $this->viewHome();
+            }
+    
+            $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
         }
-
-        $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
         
         if (!$post) {
             $response->redirect($this->pathPrefix, 'Cannot find this post', 'error');

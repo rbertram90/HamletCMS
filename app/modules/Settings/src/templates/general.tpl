@@ -41,9 +41,50 @@
                 <div class="field">
                     <label for="fld_domain">Custom domain<br>
                     <small><em>Requires server configuration to work, see: <a href="https://github.com/rbertram90/blog_cms/wiki/Applying-custom-blog-domain-names" target="_blank">this wiki article</a></em></small></label>
-                    <input type="text" value="{$blog->domain}" name="fld_domain" placeholder="(default)">
+                    <input type="text" value="{$blog->domain}" name="fld_domain" id="fld_domain" placeholder="(default)">
                     <small>Include http(s):// but no trailing slash.</small>
                 </div>
+
+                <div class="field">
+                    <label for="fld_post_as_homepage">Use a post as homepage?</label>
+                    <input type="checkbox" name="fld_post_as_homepage" id="fld_post_as_homepage">
+                </div>
+
+                <div class="field" id="home_page_wrapper" style="display:none;">
+                    <label for="homepage">Homepage</label>
+                    <div class="ui search selection dropdown" id="homepage">
+                        <input type="hidden" value="" name="fld_homepage_post_id" id="fld_homepage_post_id">
+                        <i class="dropdown icon"></i>
+                        <input class="search" type="text" id="post_search_text">
+                        <div class="text"></div>
+                    </div>
+                </div>
+
+                <script>
+                    $("#homepage").dropdown({
+                        placeholder: 'Search for post',
+                        minCharacters: 2,
+                        apiSettings: {
+                            url: '/api/posts/search?blogID={$blog->id}&q={ldelim}query{rdelim}'
+                        }
+                    });
+
+                    {if $postIsHomepage}
+                        $("#fld_post_as_homepage").prop("checked", true);
+                        $("#fld_homepage_post_id").val('{$homePost}');
+                        $("#post_search_text").val('[Post #{$homePost}]');
+                    {/if}
+
+                    $("#fld_post_as_homepage").change(function() {
+                        if ($(this).is(':checked')) {
+                            $("#home_page_wrapper").show();
+                        }
+                    });
+
+                    if ($("#fld_post_as_homepage").is(':checked')) {
+                        $("#home_page_wrapper").show();
+                    }
+                </script>
                 
                 <div class="field">
                     <label for="fld_category">Category</label>

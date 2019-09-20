@@ -77,7 +77,7 @@ class Files extends GenericController
             
             foreach($files as $filename) {
                 $ext = explode('.', $filename)[1];
-                if(strtolower($ext) == 'jpg' || strtolower($ext) == 'png') {
+                if(strtolower($ext) == 'jpg' || strtolower($ext) == 'jpeg' || strtolower($ext) == 'png') {
                     $images[] = [
                         'name' => $filename,
                         'size' => number_format(filesize($imagesDirectory.'/'.$filename) / 1000, 2),

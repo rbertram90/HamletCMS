@@ -103,6 +103,10 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
+        $config = $this->blog->config()['blog'];
+        $this->response->setVar('postIsHomepage', $config['use_post_as_homepage'] == 'on');
+        $this->response->setVar('homePost', $config['homepage_post_id']);
+
         $this->response->setTitle('General Settings - ' . $this->blog->name);
         $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
         $this->response->write('general.tpl', 'Settings');
@@ -222,6 +226,7 @@ class Settings extends GenericController
      */
     public function updateBlogGeneral()
     {
+        // Data to save to DB
         $blogData = [
             'name'        => $this->request->getString('fld_blogname'),
             'description' => $this->request->getString('fld_blogdesc'),
@@ -229,6 +234,8 @@ class Settings extends GenericController
             'category'    => $this->request->getString('fld_category'),
             'domain'      => $this->request->getString('fld_domain'),
         ];
+
+        // Logo Upload
         $logo = $this->request->getFile('fld_logo');
         if (strlen($logo['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($logo);
@@ -248,6 +255,8 @@ class Settings extends GenericController
                 HamletCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
+
+        // Icon Upload
         $icon = $this->request->getFile('fld_favicon');
         if (strlen($icon['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($icon);
@@ -268,7 +277,16 @@ class Settings extends GenericController
             }
         }
 
+        // Update DB
         $update = $this->modelBlogs->update(['id' => $this->blog->id], $blogData);
+
+        // Update Config.json
+        $this->blog->updateConfig([
+            'blog' => [
+                'use_post_as_homepage' => $this->request->getString('fld_post_as_homepage', 'off'),
+                'homepage_post_id'     => $this->request->getInt('fld_homepage_post_id', 0),
+            ]
+        ]);
 
         if($update) {
             HamletCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);

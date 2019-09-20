@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="field" id="post_wrapper" style="display:none;">
-                    <label for="type">Post</label>
+                    <label for="post">Post</label>
                     <div class="ui search selection dropdown" id="post">
                         <input type="hidden" value="" name="post_id" id="post_id">
                         <i class="dropdown icon"></i>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="field" id="blog_wrapper" style="display:none;">
-                    <label for="type">Blog</label>
+                    <label for="blog">Blog</label>
                     <div class="ui search selection dropdown" id="blog">
                         <input type="hidden" value="" name="blog_id" id="blog_id">
                         <i class="dropdown icon"></i>
