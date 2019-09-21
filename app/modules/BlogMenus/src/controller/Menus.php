@@ -72,9 +72,98 @@ class Menus extends GenericController {
     {
         $menu = $this->requireMenuFromRequest();
 
+        if ($this->request->method() == 'POST') return $this->saveMenu($menu);
+
         $this->response->setTitle('Manage menu items - '. $menu->name);
         $this->response->setVar('menu', $menu);
         $this->response->write('editLinks.tpl', 'BlogMenus');
+    }
+
+    /**
+     * Route: /cms/menus/movelinkdown/{BLOG_ID}/{LINK_ID}
+     */
+    public function moveLinkDown() {
+        $link = $this->requireMenuLinkFromRequest();
+        $menu = $link->menu();
+        $redirect = "/cms/menus/edit/{$this->blog->id}/{$menu->id}";
+        
+        if (!$menu->blog_id == $this->blog->id) {
+            $this->response->redirect($redirect, 'Blog mismatch', 'error');
+        }
+
+        $menuItems = $menu->items();
+
+        if ($link->weight >= count($menuItems)) {
+            $this->response->redirect($redirect, 'Link cannot be moved down', 'error');
+        }
+
+        // Move up the item below
+        $update1 = $this->modelItems->update(['weight' => $link->weight + 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
+
+        // Move down this item
+        $update2 = $this->modelItems->update(['id' => $link->id], ['weight' => $link->weight + 1]);
+
+        if ($update1 && $update2) {
+            $this->response->redirect($redirect, 'Link order changed', 'success');
+        }
+        else {
+            $this->response->redirect($redirect, 'Unable to move link down', 'error');
+        }
+    }
+
+    /**
+     * Route: /cms/menus/movelinkup/{BLOG_ID}/{LINK_ID}
+     */
+    public function moveLinkUp() {
+        $link = $this->requireMenuLinkFromRequest();
+        $menu = $link->menu();
+        $redirect = "/cms/menus/edit/{$this->blog->id}/{$menu->id}";
+        
+        if (!$menu->blog_id == $this->blog->id) {
+            $this->response->redirect($redirect, 'Blog mismatch', 'error');
+        }
+
+        $menuItems = $menu->items();
+
+        if ($link->weight <= 1) {
+            $this->response->redirect($redirect, 'Link cannot be moved up', 'error');
+        }
+
+        // Move up the item below
+        $update1 = $this->modelItems->update(['weight' => $link->weight - 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
+
+        // Move down this item
+        $update2 = $this->modelItems->update(['id' => $link->id], ['weight' => $link->weight - 1]);
+
+        if ($update1 && $update2) {
+            $this->response->redirect($redirect, 'Link order changed', 'success');
+        }
+        else {
+            $this->response->redirect($redirect, 'Unable to move link up', 'error');
+        }
+    }
+
+    /**
+     * Save options for menu
+     */
+    protected function saveMenu($menu) {
+        $name = $this->request->getString('name');
+        $sort = $this->request->getString('sort');
+
+        if ($sort != 'custom') $sort = 'name';
+
+        $redirect = "/cms/menus/edit/{$this->blog->id}/{$menu->id}";
+
+        if (strlen($name) == 0) {
+            $this->response->redirect($redirect, 'Name field is required', 'error');
+        }
+
+        if ($this->model->update(['id' => $menu->id], ['name' => $name, 'sort' => $sort])) {
+            $this->response->redirect($redirect, 'Menu updated', 'success');
+        }
+        else {
+            $this->response->redirect($redirect, 'Error when saving menu', 'error');
+        }
     }
 
     /**
@@ -93,6 +182,9 @@ class Menus extends GenericController {
         $this->response->write('addLink.tpl', 'BlogMenus');
     }
 
+    /**
+     * Insert link data to database
+     */
     protected function processCreateLink($menu)
     {
         $type = $this->request->getString('type');
@@ -112,6 +204,7 @@ class Menus extends GenericController {
             'text' => $text,
             'link_target' => $target,
             'menu_id' => $menu->id,
+            'weight' => count($menu->items()) + 1, // always add last
             'new_window' => $this->request->getString('new_window', 'off') == 'on'
         ]);
 
@@ -128,10 +221,7 @@ class Menus extends GenericController {
      */
     public function editLink()
     {
-        $linkID = $this->request->getUrlParameter(2);
-
-        if (is_numeric($linkID) && $linkID > 0) $link = $this->modelItems->getItemById($linkID);
-        if (!isset($link)) $this->response->redirect('/cms', 'Could not find link', 'error');
+        $link = $this->requireMenuLinkFromRequest();
 
         if ($this->request->method() == 'POST') return $this->processUpdateLink($link);
         
@@ -143,6 +233,9 @@ class Menus extends GenericController {
         $this->response->write('addLink.tpl', 'BlogMenus');
     }
 
+    /**
+     * Update link data in database
+     */
     protected function processUpdateLink($link)
     {
         $type = $this->request->getString('type');
@@ -178,22 +271,31 @@ class Menus extends GenericController {
      */
     public function deleteLink()
     {
+        $link = $this->requireMenuLinkFromRequest();
+        $menu = $link->menu();
+        $errorRedirectUrl = '/cms/menus/edit/'. $this->blog->id .'/'. $menu->id;
+
+        // Run delete
+        if ($this->modelItems->delete(['id' => $link->id])) {
+            $this->modelItems->reWeightLinks($link);
+            $this->response->redirect('/cms/menus/edit/'. $this->blog->id .'/'. $menu->id, 'Link deleted', 'success');
+        }
+        else {
+            $this->response->redirect($errorRedirectUrl, 'Unable to delete link', 'error');
+        }
+    }
+
+    /**
+     * Get a menu item using the ID passed in the URL
+     */
+    protected function requireMenuLinkFromRequest()
+    {
         $linkID = $this->request->getUrlParameter(2);
 
         if (is_numeric($linkID) && $linkID > 0) $link = $this->modelItems->getItemById($linkID);
         if (!isset($link)) $this->response->redirect('/cms', 'Could not find link', 'error');
 
-        $errorRedirectUrl = '/cms/menus/edit/'. $this->blog->id .'/'. $link->menu()->id;
-
-        // Run delete
-        $delete = $this->modelItems->delete(['id' => $link->id]);
-
-        if ($delete) {
-            $this->response->redirect('/cms/menus/edit/'. $this->blog->id .'/'. $menu->menu()->id, 'Link deleted', 'success');
-        }
-        else {
-            $this->response->redirect($errorRedirectUrl, 'Unable to delete link', 'error');
-        }
+        return $link;
     }
 
     /**

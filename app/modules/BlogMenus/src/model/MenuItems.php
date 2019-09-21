@@ -24,13 +24,34 @@ class MenuItems extends RBFactory {
         parent::__construct($modelManager);
     }
 
+    /**
+     * @param int $linkID
+     * 
+     * @return \rbwebdesigns\HamletCMS\BlogMenus\MenuItem[]
+     */
     public function getItemById($linkID)
     {
         return $this->get('*', ['id' => $linkID], null, null, false);
     }
 
-    public function getByMenu($menuID)
+    /**
+     * @param \rbwebdesigns\HamletCMS\BlogMenus\Menu $menu
+     * 
+     * @return \rbwebdesigns\HamletCMS\BlogMenus\MenuItem[]
+     */
+    public function getByMenu($menu)
     {
-        return $this->get('*', ['menu_id' => $menuID]);
+        $sort = $menu->sort == 'custom' ? 'weight': $menu->sort;
+        return $this->get('*', ['menu_id' => $menu->id], $sort .' ASC');
     }
+
+    /**
+     * Update the weighting of remaining links in a menu after removing one
+     * 
+     * @param $linkToRemove
+     */
+    public function reWeightLinks($linkToRemove) {
+        return $this->db->query('UPDATE menuitems SET weight = weight-1 WHERE weight > '. $linkToRemove->weight);
+    }
+
 }

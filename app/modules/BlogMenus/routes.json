@@ -40,6 +40,22 @@
         "action": "editLink"
     },
     {
+        "key": "menus.movelinkup",
+        "description": "Move a link 1 position higher in order",
+        "path": "/cms/menus/movelinkup/{BLOG_ID}/{LINK_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "action": "moveLinkUp"
+    },
+    {
+        "key": "menus.movelinkdown",
+        "description": "Move a link 1 position lower in order",
+        "path": "/cms/menus/movelinkdown/{BLOG_ID}/{LINK_ID}",
+        "permissions": ["manage_menus"],
+        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "action": "moveLinkDown"
+    },
+    {
         "key": "menus.deletelink",
         "description": "Delete a menu link",
         "path": "/cms/menus/deletelink/{BLOG_ID}/{LINK_ID}",

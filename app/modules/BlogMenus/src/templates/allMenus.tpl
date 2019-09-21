@@ -18,7 +18,7 @@
                 {foreach $menus as $menu}
                     <div class="ui clearing segment">
                         <a href="/cms/menus/delete/{$blog->id}/{$menu->id}" class="ui labeled icon right floated button" onclick="return confirm('Are you sure you want to delete this menu?');"><i class="delete icon"></i>Delete</a>
-                        <a href="/cms/menus/edit/{$blog->id}/{$menu->id}" class="ui labeled icon right floated button"><i class="edit icon"></i>Edit links</a>
+                        <a href="/cms/menus/edit/{$blog->id}/{$menu->id}" class="ui labeled icon right floated button"><i class="edit icon"></i>Edit</a>
                         {$menu->name}
                     </div>
                 {foreachelse}

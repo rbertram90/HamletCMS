@@ -21,6 +21,9 @@ class BlogMenuItem {
     /** @var int */
     public $menu_id;
 
+    /** @var int */
+    public $weight;
+
     /** @var boolean */
     public $new_window;
 
