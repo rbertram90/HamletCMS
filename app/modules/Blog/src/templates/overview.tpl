@@ -11,7 +11,7 @@
 
         <h1 class="ui header cms-page-header">
             {if $blog->logo}
-                <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="Blog logo">
+                <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="Blog logo">
             {else}
                 <i class="book icon"></i>
             {/if}

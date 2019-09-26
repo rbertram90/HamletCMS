@@ -194,6 +194,15 @@ class BlogContent
             }
         }
 
+        $this->viewPostLister();
+    }
+
+    /**
+     * Default blog home view
+     */
+    public function viewPostLister()
+    {
+        $blogConfig = $this->blog->config();
         $pageNum = $this->request->getInt('s', 1);
         $postConfig = null;
         $showsocialicons = 1;
@@ -482,7 +491,7 @@ class BlogContent
             $postUrl = $this->request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
 
             if (!$postUrl) {
-                return $this->viewHome();
+                return $this->viewPostLister();
             }
     
             $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);

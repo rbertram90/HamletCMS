@@ -27,7 +27,7 @@
 
     <main class="row">
         <div class="sixteen wide column">
-            {$post->content}
+            {$post->trimmedContent}
         </div>
     </main>
 
