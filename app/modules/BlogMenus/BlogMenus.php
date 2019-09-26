@@ -15,7 +15,8 @@ class BlogMenus
         $dbc->query("CREATE TABLE `menus` (
             `id` int(11) NOT NULL,
             `name` varchar(100) NOT NULL,
-            `blog_id` bigint(10) NOT NULL
+            `blog_id` bigint(10) NOT NULL,
+            `sort` enum('text','custom') NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("CREATE TABLE `menuitems` (
@@ -24,6 +25,7 @@ class BlogMenus
           `type` enum('post','tag','external','mail','tel','blog') NOT NULL,
           `link_target` varchar(255) NOT NULL,
           `menu_id` int(11) NOT NULL,
+          `weight` int(11) NOT NULL,
           `new_window` tinyint(1) NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
         
