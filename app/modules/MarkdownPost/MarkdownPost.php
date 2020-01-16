@@ -19,11 +19,9 @@ class MarkdownPost
 
         switch ($args['template']) { 
             case 'singlePost':
-                $content = Markdown::defaultTransform($post->content);
-                $args['post']->trimmedContent = $content;
-                break;
             case 'postTeaser':
-                $args['post']->trimmedContent = $post->summary;
+                $args['post']->summary = Markdown::defaultTransform($post->summary);
+                $args['post']->content = Markdown::defaultTransform($post->content);
                 break;
         }
     }

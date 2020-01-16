@@ -63,10 +63,8 @@ class Post
         HamletCMS::runHook('onPostConstruct', ['post' => $this, 'functions' => &$this->customFunctions]);
     }
 
-    public function __call($closure, $args) {
-        // var_dump($closure);
-        // var_dump($args);
-
+    public function __call($closure, $args)
+    {
         if (array_key_exists($closure, $this->customFunctions)) {
             array_unshift($args, $this);
 

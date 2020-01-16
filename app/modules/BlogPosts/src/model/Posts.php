@@ -322,10 +322,10 @@ class Posts extends RBFactory
             return false;
         }
         
-        if(!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
-        if(!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
-
-        $newValues['timestamp'] = date("Y-m-d H:i:s");
+        if (!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
+        if (!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
+        if (!array_key_exists('timestamp', $newValues)) $newValues['timestamp'] = date("Y-m-d H:i:s");
+        
         $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
         $newValues['author_id'] = $currentUser['id'];
@@ -532,7 +532,7 @@ class Posts extends RBFactory
             $tags = explode(",", $post->tags);
             if(count($tags) == 0) continue;
             
-            foreach($tags as $tag) {
+            foreach ($tags as $tag) {
                 $tag = str_replace("+", " ", $tag);
                 // Compare - Case Insensitive
                 if (strtolower(trim($tag)) == strtolower(trim($ptag))) $res[] = $post;

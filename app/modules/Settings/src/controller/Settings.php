@@ -443,6 +443,10 @@ class Settings extends GenericController
         if (file_exists($fullTemplate)) {
             if(!copy($fullTemplate, $blogDirectory .'/templates/singlepost.tpl')) die('Failed to copy singlepost.tpl');
         }
+        $headerTemplate = $templateDirectory .'/header.tpl';
+        if (file_exists($headerTemplate)) {
+            if(!copy($headerTemplate, $blogDirectory .'/templates/header.tpl')) die('Failed to copy header.tpl');
+        }
 
         // Delete the widgets.json (as columns may have changed and no way to tell what current template is)
         // maybe do this differently in future updates

@@ -1,5 +1,5 @@
 {
-  "name": "rbwebdesigns/HamletCMS",
+  "name": "rbwebdesigns/hamlet-cms",
   "description": "PHP Blog content management system, using a modular MVC framework with Smarty templates",
   "repositories":
   [
@@ -9,10 +9,16 @@
     }
   ],
   "require": {
-      "codeliner/array-reader" : "~1.0",
-      "smarty/smarty": "~3.1",
-      "michelf/php-markdown": "1.4.1",
-      "athens/csrf": "1.*",
-      "rbertram90/core": "dev-master"
+    "codeliner/array-reader" : "~1.0",
+    "smarty/smarty": "~3.1",
+    "michelf/php-markdown": "1.4.1",
+    "athens/csrf": "1.*",
+    "rbertram90/core": "dev-master",
+    "composer/installers": "^1.7"
+  },
+  "extra": {
+    "installer-paths": {
+        "modules": ["type:hamlet-cms-module"]
+    }
   }
 }

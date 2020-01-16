@@ -1,4 +1,5 @@
 <?php
+
 namespace rbwebdesigns\HamletCMS\Search\controller;
 
 use rbwebdesigns\HamletCMS\GenericController;
@@ -8,11 +9,10 @@ class Search extends GenericController
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
         $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
 
         $this->blog = $this->modelBlogs->getBlogById($this->request->getUrlParameter(0));
     }
