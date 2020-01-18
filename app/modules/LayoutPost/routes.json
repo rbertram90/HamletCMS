@@ -1,9 +1,0 @@
-[
-    {
-        "key": "posts.create.layout",
-        "path": "/cms/posts/create/{BLOG_ID}/layout",
-        "controller": "\\rbwebdesigns\\HamletCMS\\LayoutPost\\controller\\LayoutPost",
-        "action": "create",
-        "permissions": ["create_posts"]
-    }
-]

@@ -18,7 +18,7 @@
   },
   "extra": {
     "installer-paths": {
-        "modules": ["type:hamlet-cms-module"]
+        "modules/addon": ["type:hamlet-cms-module"]
     }
   }
 }

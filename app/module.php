@@ -9,9 +9,8 @@ use rbwebdesigns\core\JSONHelper;
 class Module
 {
     public $key;
-    // public $enabled; // will always be 1?
+    public $core;
     public $instance = null;
-
     protected $factory = null;
 
     // These should be set in the info.json folder
@@ -22,14 +21,19 @@ class Module
     {
         $this->key = $key;
 
+        $folder = file_exists(SERVER_MODULES_PATH . "/core/{$key}") ? 'core' : 'addon';
+        $this->core = $folder === 'core';
+
         // load config
-        $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . '/' . $this->key . '/info.json');
+        $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/{$folder}/{$this->key}/info.json");
         foreach ($moduleInfo as $propertykey => $property) {
             $this->$propertykey = $property;
         }
+       
+        $classFileName = SERVER_MODULES_PATH . "/{$folder}/{$this->key}/{$this->key}.php";
 
-        if (file_exists(SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php')) {
-            require_once SERVER_MODULES_PATH . '/' . $this->key . '/' . $this->key . '.php';
+        if (file_exists($classFileName)) {
+            require_once $classFileName;
             $className = '\\rbwebdesigns\\HamletCMS\\' . $this->key;
             $this->instance = new $className();
         }

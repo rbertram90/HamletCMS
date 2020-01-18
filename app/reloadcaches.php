@@ -9,4 +9,4 @@ require_once __DIR__ . '/envsetup.inc.php';
 HamletCMS::generateRouteCache();
 HamletCMS::generateMenuCache();
 HamletCMS::generatePermissionCache();
-HamletCMS::generateTemplateCache();
+HamletCMS::generateSmartyTemplateCache();

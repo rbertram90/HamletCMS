@@ -1,9 +1,0 @@
-{
-    "name": "Post comments",
-    "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
-    "enabled": 1,
-    "dependencies": [
-        "BlogPosts",
-        "UserAccounts"
-    ]
-}

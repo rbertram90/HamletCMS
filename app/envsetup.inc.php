@@ -54,11 +54,12 @@ use rbwebdesigns\core\JSONhelper;
         $split = explode('\\', $class);
         if (count($split) < 4) error_log('Unable to load class '. $class);
         $type = strtolower($split[3]);
+        $subDirectory = file_exists(SERVER_MODULES_PATH ."/core/{$split[2]}") ? 'core' : 'addon';
         if (in_array($type, ['controller', 'model', 'widgets', 'forms', 'tests'])) {
-            include SERVER_MODULES_PATH ."/{$split[2]}/src/{$type}/{$split[4]}.php";
+            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[2]}/src/{$type}/{$split[4]}.php";
         }
         else {
-            include SERVER_MODULES_PATH ."/{$split[2]}/src/{$split[3]}.php";
+            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[2]}/src/{$split[3]}.php";
         }
     });
 

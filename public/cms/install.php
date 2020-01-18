@@ -2,6 +2,7 @@
 namespace rbwebdesigns\HamletCMS;
 
 use Athens\CSRF;
+use rbwebdesigns\core\JSONhelper;
 
 /****************************************************************
   Install Entry point
@@ -9,32 +10,34 @@ use Athens\CSRF;
 
     // Include cms setup script
     require_once __DIR__ . '/../../app/setup.inc.php';
-
         
     $request = HamletCMS::request();
     $response = HamletCMS::response();
 
-    $modules = [
-        'API' => ['optional' => 0],
-        'Blog' => ['optional' => 0],
-        'BlogPosts' => ['optional' => 0],
-        'BlogView' => ['optional' => 0],
-        'Contributors' => ['optional' => 0],
-        'Files' => ['optional' => 0],
-        'Settings' => ['optional' => 0],
-        'SiteAdmin' => ['optional' => 0],
-        'UserAccounts' => ['optional' => 0],
-        'Website' => ['optional' => 0],
-        'Widgets' => ['optional' => 0],
-        'Search' => ['optional' => 1],
-        'EventLogger' => ['optional' => 1],
-        'LayoutPost' => ['optional' => 1],
-        'MarkdownPost' => ['optional' => 1],
-        'VideoPost' => ['optional' => 1],
-        'PostComments' => ['optional' => 1],
-        'FavouriteBlogs' => ['optional' => 1],
-        'BlogMenus' => ['optional' => 1],
-    ];
+    $coreModules = scandir(SERVER_MODULES_PATH. '/core');
+    $modules = [];
+
+    foreach ($coreModules as $module) {
+        if ($module == '.' || $module == '..') continue;
+
+        $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/core/{$module}/info.json");
+
+        $modules[$module] = [
+            'core' => 1,
+            'locked' => $info['locked']
+        ];
+    }
+
+    $addonModules = scandir(SERVER_MODULES_PATH . '/addon');
+
+    foreach ($addonModules as $module) {
+        if ($module == '.' || $module == '..') continue;
+
+        $modules[$module] = [
+            'core' => 0,
+            'locked' => 0 // addon modules cannot be locked
+        ];
+    }
 
     if ($request->method() == 'POST') {
 
@@ -49,6 +52,7 @@ use Athens\CSRF;
         $dbc->query("CREATE TABLE `modules` (
             `name` varchar(30) NOT NULL,
             `description` text NOT NULL,
+            `core` tinyint(1) NOT NULL DEFAULT '0',
             `enabled` tinyint(1) NOT NULL DEFAULT '0',
             `locked` tinyint(1) NOT NULL DEFAULT '0',
             `settings` text NOT NULL,
@@ -81,12 +85,13 @@ use Athens\CSRF;
             if ($module['optional']) {
                 $install = $request->getString($key);
                 if ($install != 'on') {
-                    $dbc->insertRow("modules", ['name' => $key, 'enabled' => 0,'locked' => 0]);
+                    $dbc->insertRow("modules", ['name' => $key, 'enabled' => 0,'locked' => 0, 'core' => $module['core']]);
                     continue;
                 }
             }
 
-            $classPath = SERVER_ROOT .'/app/modules/'. $key .'/'. $key .'.php';
+            $subFolder = $module['core'] ? 'core' : 'addon';
+            $classPath = SERVER_ROOT .'/app/modules/'. $subFolder. '/'. $key .'/'. $key .'.php';
             if (file_exists($classPath)) {
                 require_once $classPath;
                 $className = '\\rbwebdesigns\\HamletCMS\\'. $key;
@@ -99,7 +104,8 @@ use Athens\CSRF;
             $dbc->insertRow("modules", [
                 'name' => $key,
                 'enabled' => 1,
-                'locked' => !$module['optional']
+                'locked' => !$module['optional'],
+                'core' => $module['core']
             ]);
 
             HamletCMS::registerModule($key);
@@ -108,7 +114,7 @@ use Athens\CSRF;
         HamletCMS::generateRouteCache();
         HamletCMS::generateMenuCache();
         HamletCMS::generatePermissionCache();
-        HamletCMS::generateTemplateCache();
+        HamletCMS::generateSmartyTemplateCache();
 
         HamletCMS::runHook('onReloadCache', []);
 

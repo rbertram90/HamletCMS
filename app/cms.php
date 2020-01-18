@@ -240,22 +240,19 @@ class HamletCMS
     public static function route($route, $data = [])
     {
         $routeCache = self::getCache('routes');
-
-        if (!array_key_exists($route, $routeCache)) return false;
-
+        if (!array_key_exists($route, $routeCache)) {
+            return false;
+        }
         $url = $routeCache[$route]['path'];
 
         // Check links applicable to the blog
         if (self::$blogID) {
-
-
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
                 $modelPermissions = self::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
                 $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;
             }
-
             $url = str_replace('{BLOG_ID}', self::$blogID, $url);
         }
         
@@ -274,7 +271,9 @@ class HamletCMS
     {
         $routeCache = self::getCache('routes');
         $controllerName = self::request()->getControllerName();
-        if ($controllerName == 'blogs') {
+        $isApi = substr($_SERVER['REQUEST_URI'], 0, 4) == '/api';
+
+        if ($controllerName == 'blogs' && !$isApi) {
             $requestPath = ['blogs'];
         }
         else {
@@ -358,8 +357,9 @@ class HamletCMS
         $menuCache = [];
 
         foreach (self::$modules as $module) {
-            if (file_exists(SERVER_MODULES_PATH .'/'. $module->key .'/menu.json')) {
-                $links = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH .'/'. $module->key .'/menu.json');
+            $folder = $module->core ? 'core' : 'addon';
+            if (file_exists(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/menu.json")) {
+                $links = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/menu.json");
                 foreach ($links as $link) {
                     if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
 
@@ -402,8 +402,9 @@ class HamletCMS
         $routeCache = [];
 
         foreach (self::$modules as $module) {
-            if (file_exists(SERVER_MODULES_PATH .'/'. $module->key .'/routes.json')) {
-                $routes = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH .'/'. $module->key .'/routes.json');
+            $folder = $module->core ? 'core' : 'addon';
+            if (file_exists(SERVER_MODULES_PATH . "/{$folder}/{$module->key}/routes.json")) {
+                $routes = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/routes.json");
                 foreach ($routes as $route) {
                     if (array_key_exists($route['key'], $routes)) {
                         print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $module->key.PHP_EOL;
@@ -434,7 +435,9 @@ class HamletCMS
         $permissionCache = [];
 
         foreach (self::$modules as $module) {
-            $filePath = SERVER_MODULES_PATH .'/'. $module->key .'/permissions.json';
+            $folder = $module->core ? 'core' : 'addon';
+            $filePath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/permissions.json";
+            
             if (file_exists($filePath)) {
                 $permissions = JSONhelper::JSONFileToArray($filePath);
                 foreach ($permissions as $permission) {
@@ -458,7 +461,7 @@ class HamletCMS
     /**
      * Generate a list of all template directories for smarty
      */
-    public static function generateTemplateCache()
+    public static function generateSmartyTemplateCache()
     {
         $cacheDir = self::getCacheDirectory();
 
@@ -466,7 +469,8 @@ class HamletCMS
         $templatesCache = [];
 
         foreach (self::$modules as $module) {
-            $dirPath = SERVER_MODULES_PATH .'/'. $module->key .'/src/templates';
+            $folder = $module->core ? 'core' : 'addon';
+            $dirPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/src/templates";
             if (file_exists($dirPath)) {
                 $templatesCache[$module->key] = $dirPath;
             }
@@ -475,5 +479,7 @@ class HamletCMS
         fwrite($file, JSONHelper::arrayToJSON($templatesCache));
         fclose($file);
     }
+
+
     
 }

@@ -1,0 +1,10 @@
+{
+    "name": "HamletCMS Settings",
+    "package": "Core",
+    "version": "0.0.1",
+    "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
+    "locked": 1,
+    "dependencies": [
+
+    ]
+}

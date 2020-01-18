@@ -1,0 +1,10 @@
+{
+    "name": "HamletCMS Post Search",
+    "package": "Core",
+    "version": "0.0.1",
+    "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
+    "locked": 0,
+    "dependencies": [
+        "Core/BlogPosts"
+    ]
+}

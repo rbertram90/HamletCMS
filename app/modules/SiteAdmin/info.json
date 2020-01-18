@@ -1,8 +1,0 @@
-{
-    "name": "HamletCMS admin area",
-    "package": "Core",
-    "version": "0.0.1",
-    "author": "Ricky",
-    "enabled": 1,
-    "dependencies": []
-}

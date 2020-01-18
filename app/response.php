@@ -18,7 +18,7 @@ class HamletCMSResponse extends Response
 
         $cacheDir = HamletCMS::getCacheDirectory();
         if (!is_file($cacheDir. '/templates.json')) {
-            HamletCMS::generateTemplateCache();
+            HamletCMS::generateSmartyTemplateCache();
         }
         $templateCache = JSONHelper::jsonFileToArray($cacheDir. '/templates.json');
         foreach ($templateCache as $key => $dir) {

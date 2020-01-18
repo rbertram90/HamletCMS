@@ -1,0 +1,10 @@
+{
+    "name": "Video post type",
+    "author": "Ricky",
+    "package": "Core",
+    "version": "0.0.1",
+    "locked": 0,
+    "dependencies": [
+        "BlogPosts"
+    ]
+}
