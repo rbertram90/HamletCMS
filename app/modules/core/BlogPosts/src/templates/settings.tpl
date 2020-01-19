@@ -68,24 +68,20 @@
                         </div>
                     </div> 
                     <div class="two column row">
-                        
                         <div class="column">
                             <div class="field">
                                 <label for="fld_postsummarylength">Length of Post Summary (Characters)</label>
                                 <input type="text" value="{$postConfig.postsummarylength}" name="fld_postsummarylength"  placeholder="Number of Characters" />
                             </div>
                         </div>
-                        
                         <div class="column">                            
                             <div class="field">
                                 <label for="fld_postsperpage">Number of Posts Per Page</label>
                                 <input type="text" value="{$postConfig.postsperpage}" name="fld_postsperpage" />
                             </div>
                         </div>
-
                     </div> 
                     <div class="two column row">
-
                         <div class="column">                            
                             <div class="field">
                                 <label for="fld_listtype">Post list type</label>
@@ -96,7 +92,15 @@
                                 </select>
                             </div>
                         </div>
-                        
+                        <div class="column">                            
+                            <div class="field">
+                                <label for="fld_loadtype">Load type</label>
+                                <select name="fld_loadtype" id="fld_loadtype" class="ui dropdown">
+                                    <option value="paginated">Pagination</option>
+                                    <option value="loadmore">Load more (Ajax)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="one column row">
                         <div class="column">
@@ -107,8 +111,9 @@
                 </div>
                 <script>
                     // Default Values in Dropdowns
-                    {*$("#fld_commentapprove").val("$postConfig.allowcomments");*}
+                    {* $("#fld_commentapprove").val("$postConfig.allowcomments"); *}
                     $("#fld_listtype").val("{$postConfig.listtype}");
+                    $("#fld_loadtype").val("{$postConfig.loadtype}");
 
                     $('select.dropdown').dropdown();
                 </script>

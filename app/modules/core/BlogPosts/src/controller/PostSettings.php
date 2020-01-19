@@ -96,6 +96,7 @@ class PostSettings extends GenericController
                 'postsperpage'      => $this->request->getInt('fld_postsperpage'),
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
                 'listtype'          => $this->request->getString('fld_listtype'),
+                'loadtype'          => $this->request->getString('fld_loadtype'),
             ]
         ]);
 

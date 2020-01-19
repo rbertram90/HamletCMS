@@ -186,10 +186,14 @@ class BlogContent extends GenericController
         $showsocialicons = 1;
         $summarylength = 150;
         $postsperpage = 5;
+        $loadtype = 'paginated'; // loadmore
 
         if (isset($blogConfig['posts'])) {
             $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['loadtype'])) $loadtype = $postConfig['loadtype'];
+
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
+            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
             if (!key_exists('extraclasses', $postConfig)) $postConfig['extraclasses'] = 'ui items';
 
             $this->response->setVar('postConfig', $postConfig);
@@ -210,6 +214,7 @@ class BlogContent extends GenericController
         $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
 
         $this->response->setTitle($this->blog->name);
+        $this->response->setVar('loadtype', $loadtype);
         $this->response->setVar('posts', $output);
         $this->response->setVar('paginator', new Pagination());
         $this->response->setVar('blog', $this->blog);
@@ -447,6 +452,34 @@ class BlogContent extends GenericController
         }
     }
     
+    protected function ajaxLoadPosts() {
+        $output = '';
+        $blogConfig = $this->blog->config();
+        $postsperpage = 5;
+
+        if (isset($blogConfig['posts'])) {
+            $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['loadtype'])) $loadtype = $postConfig['loadtype'];
+
+            if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
+            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+            if (!key_exists('extraclasses', $postConfig)) $postConfig['extraclasses'] = 'ui items';
+
+            $this->response->setVar('postConfig', $postConfig);
+        }
+
+        $pageNum = $this->request->getInt('page', 1);
+        $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
+
+        foreach ($postlist as $post) {
+            $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
+        }
+
+        $this->response->setBody($output);
+        $this->response->writeBody();
+        exit;
+    }
+
     /**
      * Handle routes:
      *   /posts
@@ -456,6 +489,11 @@ class BlogContent extends GenericController
     {
         if (is_null($post)) {
             $postUrl = $this->request->getUrlParameter(CUSTOM_DOMAIN ? 0 : 2);
+
+            if ($postUrl == 'loadmore') {
+                // Ajax call to load next N posts
+                return $this->ajaxLoadPosts();
+            }
 
             if (!$postUrl) {
                 return $this->viewPostLister();
