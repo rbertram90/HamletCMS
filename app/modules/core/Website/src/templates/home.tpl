@@ -11,11 +11,11 @@
     <h2 class="ui top attached header">Adding further pages</h2>
     <div class="ui secondary teal segment">
         <ol class="ui list">
-            <li>Add a public function to /app/controller/public_controller.inc.php
+            <li>Add a public function to /app/modules/core/Website/src/controller/Site.php
             <li>Name the function the same as the url path - so for an about page (example.com/about) the function should be called 'about'
             <li>Note: the terms 'blogs', 'cms' and 'api' are already used so don't use them!
-            <li>Call $this->response->write('&lt;template-path&gt;'); to output a smarty file (<a href="https://github.com/rbertram90/core/wiki/response" target="_blank">see full response documentation</a>)
-            <li>Create the smarty template file under <strong>/app/view/smarty/public</strong>
+            <li>Call $this->response->write('template-path', 'Website'); to output a smarty file (<a href="https://github.com/rbertram90/core/wiki/response" target="_blank">see full response documentation</a>)
+            <li>Create the smarty template file under <strong>/app/modules/core/Website/src/templates/template-path.tpl</strong>
             <li>Note: by default <a href="https://semantic-ui.com/">semantic UI</a> is included
         </ol>
     </div>
