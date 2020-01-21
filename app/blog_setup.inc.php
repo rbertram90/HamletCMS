@@ -133,6 +133,10 @@ CSRF::init();
                 // Search for posts with tag
                 $page_controller->viewPostsByTag();
                 break;
+
+            case 'author':
+                $page_controller->viewPostsByAuthor();
+                break;
                 
             default:
                 // View Homepage

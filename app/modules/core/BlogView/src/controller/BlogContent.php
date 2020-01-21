@@ -369,6 +369,47 @@ class BlogContent extends GenericController
         return $headerContent;
     }
     
+    public function viewPostsByAuthor() {
+        $author_id = $this->request->getUrlParameter(2);
+        $author = $this->modelUsers->getById($author_id);
+        $pageNum = $this->request->getInt('s', 1);
+
+        $isContributor = false;
+        if ($currentUser = HamletCMS::session()->currentUser) {
+            $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
+        }
+
+        $blogConfig = $this->blog->config();
+        $postConfig = null;
+        $postsperpage = 5;
+
+        if (isset($blogConfig['posts'])) {
+            $postConfig = $blogConfig['posts'];
+            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
+            $this->response->setVar('postConfig', $postConfig);
+        }
+
+        $postlist = $this->modelPosts->getPostsByAuthor($this->blogID, $author_id, $postsperpage, $pageNum);
+        $output = "";
+        foreach ($postlist as $post) {
+            $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
+        }
+
+        // Pagination
+        $this->response->setVar('postsperpage', $postsperpage);
+        $this->response->setVar('currentPage', $pageNum);
+        $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID, 'author_id' => $author_id]));
+
+        // Set Page Title
+        $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
+        $this->response->setVar('userIsContributor', $isContributor);
+        $this->response->setVar('authorName', $author->name);
+        $this->response->setVar('posts', $output);
+        $this->response->setVar('paginator', new Pagination());
+        $this->response->setVar('blog', $this->blog);
+        $this->response->write('posts/postsbyauthor.tpl', 'BlogView');
+    }
+
     /**
      * Show all posts matching tag
      * 

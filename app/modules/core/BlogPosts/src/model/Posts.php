@@ -77,6 +77,19 @@ class Posts extends RBFactory
     {
         return $this->get('*', ['link' => $link, 'blog_id' => $blogID], null, null, false);
     }
+
+    /**
+     * Get all posts for a blog made by a user
+     * 
+     * @param int $blogID
+     * @param int $authorID User ID
+     * 
+     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post[]
+     */
+    public function getPostsByAuthor($blogID, $authorID, $limit=10, $page=1) {
+        $offset = ($page-1) * $limit;
+        return $this->get('*', ['author_id' => $authorID, 'blog_id' => $blogID], null, $offset . ',' . $limit);
+    }
     
     /**
      * Get the lastest (published) blog post
