@@ -4,6 +4,8 @@ $(document).ready(function() {
     });
 
     $("a.button, button.button").click(function() {
-        $(this).addClass("loading");
+        if (!$(this).data('no-spinner')) {
+            $(this).addClass("loading");
+        }
     });
 });

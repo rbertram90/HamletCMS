@@ -6,10 +6,10 @@
         <img src="/blogdata/{$blog->id}/images/{$post->teaser_image}">
     {/if}
     </div>
-    <button type="button" id="teaser_image_select" title="Select Image" class="ui icon button">
+    <button type="button" id="teaser_image_select" title="Select Image" class="ui icon button" data-no-spinner="true">
         <i class="camera icon"></i>
     </button>
-    <button type="button" id="remove_teaser_image" class="ui icon button">
+    <button type="button" id="remove_teaser_image" class="ui icon button" data-no-spinner="true">
         <i class="remove icon"></i>
     </button>
     <input type="hidden" name="teaser_image" value="{$post->teaser_image}" class="post-data-field" data-key="teaserImage">

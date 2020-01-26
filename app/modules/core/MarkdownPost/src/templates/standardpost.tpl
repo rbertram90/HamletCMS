@@ -41,11 +41,14 @@
 
             <div class="field">
                 <label for="post_content">Content</label>
-                <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image">
+                <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image" data-no-spinner="true">
                     <i class="camera icon"></i>
                 </button>
-                <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
+                <button type="button" id="dark_mode_toggle" class="ui icon button" title="Toggle dark mode" data-no-spinner="true">
+                    <i class="moon icon"></i>
+                </button>
                 <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{$post->content}</textarea>
+                <p style="font-size:80%;"><a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
             </div>
             
             {include 'edit-form/tags.tpl'}
@@ -71,6 +74,7 @@
 
 <script>
 var content_changed = false;
+var isDarkMode = false;
 
 $(document).ready(function () {
 
@@ -78,6 +82,19 @@ $(document).ready(function () {
         $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN }, function() {
             $(this).modal('show');
         });
+    });
+
+    $("#dark_mode_toggle").click(function() {
+        if (isDarkMode) {
+            $("#post_content").removeClass('dark-mode');
+            $(this).find('i').removeClass('sun').addClass('moon');
+            isDarkMode = false;
+        }
+        else {
+            $("#post_content").addClass('dark-mode');
+            $(this).find('i').removeClass('moon').addClass('sun');
+            isDarkMode = true;
+        }
     });
 
     $(window).on('beforeunload', function() {
