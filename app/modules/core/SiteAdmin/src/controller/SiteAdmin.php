@@ -47,7 +47,7 @@ class SiteAdmin extends GenericController
 
     public function newModuleScan()
     {
-        if (($coreModules = scandir(SERVER_MODULES_PATH . '/core')) && ($addonModules = scandir(SERVER_MODULES_PATH . '/addon'))) {
+        if ($coreModules = scandir(SERVER_MODULES_PATH . '/core')) {
             $modulesList = [];
             
             // Get all directories
@@ -56,10 +56,13 @@ class SiteAdmin extends GenericController
                 if (!file_exists(SERVER_MODULES_PATH . "/core/{$folder}/info.json")) continue;
                 $modulesList[$folder] = 'core';
             }
-            foreach ($addonModules as $folder) {
-                if (strpos($folder, '.') !== false) continue;
-                if (!file_exists(SERVER_MODULES_PATH . "/addon/{$folder}/info.json")) continue;
-                $modulesList[$folder] = 'addon';
+
+            if ($addonModules = scandir(SERVER_MODULES_PATH . '/addon')) {
+                foreach ($addonModules as $folder) {
+                    if (strpos($folder, '.') !== false) continue;
+                    if (!file_exists(SERVER_MODULES_PATH . "/addon/{$folder}/info.json")) continue;
+                    $modulesList[$folder] = 'addon';
+                }
             }
 
             $dbModules = $this->model->getList();
