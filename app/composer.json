@@ -17,9 +17,10 @@
     "composer/installers": "^1.7"
   },
   "extra": {
-	  "installer-types": ["hamlet-cms-module"],
+	  "installer-types": ["hamlet-cms-module", "hamlet-cms-template"],
     "installer-paths": {
-        "modules/addon/{$name}/": ["type:hamlet-cms-module"]
+        "modules/addon/{$name}/": ["type:hamlet-cms-module"],
+        "templates/addon/{$name}": ["type:hamlet-cms-template"]
     }
   }
 }

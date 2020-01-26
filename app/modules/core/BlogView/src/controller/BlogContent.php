@@ -12,6 +12,12 @@ use rbwebdesigns\HamletCMS\GenericController;
 /**
  * Class BlogContent handles the generation of output for
  * the front-end of the blog
+ * 
+ * Routes:
+ * /(posts) - homepage
+ * /post/<post id> - view single post
+ * /author/<author id> - view posts by author
+ * /tags/<tag> - view posts by tag
  */
 class BlogContent extends GenericController
 {
@@ -401,7 +407,7 @@ class BlogContent extends GenericController
         $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID, 'author_id' => $author_id]));
 
         // Set Page Title
-        $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
+        $this->response->setTitle("Posts created by {$author->name} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('authorName', $author->name);
         $this->response->setVar('posts', $output);

@@ -166,11 +166,12 @@ class Blogs extends RBFactory
      * @param  string  $name  name for the blog
      * @param  string  $desc  description for the blog
      * @param  string  $key   key for the blog (optional)
-     * @return string         key used for the blog
+     * @return string|bool    key used for the blog | false on failure
      */
     public function createBlog($name, $desc, $key='')
     {
-        if(strlen($key) == 0) {
+        if (strlen($key) === 0) {
+            
             // Generate a new blog key
             $blog_key = $this->generateBlogKey();
             
@@ -180,29 +181,29 @@ class Blogs extends RBFactory
             if (!mkdir(SERVER_PATH_BLOGS.'/'.$blog_key, 0777)) die(showError('Failed to create blog folder...'));
             
             // Create Default.php - can we get rid of this as they will all be the same?
-            $copy_default = SERVER_PATH_TEMPLATES.'/default/default.php';
-            $new_default = SERVER_PATH_BLOGS.'/'.$blog_key.'/default.php';
-            if(!copy($copy_default, $new_default)) die(showError("failed to copy $new_default"));
+            $copy_default = SERVER_MODULES_PATH . '/core/Blog/files/default.php';
+            $new_default = SERVER_PATH_BLOGS . "/{$blog_key}/default.php";
+            if (!copy($copy_default, $new_default)) die(showError("failed to copy $new_default"));
             
             // Create Default.css
-            $copy_css = SERVER_PATH_TEMPLATES.'/default_blue_2columns_left/stylesheet.css';
-            $new_css = SERVER_PATH_BLOGS.'/'.$blog_key.'/default.css';
-            if(!copy($copy_css, $new_css)) die(showError("failed to copy $new_css"));
+            $copy_css = SERVER_PATH_TEMPLATES.'/core/DefaultBlue/stylesheet.css';
+            $new_css = SERVER_PATH_BLOGS . "/{$blog_key}/default.css";
+            if (!copy($copy_css, $new_css)) die(showError("failed to copy $new_css"));
             
             // Create .htaccess
-            $copy_htaccess = SERVER_PATH_TEMPLATES.'/default/.htaccess';
-            $new_htaccess = SERVER_PATH_BLOGS.'/'.$blog_key.'/.htaccess';
-            if(!copy($copy_htaccess, $new_htaccess)) die(showError("failed to copy $new_htaccess"));
+            $copy_htaccess = SERVER_MODULES_PATH . '/core/Blog/files/.htaccess';
+            $new_htaccess = SERVER_PATH_BLOGS . "/{$blog_key}/.htaccess";
+            if (!copy($copy_htaccess, $new_htaccess)) die(showError("failed to copy $new_htaccess"));
             
             // Create default json for blog settings
-            $copy_config = SERVER_PATH_TEMPLATES.'/default/config.json';
-            $new_config = SERVER_PATH_BLOGS.'/'.$blog_key.'/config.json';
-            if(!copy($copy_config, $new_config)) die(showError("failed to copy $new_config"));
+            $copy_config = SERVER_MODULES_PATH . '/core/Blog/files/config.json';
+            $new_config = SERVER_PATH_BLOGS ."/{$blog_key}/config.json";
+            if (!copy($copy_config, $new_config)) die(showError("failed to copy $new_config"));
             
             // Create default json for blog design settings
-            $copy_design = SERVER_PATH_TEMPLATES.'/default_blue_2columns_left/config.json';
-            $new_design = SERVER_PATH_BLOGS.'/'.$blog_key.'/template_config.json';
-            if(!copy($copy_design, $new_design)) die(showError("failed to copy $new_design"));
+            $copy_design = SERVER_PATH_TEMPLATES . '/core/DefaultBlue/config.json';
+            $new_design = SERVER_PATH_BLOGS . "/{$blog_key}/template_config.json";
+            if (!copy($copy_design, $new_design)) die(showError("failed to copy $new_design"));
         }
         else {
             // Just assigning an exisiting folder into the blog_cms

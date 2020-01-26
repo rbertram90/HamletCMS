@@ -19,6 +19,7 @@ templates_c/
 # =========================
 
 app/modules/addon/*
+app/templates/addon/*
 
 # =========================
 

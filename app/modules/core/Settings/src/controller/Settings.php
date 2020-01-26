@@ -6,7 +6,7 @@ use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
 use rbwebdesigns\HamletCMS\Menu;
 use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\core\ImageUpload;
 
 /**
@@ -181,9 +181,35 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->applyNewTemplate();
 
+        $this->response->setVar('core_templates', $this->getTemplateList('core'));
+        $this->response->setVar('addon_templates', $this->getTemplateList('addon'));
+
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Choose Template - ' . $this->blog->name);
         $this->response->write('template.tpl', 'Settings');
+    }
+
+    /**
+     * @param string $type  "core" or "addon"
+     * 
+     * @return array
+     */
+    protected function getTemplateList($type) {
+        $templateFolders = scandir(SERVER_PATH_TEMPLATES . "/{$type}");
+        $templateData = [];
+
+        foreach ($templateFolders as $folder) {
+            if ($folder == '.' || $folder == '..') continue;
+
+            $infoPath = SERVER_PATH_TEMPLATES . "/{$type}/{$folder}/info.json";
+            if (!file_exists($infoPath)) continue;
+
+            $templateData[] = JSONhelper::JSONFileToArray($infoPath) + [
+                'id' => $folder
+            ];
+        }
+
+        return $templateData;
     }
     
     /**
@@ -407,11 +433,14 @@ class Settings extends GenericController
      */
     protected function applyNewTemplate()
     {
-        if (!$template_id = $this->request->getString('template_id', false)) {
+        $template_id = $this->request->getString('template_id', false);
+        $template_type = $this->request->getString('template_type', false);
+
+        if (!$template_id || !$template_type) {
             $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
         }
 
-        $templateDirectory = SERVER_PATH_TEMPLATES .'/'. $template_id;
+        $templateDirectory = SERVER_PATH_TEMPLATES . "/{$template_type}/{$template_id}";
         $blogDirectory = SERVER_PATH_BLOGS .'/'. $this->blog->id;
         if (!is_dir($templateDirectory)) {
             $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
@@ -453,7 +482,7 @@ class Settings extends GenericController
         }
 
         HamletCMS::runHook('onTemplateChanged', ['blog' => $this->blog]);
-        $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template changed', 'success');
+        $this->response->redirect('/cms/settings/templateConfig/' . $this->blog->id, 'Template changed', 'success');
     }
     
     /**

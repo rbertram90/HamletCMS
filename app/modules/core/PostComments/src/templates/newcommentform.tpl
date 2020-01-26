@@ -1,7 +1,7 @@
 {if $userAuthenticated}
-    <h2>Add Comment</h2>
+    <div class="ui form" id="add_comment_form">
+        <h2>Add Comment</h2>
 
-    <div class="ui form">
         <form action="/cms/comments/add" method="POST">
             
             <div class="field">

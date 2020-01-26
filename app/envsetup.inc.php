@@ -19,12 +19,12 @@ use rbwebdesigns\core\JSONhelper;
         define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
     }
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
-    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/public');        // Path to www folder
-    define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');      // Path to modules folder
-    define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/templates');      // Path to the blog templates folder
-    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');    // Path to the blogs data
-    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars');  // Path to the folder containing user avatars
-    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');      // Path to installed widgets
+    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/public');           // Path to public document root
+    define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');     // Path to modules
+    define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/app/templates'); // Path to the blog templates
+    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');   // Path to public blog data
+    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars'); // Path to the folder containing user avatars
+    define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');     // Path to installed widgets
 
     // Make sure we're in the right timezone
     date_default_timezone_set($config['environment']['timezone']);

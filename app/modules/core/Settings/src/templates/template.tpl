@@ -12,182 +12,87 @@
     <div class="one column row">
         <div class="column">
 
-        <div class="ui warning message">
-            <p><strong>Important</strong>: Applying a new Template will <strong>overwrite</strong> any changes you have made using the blog designer or stylesheet editor.</p>
-            <p>Widgets will also be cleared and will need re-adding through the widgets section.</p>
-        </div>
+            <div class="ui message">
+                <p>When a new template is applied the system copies each of the files in the template so that you can then make changes without affecting the original template.</p>
+                <a href="/cms/settings/templateConfig/{$blog->id}" class="ui button">Edit current template settings</a>
+                <a href="/cms/settings/stylesheet/{$blog->id}" class="ui button">Edit current stylesheet</a>
+            </div>
+            <div class="ui warning message">
+                <p><strong>Important</strong>: Applying a new Template will <strong>overwrite</strong> any changes you have made to the template settings or stylesheet editor. Widgets will also be cleared and will need re-adding through the widgets section.</p>
+            </div>
 
-        <h2>Default</h2>
+            <h2>Core templates</h2>
 
-    <div class="ui three cards">
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue_1col.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>One column</h3>
+            <div class="ui three cards">
+            {foreach $core_templates as $template}
+                <div class="ui card">
+                    <div class="image">
+                        <img src="{$template.thumbnail}" alt="{$template.name}">
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            <h3>{$template.name}</h3>
+                        </div>
+                        <div class="description">
+                            <p>{$template.description}</p>
+                        </div>
+                    </div>
+                    
+                    <button class="ui bottom teal attached button js-apply-template" type="button" data-template-type="core" data-template-name="{$template.id}">
+                        <i class="add icon"></i>
+                        Apply to blog
+                    </button>
                 </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
+            {/foreach}
             </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_1column">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
         </div>
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Two columns - posts on left</h3>
-                </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
-            </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_2columns_left">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue_2cols_right.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Two columns - posts on right</h3>
-                </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
-            </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_2columns_right">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue_3cols_left.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Three columns - posts on left</h3>
-                </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
-            </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_left">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue_3cols_centre.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Three columns - posts in centre</h3>
-                </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
-            </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_centre">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/defaultblue_3cols_right.png" alt="Default Blue Template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Three columns - posts on right</h3>
-                </div>
-                <div class="description">
-                    <p>Standard clean template, well tested, a good starting point to make your own customisations</p>
-                </div>
-            </div>
-            
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="default_blue_3columns_right">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-    </div>
-    
-    </div>
     </div>
     <div class="one column row">
-    <div class="column">
+        <div class="column">
+            <h2>Addon templates</h2>
 
-    <h2>Themed</h2>
-
-    <div class="ui three cards">
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/skate.png" alt="Skate template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Skate theme</h3>
+            <div class="ui three cards">
+            {foreach $addon_templates as $template}
+                <div class="ui card">
+                    <div class="image">
+                        <img src="{$template.thumbnail}" alt="{$template.name}">
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            <h3>{$template.name}</h3>
+                        </div>
+                        <div class="description">
+                            <p>{$template.description}</p>
+                        </div>
+                    </div>
+                    
+                    <button class="ui bottom teal attached button js-apply-template" type="button" data-template-type="addon" data-template-name="{$template.id}">
+                        <i class="add icon"></i>
+                        Apply to blog
+                    </button>
                 </div>
-                <div class="description">
-                    <p>Great theme for those who love to skateboard</p>
+            {foreachelse}
+                <div class="ui segment">
+                    <p>There are no addon templates currently installed</p>
                 </div>
+            {/foreach}
             </div>
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="skate">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
-        </div>
-
-        <div class="ui card">
-            <div class="image">
-                <img src="/images/template_screenshots/steam.png" alt="Skate template" width="300">
-            </div>
-            <div class="content">
-                <div class="header">
-                    <h3>Steam theme</h3>
-                </div>
-                <div class="description">
-                    <p>Template that emulates the look of steam, ideal for a game themed blog.</p>
-                </div>
-            </div>
-            <button class="ui bottom teal attached button js-apply-template" type="button" data-template-name="steam">
-                <i class="add icon"></i>
-                Apply to blog
-            </button>
         </div>
     </div>
+</div>
 
-    <form method="POST" action="/cms/settings/template/{$blog->id}" id="updateTemplateForm">
-        <input type="hidden" name="template_id" value="">
-    </form>
+<form method="POST" action="/cms/settings/template/{$blog->id}" id="updateTemplateForm">
+    <input type="hidden" name="template_id" value="">
+    <input type="hidden" name="template_type" value="">
+</form>
 
-    </form>
-
-    <script>
-    $(".js-apply-template").click(function() {
-        var templateName = $(this).data('template-name');
-        $("#updateTemplateForm input[name='template_id']").val(templateName);
-        $("#updateTemplateForm").submit();
-    });
-    </script>
+<script>
+$(".js-apply-template").click(function() {
+    $("#updateTemplateForm input[name='template_id']").val($(this).data('template-name'));
+    $("#updateTemplateForm input[name='template_type']").val($(this).data('template-type'));
+    $("#updateTemplateForm").submit();
+});
+</script>
 
     {*
     <div class="template_wrapper">
@@ -215,9 +120,3 @@
         </form>
     </div>
     *}
-
-    <input type="button" value="Cancel" class="ui button" name="goback" onclick="window.history.back()" />
-
-</div>
-</div>
-</div>
