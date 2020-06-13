@@ -12,14 +12,10 @@ use rbwebdesigns\core\JSONHelper;
  */
 class PostsAPI extends GenericController
 {
-
-    /**
-     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
-     */
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $model;
-    /**
-     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
     
     /**
@@ -82,8 +78,20 @@ class PostsAPI extends GenericController
             return;
         }
 
+        $url = '';
+        if ($this->request->get('overrideLink', false)) {
+            $newPost['link_override'] = 1;
+            $url = $this->request->getString('link');
+            $url = $this->model->createSafePostUrl($url);
+        }
+        if (!$url) {
+            $newPost['link_override'] = 0;
+            $url = $this->model->createSafePostUrl($newPost['title']);
+        }
+
+        $newPost['link'] = $url;
+
         // Validate unique title
-        $url = $this->model->createSafePostUrl($newPost['title']);
         if ($post = $this->model->getPostByURL($url, $blog->id)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
             $this->response->code(400);
@@ -134,7 +142,6 @@ class PostsAPI extends GenericController
 
         // Check & Format date
         $posttime = strtotime($this->request->getString('date'));
-
         $debug .= date('Y-m-d', $posttime);
 
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
@@ -165,7 +172,19 @@ class PostsAPI extends GenericController
         }
 
         // Validate unique title
-        $url = $this->model->createSafePostUrl($updates['title']);
+        $url = '';
+        if (filter_var($this->request->get('overrideLink'), FILTER_VALIDATE_BOOLEAN)) {
+            $updates['link_override'] = 1;
+            $url = $this->request->getString('link');
+            $url = $this->model->createSafePostUrl($url);
+        }
+        if (!$url) {
+            $updates['link_override'] = 0;
+            $url = $this->model->createSafePostUrl($updates['title']);
+        }
+
+        $updates['link'] = $url;
+
         if ($this->model->count(['blog_id' => $blogID, 'link' => $url]) > 0) {
 
             $matchingPost = $this->model->getPostByURL($url, $blogID);

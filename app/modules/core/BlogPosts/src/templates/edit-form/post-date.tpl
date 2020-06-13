@@ -5,7 +5,7 @@
     <div class="ui calendar" id="post_date_wrapper">
         <div class="ui input left icon">
             <i class="calendar icon"></i>
-            <input type="text" name="post_date" id="post_date" placeholder="Date/Time" value="{$postdate}" class="post-data-field" data-key="date">
+            <input type="text" name="post_date" id="post_date" autocomplete="off" placeholder="Date/Time" value="{$postdate}" class="post-data-field" data-key="date">
         </div>
     </div>
     <script>

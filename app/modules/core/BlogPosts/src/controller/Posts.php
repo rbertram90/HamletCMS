@@ -27,36 +27,30 @@ use Codeliner\ArrayReader\ArrayReader;
  */
 class Posts extends GenericController
 {
-    /**
-     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
-     */
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $model;
-    /**
-     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    /**
-     * @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
+
+    /** @var \rbwebdesigns\core\Request */
     protected $request;
-    /**
-     * @var \rbwebdesigns\core\Response
-     */
+
+    /** @var \rbwebdesigns\core\Response */
     protected $response;
-    /**
-     * @var array Active blog
-     */
+
+    /** @var array Active blog */
     protected $blog = null;
-    /**
-     * @var array Active post
-     */
+
+    /** @var array Active post */
     protected $post = null;
     
-
+    /**
+     * Posts controller constructor
+     */
     public function __construct()
     {
         $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
@@ -163,28 +157,6 @@ class Posts extends GenericController
     {
         // Now passing this on individual modules
         HamletCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
-
-        /*
-        if ($this->post['type'] == 'gallery') {
-            $this->post['gallery_imagelist'] = explode(',', $this->post['gallery_imagelist']);
-        }
-
-        if ($this->post['initialautosave'] == 1) {
-            // get the most recent content from the actual autosave record
-            $autosave = $this->model->getAutosave($this->post['id']);
-
-            if (getType($autosave) == 'array') {
-                $this->post = array_merge($this->post, $autosave);
-            }
-
-            $this->model->update(['id' => $this->post['id']], ['initialautosave' => 0]);
-        }
-        elseif ($this->model->autosaveExists($this->post['id'])) {
-            // Has been edited without being saved
-            $this->post['autosave'] = $this->model->getAutosave($this->post['id']);
-        }
-        
-        */
     }
     
     /**

@@ -331,15 +331,15 @@ class Posts extends RBFactory
     {
         $currentUser = HamletCMS::session()->currentUser;
         
-        if(!array_key_exists('title', $newValues) || !array_key_exists('content', $newValues)) {
+        if (!array_key_exists('title', $newValues) || !array_key_exists('content', $newValues)) {
             return false;
         }
         
         if (!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
         if (!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
         if (!array_key_exists('timestamp', $newValues)) $newValues['timestamp'] = date("Y-m-d H:i:s");
+        if (!array_key_exists(['link', $newValues])) $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         
-        $newValues['link'] = $this->createSafePostUrl($newValues['title']);
         $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
         $newValues['author_id'] = $currentUser['id'];
         
@@ -379,16 +379,23 @@ class Posts extends RBFactory
 
     /**
      * Update a blog post
+     * 
      * @param int $postid
      * @param array $newValues
+     * 
+     * @return bool Update success flag
      */
     public function updatePost($postid, $newValues)
     {
         $postid = Sanitize::int($postid);
-        $newValues['link'] = $this->createSafePostUrl($newValues['title']);
+
+        if (!array_key_exists('link', $newValues)) {
+            $newValues['link'] = $this->createSafePostUrl($newValues['title']);
+        }
         
-        if(array_key_exists('tags', $newValues))
-          $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
+        if (array_key_exists('tags', $newValues)) {
+            $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
+        }
         
         return $this->update(['id' => $postid], $newValues);
     }
@@ -400,6 +407,7 @@ class Posts extends RBFactory
      * 
      * @param string $tags
      *   Comma seperated tag list
+     * 
      * @return string
      *   CSV of formatted, valid tags
      */
@@ -434,8 +442,8 @@ class Posts extends RBFactory
      */
     public static function createSafePostUrl($text)
     {
-        // Remove anything that isn't alphanumeric or a space
-        $postlink = preg_replace("/[^A-Za-z0-9 ]/", '', $text);
+        // Remove anything that isn't alphanumeric, dash or a space
+        $postlink = preg_replace("/[^A-Za-z0-9\- ]/", '', $text);
         return strtolower(str_replace(" ", "-", Sanitize::string($postlink)));
     }
     
@@ -521,7 +529,7 @@ class Posts extends RBFactory
      * @param  array  $tags
      * @return bool   if the tag exists returns position, false otherwise
      */
-    private function searchForTag($tags, $tag)
+    protected function searchForTag($tags, $tag)
     {
         for ($i = 0; $i < count($tags); $i++) {
             if($tags[$i]['slug'] == strtolower($tag)) return $i;
@@ -591,7 +599,6 @@ class Posts extends RBFactory
         ]);
     }
     
-
     /**
      * Get posts with the most views between 2 dates
      * 

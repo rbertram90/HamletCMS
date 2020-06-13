@@ -43,6 +43,7 @@ class BlogPosts
             `content` text NOT NULL,
             `blog_id` bigint(10) NOT NULL,
             `link` varchar(150) NOT NULL,
+            `link_override` tinyint(1) NOT NULL DEFAULT '0',
             `draft` tinyint(1) NOT NULL DEFAULT '0',
             `timestamp` datetime NOT NULL,
             `tags` varchar(300) NOT NULL,

@@ -10,3 +10,5 @@ HamletCMS::generateRouteCache();
 HamletCMS::generateMenuCache();
 HamletCMS::generatePermissionCache();
 HamletCMS::generateSmartyTemplateCache();
+
+HamletCMS::runHook('onReloadCache', []);
