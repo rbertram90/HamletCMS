@@ -96,7 +96,7 @@
                             <div class="ui clearing segment">
                                 {foreach $modules as $key => $module}
                                     <div class="field">
-                                    {if $module.optional}
+                                    {if !$module.locked}
                                         <div class="ui toggle checkbox">
                                             <input type="checkbox" name="{$key}" id="{$key}">
                                             <label for="{$key}">{$key}</label>

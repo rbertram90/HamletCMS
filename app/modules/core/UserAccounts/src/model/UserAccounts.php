@@ -61,7 +61,7 @@ class UserAccounts extends RBFactory
      */
     public function register($details)
     {
-        if($this->count(['username' => $details['username']]) > 0) {
+        if ($this->count(['username' => $details['username']]) > 0) {
             return false;
         }
 
@@ -71,10 +71,13 @@ class UserAccounts extends RBFactory
             'username' => $details['username'],
             'password' => password_hash($details['password'], PASSWORD_DEFAULT),
             'email' => $details['email'],
-            'signup_date' => date('Y-m-d H:i:s')
+            'signup_date' => date('Y-m-d H:i:s'),
+            'admin' => array_key_exists('admin', $details) ? $details['admin'] : 0
         ];
 
-        if (isset($details['gender'])) $data['gender'] = $details['gender'];
+        if (isset($details['gender'])) {
+            $data['gender'] = $details['gender'];
+        }
 
         return $this->insert($data);
     }

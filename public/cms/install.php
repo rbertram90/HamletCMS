@@ -82,7 +82,12 @@ use rbwebdesigns\core\JSONhelper;
 
         // Run module install
         foreach ($modules as $key => $module) {
-            if ($module['optional']) {
+
+            if (!array_key_exists('locked', $module)) $module['locked'] = 0;
+
+            // Run through all the optional modules that were chosen not to
+            // be installed and insert module row into database
+            if (!$module['locked']) {
                 $install = $request->getString($key);
                 if ($install != 'on') {
                     $dbc->insertRow("modules", ['name' => $key, 'enabled' => 0,'locked' => 0, 'core' => $module['core']]);
@@ -104,7 +109,7 @@ use rbwebdesigns\core\JSONhelper;
             $dbc->insertRow("modules", [
                 'name' => $key,
                 'enabled' => 1,
-                'locked' => !$module['optional'],
+                'locked' => $module['locked'],
                 'core' => $module['core']
             ]);
 
