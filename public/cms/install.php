@@ -51,11 +51,11 @@ use rbwebdesigns\core\JSONhelper;
         // Create modules table
         $dbc->query("CREATE TABLE `modules` (
             `name` varchar(30) NOT NULL,
-            `description` text NOT NULL,
+            `description` text,
             `core` tinyint(1) NOT NULL DEFAULT '0',
             `enabled` tinyint(1) NOT NULL DEFAULT '0',
             `locked` tinyint(1) NOT NULL DEFAULT '0',
-            `settings` text NOT NULL,
+            `settings` text,
             `dbversion` int(4) NOT NULL DEFAULT '0'
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 

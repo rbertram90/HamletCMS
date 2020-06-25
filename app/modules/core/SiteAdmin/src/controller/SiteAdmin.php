@@ -222,4 +222,13 @@ class SiteAdmin extends GenericController
 
         $this->response->redirect('/cms/admin/modules', 'Module uninstalled', 'success');
     }
+
+    /**
+     * Handles GET /cms/admin/php
+     */
+    public function phpInfo() {
+      phpinfo();
+      exit;
+    }
+
 }

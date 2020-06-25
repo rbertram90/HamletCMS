@@ -14,5 +14,13 @@
         "weight": 5,
         "text": "Reload caches",
         "icon": "terminal"
+    },
+    {
+        "menu": "cms_admin_actions",
+        "type": "route",
+        "route": "admin.phpinfo",
+        "weight": 10,
+        "text": "PHP Info",
+        "icon": "php"
     }
 ]

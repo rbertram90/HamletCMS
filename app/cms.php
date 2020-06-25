@@ -270,6 +270,10 @@ class HamletCMS
     public static function pathMatch()
     {
         $routeCache = self::getCache('routes');
+        if (!$routeCache) {
+          print "Route cache not generated";
+          exit;
+        }
         $controllerName = self::request()->getControllerName();
         $isApi = substr($_SERVER['REQUEST_URI'], 0, 4) == '/api';
 

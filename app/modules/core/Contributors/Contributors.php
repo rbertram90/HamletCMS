@@ -33,8 +33,8 @@ class Contributors
             `id` int(11) NOT NULL,
             `blog_id` bigint(15) NOT NULL,
             `name` varchar(50) NOT NULL,
-            `description` varchar(500) NOT NULL,
-            `data` text NOT NULL,
+            `description` varchar(500),
+            `data` text,
             `locked` tinyint(1) NOT NULL DEFAULT '0',
             `super` tinyint(1) NOT NULL DEFAULT '0'
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");

@@ -21,9 +21,13 @@ use Athens\CSRF;
  */
 
 // Setup for 'Plugins' Installed using composer
-require_once SERVER_ROOT .'/app/vendor/autoload.php';
+if (!class_exists("\Composer\Autoload\ClassLoader")) {
+  require_once SERVER_ROOT . '/app/vendor/autoload.php';
+}
 
 // Setup - Stage 1
+// May have already been required in setup.inc.php if we're not using custom
+// domain. Otherwise will be included here
 require_once SERVER_ROOT .'/app/envsetup.inc.php';
 
 // Intialize CSRF tokens

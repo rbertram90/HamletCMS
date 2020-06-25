@@ -47,6 +47,9 @@ use rbwebdesigns\core\Sanitize;
     if (!USER_AUTHENTICATED) {
         $response->redirect('/cms/account/login', 'Login required', 'warning');
     }
+    elseif ($controllerName == 'index') { // no such thing as index controller
+        $response->redirect('/cms/blog');
+    }
 
     $user = HamletCMS::session()->currentUser;
     $modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');

@@ -18,15 +18,15 @@ class UserAccounts
             `username` varchar(30) NOT NULL,
             `password` varchar(255) NOT NULL,
             `email` varchar(255) NOT NULL,
-            `dob` date NOT NULL,
-            `gender` varchar(10) NOT NULL,
-            `location` varchar(50) NOT NULL,
+            `dob` date,
+            `gender` varchar(10),
+            `location` varchar(50),
             `profile_picture` varchar(255) NOT NULL DEFAULT 'profile_default.jpg',
-            `description` text NOT NULL,
+            `description` text,
             `admin` tinyint(1) NOT NULL DEFAULT '0',
             `signup_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            `security_q` varchar(300) NOT NULL,
-            `security_a` varchar(55) NOT NULL
+            `security_q` varchar(300),
+            `security_a` varchar(55)
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `users` ADD PRIMARY KEY (`id`);");

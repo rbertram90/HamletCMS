@@ -2,9 +2,8 @@
 namespace rbwebdesigns\HamletCMS;
 
 use rbwebdesigns\core\Request;
-use rbwebdesigns\HamletCMS\HamletCMSResponse;
 use rbwebdesigns\HamletCMS\Website\controller\Site;
-
+use rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView;
 
 /****************************************************************
   Website entrypoint
@@ -23,7 +22,6 @@ use rbwebdesigns\HamletCMS\Website\controller\Site;
     ]);
     $response = new HamletCMSResponse();
 
-
     // Add default stylesheet(s)
     $response->addStylesheet('/css/semantic.css');
     // $response->addStylesheet('/css/blogs_stylesheet.css');
@@ -35,7 +33,6 @@ use rbwebdesigns\HamletCMS\Website\controller\Site;
     // Set default meta data
     $response->setTitle('Default title');
     $response->setDescription('Default page description');
-    
 
     // Usually this would be the controller name
     // In this case we're keeping it simple with
@@ -58,8 +55,6 @@ use rbwebdesigns\HamletCMS\Website\controller\Site;
         }
         
         require SERVER_ROOT .'/app/blog_setup.inc.php';
-        
-        // Exit here
         exit;
     }
 
@@ -69,7 +64,7 @@ use rbwebdesigns\HamletCMS\Website\controller\Site;
 
     if ($action == 'widgets') {
         // @todo make this go through proper routing system
-        $controller = new \rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView($request, $response);
+        $controller = new WidgetsView();
         $action = 'generateWidget';
         $applyTemplate = false;
     }

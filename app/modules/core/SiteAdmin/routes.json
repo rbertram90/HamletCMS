@@ -40,5 +40,12 @@
         "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "uninstallModule",
         "permissions": []
+    },
+    {
+        "key": "admin.phpinfo",
+        "path": "/cms/admin/php",
+        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "action": "phpInfo",
+        "permissions": []
     }
 ]
