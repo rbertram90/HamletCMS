@@ -10,44 +10,35 @@ use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\HamletCMS\Menu;
 
 /**
- * /app/controller/blog_controller.inc.php
- *  
- * The controller acts as the intermediatory between the
- * model (database) and the view. Any requests to the model are sent from
- * here rather than directly from the view.
- *
- * The content generated here is then passed through the template. Any
- * pages which are expected to return content will be passed the parameters
- * $request and $response where:
+ * controllers/Blogs
+ * 
+ * Functions in this controller are called via. the routing system. Each
+ * function fetches all the resources that is required by the view.
  * 
  * @author Ricky Bertram <ricky@rbwebdesigns.co.uk>
  */
 class Blogs extends GenericController
 {
-    /**
-     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
-     */
+    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    /**
-     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
-    /**
-     * @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors
-     */
-    protected $modelContributors;
-    /**
-     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
-    protected $request;
-    /**
-     * @var \rbwebdesigns\HamletCMS\HamletCMSResponse
-     */
-    protected $response;
+
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    protected $modelContributors;
+
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
+    protected $modelPermissions;
+
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups */
+    protected $modelContributorGroups;
+
+    /** @var \rbwebdesigns\HamletCMS\EventLogger\model\EventLogger */
+    protected $modelActivityLog;
 
     /**
      * Create blog controller instance
@@ -62,13 +53,7 @@ class Blogs extends GenericController
         $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
         $this->modelActivityLog = HamletCMS::model('\rbwebdesigns\HamletCMS\EventLogger\model\EventLogger');
 
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
-    }
-
-    public function defaultAction()
-    {
-        return $this->home();
+        parent::__construct();
     }
     
     /**
@@ -283,7 +268,11 @@ class Blogs extends GenericController
         rmdir($dirPath);
     }
 
-    public function search() {
+    /**
+     * Free text search for a blog
+     */
+    public function search()
+    {
         $search = $this->request->getString('q', false);
 
         if (!$search || strlen($search) == 0) {
@@ -306,4 +295,5 @@ class Blogs extends GenericController
             'results' => $data
         ]));
     }
+
 }

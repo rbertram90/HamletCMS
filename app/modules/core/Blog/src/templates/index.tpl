@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th></th>
-            <th>Blog Name</th>
+            <th>Name</th>
             <th>Contributors</th>
             <th class="collapsing"></th>
             <th class="collapsing"></th>

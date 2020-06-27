@@ -254,6 +254,10 @@ class Posts extends RBFactory
      */
     public function getPostsByBlog($blogID, $page=1, $num=10, $drafts=0, $future=0, $sort='')
     {
+        // Ensure we cannot have negative page number
+        // This would cause an SQL error
+        if ($page < 1) $page = 1;
+
         $start = ($page-1) * $num;
         $tp = TBL_POSTS; $tv = TBL_POST_VIEWS; $tu = TBL_USERS;
         $sql = "SELECT $tp.class as classType, $tp.*, wordcount($tp.content) as wordcount, (SELECT count(*) FROM $tv WHERE $tv.postid = $tp.id) as uniqueviews, (SELECT COALESCE(SUM(userviews),0) from $tv WHERE $tv.postid = $tp.id) as hits, (SELECT username FROM $tu WHERE id = $tp.author_id) as username ";
@@ -266,17 +270,19 @@ class Posts extends RBFactory
         $fields = array_merge($this->fields, ['uniqueviews' => 'number', 'hits' => 'number']);
         
         $splitSort = explode(' ', $sort);
-        if(count($splitSort) == 2) {
-            if(array_key_exists($splitSort[0], $fields)) {
-                   if(strtoupper($splitSort[1]) != 'ASC') {
-                       $splitSort[1] = 'DESC';
-                   }
-            } else {
+        if (count($splitSort) == 2) {
+            if (array_key_exists($splitSort[0], $fields)) {
+                if (strtoupper($splitSort[1]) != 'ASC') {
+                    $splitSort[1] = 'DESC';
+                }
+            }
+            else {
                 $sort = ''; // Invalid sort
             }
-        } else $sort = ''; // Invalid sort
-                
-        if($sort == '') {
+        }
+        else $sort = ''; // Invalid sort
+        
+        if ($sort == '') {
             $sql.= "ORDER BY $tp.timestamp DESC ";
         }
         else {

@@ -10,9 +10,7 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class UserAccounts extends RBFactory
 {
-    /**
-     * @var string Database table name for this model
-     */
+    /** @var string Database table name for this model */
     protected $tableName = 'users';
 
     protected $passwordHash = '';
@@ -32,7 +30,7 @@ class UserAccounts extends RBFactory
     {
         $user = $this->get(['id', 'password', 'admin'], ['username' => $username], '', '', false);
 
-        if($user && password_verify($password, $user->password)) {
+        if ($user && password_verify($password, $user->password)) {
             
             if (password_needs_rehash($user->password, PASSWORD_DEFAULT)) {
                 // If so, create a new hash, and replace the old one
@@ -115,4 +113,5 @@ class UserAccounts extends RBFactory
 
         return $this->update(['id' => $user['id']], $fields);
     }
+    
 }

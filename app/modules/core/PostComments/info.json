@@ -1,5 +1,6 @@
 {
     "name": "Post comments",
+    "description": "Allow logged in users to add comments to blog posts",
     "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>",
     "locked": 0,
     "dependencies": [

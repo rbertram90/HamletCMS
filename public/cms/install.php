@@ -32,9 +32,13 @@ use rbwebdesigns\core\JSONhelper;
 
     foreach ($addonModules as $module) {
         if ($module == '.' || $module == '..') continue;
-
+    
+        $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/addon/{$module}/info.json");
+    
         $modules[$module] = [
             'core' => 0,
+            'description' => $info['description'],
+            'dependencies' => $info['dependencies'],
             'locked' => 0 // addon modules cannot be locked
         ];
     }
@@ -90,7 +94,13 @@ use rbwebdesigns\core\JSONhelper;
             if (!$module['locked']) {
                 $install = $request->getString($key);
                 if ($install != 'on') {
-                    $dbc->insertRow("modules", ['name' => $key, 'enabled' => 0,'locked' => 0, 'core' => $module['core']]);
+                    $dbc->insertRow("modules", [
+                        'name' => $key,
+                        'enabled' => 0,
+                        'locked' => 0,
+                        'core' => $module['core'],
+                        'description' => $module['description']
+                    ]);
                     continue;
                 }
             }
@@ -110,6 +120,7 @@ use rbwebdesigns\core\JSONhelper;
                 'name' => $key,
                 'enabled' => 1,
                 'locked' => $module['locked'],
+                'description' => $module['description'],
                 'core' => $module['core']
             ]);
 
