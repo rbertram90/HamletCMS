@@ -17,13 +17,16 @@ class CreateBlogTest extends TestResult
         // Instantiate the blog controller
         $controller = new \rbwebdesigns\HamletCMS\Blog\controller\Blogs();
 
-        print "Info: Running test CreateBlog". PHP_EOL;
+        $this->log("Running test CreateBlog");
 
+        // Set POST variables
         $this->request->setVariable('fld_blogname', 'Blog test '. time());
         $this->request->setVariable('fld_blogdesc', 'Automatically created by test suite');
         
+        // Run the method
         $controller->runCreateBlog();
         
+        // Check response
         if ($redirect = $this->response->redirect) {
             // Response was a redirect
             switch (strtolower($redirect['messageType'])) {
@@ -31,10 +34,12 @@ class CreateBlogTest extends TestResult
                     print "Error: Test errored with message - ". $redirect['message'];
                     exit;
                 case 'success':
-                    print "Info: Test passed". PHP_EOL;
                     $locationParts = explode('/', $redirect['location']);
                     $this->blogID = array_pop($locationParts);
-                    print "Created blog with ID = " . $this->blogID . PHP_EOL;
+                    HamletCMS::$blogID = $this->blogID;
+                    
+                    $this->log("Created blog #" . $this->blogID);
+                    $this->log("Test passed");
                     break;
             }
         }

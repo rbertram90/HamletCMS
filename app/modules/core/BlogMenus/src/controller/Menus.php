@@ -36,15 +36,19 @@ class Menus extends GenericController {
         if ($this->request->method() != 'POST') return;
 
         $menuName = $this->request->getString('menu_name', false);
+        $managePath = '/cms/menus/manage/'. $this->blog->id;
 
         if (!$menuName || strlen($menuName) == 0) {
-            $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Please enter the menu name', 'error');
+            $this->response->redirect($managePath, 'Please enter the menu name', 'error');
         }
 
         if ($this->model->insert(['name' => $menuName, 'blog_id' => $this->blog->id])) {
-            $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Menu created', 'success');
+            $this->response->redirect($managePath, 'Menu created', 'success');
         }
-        else $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Failed to create menu', 'error');
+        else {
+            $this->response->redirect($managePath, 'Failed to create menu', 'error');
+        }
+
     }
 
     /**
@@ -82,7 +86,8 @@ class Menus extends GenericController {
     /**
      * Route: /cms/menus/movelinkdown/{BLOG_ID}/{LINK_ID}
      */
-    public function moveLinkDown() {
+    public function moveLinkDown()
+    {
         $link = $this->requireMenuLinkFromRequest();
         $menu = $link->menu();
         $redirect = "/cms/menus/edit/{$this->blog->id}/{$menu->id}";
@@ -114,7 +119,8 @@ class Menus extends GenericController {
     /**
      * Route: /cms/menus/movelinkup/{BLOG_ID}/{LINK_ID}
      */
-    public function moveLinkUp() {
+    public function moveLinkUp()
+    {
         $link = $this->requireMenuLinkFromRequest();
         $menu = $link->menu();
         $redirect = "/cms/menus/edit/{$this->blog->id}/{$menu->id}";
@@ -146,7 +152,8 @@ class Menus extends GenericController {
     /**
      * Save options for menu
      */
-    protected function saveMenu($menu) {
+    protected function saveMenu($menu)
+    {
         $name = $this->request->getString('name');
         $sort = $this->request->getString('sort');
 

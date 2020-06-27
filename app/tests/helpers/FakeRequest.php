@@ -23,4 +23,9 @@ class FakeRequest extends Request
     {
         return $this->method;
     }
+
+    public function setUrlParameter($index, $value) {
+        $this->urlParameters[$index] = $value;
+    }
+
 }

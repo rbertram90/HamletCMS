@@ -8,7 +8,10 @@ abstract class TestResult implements TestResultInterface
 {
     public $redirect = false;
 
+    /** @var \rbwebdesigns\HamletCMS\tests\FakeRequest */
     protected $request;
+
+    /** @var \rbwebdesigns\HamletCMS\tests\FakeResponse */
     protected $response;
     
     public function __construct()
@@ -21,4 +24,12 @@ abstract class TestResult implements TestResultInterface
         HamletCMS::response($this->response);
     }
     
+    /**
+     * Output text to the console
+     */
+    protected function log(string $message)
+    {
+        print "Debug: " . $message . PHP_EOL;
+    }
+
 }

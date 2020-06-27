@@ -48,4 +48,34 @@ class BlogMenus
         $dbc->query("DROP TABLE IF EXISTS `menuitems`;");
         $dbc->query("DROP TABLE IF EXISTS `menus`;");
     }
+
+    /**
+     * Run unit tests
+     */
+    public function runUnitTests($args) {
+        // This ensures that the blog tests have been run and we've
+        // got an active blog in HamletCMS::getActiveBlog()
+        if ($args['context'] === 'blog') {
+            $createBlogTest = new BlogMenus\tests\CreateMenuTest();
+            $createBlogTest->run();
+
+            /** @var \rbwebdesigns\HamletCMS\BlogMenus\model\Menus $model */
+            $model = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\BlogMenus\\model\\Menus');
+            $newMenu = $model->get('*', ['blog_id' => $args['blogID']], null, null, false);
+
+            // Run next level of tests
+            if ($newMenu) {
+                HamletCMS::runHook('runUnitTests', ['context' => 'menu', 'menu' => $newMenu]);
+            }
+        }
+
+        if ($args['context'] === 'menu') {
+            // $editMenuItemTest = new BlogMenus\tests\CreateMenuItemTest($args['menu']);
+
+            $createMenuItemTest = new BlogMenus\tests\CreateMenuItemTest($args['menu']);
+            $createMenuItemTest->run();
+        }
+
+    }
+
 }

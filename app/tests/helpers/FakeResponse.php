@@ -5,6 +5,7 @@ use rbwebdesigns\HamletCMS\HamletCMSResponse;
 
 class FakeResponse extends HamletCMSResponse
 {
+    /** Array of redirect redetail */
     public $redirect;
     
     /**
@@ -18,4 +19,5 @@ class FakeResponse extends HamletCMSResponse
             'messageType' => $messageType
         ];
     }
+
 }
