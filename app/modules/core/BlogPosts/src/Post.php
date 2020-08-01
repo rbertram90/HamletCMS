@@ -63,6 +63,10 @@ class Post
         HamletCMS::runHook('onPostConstruct', ['post' => $this, 'functions' => &$this->customFunctions]);
     }
 
+    /**
+     * Magic function for calling functions that have been added
+     * to the post model by custom modules.
+     */
     public function __call($closure, $args)
     {
         if (array_key_exists($closure, $this->customFunctions)) {
@@ -139,6 +143,7 @@ class Post
     public function author()
     {
         if (is_null($this->author)) {
+            /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts $usersModel */
             $usersModel = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
             $this->author = $usersModel->getById($this->author_id);
         }
@@ -216,4 +221,5 @@ class Post
     {
         return $this->timestamp > date('Y-m-d H:i:s');
     }
+    
 }

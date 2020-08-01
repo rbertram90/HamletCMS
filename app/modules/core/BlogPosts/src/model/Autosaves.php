@@ -89,7 +89,7 @@ class Autosaves extends RBFactory
                 'tags'            => $newTags,
                 'date_last_saved' => date('Y-m-d H:i:s')
             ]);
-            if($update === false) return $false;
+            if ($update === false) return false;
             else return $postID;
         }
         else {
@@ -101,7 +101,7 @@ class Autosaves extends RBFactory
                 'tags'            => $newTags,
                 'date_last_saved' => date('Y-m-d H:i:s')
             ));
-            if($insert === false) return $false;
+            if ($insert === false) return false;
             else return $postID;
         }
     }

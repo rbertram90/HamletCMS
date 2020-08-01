@@ -42,13 +42,16 @@ class PostsAPI extends GenericController
 
     /**
      * Create a new post
+     * 
+     * This is run as ajax request
      */
     public function create()
     {
-        // Already validated this as default API request
+        // We've already validated that user has got access to create this post
         $blogID = $this->request->getInt('blogID', false);
         $blog = $this->modelBlogs->getBlogById($blogID);
         
+        // Ensure we've got a valid date
         $posttime = strtotime($this->request->getString('date'));
         
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
@@ -78,6 +81,7 @@ class PostsAPI extends GenericController
             return;
         }
 
+        // Set the URL path
         $url = '';
         if ($this->request->get('overrideLink', false)) {
             $newPost['link_override'] = 1;
@@ -88,10 +92,9 @@ class PostsAPI extends GenericController
             $newPost['link_override'] = 0;
             $url = $this->model->createSafePostUrl($newPost['title']);
         }
-
         $newPost['link'] = $url;
 
-        // Validate unique title
+        // Validate unique URL
         if ($post = $this->model->getPostByURL($url, $blog->id)) {
             $this->response->setBody('{ "success": "false", "errorMessage": "Title is already in use" }');
             $this->response->code(400);
@@ -112,7 +115,6 @@ class PostsAPI extends GenericController
 
         HamletCMS::runHook('onPostCreated', ['post' => $post]);
 
-        // todo - add new post ID
         $this->response->setBody('{ "success": "true", "post": '. json_encode($post) .' }');
     }
 
@@ -121,8 +123,6 @@ class PostsAPI extends GenericController
      */
     public function edit()
     {
-        $debug = '';
-
         $postID = $this->request->getInt('postID');
         $blogID = $this->request->getInt('blogID');
 
@@ -142,7 +142,6 @@ class PostsAPI extends GenericController
 
         // Check & Format date
         $posttime = strtotime($this->request->getString('date'));
-        $debug .= date('Y-m-d', $posttime);
 
         if (checkdate(date("m", $posttime), date("d", $posttime), date("Y", $posttime))) {
             $postdate = date("Y-m-d H:i:00", $posttime);
@@ -206,7 +205,7 @@ class PostsAPI extends GenericController
 
         HamletCMS::runHook('onPostUpdated', ['post' => $post]);
 
-        $this->response->setBody('{ "success": true, "post": '. json_encode($post) .', "debug": "'.$debug.'" }');
+        $this->response->setBody('{ "success": true, "post": '. json_encode($post) .' }');
     }
     
     /**

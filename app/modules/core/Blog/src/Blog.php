@@ -63,7 +63,7 @@ class Blog
     /**
      * Get all the users that can contribute to this blog
      * 
-     * @return \rbwebdesigns\HamletCMS\User[]
+     * @return \rbwebdesigns\HamletCMS\UserAccounts\User[]
      */
     public function contributors()
     {
@@ -88,6 +88,8 @@ class Blog
 
     /**
      * Get all the posts on this blog
+     * 
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
     public function posts()
     {
@@ -100,7 +102,7 @@ class Blog
     /**
      * Get the latest post on the blog
      * 
-     * @return rbwebdesigns\HamletCMS\BlogPosts\Post|bool
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|bool
      */
     public function latestPost()
     {
@@ -110,6 +112,8 @@ class Blog
 
     /**
      * Get the config from JSON file
+     * 
+     * @return array
      */
     public function config()
     {

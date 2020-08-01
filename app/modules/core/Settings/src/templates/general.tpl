@@ -46,12 +46,16 @@
                 </div>
 
                 <div class="field">
-                    <label for="fld_post_as_homepage">Use a post as homepage?</label>
-                    <input type="checkbox" name="fld_post_as_homepage" id="fld_post_as_homepage">
+                    <label for="fld_homepage_type">Homepage content</label>
+                    <select name="fld_homepage_type" id="fld_homepage_type">
+                        <option value="posts">Recent posts (default)</option>
+                        <option value="single">Select a post...</option>
+                        <option value="tags">Tag lists</option>
+                    </select>
                 </div>
 
                 <div class="field" id="home_page_wrapper" style="display:none;">
-                    <label for="homepage">Homepage</label>
+                    <label for="homepage">Post to show</label>
                     <div class="ui search selection dropdown" id="homepage">
                         <input type="hidden" value="" name="fld_homepage_post_id" id="fld_homepage_post_id">
                         <i class="dropdown icon"></i>
@@ -60,7 +64,53 @@
                     </div>
                 </div>
 
+                <div class="ui segment field" id="tag_list_wrapper" style="display:none;">
+                    <button class="ui labeled icon button" type="button" id="add_tag_section" data-no-spinner="true"><i class="plus icon"></i> Add tag</button>
+                    <div id="tag_sections_view" class="ui segments"></div>
+                    <input type="hidden" id="fld_tag_sections" name="fld_tag_sections" value="">
+                </div>
+                <style>#tag_sections_view .red.icon.button { margin-left: 6px; }</style>
+
                 <script>
+                    var getTagDropdown = function () {
+                        var allTags = {$tagList};
+                        var outer = document.createElement('div');
+                        outer.className = 'ui segment';
+                        var dropdown = document.createElement('select');
+                        dropdown.className = 'tag_selection';
+                        dropdown.addEventListener('change', refreshTagValues);
+
+                        for (var t = 0; t < allTags.length; t++) {
+                            var option = document.createElement('option');
+                            option.text = allTags[t];
+                            option.value = allTags[t];
+                            dropdown.appendChild(option);
+                        }
+
+                        var remove = document.createElement('button');
+                        remove.className = 'ui red icon button';
+                        remove.innerHTML = '<i class="delete icon"></i>';
+                        remove.type = 'button';
+                        remove.addEventListener('click', function(e) {
+                            this.parentElement.remove();
+                            refreshTagValues();
+                            e.preventDefault();
+                        });
+
+                        outer.appendChild(dropdown);
+                        outer.appendChild(remove);
+                        return outer;
+                    };
+
+                    var refreshTagValues = function () {
+                        var tags = [];
+                        $(".tag_selection").find("select").each(function() {
+                            tags.push(this.value);
+                        });
+                        console.log(typeof JSON.stringify(tags));
+                        $("#fld_tag_sections").attr('value', JSON.stringify(tags));
+                    };
+
                     $("#homepage").dropdown({
                         placeholder: 'Search for post',
                         minCharacters: 2,
@@ -69,23 +119,56 @@
                         }
                     });
 
-                    {if $postIsHomepage}
-                        $("#fld_post_as_homepage").prop("checked", true);
-                        $("#fld_homepage_post_id").val('{$homePost}');
-                        $("#post_search_text").val('[Post #{$homePost}]');
+                    {if $config.homepage_type}
+                        $("#fld_homepage_type").val('{$config.homepage_type}');
+                        $("#fld_homepage_post_id").val('{$config.homepage_post_id}');
+                        $("#post_search_text").val('[Post #{$config.homepage_post_id}]');
                     {/if}
 
-                    $("#fld_post_as_homepage").change(function() {
-                        if ($(this).is(':checked')) {
-                            $("#home_page_wrapper").show();
+                    $('#fld_homepage_type').dropdown();
+
+                    var changeHomepageTypeView = function() {
+                        switch ($("#fld_homepage_type").val()) {
+                            case 'posts':
+                                $("#home_page_wrapper").hide();
+                                $("#tag_list_wrapper").hide();
+                                break;
+                            case 'single':
+                                $("#home_page_wrapper").show();
+                                $("#tag_list_wrapper").hide();
+                                break;
+                            case 'tags':
+                                $("#home_page_wrapper").hide();
+                                $("#tag_list_wrapper").show();
+                                break;
                         }
-                    });
+                    };
+
+                    $("#fld_homepage_type").change(changeHomepageTypeView);
+                    changeHomepageTypeView();
+
+                    $("#add_tag_section").click(function() {
+                        $("#tag_sections_view").append(getTagDropdown());
+                        $(".tag_selection").dropdown();
+                        refreshTagValues();
+                    }); 
 
                     if ($("#fld_post_as_homepage").is(':checked')) {
                         $("#home_page_wrapper").show();
                     }
+
+                    {if $config.homepage_tag_list}
+                        var currenttags = {html_entity_decode($config.homepage_tag_list)};
+                        for (var ct = 0; ct < currenttags.length; ct++) {
+                            var dd = getTagDropdown();
+                            $("#tag_sections_view").append(dd);
+                            $(dd).find('select').val(currenttags[ct]);
+                        }
+                        $(".tag_selection").dropdown();
+                        refreshTagValues();
+                    {/if}
                 </script>
-                
+
                 <div class="field">
                     <label for="fld_category">Category</label>
                     <select id="fld_category" name="fld_category" class="semantic-dropdown">

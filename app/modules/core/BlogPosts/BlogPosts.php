@@ -37,20 +37,20 @@ class BlogPosts
 
         $dbc->query("CREATE TABLE `posts` (
             `id` int(8) NOT NULL,
-            `class` varchar(255) NOT NULL DEFAULT 'rbwebdesigns\\HamletCMS\\BlogPosts\\Post',
+            `class` varchar(255) NOT NULL DEFAULT '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Post',
             `title` varchar(255) NOT NULL,
-            `summary` text NOT NULL,
+            `summary` text,
             `content` text NOT NULL,
             `blog_id` bigint(10) NOT NULL,
             `link` varchar(150) NOT NULL,
             `link_override` tinyint(1) NOT NULL DEFAULT '0',
             `draft` tinyint(1) NOT NULL DEFAULT '0',
             `timestamp` datetime NOT NULL,
-            `tags` varchar(300) NOT NULL,
+            `tags` varchar(300),
             `author_id` int(8) NOT NULL,
             `type` varchar(30) NOT NULL DEFAULT 'standard',
             `initialautosave` tinyint(1) NOT NULL DEFAULT '0',
-            `teaser_image` varchar(100) NOT NULL
+            `teaser_image` varchar(100)
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("CREATE TABLE `postviews` (

@@ -104,11 +104,11 @@ class Settings extends GenericController
         if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
         $config = $this->blog->config()['blog'];
-        $this->response->setVar('postIsHomepage', $config['use_post_as_homepage'] == 'on');
-        $this->response->setVar('homePost', $config['homepage_post_id']);
+        $this->response->setVar('config', $config);
+        $this->response->setVar('tagList', json_encode($this->modelPosts->getAllTagsByBlog($this->blog->id)));
+        $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
 
         $this->response->setTitle('General Settings - ' . $this->blog->name);
-        $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
         $this->response->write('general.tpl', 'Settings');
     }
 
@@ -309,12 +309,13 @@ class Settings extends GenericController
         // Update Config.json
         $this->blog->updateConfig([
             'blog' => [
-                'use_post_as_homepage' => $this->request->getString('fld_post_as_homepage', 'off'),
-                'homepage_post_id'     => $this->request->getInt('fld_homepage_post_id', 0),
+                'homepage_type' => $this->request->getString('fld_homepage_type', 'posts'),
+                'homepage_post_id'  => $this->request->getInt('fld_homepage_post_id', 0),
+                'homepage_tag_list' => $this->request->getString('fld_tag_sections')
             ]
         ]);
 
-        if($update) {
+        if ($update) {
             HamletCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);
             $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Blog settings updated", "success");
         }

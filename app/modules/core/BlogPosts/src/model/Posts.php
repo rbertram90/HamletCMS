@@ -11,10 +11,10 @@ use rbwebdesigns\core\Sanitize;
  */
 class Posts extends RBFactory
 {
-    /** @var \rbwebdesigns\core\Database $db */
+    /** @var \rbwebdesigns\core\Database */
     protected $db;
 
-    /** @var string $subClass */
+    /** @var string */
     protected $subClass;
 
     /**
@@ -33,22 +33,22 @@ class Posts extends RBFactory
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->tblautosave = TBL_AUTOSAVES;
         $this->subClass = '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Post';
-        
         $this->fields = [
-            'id'                => 'number',
-            'title'             => 'string',
-            'summary'           => 'memo',
-            'content'           => 'memo',
-            'blog_id'           => 'number',
-            'link'              => 'string',
-            'draft'             => 'boolean',
-            'timestamp'         => 'datetime',
-            'tags'              => 'string',
-            'author_id'         => 'number',
-            'type'              => 'string',
-            'initialautosave'   => 'boolean'
+            'id'              => 'number',
+            'title'           => 'string',
+            'summary'         => 'memo',
+            'content'         => 'memo',
+            'blog_id'         => 'number',
+            'link'            => 'string',
+            'draft'           => 'boolean',
+            'timestamp'       => 'datetime',
+            'tags'            => 'string',
+            'author_id'       => 'number',
+            'type'            => 'string',
+            'initialautosave' => 'boolean'
         ];
 
+        // Allow custom modules to add fields to post model
         HamletCMS::runHook('modelSchema', ['model' => $this]);
     }
     
@@ -57,7 +57,7 @@ class Posts extends RBFactory
      * 
      * @param int $postID
      * 
-     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|bool
      */
     public function getPostById($postID)
     {
@@ -86,7 +86,8 @@ class Posts extends RBFactory
      * 
      * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
-    public function getPostsByAuthor($blogID, $authorID, $limit=10, $page=1) {
+    public function getPostsByAuthor($blogID, $authorID, $limit=10, $page=1)
+    {
         $offset = ($page-1) * $limit;
         return $this->get('*', ['author_id' => $authorID, 'blog_id' => $blogID], null, $offset . ',' . $limit);
     }
@@ -219,16 +220,18 @@ class Posts extends RBFactory
     
     /**
      * Get all the posts on a blog
-     * @param boolean $drafts - include draft posts or just live ones
      * @param int $blogID - ID number of the blog
+     * @param boolean $drafts - include draft posts or just live ones
+     * @param boolean $future - include posts in future
      * 
      * @deprecated getPostsByBlog is better?
      */
-    public function getAllPostsOnBlog($blogID, $drafts=0, $future=0)
+    public function getAllPostsOnBlog(int $blogID, $drafts=0, $future=0)
     {
-        $sql = "SELECT p.class as classType, p.* ";
-        $sql.= "FROM " . TBL_POSTS . " as p ";
-        $sql.= "WHERE p.blog_id = '".$blogID."' ";
+        $sql = "SELECT p.class as classType, p.* 
+            FROM {$this->tableName} as p
+            WHERE p.blog_id = '{$blogID}' ";
+
         if ($drafts == 0) $sql.= "AND p.draft='0' ";
         if ($future == 0) $sql.= "AND p.timestamp<='".date('Y-m-d H:i:s')."' ";
         $sql.= "ORDER BY p.timestamp DESC ";
@@ -331,22 +334,26 @@ class Posts extends RBFactory
     
     /**
      * Create a new post
+     * 
      * @param array $newValues
+     * 
+     * @return bool Was the post created successfully?
      */
     public function createPost($newValues)
     {
-        $currentUser = HamletCMS::session()->currentUser;
-        
+        // A post must have title and content
         if (!array_key_exists('title', $newValues) || !array_key_exists('content', $newValues)) {
             return false;
         }
         
-        if (!array_key_exists('draft', $newValues)) $newValues['draft'] = 0;
-        if (!array_key_exists('type', $newValues)) $newValues['type'] = 'standard';
         if (!array_key_exists('timestamp', $newValues)) $newValues['timestamp'] = date("Y-m-d H:i:s");
-        if (!array_key_exists(['link', $newValues])) $newValues['link'] = $this->createSafePostUrl($newValues['title']);
+        if (!array_key_exists('link', $newValues)) $newValues['link'] = $this->createSafePostUrl($newValues['title']);
+
+        if (array_key_exists('tags', $newValues) && mb_strlen($newValues['tags']) > 0) {
+            $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
+        }
         
-        $newValues['tags'] = $this->createSafeTagList($newValues['tags']);
+        $currentUser = HamletCMS::session()->currentUser;
         $newValues['author_id'] = $currentUser['id'];
         
         return $this->insert($newValues);
@@ -354,6 +361,8 @@ class Posts extends RBFactory
     
     /**
      * Clone a post
+     * 
+     * @return int new post ID
      */
     public function clonePost($postID)
     {
@@ -557,7 +566,7 @@ class Posts extends RBFactory
         // Loop through all tags in all posts
         foreach ($posts as $post) {
             $tags = explode(",", $post->tags);
-            if(count($tags) == 0) continue;
+            if (count($tags) == 0) continue;
             
             foreach ($tags as $tag) {
                 $tag = str_replace("+", " ", $tag);

@@ -6,6 +6,7 @@ use rbwebdesigns\HamletCMS\Link;
 
 class Blog
 {
+
     public function onGenerateMenu($options)
     {
         if ($options['id'] == 'cms_main_actions') {

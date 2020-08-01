@@ -21,9 +21,15 @@ use rbwebdesigns\HamletCMS\GenericController;
  */
 class BlogContent extends GenericController
 {
+
+    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;       // Blogs Model
-    protected $modelPosts;       // Posts Model
-    protected $modelUsers;       // Users Model
+
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts $modelPosts */
+    protected $modelPosts;
+
+    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
+    protected $modelUsers;
 
     /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
     protected $blog;
@@ -63,7 +69,11 @@ class BlogContent extends GenericController
         // Copy accross sub-set of variables from main template
         $teaserResponse->setVar('userIsContributor', $this->response->getVar('userIsContributor'));
 
-        HamletCMS::runHook('runTemplate', ['template' => 'postTeaser', 'post' => &$post, 'config' => &$config]);
+        HamletCMS::runHook('runTemplate', [
+            'template' => 'postTeaser',
+            'post' => &$post,
+            'config' => &$config
+        ]);
 
         // Check if blog template is overriding the teaser
         // todo - find this once and store in config?!
@@ -168,16 +178,23 @@ class BlogContent extends GenericController
         $blogConfig = $this->blog->config();
 
         if (isset($blogConfig['blog'])) {
-            if ($blogConfig['blog']['use_post_as_homepage'] === 'on') {
-                $postID = $blogConfig['blog']['homepage_post_id'];
-                $post = $this->modelPosts->getPostById($postID);
+            switch ($blogConfig['blog']['homepage_type']) {
+                case 'single':
+                    $postID = $blogConfig['blog']['homepage_post_id'];
+                    $post = $this->modelPosts->getPostById($postID);
 
-                if ($post && $post->blog_id == $this->blog->id) {
-                    return $this->viewPost($post);
-                }
+                    if ($post && $post->blog_id == $this->blog->id) {
+                        return $this->viewPost($post);
+                    }
+                break;
+                case 'tags':
+                    $tags = html_entity_decode($blogConfig['blog']['homepage_tag_list']);
+                    $tags = json_decode($tags);
+                    return $this->viewTagBlocks($tags);
             }
         }
 
+        // Default
         $this->viewPostLister();
     }
 
@@ -226,7 +243,22 @@ class BlogContent extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postshome.tpl', 'BlogView');
     }
-        
+
+    /**
+     * View tag blocks
+     */
+    public function viewTagBlocks($tags)
+    {
+        $this->response->setVar('blog', $this->blog);
+        $this->response->setTitle($this->blog->name);
+        foreach ($tags as $tag) {
+            $posts = $this->modelPosts->getBlogPostsByTag($this->blog->id, $tag);
+            $this->response->setVar('posts', $posts);
+            $this->response->setVar('tag', $tag);
+            $this->response->write('posts/postGrid.tpl', 'BlogView');
+        }
+    }
+    
     /**
      * Generate the HTML to be shown in the header
      * 
@@ -375,7 +407,13 @@ class BlogContent extends GenericController
         return $headerContent;
     }
     
-    public function viewPostsByAuthor() {
+    /**
+     * View posts by Author
+     * 
+     * /blogs/<blog id>/author/<author id>
+     */
+    public function viewPostsByAuthor()
+    {
         $author_id = $this->request->getUrlParameter(2);
         $author = $this->modelUsers->getById($author_id);
         $pageNum = $this->request->getInt('s', 1);
@@ -499,7 +537,8 @@ class BlogContent extends GenericController
         }
     }
     
-    protected function ajaxLoadPosts() {
+    protected function ajaxLoadPosts()
+    {
         $output = '';
         $blogConfig = $this->blog->config();
         $postsperpage = 5;
@@ -528,6 +567,8 @@ class BlogContent extends GenericController
     }
 
     /**
+     * Load either single posts or many posts
+     * 
      * Handle routes:
      *   /posts
      *   /posts/{post-url}
@@ -549,6 +590,8 @@ class BlogContent extends GenericController
             $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
         }
         
+        // Past this point we are viewing single post
+
         if (!$post) {
             $response->redirect($this->blog->url(), 'Cannot find this post', 'error');
         }
