@@ -47,7 +47,7 @@
                         {* Add Widget Button *}
                         <div class="ui clearing segment">
                             <h3 class="ui left floated header">{$sectionname}</h3>
-                            <button class="ui right floated basic green icon button" type="button" onclick="$('#widget_location').val('{$sectionname}'); $('#addWidgetPopup').modal('show');">
+                            <button class="ui right floated basic green icon button" data-no-spinner="true" type="button" onclick="$('#widget_location').val('{$sectionname}'); $('#addWidgetPopup').modal('show');">
                                 <i class="plus icon"></i> Add Widget
                             </button>
                         </div>
@@ -61,8 +61,8 @@
                             <div id="{$sectionname}-widgetlist" data-sectionname="{$sectionname}" class="ui segments" data-empty="false">
                                 {foreach from=$section key=widgettype item=widget}
                                 <div data-saved="true" class="ui segment clearing widget_placeholder" data-widgetsection="{$sectionname}" data-widgetname="{$widgettype}">
-                                    <button type="button" class="ui right floated icon negative basic button" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>
-                                    <button type="button" class="ui right floated icon blue basic button" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>
+                                    <button type="button" class="ui right floated icon negative basic button" data-no-spinner="true" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>
+                                    <button type="button" class="ui right floated icon blue basic button" data-no-spinner="true" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>
                                     <p><i class="move grey icon"></i> {$widgettype}</p>
                                     {*
                                         This textarea is the full data source for each widget
@@ -92,7 +92,7 @@
     <div class="content">
         {foreach from=$installedwidgets key=name item=widget}
             <div class="ui clearing segment">
-                <button class="ui right floated icon green button" onclick="submitAddWidget(this);" data-widgetname="{$name}" data-widgettitle="{$widget.name}"><i class="plus icon"></i> Add</button>
+                <button class="ui right floated icon green button" onclick="submitAddWidget(this);" data-widgetname="{$name}" data-widgettitle="{$widget.name}" data-no-spinner="true"><i class="plus icon"></i> Add</button>
                 <div class="widget_config" style="display:none;">{* todo *}</div>
                 <h3>{$widget.name}</h3>
                 <p>{$widget.description}</p>
@@ -141,8 +141,8 @@ function submitAddWidget(buttonElement) {
     
     // HTML to add 
     var widgetPlaceholder = '<div data-saved="false" class="ui segment clearing widget_placeholder" data-widgetsection="' + locationName + '" data-widgetname="' + widgetName + '">' + 
-        '<button type="button" class="ui right floated icon negative basic button" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>' +
-        '<button type="button" class="ui right floated icon blue basic button" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>' +
+        '<button type="button" class="ui right floated icon negative basic button" data-no-spinner="true" onclick="submitRemoveWidget(this);"><i class="remove icon"></i> Remove</button>' +
+        '<button type="button" class="ui right floated icon blue basic button" data-no-spinner="true" onclick="runConfigureWidgetForm(this);"><i class="edit icon"></i> Edit</button>' +
         '<p><i class="move grey icon"></i> ' + label + '</p>' +
         '<textarea style="display:none;" class="widgetconfigjson" name="widgets[' + locationName + '][' + widgetName + ']">' +
         widgetConfigJSON + '</textarea>' +

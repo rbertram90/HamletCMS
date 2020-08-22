@@ -48,6 +48,10 @@ class HamletCMS
      */
     public static $blog = null;
     /**
+     * @var \rbwebdesigns\HamletCMS\BlogPosts\Post|null  cache for the database row for the post we're viewing
+     */
+    public static $post = null;
+    /**
      * @var string  key for which sub-menu link should be highlighted within the CMS
      */
     public static $activeMenuLink = '';
@@ -84,6 +88,24 @@ class HamletCMS
             return self::$blog;
         }
         return null;
+    }
+
+    /**
+     * Get the active post we're looking at
+     */
+    public static function getActivePost()
+    {
+        if (self::$post) return self::$post;
+        $path = explode('/', self::$request->path());
+        if (count($path) >= 2) {
+            $slug = array_pop($path);
+            $postCheck = array_pop($path);
+            if ($postCheck === 'posts') {
+                $postsModel = self::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+                self::$post = $postsModel->getPostByURL($slug, self::$blogID);
+            }
+        }
+        return self::$post;
     }
 
     /**

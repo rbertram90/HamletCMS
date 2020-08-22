@@ -12,9 +12,11 @@ class MenuWidget extends AbstractWidget
     {   
         $menuID = $this->config()['menu'];
 
-        $menusModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
-        $this->response->setVar('menu', $menusModel->getMenuById($menuID));
-        $this->response->write('menu.tpl', 'BlogMenus');
+        if ($menuID) {
+            $menusModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
+            $this->response->setVar('menu', $menusModel->getMenuById($menuID));
+            $this->response->write('menu.tpl', 'BlogMenus');
+        }
     }
 
 }

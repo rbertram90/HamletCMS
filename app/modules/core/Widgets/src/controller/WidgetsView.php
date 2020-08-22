@@ -29,6 +29,7 @@ class WidgetsView extends GenericController
     {
         $widgetsConfig = $this->getWidgetConfig();
         $widgets = [];
+        $currentPost = HamletCMS::getActivePost();
 
         if (CUSTOM_DOMAIN) {
             $config = HamletCMS::config();
@@ -47,7 +48,8 @@ class WidgetsView extends GenericController
                 $params = [
                     "blogID" => $this->blog->id,
                     "section" => $section,
-                    "widget" => $key
+                    "widget" => $key,
+                    "postID" => is_null($currentPost) ? null : $currentPost->id
                 ];
                 $params = json_encode($params);
                 $widgets[$sectionlower].= "<script>

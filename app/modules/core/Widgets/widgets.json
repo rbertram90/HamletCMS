@@ -6,5 +6,13 @@
         "version": 1.0,
         "form": "rbwebdesigns\\HamletCMS\\Widgets\\forms\\ConfigureCustomHTML",
         "class": "rbwebdesigns\\HamletCMS\\Widgets\\widgets\\CustomHTML"
+    },
+    {
+        "key": "alsotagged",
+        "name": "Also tagged",
+        "description": "Lists posts that have the same tags",
+        "version": 1.0,
+        "form": "rbwebdesigns\\HamletCMS\\Widgets\\forms\\ConfigureAlsoTagged",
+        "class": "rbwebdesigns\\HamletCMS\\Widgets\\widgets\\AlsoTagged"
     }
 ]
