@@ -14,6 +14,9 @@ class Posts extends RBFactory
     /** @var \rbwebdesigns\core\Database */
     protected $db;
 
+    /** @var \rbwebdesigns\core\querybuilder\Database */
+    protected $queryBuilder;
+
     /** @var string */
     protected $subClass;
 
@@ -26,6 +29,17 @@ class Posts extends RBFactory
     {
         // Access to the database class
         $this->db = $modelManager->getDatabaseConnection();
+
+        $config = HamletCMS::config()['database'];
+
+        // New OO-style query builder - experimental!
+        $this->queryBuilder = new \rbwebdesigns\core\querybuilder\Database([
+            'host' => $config['server'],
+            'port' => 3306,
+            'name' => $config['name'],
+            'user' => $config['user'],
+            'password' => $config['password'],
+        ]);
         
         // Set table names
         $this->tableName = TBL_POSTS;
@@ -61,7 +75,10 @@ class Posts extends RBFactory
      */
     public function getPostById($postID)
     {
-        return $this->get('*', ['id' => $postID], null, null, false);
+        return $this->queryBuilder->select($this->tableName)
+          ->condition('id', $postID)
+          ->execute()
+          ->fetchObject($this->subClass);
     }
     
     /**
@@ -75,21 +92,38 @@ class Posts extends RBFactory
      */
     public function getPostByURL($link, $blogID)
     {
-        return $this->get('*', ['link' => $link, 'blog_id' => $blogID], null, null, false);
+        return $this->queryBuilder->select($this->tableName)
+          ->condition('link', $link)
+          ->condition('blog_id', $blogID)
+          ->execute()
+          ->fetchObject($this->subClass);
     }
 
     /**
      * Get all posts for a blog made by a user
      * 
-     * @param int $blogID
-     * @param int $authorID User ID
+     * @param int $blogID       Blog ID
+     * @param int $authorID     User ID
+     * @param int $limit        Number of posts to get
+     * @param int $page         Page offset
+     * @param boolean $drafts   Include draft posts?
      * 
-     * @return bool|\rbwebdesigns\HamletCMS\BlogPosts\Post[]
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]|bool
      */
-    public function getPostsByAuthor($blogID, $authorID, $limit=10, $page=1)
+    public function getPostsByAuthor($blogID, $authorID, $limit=10, $page=1, $drafts=0)
     {
         $offset = ($page-1) * $limit;
-        return $this->get('*', ['author_id' => $authorID, 'blog_id' => $blogID], null, $offset . ',' . $limit);
+
+        $query = $this->queryBuilder->select($this->tableName)
+          ->condition('author_id', $authorID)
+          ->condition('blog_id', $blogID)
+          ->limit($limit)
+          ->offset($offset);
+
+        if (!$drafts) $query->condition('draft', 0);
+
+        return $query->execute()
+          ->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
     
     /**
@@ -101,12 +135,13 @@ class Posts extends RBFactory
      */
     public function getLatestPost($blogID)
     {
-        $where = [
-            'blog_id'   => $blogID,
-            'timestamp' => '< CURRENT_TIMESTAMP',
-            'draft'     => 0
-        ];
-        return $this->get('*', $where, 'timestamp DESC', '1', false);
+        return $this->queryBuilder->select($this->tableName)
+          ->condition('blog_id', $blogID)
+          ->condition('draft', 0)
+          ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
+          ->orderBy('timestamp', 'DESC')
+          ->execute()
+          ->fetchObject($this->subClass);
     }
     
     /**
@@ -119,20 +154,14 @@ class Posts extends RBFactory
      */
     public function getNextPost($blogID, $currentPostTimestamp)
     {
-        $where = [
-            'timestamp' => '>' . $currentPostTimestamp,
-            'blog_id'   => $blogID,
-            'draft'     => 0
-        ];
-        $result = $this->get('*', $where, 'timestamp ASC', '1', false);
-        
-        // Only Return Result if the post is not scheduled
-        if ($result->timestamp < date('Y-m-d H:i:s')) {
-            return $result;
-        }
-        else {
-            return false;
-        }
+        return $this->queryBuilder->select($this->tableName)
+          ->condition('blog_id', $blogID)
+          ->condition('draft', 0)
+          ->condition('timestamp', $currentPostTimestamp, '>')
+          ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
+          ->orderBy('timestamp')
+          ->execute()
+          ->fetchObject($this->subClass);
     }
     
     /**
@@ -145,15 +174,14 @@ class Posts extends RBFactory
      */
     public function getPreviousPost($blogID, $currentPostTimestamp)
     {
-        $where = [
-            'blog_id'   => $blogID,
-            'timestamp' => '<'. $currentPostTimestamp,
-            'draft'     => 0
-        ];
-
-        $result = $this->get('*', $where, 'timestamp DESC', '1', false);
-
-        return $result;
+        return $this->queryBuilder->select($this->tableName)
+          ->condition('blog_id', $blogID)
+          ->condition('draft', 0)
+          ->condition('timestamp', $currentPostTimestamp, '<')
+          ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
+          ->orderBy('timestamp', 'DESC')
+          ->execute()
+          ->fetchObject($this->subClass);
     }
     
     /**
@@ -554,6 +582,9 @@ class Posts extends RBFactory
     
     /**
      * Get all the posts on a blog with specified tag (must be exact)
+     * 
+     * @todo Not have to get all posts every time!
+     * 
      * @param <int> $blogid - ID number of the blog
      * @param <string> $ptag - Tag
      * @return <array> of posts
@@ -575,7 +606,7 @@ class Posts extends RBFactory
             }
         }
         return $res;
-    }        
+    }
     
     /**
      * Get all IP that have viewed this post
