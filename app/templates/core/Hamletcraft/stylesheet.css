@@ -1,0 +1,250 @@
+/*
+"Playfair Display", Georgia, serif;
+Lato, Helvetica, sans-serif;
+*/
+
+body {
+    background-color: #f0f4f9;
+    font-family: initial;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: "Playfair Display", Georgia, serif !important;
+}
+
+.page-header {
+    padding-top: 35px;
+    padding-bottom: 10px;
+    text-align: center;
+    background-image: none !important;
+}
+.page-header h1 a {
+    color: #111;
+    display: block;
+    font-size: 40px;
+    line-height: 110%;
+    margin: 0;
+    padding-top: 35px;
+    font-weight: 700;
+    transition: color .3s;
+}
+.page-header h1 a:hover {
+    color: #72534a;
+}
+.page-header h2 {
+    margin-top: 0;
+    font-style: italic;
+    font-weight: normal;
+    font-size: 18.7px;
+    color: #111;
+    margin-bottom: 35px;
+}
+
+#blog .page-header-image {
+    position: absolute;
+    left: 0;
+    width: 100vw !important;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    margin-top: 240px;
+}
+@media (max-width: 600px) {
+    #blog .page-header-image {
+        margin-top: 300px;
+    }
+}
+
+#header_menu .menu {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    justify-content: center;
+}
+#header_menu .menu a {
+    border: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 16px;
+    padding-left: 0;
+    transition: color .3s;
+}
+#header_menu .menu a:hover {
+    background: transparent;
+    color: #72534a;
+}
+#header_menu .menu a:after {
+    content: '/';
+    padding-left: 20px;
+}
+#header_menu .menu a:last-child:after {
+    content: none;
+    padding-left: 0;
+}
+#header_menu .menu a:before {
+    content: none;
+}
+
+.page-footer {
+    background-color: #f5f5f5;
+    padding: 30px;
+}
+
+.posts {
+    margin-top: 286px;
+}
+.posts img {
+    max-width:100%;
+}
+.posts .ui.grid {
+    margin: 0;
+}
+.posts .image-column {
+    background-position: center;
+    background-size: cover;
+}
+
+#blog .posts .post.full-post {
+    padding-top: 40px;
+}
+#blog .full-post h1 {
+    font-size: 3em;
+}
+
+#blog .posts .post {
+    padding: 60px;
+    background-color: white;
+    margin-bottom: 60px;
+}
+#blog .posts .post h2 a {
+    color: black;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 44px;
+}
+#blog .posts .post h2 a:hover {
+    text-decoration: underline;
+}
+#blog .posts .post .meta {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    font-family: Lato, Helvetica, sans-serif;
+    font-weight: 900;
+    font-size: 12.75px;
+    letter-spacing: 1px;
+}
+#blog .posts .post .meta a {
+    color: #72534a;   
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1px;
+}
+#blog .posts .post .meta a:hover {
+    border-bottom: 1px solid #72534a;
+}
+#blog .posts .post span {
+    line-height: 30px;
+}
+#blog .posts .post .post-date:after,
+#blog .posts .post .post-tags:before,
+#blog .posts .post .leave-comment:before {
+    content: '/';
+    padding: 0 10px;
+    color: #ccc;
+}
+
+#blog .posts .post .post-content p,
+#blog .post .post-content p {
+    font-size: 20px;
+    line-height: 1.6em;
+    color: #111;
+}
+
+#blog .posts .post .image {
+    margin-bottom: 40px;
+}
+
+#blog .widgets-right {
+    margin-top: 430px;
+}
+
+.widgets-right .widget .segment {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    margin-top: 40px;
+}
+
+.widgets-right .widget .segment h3 {
+    font-family: Lato, Helvetica, sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-bottom: 2px solid #72534a;
+    display: inline-block;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding-bottom: 3px;
+}
+.widgets-right .widget .list {
+    padding: 0;
+    margin: 0;
+}
+.widgets-right .widget .list .item {
+    display: block;
+    padding: 0;
+    margin: 15px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e4e9;
+}
+.widgets-right .widget .list .item:before {
+    content: none;
+}
+.widgets-right .widget .list a {
+    color: #111;
+    font-size: 16px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: bold;
+}
+.widgets-right .widget .list a:hover {
+    text-decoration: underline;
+}
+.widgets-right .widget .list .item:last-child {
+  border-bottom-width: 0;
+}
+
+#blog .contributor-actions {
+    text-align: right;
+    padding-bottom: 10px;
+}
+#blog .contributor-actions a {
+    background-color: white !important;
+}
+
+#blog .row.social-icons {
+    border: 1px solid #ddd;
+    border-width: 1px 0;
+    margin: 30px 0;
+    padding: 15px 0;
+}
+#blog .row.social-icons h3 {
+    margin: 0;
+    line-height: 36px;
+}
+
+#blog .row.social-icons .icons-column {
+    text-align: right;
+}
+
+#blog .read-more-link {
+    border: 2px solid black;
+    padding: 10px 20px;
+    display: inline-block;
+    color: black;
+    transition: background-color .4s, color .4s;
+    margin-top: 40px;
+}
+
+#blog .read-more-link:hover {
+    background-color: black;
+    color: white;
+}
