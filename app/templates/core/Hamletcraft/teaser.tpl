@@ -17,7 +17,7 @@
         
         <div class="meta">
             <span class="post-date">On <a href="{$blog->relativePath()}/posts/{$post->link}">{$post->timestamp|date_format:"%d %b %Y"}</a></span>
-            <span class="post-author">By <a href="/cms/account/user/{$post->author()->id}">{$post->author()->username}</a></span>
+            <span class="post-author">By <a href="{$blog->relativePath()}/author/{$post->author()->id}">{$post->author()->username}</a></span>
             
             {if count($post->tags) > 0}
                 <span class="post-tags">In 
