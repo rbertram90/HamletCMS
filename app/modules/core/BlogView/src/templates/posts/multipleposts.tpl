@@ -45,6 +45,22 @@
         });
     </script>
 {else}
-    {$numPages = ceil($totalnumposts / $postsperpage)}
-    {$paginator->showPagination($numPages, $currentPage)}
+    <div class="ui pagination menu">
+        {if $currentPage > 1}
+            <a href="?s={$currentPage - 1}" class="item"><i class="left angle icon"></i></a>
+        {/if}
+
+        {for $i=1 to $pagecount}
+            {if $i == $currentPage}
+                <a class="active item">{$i}</a>
+            {else}
+                <a href="?s={$i}" class="item">{$i}</a>
+            {/if}
+            
+        {/for}
+
+        {if $currentPage < $pagecount}
+            <a href="?s={$currentPage + 1}" class="item"><i class="right angle icon"></i></a>
+        {/if}
+    </div>
 {/if}

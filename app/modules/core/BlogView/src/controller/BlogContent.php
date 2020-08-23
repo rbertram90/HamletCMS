@@ -3,7 +3,6 @@ namespace rbwebdesigns\HamletCMS\BlogView\controller;
 
 use Codeliner;
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\Pagination;
 use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\HamletCMS\HamletCMSResponse;
@@ -233,15 +232,19 @@ class BlogContent extends GenericController
         }
         
         // Pagination
+        $this->response->setVar('currentPage', $pageNum);
         $this->response->setVar('postsperpage', $postsperpage);
-        $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID]));
+        $postTotal = $this->modelPosts->count(['blog_id' => $this->blogID, 'draft' => 0]);
+        $this->response->setVar('totalnumposts', $postTotal);
+        $this->response->setVar('pagecount', ceil($postTotal / $postsperpage));
 
         $this->response->setTitle($this->blog->name);
         $this->response->setVar('loadtype', $loadtype);
         $this->response->setVar('posts', $output);
-        $this->response->setVar('paginator', new Pagination());
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postshome.tpl', 'BlogView');
+
+        $this->generatePagination($postTotal, $postsperpage);
     }
 
     /**
@@ -439,17 +442,18 @@ class BlogContent extends GenericController
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
 
-        // Pagination
+        // Pagination       
         $this->response->setVar('postsperpage', $postsperpage);
         $this->response->setVar('currentPage', $pageNum);
-        $this->response->setVar('totalnumposts', $this->modelPosts->count(['blog_id' => $this->blogID, 'author_id' => $author_id]));
+        $totalPosts = $this->modelPosts->count(['blog_id' => $this->blogID, 'author_id' => $author_id, 'draft' => 0]);
+        $this->response->setVar('totalnumposts', $totalPosts);
+        $this->response->setVar('pagecount', ceil($totalPosts / $postsperpage));
 
         // Set Page Title
         $this->response->setTitle("Posts created by {$author->name} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('authorName', $author->name);
         $this->response->setVar('posts', $output);
-        $this->response->setVar('paginator', new Pagination());
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postsbyauthor.tpl', 'BlogView');
     }
@@ -490,13 +494,13 @@ class BlogContent extends GenericController
         $this->response->setVar('postsperpage', $postsperpage);
         $this->response->setVar('currentPage', $pageNum);
         $this->response->setVar('totalnumposts', count($postlist));
+        $this->response->setVar('pagecount', ceil(count($postlist) / $postsperpage));
 
         // Set Page Title
         $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('tagName', $tag);
         $this->response->setVar('posts', $output);
-        $this->response->setVar('paginator', new Pagination());
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postsbytag.tpl', 'BlogView');
     }
@@ -673,6 +677,14 @@ class BlogContent extends GenericController
         
         // Remove Whitespace and return answer
         return trim($trimmedContent);
+    }
+
+
+    /**
+     * Generate the pagination
+     */
+    protected function generatePagination($totalPosts, $postPerPage) {
+        $numberOfPages = ceil($totalPosts / $postPerPage);
     }
 
 }
