@@ -15,9 +15,12 @@ class PostsAPI extends GenericController
     /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
     protected $model;
 
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves */
+    protected $modelAutosaves;
+    
     /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    
+
     /**
      * Posts controller constructor
      */

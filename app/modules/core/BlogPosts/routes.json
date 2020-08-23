@@ -72,6 +72,13 @@
         "action": "delete"
     },
     {
+        "key": "posts.delete",
+        "path": "/cms/posts/delete/{POST_ID}",
+        "permissions": ["delete_posts"],
+        "controller": "\\rbwebdesigns\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "action": "delete"
+    },
+    {
         "key": "api.posts.clone",
         "path": "/api/posts/clone",
         "permissions": ["create_posts"],

@@ -36,10 +36,16 @@ class Posts extends GenericController
     /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
+    protected $modelPermissions;
+
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves */
+    protected $modelAutosaves;
+
     /** @var \rbwebdesigns\core\Request */
     protected $request;
 
-    /** @var \rbwebdesigns\core\Response */
+    /** @var \rbwebdesigns\HamletCMS\HamletCMSResponse */
     protected $response;
 
     /** @var array Active blog */
@@ -57,6 +63,7 @@ class Posts extends GenericController
         $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
         $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
         $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelAutosaves = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
 
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
@@ -159,6 +166,20 @@ class Posts extends GenericController
         HamletCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
     }
     
+    /**
+     * Handles GET /posts/delete/<postID>
+     */
+    public function delete()
+    {
+        if ($this->model->delete(['id' => $this->post->id]) && $this->modelAutosaves->removeAutosave($this->post->id)) {
+            HamletCMS::runHook('onPostDeleted', ['post' => $this->post]);
+            $this->response->redirect('/cms/posts/manage/' . $this->blog->id, 'Post deleted', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/posts/manage/' . $this->blog->id, 'Unable to delete post', 'error');
+        }
+    }
+
     /**
      * Handles POST /posts/cancelsave/<postID>
      * 
