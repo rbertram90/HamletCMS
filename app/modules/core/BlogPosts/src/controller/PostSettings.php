@@ -97,6 +97,7 @@ class PostSettings extends GenericController
                 'postsummarylength' => $this->request->getInt('fld_postsummarylength'),
                 'listtype'          => $this->request->getString('fld_listtype'),
                 'loadtype'          => $this->request->getString('fld_loadtype'),
+                'parentclasslist'   => $this->request->getString('fld_parentclasslist'),
             ]
         ]);
 

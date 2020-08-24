@@ -71,13 +71,13 @@
                         <div class="column">
                             <div class="field">
                                 <label for="fld_postsummarylength">Length of Post Summary (Characters)</label>
-                                <input type="text" value="{$postConfig.postsummarylength}" name="fld_postsummarylength"  placeholder="Number of Characters" />
+                                <input type="number" value="{$postConfig.postsummarylength}" name="fld_postsummarylength" id="fld_postsummarylength" placeholder="Number of Characters">
                             </div>
                         </div>
-                        <div class="column">                            
+                        <div class="column">
                             <div class="field">
-                                <label for="fld_postsperpage">Number of Posts Per Page</label>
-                                <input type="text" value="{$postConfig.postsperpage}" name="fld_postsperpage" />
+                                <label for="fld_postsperpage">Number of posts per page</label>
+                                <input type="number" value="{$postConfig.postsperpage}" name="fld_postsperpage" id="fld_postsperpage">
                             </div>
                         </div>
                     </div> 
@@ -102,10 +102,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="two column row">
+                        <div class="column">
+                            <div class="field">
+                                <label for="fld_parentclasslist">Parent CSS classes<br><small>Allows for splitting of cards into columns</small></label>
+                                <input type="text" value="{$postConfig.parentclasslist}" id="fld_parentclasslist" name="fld_parentclasslist">
+                            </div>
+                        </div>
+                        <div class="column">                            
+                            
+                        </div>
+                    </div> 
                     <div class="one column row">
                         <div class="column">
-                            <input type="button" value="Cancel" name="goback" class="right floated ui button" onclick="window.history.back()" />
-                            <input type="submit" value="Update" class="right floated teal ui button" />
+                            <input type="button" value="Cancel" name="goback" class="right floated ui button" onclick="window.history.back()">
+                            <button type="submit" value="Save" class="ui right floated teal labeled icon button"><i class="save icon"></i> Save</button>
                         </div>
                     </div>
                 </div>

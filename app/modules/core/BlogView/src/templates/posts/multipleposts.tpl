@@ -15,14 +15,14 @@
  
 {if isset($postConfig)}
     {if $postConfig.listtype == 'cards'}
-        <div class="ui cards">{$posts}</div>
+        <div class="ui {$postConfig.parentclasslist} cards">{$posts}</div>
     {elseif $postConfig.listtype == 'none'}
         {$posts}
     {else}
-        <div class="ui items">{$posts}</div>
+        <div class="ui {$postConfig.parentclasslist} items">{$posts}</div>
     {/if}
 {else}
-    <div class="ui items">{$posts}</div>
+    <div class="ui {$postConfig.parentclasslist} items">{$posts}</div>
 {/if}
 
 {if $loadtype == 'loadmore'}
