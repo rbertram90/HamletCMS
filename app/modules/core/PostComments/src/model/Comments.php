@@ -28,7 +28,8 @@ class Comments extends RBFactory
             'blog_id' => 'number',
             'post_id' => 'number',
             'timestamp' => 'datetime',
-            'user_id' => 'number'
+            'user_id' => 'number',
+            'approved' => 'boolean'
         );
     }
     
@@ -52,9 +53,15 @@ class Comments extends RBFactory
      * 
      * @return \rbwebdesigns\HamletCMS\PostCommments\Comment[]
      */
-    public function getCommentsByBlog($blogID, $limit=null)
+    public function getCommentsByBlog($blogID, $limit=null, $approved=null)
     {
-        return $this->get('*', ['blog_id' => $blogID], null, $limit);
+        $where = ['blog_id' => $blogID];
+
+        if (!is_null($approved)) {
+            $where['approved'] = $approved;
+        }
+
+        return $this->get('*', $where, null, $limit);
     }
     
     /**
@@ -87,6 +94,24 @@ class Comments extends RBFactory
         $where = ['user_id' => $userID];
         if (!$includeApprovals) $where['approved'] = 1;
         return $this->get('*', $where);
+    }
+
+    /**
+     * Count the number of comments for a blog
+     * 
+     * @param int $blogID
+     * 
+     * @return int record count
+     */
+    function countBlogComments($blogID, $approved=null)
+    {
+        $where = ['blog_id' => $blogID];
+
+        if (!is_null($approved)) {
+            $where['approved'] = $approved;
+        }
+
+        return $this->db->countRows($this->tableName, $where);
     }
     
     /**
@@ -144,6 +169,18 @@ class Comments extends RBFactory
     public function approve($commentID)
     {
         return $this->update(['id' => $commentID], ['approved' => 1]);
+    }
+
+    /**
+     * Approve all comments for a blog
+     * 
+     * @param int $blogID
+     * 
+     * @return bool was the approval successful?
+     */
+    public function approveAll($blogID)
+    {
+        return $this->update(['blog_id' => $blogID], ['approved' => 1]);
     }
 
 }

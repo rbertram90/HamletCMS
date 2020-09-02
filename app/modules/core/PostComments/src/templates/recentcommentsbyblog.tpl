@@ -16,4 +16,4 @@
 {foreachelse}
     <p class="ui message info">No comments have been made on your posts on this blog :(</p>
 {/foreach}
-<a href='/cms/comments/all/{$blog->id}' class='ui right labeled icon teal right floated button'><i class="chevron right icon"></i>All Comments</a>
+<a href='/cms/comments/manage/{$blog->id}' class='ui right labeled icon teal right floated button'><i class="chevron right icon"></i>All Comments</a>

@@ -124,7 +124,7 @@ class PostComments
         if ($args['id'] == 'bloglist') {
 
             $link = new MenuLink();
-            $link->url = HamletCMS::route('comments.all', [
+            $link->url = HamletCMS::route('comments.manage', [
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Comments';

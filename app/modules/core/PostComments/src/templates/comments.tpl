@@ -14,11 +14,21 @@
     </div>
 </div>
 
-<p class="ui teal message">Total Comments: <strong>{count($comments)}</strong></p>
 
-{if count($comments) == 0}
-    <div class="segment">No comments have been made on your posts</div>
-{else}
+    <div class="ui clearing segment">
+        <div class="ui buttons">
+            <a href="?filter=all" class="ui {if $filter == 'all'}teal{/if} button">All</a>
+            <a href="?filter=pending" class="ui {if $filter == 'pending'}teal{/if} button">Pending</a>
+            <a href="?filter=approved" class="ui {if $filter == 'approved'}teal{/if} button">Approved</a>
+        </div>
+
+        <a href="/cms/comments/deleteunapproved/{$blog->id}" class="ui red icon labeled right floated button"><i class="x icon"></i> Delete all pending</a>
+        <a href="/cms/comments/approveall/{$blog->id}" class="ui green icon labeled right floated button"><i class="check icon"></i> Approve all pending</a>
+    </div>
+
+{if count($comments) > 0}
+    <p>Found <strong>{$comment_count}</strong> matching comments</p>
+
     <table class="ui table">
         <thead>
             <tr>
@@ -54,11 +64,21 @@
             <td class="single line right aligned">
                 
                 {if $comment->approved == 0}
-                    <button class="ui green button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/cms/comments/approve/{$comment->id}'{rdelim}" title="Approve Comment">Approve</button>
+                    <button class="ui icon labeled green basic button" onclick="if(confirm('Approve this comment?')) {ldelim}window.location = '/cms/comments/approve/{$comment->id}'{rdelim}" title="Approve Comment"><i class="check icon"></i> Approve</button>
                 {/if}
-                <button class="ui button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/cms/comments/delete/{$comment->id}'{rdelim}" title="Remove Comment">Delete</button>
+                <button class="ui icon labeled red basic button" onclick="if(confirm('Are you sure you wish to delete this comment?')) {ldelim}window.location = '/cms/comments/delete/{$comment->id}'{rdelim}" title="Remove Comment"><i class="x icon"></i> Remove</button>
             </td>
         </tr>
     {/strip}{/foreach}
     </table>
+
+    <div class="ui pagination menu">
+        {for $i=1 to $page_count}
+            <a href="?page={$i}&filter={$filter}" class="{if $i == $current_page}active{/if} item">{$i}</a>
+        {/for}
+    </div>
+
+{else}
+    <p class="ui teal message">There are no comments which match your filters</p>
 {/if}
+

@@ -41,7 +41,7 @@ class Comments extends GenericController
         $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
         $this->blog = HamletCMS::getActiveBlog();
 
-        HamletCMS::$activeMenuLink = '/cms/comments/all/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = '/cms/comments/manage/'. $this->blog->id;
 
         parent::__construct();
     }
@@ -59,14 +59,47 @@ class Comments extends GenericController
     }
 
     /**
-     * Handles /comments/all/<blogid>
+     * Handles /comments/manage/<blogid>
      * 
      * @todo Change this view to look more like the manage posts view with a seperate
      * ajax call to get the comments themselves?
      */
-    public function all()
+    public function manage()
     {
-        $this->response->setVar('comments', $this->model->getCommentsByBlog($this->blog->id));
+        $start = $this->request->getInt('page', 1);
+        $perPage = 20; // hard coded for now - may expose later!
+        $offset = ($start - 1) * $perPage;
+        $limit = $offset . ',' . $perPage;
+        
+        $filter = $this->request->getString('filter', 'all');
+
+        switch ($filter) {
+            case 'approved':
+                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit, 1);
+                $total = $this->model->countBlogComments($this->blog->id, 1);
+            break;
+            case 'pending':
+                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit, 0);
+                $total = $this->model->countBlogComments($this->blog->id, 0);
+            break;
+            case 'all':
+            default:
+                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit);
+                $total = $this->model->countBlogComments($this->blog->id);
+            break;
+        }
+
+        $pageCount = ceil($total / $perPage);
+
+        $this->model->getCommentsByBlog($this->blog->id);
+
+        $this->response->setVar('current_page', $start);
+        $this->response->setVar('page_count', $pageCount);
+        $this->response->setVar('comment_count', $total);
+
+        $this->response->setVar('comments', $comments);
+        $this->response->setVar('filter', $filter);
+
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Comments - ' . $this->blog->name);
         $this->response->addScript('/resources/js/paginate.js');
@@ -85,11 +118,23 @@ class Comments extends GenericController
         }
         elseif ($this->model->deleteComment($commentID)) {
             $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/'. $blog->id, 'Comment removed', 'success');
+            $this->response->redirect('/cms/comments/manage/'. $blog->id, 'Comment removed', 'success');
         }
         else {
             $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/'. $blog->id, 'Unable to remove comment', 'error');
+            $this->response->redirect('/cms/comments/manage/'. $blog->id, 'Unable to remove comment', 'error');
+        }
+    }
+
+    /**
+     * Handles /comments/deleteunapproved/<blogid>
+     */
+    public function deleteUnapproved() {
+        if ($this->model->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
+            $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Comments removed', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Unable to remove comments', 'error');
         }
     }
     
@@ -106,11 +151,24 @@ class Comments extends GenericController
         }
         elseif ($this->model->approve($comment->id)) {
             $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog->id, 'Comment approved', 'success');
+            $this->response->redirect('/cms/comments/manage/' . $blog->id, 'Comment approved', 'success');
         }
         else {
             $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/all/' . $blog->id, 'Unable to approve comment', 'error');
+            $this->response->redirect('/cms/comments/manage/' . $blog->id, 'Unable to approve comment', 'error');
+        }
+    }
+
+    /**
+     * Handles /comments/approveall/<blogid>
+     */
+    public function approveAll()
+    {
+        if ($this->model->approveAll($this->blog->id)) {
+            $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Comments approved', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Unable to approve comments', 'error');
         }
     }
 
