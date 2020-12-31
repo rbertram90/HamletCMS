@@ -16,6 +16,9 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class Blogs extends RBFactory
 {
+    /** @var string */
+    protected $tblcontributors;
+
     /**
      * Instantiate the Factory passing in access to the database.
      * 
@@ -24,7 +27,6 @@ class Blogs extends RBFactory
     function __construct($modelManager)
     {
         $this->tableName = TBL_BLOGS;
-        $this->tblfavourites = TBL_FAVOURITES;
         $this->tblcontributors = TBL_CONTRIBUTORS;
         $this->subClass = '\\rbwebdesigns\\HamletCMS\\Blog\\Blog';
         $this->fields = [
@@ -44,10 +46,10 @@ class Blogs extends RBFactory
     }
     
     /**
-     * Get all information stored for a blog.
+     * Load blog instance using ID.
      * 
-     * @param  int   $blogID  ID of Blog
-     * @return array          Query results
+     * @param int $blogID  ID of Blog
+     * @return \rbwebdesigns\HamletCMS\Blog\Blog
      */
     public function getBlogById($blogID)
     {

@@ -82,7 +82,6 @@ CSRF::init();
     $response->addScript($host .'/resources/js/validate.js');
     $response->addScript($host .'/resources/js/galleria-1.4.2.min.js');
     $response->addScript($host .'/resources/js/galleria.classic.min.js');
-    $response->addScript($host .'/js/addFavourite.js');
     
     $response->setVar('cms_url', $host);
     $response->setVar('blog', $blog);
@@ -102,6 +101,16 @@ CSRF::init();
     $response->setVar('header_content', $page_controller->generateHeader());
     $response->setVar('footer_content', $page_controller->generateFooter());
 
+    // Get side menu items
+    // @todo Pass current post through
+    $sideMenu = new Menu('blog_actions');
+    HamletCMS::runHook('onGenerateMenu', [
+      'id' => 'blog_actions',
+      'menu' => &$sideMenu,
+      'blog' => $blog
+    ]);
+    $response->setVar('blog_actions_menu', $sideMenu);
+
     $templateConfig = $page_controller->getTemplateConfig();
     $response->setVar('template_config', $templateConfig);
 
@@ -120,7 +129,7 @@ CSRF::init();
 
     // Store any output in a buffer
     ob_start();
-    
+
     if ($route = HamletCMS::pathMatch()) {
         // New dynamic routes
         $contentController = new $route['controller']();

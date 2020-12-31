@@ -107,7 +107,6 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
     define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
     define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
-    define("TBL_FAVOURITES", $databaseCredentials['name'] . ".favourites");
     define("TBL_USERS", $databaseCredentials['name'] . ".users");
     
 

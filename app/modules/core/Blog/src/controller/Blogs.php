@@ -1,11 +1,9 @@
 <?php
+
 namespace rbwebdesigns\HamletCMS\Blog\controller;
 
 use rbwebdesigns\HamletCMS\GenericController;
 use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\core\AppSecurity;
-use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\DateFormatter;
 use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\HamletCMS\Menu;
 
@@ -57,7 +55,10 @@ class Blogs extends GenericController
     }
     
     /**
-     * View the cms main dashboard which shows all blogs that the user contributes to
+     * Route: /cms/blog
+     *
+     * View the cms main dashboard which shows all blogs that the user
+     * contributes to.
      */
     public function home()
     {
@@ -82,11 +83,13 @@ class Blogs extends GenericController
     }
     
     /**
+     * Route: /cms/blog/create
+     *
      * View the new blog form
      */
     public function create()
     {
-        if ($this->request->method() == 'POST') return $this->runCreateBlog();
+        if ($this->request->method() === 'POST') return $this->runCreateBlog();
 
         $this->response->setTitle('Create New Blog');
         $this->response->write('newblog.tpl', 'Blog');

@@ -24,11 +24,6 @@
     <style type="text/css" id="customcss">{$custom_css}</style>
     
     {$page_headerbackground}
-    
-    <script type="text/javascript">
-    // this (was) used for addFavourite code - not active
-    var folder_root = "/projects/blog_cms";
-    </script>
 </head>
 <body id="blog">
     <div class="ui stackable grid container page-wrapper">
@@ -66,8 +61,11 @@
         {$footer_content}
 
         <div class="row page-bookend">
-            <div class="sixteen wide column">       
-                <div>Powered by <a href="https://github.com/rbertram90/HamletCMS">HamletCMS</a> from <a href="https://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a></div>
+            <div class="sixteen wide column">
+                <div>
+                  Powered by <a href="https://github.com/rbertram90/HamletCMS">HamletCMS</a> from
+                  <a href="https://www.rbwebdesigns.co.uk/">rbwebdesigns.co.uk</a>
+                </div>
             </div>
         </div>
     </div>

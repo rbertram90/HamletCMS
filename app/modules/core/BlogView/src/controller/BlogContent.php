@@ -2,8 +2,6 @@
 namespace rbwebdesigns\HamletCMS\BlogView\controller;
 
 use Codeliner;
-use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\HamletCMS\HamletCMS;
 use rbwebdesigns\HamletCMS\HamletCMSResponse;
 use rbwebdesigns\HamletCMS\GenericController;
@@ -13,16 +11,15 @@ use rbwebdesigns\HamletCMS\GenericController;
  * the front-end of the blog
  * 
  * Routes:
- * /(posts) - homepage
- * /post/<post id> - view single post
- * /author/<author id> - view posts by author
- * /tags/<tag> - view posts by tag
+ *  /(posts) - homepage
+ *  /post/<post id> - view single post
+ *  /author/<author id> - view posts by author
+ *  /tags/<tag> - view posts by tag
  */
 class BlogContent extends GenericController
 {
-
     /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
-    protected $modelBlogs;       // Blogs Model
+    protected $modelBlogs;
 
     /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts $modelPosts */
     protected $modelPosts;
@@ -59,6 +56,8 @@ class BlogContent extends GenericController
      *   Post database record
      * @param array $config
      *   Post view settings
+     *
+     * @return string
      */
     public function generatePostTeaser($post, $config)
     {
@@ -269,7 +268,6 @@ class BlogContent extends GenericController
      */
     public function generateHeader()
     {
-        $headerResponse = new HamletCMSResponse();
         $headerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/header.tpl';
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -309,6 +307,7 @@ class BlogContent extends GenericController
         }
         
         // Get data from config
+        $footerContent = '';
         $configReader = new Codeliner\ArrayReader\ArrayReader($blogConfig);
         $backgroundImage = $configReader->stringValue('footer.background_image', false); // Background Image
         
@@ -335,7 +334,6 @@ class BlogContent extends GenericController
             </style>';
         }
 
-        $footerResponse = new HamletCMSResponse();
         $footerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/footer.tpl';
         // Check if blog template is overriding the teaser
         // @todo - find this once and store in config?!
@@ -597,7 +595,7 @@ class BlogContent extends GenericController
         // Past this point we are viewing single post
 
         if (!$post) {
-            $response->redirect($this->blog->url(), 'Cannot find this post', 'error');
+            $this->response->redirect($this->blog->url(), 'Cannot find this post', 'error');
         }
 
         // Check access
@@ -678,7 +676,6 @@ class BlogContent extends GenericController
         // Remove Whitespace and return answer
         return trim($trimmedContent);
     }
-
 
     /**
      * Generate the pagination

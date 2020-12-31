@@ -14,50 +14,40 @@ use rbwebdesigns\core\JSONHelper;
  */
 class HamletCMS
 {
-    /**
-     * @var \rbwebdesigns\core\Session
-     */
+    /** @var \rbwebdesigns\core\Session */
     protected static $session = null;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
+
+    /** @var \rbwebdesigns\core\Request */
     protected static $request = null;
-    /**
-     * @var \rbwebdesigns\core\Response
-     */
+
+    /** @var \rbwebdesigns\core\Response */
     protected static $response = null;
-    /**
-     * @var array  parsed config files
-     */
+
+    /** @var array  parsed config files */
     protected static $config = [];
-    /**
-     * @var array  enabled modules
-     */
+
+    /** @var array  enabled modules */
     public static $modules = [];
 
+    /** @var \rbwebdesigns\core\model\ModelManager */
     protected static $modelManager = null;
 
+    /** @var string */
     public static $function = 'cms';
 
-    /**
-     * @var int  id field for the blog for which we are managing
-     */
+    /** @var int  id field for the blog for which we are managing */
     public static $blogID = 0;
-    /**
-     * @var \rbwebdesigns\HamletCMS\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS */
     public static $blog = null;
-    /**
-     * @var \rbwebdesigns\HamletCMS\BlogPosts\Post|null  cache for the database row for the post we're viewing
-     */
+
+    /** @var \rbwebdesigns\HamletCMS\BlogPosts\Post|null  cache for the database row for the post we're viewing */
     public static $post = null;
-    /**
-     * @var string  key for which sub-menu link should be highlighted within the CMS
-     */
+
+    /** @var string  key for which sub-menu link should be highlighted within the CMS */
     public static $activeMenuLink = '';
-    /**
-     * @var boolean  flag for if the user a contributor to the active blog
-     */
+
+    /** @var boolean  flag for if the user a contributor to the active blog */
     public static $userGroup = false;
 
     /**

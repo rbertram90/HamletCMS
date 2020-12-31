@@ -1,9 +1,9 @@
 <?php
+
 namespace rbwebdesigns\HamletCMS\Files\controller;
 
 use rbwebdesigns\HamletCMS\GenericController;
 use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\ImageUpload;
 
 class Files extends GenericController
