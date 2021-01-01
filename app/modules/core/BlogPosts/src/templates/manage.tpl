@@ -105,6 +105,7 @@
     }
     
     var refreshData = function(pagenum) {
+        pagenum = parseInt(pagenum);
         var numtoshow = $("#numtoshow").val();
         var sortby = $("#sortby").val();
         var filterdrafts = $("#filterdrafts").is(':checked');
@@ -207,22 +208,34 @@
 
                 // Don't show back link if current page is first page.
                 if (pagenum == 1) {
-                    output += '<a class="disabled item">&lt;</a>';
+                    output += '<a class="disabled item"><i class="icon angle left"></i></a>';
                 }
                 else {
-                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum-1) + '\'); return false;">&lt;</a>';
+                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum-1) + '\'); return false;"><i class="icon angle left"></i></a>';
                 }
+
+                var pstart = 1;
+                var pend = numpages;
+
+                if (numpages > 10) {
+                    pstart = pagenum - 5;
+                    if (pstart < 1) pstart = 1;
+
+                    pend = pstart + 10;
+                    if (pend > numpages) pend = numpages;
+                }
+
                 // loop through each page and give link to it.
-                for (var j=1; j<=numpages; j++) {
+                for (var j=pstart; j<=pend; j++) {
                     if (pagenum == j) output += '<a class="active item">' + j + '</a>';
                     else output += '<a href="#" class="item" onclick="refreshData(\'' + j + '\'); return false;">' + j + '</a>';
                 }
                 // If last page don't give next link.
                 if (pagenum < numpages) {
-                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum+1) + '\'); return false;">&gt;</a>';
+                    output += '<a href="#" class="item" onclick="refreshData(\'' + (pagenum+1) + '\'); return false;"><i class="icon angle right"></i></a>';
                 }
                 else {
-                    output += '<a class="disabled item">&gt;</a>';
+                    output += '<a class="disabled item"><i class="icon angle right"></i></a>';
                 }
             
                 output += '</div>';

@@ -480,14 +480,17 @@ class Posts extends RBFactory
     
     /**
      * Create a safe URL for a post (no funny characters)
-     * @param <string> $text - string to use for URL
-     * @return <string> a safe URL to make the pages more SEO friendly
+     * @param string $text - string to use for URL
+     *
+     * @return string a safe URL to make the pages more SEO friendly
      */
     public static function createSafePostUrl($text)
     {
         // Remove anything that isn't alphanumeric, dash or a space
         $postlink = preg_replace("/[^A-Za-z0-9\- ]/", '', $text);
-        return strtolower(str_replace(" ", "-", Sanitize::string($postlink)));
+        $postlink = strtolower(str_replace(" ", "-", Sanitize::string($postlink)));
+        $postlink = substr($postlink, 0, 150);
+        return $postlink;
     }
     
     /**
@@ -553,10 +556,10 @@ class Posts extends RBFactory
                 $tag = trim($tag);
                 if(strlen($tag) === 0) continue;
 
-                $tag = str_replace("+", " ", $tag);
+                $tag = strtolower(str_replace("+", " ", $tag));
                 
                 // Add to array if not already there
-                if (!in_array($tag, $allTags)) $allTags[] = strtolower($tag);
+                if (!in_array($tag, $allTags)) $allTags[] = $tag;
             }
         }
         
@@ -585,11 +588,12 @@ class Posts extends RBFactory
      * 
      * @todo Not have to get all posts every time!
      * 
-     * @param <int> $blogid - ID number of the blog
-     * @param <string> $ptag - Tag
-     * @return <array> of posts
+     * @param int $blogid - ID number of the blog
+     * @param string $ptag - Tag
+     *
+     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
-    public function getBlogPostsByTag($blogid, $ptag)
+    public function getBlogPostsByTag($blogid, $ptag, $limit=-1)
     {
         $posts = $this->getAllPostsOnBlog($blogid);
         $res = [];
@@ -603,6 +607,10 @@ class Posts extends RBFactory
                 $tag = str_replace("+", " ", $tag);
                 // Compare - Case Insensitive
                 if (strtolower(trim($tag)) == strtolower(trim($ptag))) $res[] = $post;
+
+                if ($limit > 0 && count($res) == $limit) {
+                    return $res;
+                }
             }
         }
         return $res;

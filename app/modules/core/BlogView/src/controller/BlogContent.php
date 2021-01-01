@@ -27,6 +27,9 @@ class BlogContent extends GenericController
     /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
 
+    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    protected $modelContributors;
+
     /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
     protected $blog;
 
@@ -52,7 +55,7 @@ class BlogContent extends GenericController
     /**
      * Generate HTML for the 'teaser' view for a post
      * 
-     * @param array $post
+     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
      *   Post database record
      * @param array $config
      *   Post view settings
@@ -135,17 +138,19 @@ class BlogContent extends GenericController
         $teaserResponse->setVar('post', $post);
         $teaserResponse->setVar('blog', $this->blog);
 
-        // Output the content direct - this is inconsistant with the teaser version
+        // Output the content direct - this is inconsistent with the teaser version
         $teaserResponse->write($templatePath, $source, true);
     }
 
     /**
      * Generate the HTML for a post (either full or teaser)
-     * 
+     *
      * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
      * @param array $config
      * @param string $mode
      *   full / teaser modes accepted
+     *
+     * @return string|null
      */
     public function generatePostTemplate($post, $config, $mode = 'full')
     {
@@ -158,12 +163,13 @@ class BlogContent extends GenericController
 
         switch ($mode) {
             case 'full':
-                return $this->generateSinglePost($post, $config);
-                break;
+                $this->generateSinglePost($post, $config);
+                return null;
             case 'teaser':
                 return $this->generatePostTeaser($post, $config);
-                break;
         }
+
+        throw new \Exception("Post template mode {$mode} not found.");
     }
 
     /**
@@ -182,13 +188,15 @@ class BlogContent extends GenericController
                     $post = $this->modelPosts->getPostById($postID);
 
                     if ($post && $post->blog_id == $this->blog->id) {
-                        return $this->viewPost($post);
+                        $this->viewPost($post);
+                        return 0;
                     }
                 break;
                 case 'tags':
                     $tags = html_entity_decode($blogConfig['blog']['homepage_tag_list']);
                     $tags = json_decode($tags);
-                    return $this->viewTagBlocks($tags);
+                    $this->viewTagBlocks($tags);
+                    return 0;
             }
         }
 
@@ -254,7 +262,8 @@ class BlogContent extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle($this->blog->name);
         foreach ($tags as $tag) {
-            $posts = $this->modelPosts->getBlogPostsByTag($this->blog->id, $tag);
+            // @todo make limit configurable
+            $posts = $this->modelPosts->getBlogPostsByTag($this->blog->id, $tag, 6);
             $this->response->setVar('posts', $posts);
             $this->response->setVar('tag', $tag);
             $this->response->write('posts/postGrid.tpl', 'BlogView');
@@ -284,7 +293,7 @@ class BlogContent extends GenericController
         // Copy accross sub-set of variables from main template
         $headerResponse = new HamletCMSResponse();
         $headerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
-        $headerResponse->setVar('user', HamletCMS::session()->$currentUser);
+        $headerResponse->setVar('user', HamletCMS::session()->currentUser);
         $headerResponse->setVar('blog', $this->blog);
         $headerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
@@ -352,7 +361,7 @@ class BlogContent extends GenericController
         $footerResponse->setVar('blog_root_url', $this->response->getVar('blog_root_url'));
         $footerResponse->setVar('blog_file_dir', $this->response->getVar('blog_file_dir'));
         $footerResponse->setVar('user_is_contributor', $this->response->getVar('user_is_contributor'));
-        $footerResponse->setVar('user', HamletCMS::session()->$currentUser);
+        $footerResponse->setVar('user', HamletCMS::session()->currentUser);
         $footerResponse->setVar('blog', $this->blog);
         $footerResponse->setVar('widgets', $this->response->getVar('widgets'));
 
@@ -582,11 +591,13 @@ class BlogContent extends GenericController
 
             if ($postUrl == 'loadmore') {
                 // Ajax call to load next N posts
-                return $this->ajaxLoadPosts();
+                $this->ajaxLoadPosts();
+                return 0;
             }
 
             if (!$postUrl) {
-                return $this->viewPostLister();
+                $this->viewPostLister();
+                return 0;
             }
     
             $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
