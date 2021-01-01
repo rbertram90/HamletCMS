@@ -20,7 +20,7 @@ class AlsoTagged extends AbstractWidget
             }
 
             $this->response->setVar('current_post', $post);
-            $this->response->setVar('posts', $posts);
+            $this->response->setVar('posts', $posts['posts']);
         }
         
 

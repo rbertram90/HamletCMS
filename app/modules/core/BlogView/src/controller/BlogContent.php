@@ -264,7 +264,7 @@ class BlogContent extends GenericController
         foreach ($tags as $tag) {
             // @todo make limit configurable
             $posts = $this->modelPosts->getBlogPostsByTag($this->blog->id, $tag, 6);
-            $this->response->setVar('posts', $posts);
+            $this->response->setVar('posts', $posts['posts']);
             $this->response->setVar('tag', $tag);
             $this->response->write('posts/postGrid.tpl', 'BlogView');
         }
@@ -474,7 +474,6 @@ class BlogContent extends GenericController
     {
         $tag = $this->request->getUrlParameter(2);
         $pageNum = $this->request->getInt('s', 1);
-        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag);
 
         $isContributor = false;
         if ($currentUser = HamletCMS::session()->currentUser) {
@@ -483,7 +482,6 @@ class BlogContent extends GenericController
 
         $blogConfig = $this->blog->config();
         $postConfig = null;
-        $summarylength = 150;
         $postsperpage = 5;
 
         if (isset($blogConfig['posts'])) {
@@ -492,16 +490,18 @@ class BlogContent extends GenericController
             $this->response->setVar('postConfig', $postConfig);
         }
 
+        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag, $postsperpage, $pageNum);
+
         $output = "";
-        foreach ($postlist as $post) {
+        foreach ($postlist['posts'] as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
 
         // Pagination
         $this->response->setVar('postsperpage', $postsperpage);
         $this->response->setVar('currentPage', $pageNum);
-        $this->response->setVar('totalnumposts', count($postlist));
-        $this->response->setVar('pagecount', ceil(count($postlist) / $postsperpage));
+        $this->response->setVar('totalnumposts', $postlist['total']);
+        $this->response->setVar('pagecount', ceil($postlist['total'] / $postsperpage));
 
         // Set Page Title
         $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");

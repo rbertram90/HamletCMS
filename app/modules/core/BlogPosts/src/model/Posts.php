@@ -593,27 +593,55 @@ class Posts extends RBFactory
      *
      * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
      */
-    public function getBlogPostsByTag($blogid, $ptag, $limit=-1)
+    public function getBlogPostsByTag($blogid, $ptag, $limit=-1, $page=0)
     {
         $posts = $this->getAllPostsOnBlog($blogid);
         $res = [];
+
+        $offset = ($page-1) * $limit;
+        $skipped = 0;
+        $total = 0;
         
         // Loop through all tags in all posts
         foreach ($posts as $post) {
             $tags = explode(",", $post->tags);
-            if (count($tags) == 0) continue;
+            $hasTag = false;
+
+            if (count($tags) == 0) {
+                continue;
+            }
             
             foreach ($tags as $tag) {
                 $tag = str_replace("+", " ", $tag);
-                // Compare - Case Insensitive
-                if (strtolower(trim($tag)) == strtolower(trim($ptag))) $res[] = $post;
 
+                if (strtolower(trim($tag)) == strtolower(trim($ptag))) {
+                    $hasTag = true;
+                    break;
+                }
+            }
+
+            if ($hasTag) {
+                $total++;
+
+                // Paginate
+                if ($page && $skipped < $offset) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Apply limit
                 if ($limit > 0 && count($res) == $limit) {
-                    return $res;
+
+                }
+                else {
+                    $res[] = $post;
                 }
             }
         }
-        return $res;
+        return [
+            'posts' => $res,
+            'total' => $total,
+        ];
     }
     
     /**

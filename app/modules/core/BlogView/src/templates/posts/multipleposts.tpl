@@ -50,7 +50,22 @@
             <a href="?s={$currentPage - 1}" class="item"><i class="left angle icon"></i></a>
         {/if}
 
-        {for $i=1 to $pagecount}
+        {if $pagecount > 10}
+            {$first = $currentPage - 5}
+            {if $first < 1}
+                {$first = 1}
+            {/if}
+
+            {$last = $first + 10}
+            {if $last > $pagecount}
+                {$last = $pagecount}
+            {/if}
+        {else}
+            {$first = 1}
+            {$last = $pagecount}
+        {/if}
+
+        {for $i=$first to $last}
             {if $i == $currentPage}
                 <a class="active item">{$i}</a>
             {else}
