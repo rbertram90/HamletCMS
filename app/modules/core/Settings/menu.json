@@ -11,15 +11,6 @@
     {
         "menu": "settings",
         "type": "route",
-        "route": "settings.posts",
-        "weight": 20,
-        "text": "Posts",
-        "subtext": "Change how posts are displayed",
-        "icon": "copy outline"
-    },
-    {
-        "menu": "settings",
-        "type": "route",
         "route": "settings.header",
         "weight": 15,
         "text": "Header",

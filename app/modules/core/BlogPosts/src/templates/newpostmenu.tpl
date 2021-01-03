@@ -9,7 +9,7 @@
 
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('New Post', 'doc_add.png', $blog->name)}
+            {viewPageHeader('New Post', 'file alternate outline', $blog->name)}
         </div>
     </div>
 

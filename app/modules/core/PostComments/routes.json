@@ -40,5 +40,12 @@
         "permissions": [],
         "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "add"
+    },
+    {
+        "key": "settings.comments",
+        "path": "/cms/settings/comments/{BLOG_ID}",
+        "permissions": ["administer_comments", "change_settings"],
+        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "action": "settings"
     }
 ]

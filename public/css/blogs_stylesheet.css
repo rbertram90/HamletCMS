@@ -85,7 +85,7 @@ p {
     background-color:#64CD78;
 }
 
-#post_content {
+#post_content, #summary {
     font-family: FiraCode, monospace;
     line-height: 1.5em;
 }

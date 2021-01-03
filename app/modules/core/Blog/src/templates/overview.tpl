@@ -46,13 +46,13 @@
 
     <div class="stackable two column row">
         <div class="column">
-            <h3 class="ui header">Latest Posts</h3>
+            <h3 class="ui header">Latest posts</h3>
             
             {if $counts.posts > 0}
                 <div class="ui segments">
                 {foreach from=$posts item=post}
                     <div class="ui segment">
-                        <a href='/blogs/{$blog->id}/posts/{$post->link}'>{$post->title}</a>
+                        <a href="{$blog->url()}/posts/{$post->link}">{$post->title}</a>
                         
                         {* Label for drafts *}
                         {if $post->draft == 1}<i>(draft)</i>{/if}
@@ -72,8 +72,8 @@
             {else}
                 <p class="ui message info">Nothing has been posted on this blog, why not <a href="/cms/posts/create/{$blog->id}">make a start</a>?</p>
             {/if}
-            <a href='/cms/posts/manage/{$blog->id}' class='ui teal right labeled icon right floated button'><i class="chevron right icon"></i>Manage Posts</a>
-            <a href='/cms/posts/create/{$blog->id}' class='ui basic teal right floated button'>New Post</a>
+            <a href='/cms/posts/manage/{$blog->id}' class='ui teal right labeled icon right floated button'><i class="chevron right icon"></i>Manage posts</a>
+            <a href='/cms/posts/create/{$blog->id}' class='ui basic teal right floated button'>New post</a>
         </div>
         {foreach from=$panels item=panel}
             <div class="column">

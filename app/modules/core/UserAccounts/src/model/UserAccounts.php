@@ -38,6 +38,9 @@ class UserAccounts extends RBFactory
                 $this->update(['id' => $user->id], ['password' => $newHash]);
             }
 
+            // Update the last login
+            $this->update(['id' => $user->id], ['last_login' => date('Y-m-d H:i:s')]);
+
             // Log the user in
             HamletCMS::session()->setCurrentUser([
                 'id' => $user->id,

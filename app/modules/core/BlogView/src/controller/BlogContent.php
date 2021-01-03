@@ -250,8 +250,6 @@ class BlogContent extends GenericController
         $this->response->setVar('posts', $output);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postshome.tpl', 'BlogView');
-
-        $this->generatePagination($postTotal, $postsperpage);
     }
 
     /**
@@ -424,7 +422,7 @@ class BlogContent extends GenericController
      */
     public function viewPostsByAuthor()
     {
-        $author_id = $this->request->getUrlParameter(2);
+        $author_id = $this->request->getUrlParameter(defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN ? 0 : 2);
         $author = $this->modelUsers->getById($author_id);
         $pageNum = $this->request->getInt('s', 1);
 
@@ -472,7 +470,7 @@ class BlogContent extends GenericController
      */
     public function viewPostsByTag()
     {
-        $tag = $this->request->getUrlParameter(2);
+        $tag = $this->request->getUrlParameter(defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN ? 0 : 2);
         $pageNum = $this->request->getInt('s', 1);
 
         $isContributor = false;
@@ -686,13 +684,6 @@ class BlogContent extends GenericController
         
         // Remove Whitespace and return answer
         return trim($trimmedContent);
-    }
-
-    /**
-     * Generate the pagination
-     */
-    protected function generatePagination($totalPosts, $postPerPage) {
-        $numberOfPages = ceil($totalPosts / $postPerPage);
     }
 
 }

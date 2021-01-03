@@ -77,11 +77,13 @@
                             {/foreach}
                         </div>
                     </div>
-                    <script>$('.ui.dropdown').dropdown({
-                        onChange: function () {
-                            $(this).addClass('loading')
-                        }
-                    });</script>
+                    <script>
+                        $('.ui.dropdown').dropdown({
+                            onChange: function () {
+                                $(this).addClass('loading')
+                            }
+                        });
+                    </script>
                 </td>
                 <td>
                     <a href="/blogs/{$blog->id}" class="ui teal icon button" target="_blank">
@@ -98,7 +100,6 @@
 
 {* This user doesn't have any blogs *}
 {else}
-
     <p class="ui message info">You're not contributing to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
 
 {/if}

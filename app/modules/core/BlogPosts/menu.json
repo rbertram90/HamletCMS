@@ -7,5 +7,14 @@
         "icon": "copy outline",
         "text": "Posts",
         "weight": 5
+    },
+    {
+        "menu": "settings",
+        "type": "route",
+        "route": "settings.posts",
+        "weight": 20,
+        "text": "Posts",
+        "subtext": "Change how posts are displayed",
+        "icon": "copy outline"
     }
 ]

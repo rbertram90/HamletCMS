@@ -17,6 +17,7 @@ class User
     public $description;
     public $admin;
     public $signup_date;
+    public $last_login;
     public $security_q;
     public $security_a;
 

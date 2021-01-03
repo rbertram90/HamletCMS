@@ -9,6 +9,8 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    Header set Access-Control-Allow-Origin "http://www.hamletdev.localhost"
+
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^$ index.php [R]

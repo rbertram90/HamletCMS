@@ -6,11 +6,21 @@
     </div>
     <div class="ui horizontal segments">
         <div class="ui segment">
-            <strong>Birthday</strong>: {date('F jS', strtotime($user->dob))}
+            <strong>Member since</strong>: {$user->signup_date|date_format}
         </div>
         <div class="ui segment">
-            <strong>Location</strong>: {$user->location}
+            <strong>Last login</strong>: {$user->last_login|date_format}
         </div>
+        {if $user->dob}
+            <div class="ui segment">
+                <strong>Birthday</strong>: {date('F jS', strtotime($user->dob))}
+            </div>
+        {/if}
+        {if $user->location}
+            <div class="ui segment">
+                <strong>Location</strong>: {$user->location}
+            </div>
+        {/if}
     </div>
     <div class="ui segment">
         <div class="ui statistics">

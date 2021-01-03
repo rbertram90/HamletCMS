@@ -129,8 +129,9 @@ class Comments extends GenericController
     /**
      * Handles /comments/deleteunapproved/<blogid>
      */
-    public function deleteUnapproved() {
-        if ($this->model->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
+    public function deleteUnapproved()
+    {
+        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
             $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Comments removed', 'success');
         }
         else {
@@ -164,7 +165,7 @@ class Comments extends GenericController
      */
     public function approveAll()
     {
-        if ($this->model->approveAll($this->blog->id)) {
+        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model->approveAll($this->blog->id)) {
             $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Comments approved', 'success');
         }
         else {
@@ -172,7 +173,6 @@ class Comments extends GenericController
         }
     }
 
-    
     /**
      * Add a comment to a blog post
      * 
@@ -223,4 +223,36 @@ class Comments extends GenericController
         }
     }
     
+    /**
+     * Comment settings
+     * 
+     * Handles GET /cms/settings/comments/<blogid>
+     */
+    public function settings()
+    {
+        if ($this->request->method() == 'POST') return $this->saveSettings();
+
+        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+
+        $config = $this->blog->config();
+        $config = array_key_exists('comments', $config) ? $config['comments'] : [];
+        
+        $this->response->setVar('settings', $config);
+        $this->response->setTitle('Comment settings - ' . $this->blog->name);
+        $this->response->setVar('blog', $this->blog);
+        $this->response->write('settings.tpl', 'PostComments');
+    }
+
+    /**
+     * Comment settings
+     * 
+     * Handles POST /cms/settings/comments/<blogid>
+     */
+    public function saveSettings()
+    {
+        // Save settings here
+
+        $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Settings saved', 'success');
+    }
+
 }

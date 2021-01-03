@@ -124,16 +124,22 @@
                 var start = pagenum * numtoshow - (numtoshow - 1);
                 var end   = (pagenum * numtoshow) > data.postcount ? data.postcount : pagenum * numtoshow;
                 var numpages = Math.ceil(data.postcount / numtoshow);
-                output = "<p>Showing " + start + " - " + end + " of " + data.postcount + "</p>";
-                
+                var output = '';
+
+                output += '<div class="ui secondary clearing segment">';
+                output += '<a href="/cms/settings/posts/' + data.blog.id + '" class="ui right floated icon labeled button"><i class="cog icon"></i>Post settings</a>';  
+                output += '<a href="/cms/posts/create/' + data.blog.id + '" class="ui right floated icon labeled teal button"><i class="plus icon"></i>New post</a>';  
+                output += "<p class='ui right aligned'>Showing <strong>" + start + "</strong> - <strong>" + end + "</strong> of <strong>" + data.postcount + "</strong></p></div>";
+
+                              
                 output += "<table class='ui table'><thead>";
-                output += "<tr><th>Title</th><th>Tag(s)</th><th>Author</th>";
+                output += "<tr><th>Title</th><th></th><th>Tag(s)</th><th>Author</th>";
     
                 output += "<th>Visitors <a href='#' class='helptext' onclick='javascript:alert(\"This is the count of \'unique visitors\' for each post, not the number of times it has been viewed. So it will count 1 view even if someone refreshes the page multiple times\");'>[?]</a></th>";
     
                 output += "<th>Views <a href='#' class='helptext' onclick='javascript:alert(\"This is the number of times each blog post has been loaded, if someone was to refresh the page 1000 times then it will show 1000 views, so this statistic may be unreliable\");'>[?]</a></th>";
     
-                output += "<th>Type</th><th>Word count</th><th></th></tr></thead>";
+                output += "<th>Type</th><th>Word count</th></tr></thead>";
             
                 for(var i=0; i<numtoshow; i++) {
                                         
@@ -143,7 +149,7 @@
                     
                     var tagoutput = "";
                     
-                    if(post.tags.length > 0) {
+                    if (post.tags.length > 0) {
                         var tags = post.tags.split(","); // todo: split out
 
                         for(var k=0; k<tags.length; k++) {
@@ -157,22 +163,31 @@
                     }
                     
                     output += "<tr><td>";
+                    // @todo apply custom domain compatible link
                     output += " <a href='/blogs/" + data.blog.id + "/posts/" + post.link + "'>" + post.title + "</a>"
                     
-                    if(new Date(post.timestamp) > new Date()) {
+                    if (new Date(post.timestamp) > new Date()) {
                         // Scheduled
                         output += " <i>Scheduled</i>";
                     }
                     
-                    if(post.draft == 1) {
+                    if (post.draft == 1) {
                         // Draft
                         output += " <i>Draft</i>";
                     }
                     
                     // todo: add scheduled and draft flags
                     output += " <br><span class='date'>" + formatDate(post.timestamp) + "</span>";
-                    
-                    output += "</td><td>" + tagoutput;
+                                        
+                    output += "</td><td width='100'>";
+                    output += " <div class='option-dropdown' style='width:100px;'>";
+                    output += "   <div class='default-option'>- Actions -</div>";
+                    output += "   <div class='hidden-options'>";
+                    output += "     <a href='/cms/posts/edit/" + post.id + "'>Edit</a>";
+                    output += "     <a class='clone_post_link' data-postid='" + post.id + "'>Clone</a>";
+                    output += "     <a class='delete_post_link' data-postid='" + post.id + "'>Delete</a>";
+
+                    output += " </div></div></td><td>" + tagoutput;
 
                     output += "</td><td>";
                     output += " <a href='/account/user/" + post.author_id + "' class='user-link'>";
@@ -188,18 +203,7 @@
                     output += " <div class='ui label'>" + post.type + "</div>";
                     
                     output += "</td><td>" + post.wordcount;
-
-                    output += "</td><td width='100'>";
-                    output += " <div class='option-dropdown' style='width:100px;'>";
-                    output += "   <div class='default-option'>- Actions -</div>";
-                    output += "   <div class='hidden-options'>";
-                    output += "     <a href='/cms/posts/edit/" + post.id + "'>Edit</a>";
-                    output += "     <a class='clone_post_link' data-postid='" + post.id + "'>Clone</a>";
-                    output += "     <a class='delete_post_link' data-postid='" + post.id + "'>Delete</a>";
-                    output += " </div></div>";
-
                     output += " </td></tr>";
-                    
                 }
             
                 output += '</table>';
@@ -239,8 +243,6 @@
                 }
             
                 output += '</div>';
-            
-                output += '<a href="/cms/posts/create/' + data.blog.id + '" class="ui button teal labeled icon right floated"><i class="plus icon"></i>New post</a>';
                 
                 output += '<script>';
                 output += '  $(".user-link").mouseenter(function() {ldelim} showUserProfile($(this), "/", "/") {rdelim});';
@@ -330,11 +332,11 @@
         }).done(function (data, textStatus, jqXHR) {
             $("#delete_post_modal").modal('hide');
             refreshData(1);
-            $("#manage_posts_messages").html('Post deleted!');
+            $("#manage_posts_messages").html('<p class="ui success message">Post deleted</p>');
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             data = JSON.parse(jqXHR.responseText);
-            $("#manage_posts_messages").html(data.errorMessage);
+            $("#manage_posts_messages").html('<p class="ui error message">' + data.errorMessage + '</p>');
         });
     });
 
@@ -352,11 +354,11 @@
         }).done(function (data, textStatus, jqXHR) {
             $("#delete_post_modal").modal('hide');
             refreshData(1);
-            $("#manage_posts_messages").html('Post cloned!');
+            $("#manage_posts_messages").html('<p class="ui success message">Post cloned</p>');
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             data = JSON.parse(jqXHR.responseText);
-            $("#manage_posts_messages").html(data.errorMessage);
+            $("#manage_posts_messages").html('<p class="ui error message">' + data.errorMessage + '</p>');
         });
     });
 </script>

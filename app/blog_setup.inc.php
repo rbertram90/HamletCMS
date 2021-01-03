@@ -46,6 +46,8 @@ CSRF::init();
     // Feed the blog ID to CMS class
     HamletCMS::$blogID = BLOG_KEY;
 
+    HamletCMS::$function = 'blogview'; // changing this variable to something other than 'cms' as otherwise custom domain routing does not work. @todo something cleaner
+
     $modelPermissions = HamletCMS::model('rbwebdesigns\HamletCMS\Contributors\model\Permissions');
     HamletCMS::$userGroup = $modelPermissions->getUserGroup(BLOG_KEY);
 

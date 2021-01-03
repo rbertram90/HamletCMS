@@ -115,4 +115,5 @@ class BlogPosts
         $args['counts']['posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
         $args['counts']['totalviews'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);
     }
+
 }
