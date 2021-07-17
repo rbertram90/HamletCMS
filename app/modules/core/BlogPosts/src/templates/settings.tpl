@@ -23,7 +23,8 @@
                             </div>
                             <div class="ui top attached tabular menu templates">
                                 <a class="active item" data-tab="first">Teaser</a>
-                                <a class="item" data-tab="second">Full</a>
+                                <a class="item" data-tab="second">Card</a>
+                                <a class="item" data-tab="third">Full</a>
                             </div>
                             <div class="ui bottom attached active tab segment" data-tab="first">
                                 <div class="field">
@@ -42,6 +43,25 @@
                                 </div>
                             </div>
                             <div class="ui bottom attached tab segment" data-tab="second">
+                                <div class="ui message">
+                                    This template is used when homepage content setting is set to 'Tag lists', see <a href="/cms/settings/general/{$blog->id}" target="_blank">blog settings</a>.
+                                </div>
+                                <div class="field">
+                                    <textarea id="ace_edit_view_card" name="ace_edit_view_card" rows="20" style="font-family: monospace;">{$cardTemplate}</textarea>
+                                    <textarea name="fld_card_template" style="display: none;">{$cardTemplate}</textarea>
+                                    <script>
+                                        var ace_editor = ace.edit("ace_edit_view_card");
+                                        ace_editor.setTheme("ace/theme/textmate");
+                                        ace_editor.session.setMode("ace/mode/smarty");
+                                        $(".ace_editor").height('50vh');
+                                        var textarea = $('textarea[name="fld_card_template"]');
+                                        ace_editor.getSession().on("change", function () {
+                                            textarea.val(ace_editor.getSession().getValue());
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="ui bottom attached tab segment" data-tab="third">
                                 <div class="field">
                                     <textarea id="ace_edit_view_full" name="ace_edit_view_full" rows="20" style="font-family: monospace;">{$postFullTemplate}</textarea>
                                     <textarea name="fld_post_full_template" style="display: none;">{$postFullTemplate}</textarea>

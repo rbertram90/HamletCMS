@@ -259,6 +259,12 @@ class BlogContent extends GenericController
     {
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle($this->blog->name);
+
+        $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/card.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/src/templates/posts/card.tpl';
+        $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
+        $this->response->setVar('cardTemplate', $templatePath);
+
         foreach ($tags as $tag) {
             // @todo make limit configurable
             $posts = $this->modelPosts->getBlogPostsByTag($this->blog->id, $tag, 6);

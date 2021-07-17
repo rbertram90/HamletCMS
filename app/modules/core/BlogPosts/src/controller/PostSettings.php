@@ -7,6 +7,9 @@ use rbwebdesigns\HamletCMS\HamletCMS;
 class PostSettings extends GenericController
 {
 
+    /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
+    protected $blog;
+
     public function __construct()
     {
         parent::__construct();
@@ -32,6 +35,7 @@ class PostSettings extends GenericController
         $this->response->setVar('postConfig', $this->getPostConfig());
         $this->response->setVar('postTemplate', $this->getPostTeaserTemplate());
         $this->response->setVar('postFullTemplate', $this->getFullPostTemplate());
+        $this->response->setVar('cardTemplate', $this->getPostCardTemplate());
         $this->response->setVar('blog', $this->blog);
         $this->response->addScript('/resources/ace/ace.js');
         $this->response->setTitle('Post Settings - ' . $this->blog->name);
@@ -61,7 +65,7 @@ class PostSettings extends GenericController
     }
 
     /**
-     * Get the Smarty full page post template file
+     * Get the Smarty full page post template contents
      * 
      * @return string
      */
@@ -74,7 +78,7 @@ class PostSettings extends GenericController
     }
 
     /**
-     * Get the Smarty post teaser template file
+     * Get the Smarty teaser template contents
      * 
      * @return string
      */
@@ -82,6 +86,19 @@ class PostSettings extends GenericController
     {
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl';
         $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/src/templates/posts/teaser.tpl';
+        $postTemplate = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
+        return file_get_contents($postTemplate);
+    }
+
+    /**
+     * Get the Smarty post card template contents
+     * 
+     * @return string
+     */
+    protected function getPostCardTemplate()
+    {
+        $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/card.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/src/templates/posts/card.tpl';
         $postTemplate = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         return file_get_contents($postTemplate);
     }
@@ -110,12 +127,15 @@ class PostSettings extends GenericController
         }
 
         $postTemplate = $this->request->get('fld_post_template');
-        $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl', $postTemplate);
+        $update1 = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl', $postTemplate);
+
+        $cardTemplate = $this->request->get('fld_card_template');
+        $update2 = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/card.tpl', $cardTemplate);
 
         $postFullTemplate = $this->request->get('fld_post_full_template');
-        $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl', $postFullTemplate);
+        $update3 = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl', $postFullTemplate);
 
-        if ($update) {
+        if ($update1 && $update2 && $update3) {
             HamletCMS::runHook('onPostSettingsUpdated', ['blog' => $this->blog]);
             $this->response->redirect('/cms/settings/posts/' . $this->blog->id, 'Post settings updated', 'success');
         }

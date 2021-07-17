@@ -591,7 +591,7 @@ class Posts extends RBFactory
      * @param int $blogid - ID number of the blog
      * @param string $ptag - Tag
      *
-     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
+     * @return array
      */
     public function getBlogPostsByTag($blogid, $ptag, $limit=-1, $page=0)
     {

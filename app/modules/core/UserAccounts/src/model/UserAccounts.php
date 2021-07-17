@@ -88,7 +88,7 @@ class UserAccounts extends RBFactory
      * 
      * @param int $userID
      * 
-     * @return array|bool
+     * @return \rbwebdesigns\HamletCMS\UserAccounts\User|bool
      *   Returns false if user is not found
      */
     public function getById($userID)
