@@ -108,6 +108,14 @@ class PostComments
             $args['post']->after[] = 'file:[PostComments]postcomments.tpl';
             $args['post']->after[] = 'file:[PostComments]newcommentform.tpl';
 
+            /** @var \rbwebdesigns\HamletCMS\BlogPosts\Post $post */
+            $post = $args['post'];
+            $blog = $post->blog();
+            $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $blog->id .'/templates/comment.tpl';
+            $defaultTemplateFile = SERVER_MODULES_PATH .'/core/PostComments/src/templates/defaultcomment.tpl';
+            $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
+
+            $args['response']->setVar('commentTemplatePath', $templatePath);
             $args['response']->setVar('comments', $this->model->getCommentsByPost($args['post']->id, false));
         }
     }
@@ -166,7 +174,7 @@ class PostComments
     }
 
     /**
-     * Extend the Post model
+     * Extend the Post (model) class
      */
     public function onPostConstruct($args) {
         $args['functions']['getComments'] = function($post) {

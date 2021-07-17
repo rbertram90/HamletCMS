@@ -1,8 +1,6 @@
 <?php
 namespace rbwebdesigns\HamletCMS\PostComments\controller;
 
-use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
-use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\HamletCMS\GenericController;
 use rbwebdesigns\HamletCMS\HamletCMS;
 
@@ -27,7 +25,7 @@ class Comments extends GenericController
     /** @var \rbwebdesigns\core\Response */
     protected $response;
 
-    /** @var array Active blog */
+    /** @var \rbwebdesigns\HamletCMS\Blog\Blog Active blog */
     protected $blog = null;
 
     /** @var array Active comment */
@@ -237,7 +235,14 @@ class Comments extends GenericController
         $config = $this->blog->config();
         $config = array_key_exists('comments', $config) ? $config['comments'] : [];
         
+        $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/PostComments/src/templates/defaultcomment.tpl';
+        $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
+        $commentTemplate = file_get_contents($templatePath);
+
+        $this->response->setVar('commentTemplate', $commentTemplate);
         $this->response->setVar('settings', $config);
+        $this->response->addScript('/resources/ace/ace.js');
         $this->response->setTitle('Comment settings - ' . $this->blog->name);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('settings.tpl', 'PostComments');
@@ -251,8 +256,15 @@ class Comments extends GenericController
     public function saveSettings()
     {
         // Save settings here
+        $template = $this->request->get('comment_template');
+        $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl', $template);
 
-        $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Settings saved', 'success');
+        if ($update) {
+            $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Settings saved', 'success');
+        }
+        else {
+            $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Failed to save template', 'error');
+        }
     }
 
 }
