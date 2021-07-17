@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\JSONHelper;
 
@@ -27,7 +27,7 @@ class Menu
     }
 
     /**
-     * @param \rbwebdesigns\HamletCMS\MenuLink $link
+     * @param \HamletCMS\MenuLink $link
      * 
      * @return self
      */

@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\HamletCMS\BlogView\controller;
+namespace HamletCMS\BlogView\controller;
 
 use Codeliner;
-use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\HamletCMS\HamletCMSResponse;
-use rbwebdesigns\HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
+use HamletCMS\HamletCMSResponse;
+use HamletCMS\GenericController;
 
 /**
  * Class BlogContent handles the generation of output for
@@ -18,19 +18,19 @@ use rbwebdesigns\HamletCMS\GenericController;
  */
 class BlogContent extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
+    /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts $modelPosts */
+    /** @var \HamletCMS\BlogPosts\model\Posts $modelPosts */
     protected $modelPosts;
 
-    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
+    /** @var \HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    /** @var \HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
+    /** @var \HamletCMS\Blog\Blog */
     protected $blog;
 
     protected $blogID;           // ID of current blog
@@ -39,10 +39,10 @@ class BlogContent extends GenericController
     public function __construct($blog_key)
     {
         // Instantiate models
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
         
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
@@ -55,7 +55,7 @@ class BlogContent extends GenericController
     /**
      * Generate HTML for the 'teaser' view for a post
      * 
-     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
+     * @param \HamletCMS\BlogPosts\Post $post
      *   Post database record
      * @param array $config
      *   Post view settings
@@ -98,7 +98,7 @@ class BlogContent extends GenericController
     /**
      * Generate the output for a single post view
      * 
-     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
+     * @param \HamletCMS\BlogPosts\Post $post
      * @param array $config
      */
     public function generateSinglePost($post, $config)
@@ -145,7 +145,7 @@ class BlogContent extends GenericController
     /**
      * Generate the HTML for a post (either full or teaser)
      *
-     * @param \rbwebdesigns\HamletCMS\BlogPosts\Post $post
+     * @param \HamletCMS\BlogPosts\Post $post
      * @param array $config
      * @param string $mode
      *   full / teaser modes accepted

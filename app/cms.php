@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
@@ -38,10 +38,10 @@ class HamletCMS
     /** @var int  id field for the blog for which we are managing */
     public static $blogID = 0;
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS */
+    /** @var \HamletCMS\Blog\Blog|null  cache for the database row for the blog we're managing in the CMS */
     public static $blog = null;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\Post|null  cache for the database row for the post we're viewing */
+    /** @var \HamletCMS\BlogPosts\Post|null  cache for the database row for the post we're viewing */
     public static $post = null;
 
     /** @var string  key for which sub-menu link should be highlighted within the CMS */
@@ -73,7 +73,7 @@ class HamletCMS
     {
         if (self::$blog) return self::$blog;
         if (self::$blogID) {
-            $blogsModel = self::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+            $blogsModel = self::model('\HamletCMS\Blog\model\Blogs');
             self::$blog = $blogsModel->getBlogById(self::$blogID);
             return self::$blog;
         }
@@ -91,7 +91,7 @@ class HamletCMS
             $slug = array_pop($path);
             $postCheck = array_pop($path);
             if ($postCheck === 'posts') {
-                $postsModel = self::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+                $postsModel = self::model('\HamletCMS\BlogPosts\model\Posts');
                 self::$post = $postsModel->getPostByURL($slug, self::$blogID);
             }
         }
@@ -144,7 +144,7 @@ class HamletCMS
      *  this is for testing purposes as we need to fake a
      *  request to inject data.
      * 
-     * @return \rbwebdesigns\HamletCMS\HamletCMSResponse
+     * @return \HamletCMS\HamletCMSResponse
      */
     public static function response($instance = null)
     {
@@ -261,7 +261,7 @@ class HamletCMS
         if (self::$blogID) {
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
-                $modelPermissions = self::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+                $modelPermissions = self::model('\HamletCMS\Contributors\model\Permissions');
                 $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;
             }

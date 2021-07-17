@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\HamletCMS\UserAccounts\model;
+namespace HamletCMS\UserAccounts\model;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -14,7 +14,7 @@ class UserAccounts extends RBFactory
     protected $tableName = 'users';
 
     protected $passwordHash = '';
-    protected $subClass = '\\rbwebdesigns\\HamletCMS\\UserAccounts\\User';
+    protected $subClass = '\\HamletCMS\\UserAccounts\\User';
     
     /**
      * Check username and password are a match in database
@@ -88,7 +88,7 @@ class UserAccounts extends RBFactory
      * 
      * @param int $userID
      * 
-     * @return \rbwebdesigns\HamletCMS\UserAccounts\User|bool
+     * @return \HamletCMS\UserAccounts\User|bool
      *   Returns false if user is not found
      */
     public function getById($userID)

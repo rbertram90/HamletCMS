@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
-use rbwebdesigns\HamletCMS\Link;
+use HamletCMS\Link;
 
 class Blog
 {
@@ -80,7 +80,7 @@ class Blog
         // Overview?
         // Delete Blog - note - this needs to run after everything else...
 
-        // $test = new \rbwebdesigns\HamletCMS\Blog\tests\();
+        // $test = new \HamletCMS\Blog\tests\();
         // $test->blogID = $blogID;
         // $test->run();
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogMenus\forms;
+namespace HamletCMS\BlogMenus\forms;
 
 use rbwebdesigns\core\Form;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 class ConfigureMenuWidget extends Form
 {
@@ -26,7 +26,7 @@ class ConfigureMenuWidget extends Form
     public function __construct()
     {
         $blog = HamletCMS::getActiveBlog();
-        $menuModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
+        $menuModel = HamletCMS::model('\HamletCMS\BlogMenus\model\Menus');
         $menus = $menuModel->get('*', ['blog_id' => $blog->id]);
         foreach ($menus as $menu) {
             $this->fields['widget[menu]']['options'][$menu->id] = $menu->name;

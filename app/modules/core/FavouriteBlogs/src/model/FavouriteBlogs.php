@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS\FavouriteBlogs\model;
+namespace HamletCMS\FavouriteBlogs\model;
 
 use rbwebdesigns\core\model\RBFactory;
 

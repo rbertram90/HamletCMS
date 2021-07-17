@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use Michelf\Markdown;
 

@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
+namespace HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 /**
@@ -12,13 +12,13 @@ use rbwebdesigns\core\JSONHelper;
  */
 class PostsAPI extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $model;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves */
+    /** @var \HamletCMS\BlogPosts\model\Autosaves */
     protected $modelAutosaves;
     
-    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
+    /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
 
     /**
@@ -26,9 +26,9 @@ class PostsAPI extends GenericController
      */
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelAutosaves = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelAutosaves = HamletCMS::model('\HamletCMS\BlogPosts\model\Autosaves');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
 
         parent::__construct();
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogMenus;
+namespace HamletCMS\BlogMenus;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 class BlogMenu {
 
@@ -23,12 +23,12 @@ class BlogMenu {
     /**
      * Get all menu items associated with this menu
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogMenus\BlogMenuItem
+     * @return \HamletCMS\BlogMenus\BlogMenuItem
      */
     public function items()
     {
         if (is_null($this->items)) {
-            $itemsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\MenuItems');
+            $itemsModel = HamletCMS::model('\HamletCMS\BlogMenus\model\MenuItems');
             $this->items = $itemsModel->getByMenu($this);
         }
         return $this->items;

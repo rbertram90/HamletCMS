@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\SiteAdmin\model;
+namespace HamletCMS\SiteAdmin\model;
 
 use rbwebdesigns\core\model\RBFactory;
 
@@ -19,7 +19,7 @@ class Modules extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'modules';
-        $this->subClass = '\\rbwebdesigns\\HamletCMS\\SiteAdmin\\Module';
+        $this->subClass = '\\HamletCMS\\SiteAdmin\\Module';
     }
 
     public function getList()

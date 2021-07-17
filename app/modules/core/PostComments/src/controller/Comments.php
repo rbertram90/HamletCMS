@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\HamletCMS\PostComments\controller;
+namespace HamletCMS\PostComments\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 /**
  * @method all($request, $response)
@@ -13,11 +13,11 @@ use rbwebdesigns\HamletCMS\HamletCMS;
  */
 class Comments extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\PostComments\model\Comments */
+    /** @var \HamletCMS\PostComments\model\Comments */
     protected $model;
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts = null;
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
+    /** @var \HamletCMS\Contributors\model\Permissions */
     protected $modelPermissions = null;
 
     /** @var \rbwebdesigns\core\Request */
@@ -25,7 +25,7 @@ class Comments extends GenericController
     /** @var \rbwebdesigns\core\Response */
     protected $response;
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\Blog Active blog */
+    /** @var \HamletCMS\Blog\Blog Active blog */
     protected $blog = null;
 
     /** @var array Active comment */
@@ -34,9 +34,9 @@ class Comments extends GenericController
 
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\PostComments\model\Comments');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->model = HamletCMS::model('\HamletCMS\PostComments\model\Comments');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
         $this->blog = HamletCMS::getActiveBlog();
 
         HamletCMS::$activeMenuLink = '/cms/comments/manage/'. $this->blog->id;

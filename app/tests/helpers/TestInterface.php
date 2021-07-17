@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\tests;
+namespace HamletCMS\tests;
 
 interface TestResultInterface
 {

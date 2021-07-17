@@ -1,9 +1,7 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
-use Codeliner;
 use Athens\CSRF;
-use rbwebdesigns\core\Sanitize;
 
 /****************************************************************
   CMS Entry point
@@ -37,7 +35,7 @@ use rbwebdesigns\core\Sanitize;
         $action = $request->getUrlParameter(0, 'login');
 
         if ($action == 'login' || $action == 'register' || $action == 'resetpassword') {
-            $controller = new \rbwebdesigns\HamletCMS\UserAccounts\controller\UserAccounts();
+            $controller = new \HamletCMS\UserAccounts\controller\UserAccounts();
             $controller->$action();
             exit;
         }
@@ -52,7 +50,7 @@ use rbwebdesigns\core\Sanitize;
     }
 
     $user = HamletCMS::session()->currentUser;
-    $modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+    $modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
     
     // Check the user has access to view/edit this blog
     $blogID = $request->getUrlParameter(1);
@@ -153,10 +151,10 @@ use rbwebdesigns\core\Sanitize;
 ****************************************************************/
 
     // Run Template here
-    $userModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\UserAccounts\\model\\UserAccounts');
+    $userModel = HamletCMS::model('\\HamletCMS\\UserAccounts\\model\\UserAccounts');
     $response->setVar('user', $userModel->getById($user['id']));
 
-    $blogsModel = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\Blog\\model\\Blogs');
+    $blogsModel = HamletCMS::model('\\HamletCMS\\Blog\\model\\Blogs');
     $response->setVar('blogs', $blogsModel->getBlogsByUser($user['id']));
     
     $response->writeTemplate('template.tpl');

@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Contributors\model;
+namespace HamletCMS\Contributors\model;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\JSONHelper;
 
@@ -16,10 +16,10 @@ class Permissions extends RBFactory
     {
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = 'contributors';
-        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Contributors\\Contributor';
+        $this->subClass = '\\HamletCMS\\Contributors\\Contributor';
 
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->modelContributorGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelContributorGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
     }
 
     /**

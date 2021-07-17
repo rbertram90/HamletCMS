@@ -4,7 +4,7 @@
         "name": "Contributors list",
         "description": "List contributors to the blog",
         "version": 1.0,
-        "form": "rbwebdesigns\\HamletCMS\\Contributors\\forms\\ConfigureContributorsList",
-        "class": "rbwebdesigns\\HamletCMS\\Contributors\\widgets\\ContributorsList"
+        "form": "HamletCMS\\Contributors\\forms\\ConfigureContributorsList",
+        "class": "HamletCMS\\Contributors\\widgets\\ContributorsList"
     }
 ]

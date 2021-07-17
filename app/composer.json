@@ -21,11 +21,12 @@
     }
   ],
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
-    "codeliner/array-reader" : "^1.0@stable",
-    "smarty/smarty": "^3.1@stable",
-    "michelf/php-markdown": "1.4.1@stable",
-    "athens/csrf": "1.*@stable",
+    "codeliner/array-reader" : "^2.0",
+    "smarty/smarty": "^3.1",
+    "michelf/php-markdown": "^1.0",
+    "athens/csrf": "^1.0",
     "rbertram90/core": "dev-master",
     "rbwebdesigns/hamlet-cms-steam-import": "dev-master",
     "rbwebdesigns/hamlet-cms-layout-post": "dev-master"

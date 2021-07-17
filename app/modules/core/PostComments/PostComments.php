@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 /**
  * class PostComments
@@ -13,7 +13,7 @@ class PostComments
 
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\PostComments\model\Comments');
+        $this->model = HamletCMS::model('\HamletCMS\PostComments\model\Comments');
     }
 
     /**
@@ -70,8 +70,8 @@ class PostComments
      */
     public function modelSchema($args) {
         $targetClasses = [
-            'rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves',
-            'rbwebdesigns\HamletCMS\BlogPosts\model\Posts'
+            'HamletCMS\BlogPosts\model\Autosaves',
+            'HamletCMS\BlogPosts\model\Posts'
         ];
 
         if (in_array(get_class($args['model']), $targetClasses) !== FALSE) {
@@ -108,7 +108,7 @@ class PostComments
             $args['post']->after[] = 'file:[PostComments]postcomments.tpl';
             $args['post']->after[] = 'file:[PostComments]newcommentform.tpl';
 
-            /** @var \rbwebdesigns\HamletCMS\BlogPosts\Post $post */
+            /** @var \HamletCMS\BlogPosts\Post $post */
             $post = $args['post'];
             $blog = $post->blog();
             $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $blog->id .'/templates/comment.tpl';

@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use Michelf\Markdown;
 
@@ -43,7 +43,7 @@ class VideoPost
         if ($args['post']['type'] == 'video') {
             $args['post']['videosource'] = $request->getString('videosource', 'youtube');
             $args['post']['videoid'] = $request->getString('videoid', '');
-            $args['post']['class'] = 'rbwebdesigns\\HamletCMS\\VideoPost\\VideoPost';
+            $args['post']['class'] = 'HamletCMS\\VideoPost\\VideoPost';
         }
     }
 
@@ -52,7 +52,7 @@ class VideoPost
         if ($args['post']['type'] == 'video') {
             $args['post']['videosource'] = $request->getString('videosource', 'youtube');
             $args['post']['videoid'] = $request->getString('videoid', '');
-            // $args['post']['class'] = 'rbwebdesigns\\HamletCMS\\VideoPost\\VideoPost'; // needed?
+            // $args['post']['class'] = 'HamletCMS\\VideoPost\\VideoPost'; // needed?
         }
     }
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\tests;
+namespace HamletCMS\tests;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 abstract class TestResult implements TestResultInterface
 {
     public $redirect = false;
 
-    /** @var \rbwebdesigns\HamletCMS\tests\FakeRequest */
+    /** @var \HamletCMS\tests\FakeRequest */
     protected $request;
 
-    /** @var \rbwebdesigns\HamletCMS\tests\FakeResponse */
+    /** @var \HamletCMS\tests\FakeResponse */
     protected $response;
     
     public function __construct()

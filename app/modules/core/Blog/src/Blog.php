@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Blog;
+namespace HamletCMS\Blog;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 class Blog
@@ -28,8 +28,8 @@ class Blog
      */
     public function __construct()
     {
-        $this->contributorsFactory = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->postsFactory = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->contributorsFactory = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->postsFactory = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
     }
 
     /**
@@ -63,7 +63,7 @@ class Blog
     /**
      * Get all the users that can contribute to this blog
      * 
-     * @return \rbwebdesigns\HamletCMS\UserAccounts\User[]
+     * @return \HamletCMS\UserAccounts\User[]
      */
     public function contributors()
     {
@@ -89,7 +89,7 @@ class Blog
     /**
      * Get all the posts on this blog
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post[]
+     * @return \HamletCMS\BlogPosts\Post[]
      */
     public function posts()
     {
@@ -102,7 +102,7 @@ class Blog
     /**
      * Get the latest post on the blog
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|bool
+     * @return \HamletCMS\BlogPosts\Post|bool
      */
     public function latestPost()
     {

@@ -1,17 +1,17 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 class EventLogger
 {
 
     /**
-     * @var rbwebdesigns\HamletCMS\EventLogger\model\EventLogger
+     * @var HamletCMS\EventLogger\model\EventLogger
      */
     protected $eventLogModel;
 
     public function __construct()
     {
-        $this->eventLogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\EventLogger\model\EventLogger');
+        $this->eventLogModel = HamletCMS::model('\HamletCMS\EventLogger\model\EventLogger');
     }
 
     public function onPostCreated($data)

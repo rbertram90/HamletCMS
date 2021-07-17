@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\HamletCMS\BlogMenus\tests;
+namespace HamletCMS\BlogMenus\tests;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\HamletCMS\tests\TestResult;
+use HamletCMS\HamletCMS;
+use HamletCMS\tests\TestResult;
 
 /**
  * Creates a new blog menu and items
@@ -13,7 +13,7 @@ class CreateMenuTest extends TestResult
     public function run()
     {
         // Instantiate the menu controller
-        $controller = new \rbwebdesigns\HamletCMS\BlogMenus\controller\Menus();
+        $controller = new \HamletCMS\BlogMenus\controller\Menus();
 
         $this->log("Running test CreateMenu");
 

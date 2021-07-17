@@ -2,7 +2,7 @@
     {
         "key": "posts.create.markdown",
         "path": "/cms/posts/create/{BLOG_ID}/standard",
-        "controller": "\\rbwebdesigns\\HamletCMS\\MarkdownPost\\controller\\MarkdownPost",
+        "controller": "\\HamletCMS\\MarkdownPost\\controller\\MarkdownPost",
         "action": "create",
         "permissions": ["create_posts"]
     }

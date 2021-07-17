@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogPosts\tests;
+namespace HamletCMS\BlogPosts\tests;
 
-use rbwebdesigns\HamletCMS\tests\TestResult;
-use rbwebdesigns\HamletCMS\BlogPosts\controller\PostsAPI;
+use HamletCMS\tests\TestResult;
+use HamletCMS\BlogPosts\controller\PostsAPI;
 
 class DeletePostTest extends TestResult {
 

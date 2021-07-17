@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Search\forms;
+namespace HamletCMS\Search\forms;
 
 use rbwebdesigns\core\Form;
 

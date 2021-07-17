@@ -1,12 +1,12 @@
 <?php
-namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
+namespace HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
+use HamletCMS\Contributors\model\ContributorGroups;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\AppSecurity;
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\HamletCMS\Menu;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
+use HamletCMS\Menu;
 use Codeliner\ArrayReader\ArrayReader;
 
 /**
@@ -27,25 +27,25 @@ use Codeliner\ArrayReader\ArrayReader;
  */
 class Posts extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $model;
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
+    /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    /** @var \HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
+    /** @var \HamletCMS\Contributors\model\Permissions */
     protected $modelPermissions;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves */
+    /** @var \HamletCMS\BlogPosts\model\Autosaves */
     protected $modelAutosaves;
 
     /** @var \rbwebdesigns\core\Request */
     protected $request;
 
-    /** @var \rbwebdesigns\HamletCMS\HamletCMSResponse */
+    /** @var \HamletCMS\HamletCMSResponse */
     protected $response;
 
     /** @var array Active blog */
@@ -59,11 +59,11 @@ class Posts extends GenericController
      */
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
-        $this->modelAutosaves = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
+        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+        $this->modelAutosaves = HamletCMS::model('\HamletCMS\BlogPosts\model\Autosaves');
 
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
@@ -188,7 +188,7 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $autosaveModel = HamletCMS::model('rbwebdesigns\HamletCMS\BlogPosts\model\Autosaves');
+        $autosaveModel = HamletCMS::model('HamletCMS\BlogPosts\model\Autosaves');
         $autosaveModel->removeAutosave($this->post->id);
 
         if ($this->post['initialautosave'] == 1) {

@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\HamletCMS\Contributors\model;
+namespace HamletCMS\Contributors\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 /**
  * /app/model/mdl_contributor.inc.php
@@ -20,7 +20,7 @@ class Contributors extends RBFactory
         $this->db = $modelFactory->getDatabaseConnection();
         $this->tableName = TBL_CONTRIBUTORS;
         $this->tableGroups = 'contributorgroups';
-        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Contributors\\Contributor';
+        $this->subClass = '\\HamletCMS\\Contributors\\Contributor';
 
         $this->tblusers = TBL_USERS;
         $this->tblblogs = TBL_BLOGS;
@@ -37,7 +37,7 @@ class Contributors extends RBFactory
         // Get all the blog id for this user
         $query_string = 'SELECT a.blog_id, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblblogs.' as b ON a.blog_id = b.id WHERE a.user_id='.$userid;
         $results = $this->db->query($query_string);
-        return $results->fetchAll(\PDO::FETCH_CLASS, '\\rbwebdesigns\\HamletCMS\\Blog\\Blog');
+        return $results->fetchAll(\PDO::FETCH_CLASS, '\\HamletCMS\\Blog\\Blog');
     }
     
     // Get all users that can contribute to a $blog

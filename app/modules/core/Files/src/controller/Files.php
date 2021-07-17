@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Files\controller;
+namespace HamletCMS\Files\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\ImageUpload;
 
 class Files extends GenericController
@@ -13,8 +13,8 @@ class Files extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
         $this->blog = HamletCMS::getActiveBlog();
 
         parent::__construct();

@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogPosts\model;
+namespace HamletCMS\BlogPosts\model;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
 
@@ -20,8 +20,8 @@ class Autosaves extends RBFactory
         // Access to the database class
         $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_AUTOSAVES;
-        $this->subClass = '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Autosave';
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->subClass = '\\HamletCMS\\BlogPosts\\Autosave';
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
         
         // @todo can we determine these dynamically?
         $this->fields = [

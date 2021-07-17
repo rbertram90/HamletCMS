@@ -2,7 +2,7 @@
     {
         "key": "posts.create.video",
         "path": "/cms/posts/create/{BLOG_ID}/video",
-        "controller": "\\rbwebdesigns\\HamletCMS\\VideoPost\\controller\\VideoPost",
+        "controller": "\\HamletCMS\\VideoPost\\controller\\VideoPost",
         "action": "create",
         "permissions": ["create_posts"]
     }

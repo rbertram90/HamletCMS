@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\Request;
-use rbwebdesigns\HamletCMS\Website\controller\Site;
-use rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView;
+use HamletCMS\Website\controller\Site;
+use HamletCMS\Widgets\controller\WidgetsView;
 
 /****************************************************************
   Website entrypoint

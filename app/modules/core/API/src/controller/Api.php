@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\HamletCMS\API\controller;
+namespace HamletCMS\API\controller;
 
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 /**
  * ApiController
@@ -17,11 +17,11 @@ use rbwebdesigns\HamletCMS\HamletCMS;
 class Api extends GenericController
 {
     /**
-     * @var \rbwebdesigns\HamletCMS\Blog\model\Blogs
+     * @var \HamletCMS\Blog\model\Blogs
      */
     protected $modelBlogs;
     /**
-     * @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts
+     * @var \HamletCMS\BlogPosts\model\Posts
      */
     protected $modelPosts;
     /**
@@ -35,10 +35,10 @@ class Api extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
 
         parent::__construct();
     }

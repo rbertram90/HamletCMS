@@ -3,21 +3,21 @@
         "key": "settings.widgets",
         "path": "/cms/settings/widgets/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Widgets\\Controller\\WidgetsAdmin",
+        "controller": "\\HamletCMS\\Widgets\\Controller\\WidgetsAdmin",
         "action": "manage"
     },
     {
         "key": "settings.configurewidget",
         "path": "/cms/settings/configurewidget/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Widgets\\Controller\\WidgetsAdmin",
+        "controller": "\\HamletCMS\\Widgets\\Controller\\WidgetsAdmin",
         "action": "configureWidget"
     },
     {
         "key": "widgets.render",
         "path": "/widgets/render",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Widgets\\Controller\\WidgetsView",
+        "controller": "\\HamletCMS\\Widgets\\Controller\\WidgetsView",
         "action": "generateWidget"
     }
 ]

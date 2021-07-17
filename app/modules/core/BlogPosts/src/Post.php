@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogPosts;
+namespace HamletCMS\BlogPosts;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 class Post
 {
@@ -36,13 +36,13 @@ class Post
 
     protected $customFunctions = [];
 
-    /** @var \rbwebdesigns\HamletCMS\UserAccounts\User|null */
+    /** @var \HamletCMS\UserAccounts\User|null */
     protected $author = null;
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\Blog|null */
+    /** @var \HamletCMS\Blog\Blog|null */
     protected $blog = null;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $factory;
 
     /**
@@ -53,7 +53,7 @@ class Post
      */
     public function __construct($data = [])
     {
-        $this->factory = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->factory = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
 
         foreach ($data as $key => $item) {
             $this->$key = $item;
@@ -138,13 +138,13 @@ class Post
     /**
      * Get the user record for a post
      * 
-     * @return \rbwebdesigns\HamletCMS\UserAccounts\User
+     * @return \HamletCMS\UserAccounts\User
      */
     public function author()
     {
         if (is_null($this->author)) {
-            /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts $usersModel */
-            $usersModel = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+            /** @var \HamletCMS\UserAccounts\model\UserAccounts $usersModel */
+            $usersModel = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
             $this->author = $usersModel->getById($this->author_id);
         }
         return $this->author;
@@ -153,12 +153,12 @@ class Post
     /**
      * Get the blog record for this post
      * 
-     * @return \rbwebdesigns\HamletCMS\Blog\Blog
+     * @return \HamletCMS\Blog\Blog
      */
     public function blog()
     {
         if (is_null($this->blog)) {
-            $blogsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+            $blogsModel = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
             $this->blog = $blogsModel->getBlogById($this->blog_id);
         }
         return $this->blog;
@@ -197,7 +197,7 @@ class Post
     /**
      * Get the previous post in chronological order
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|null
+     * @return \HamletCMS\BlogPosts\Post|null
      */
     public function previous()
     {
@@ -207,7 +207,7 @@ class Post
     /**
      * Get the next post in chronological order
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogPosts\Post|null
+     * @return \HamletCMS\BlogPosts\Post|null
      */
     public function next()
     {

@@ -3,42 +3,42 @@
         "key": "files.manage",
         "path": "/cms/files/manage/{BLOG_ID}",
         "permissions": ["delete_files"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\Files",
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
         "action": "manage"
     },
     {
         "key": "files.imagedrop",
         "path": "/cms/files/viewimagedrop",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\Files",
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
         "action": "viewimagedrop"
     },
     {
         "key": "files.select",
         "path": "/cms/files/fileselect/{BLOG_ID}",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\Files",
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
         "action": "fileselect"
     },
     {
         "key": "files.delete",
         "path": "/cms/files/delete/{BLOG_ID}/{FILE_NAME}",
         "permissions": ["delete_files"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\Files",
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
         "action": "delete"
     },
     {
         "key": "files.upload",
         "path": "/cms/files/uploadimages/{BLOG_ID}",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\Files",
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
         "action": "uploadimages"
     },
     {
         "key": "files.settings",
         "path": "/cms/files/settings/{BLOG_ID}",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\Files\\Controller\\FileSettings",
+        "controller": "\\HamletCMS\\Files\\Controller\\FileSettings",
         "action": "settings"
     }
 ]

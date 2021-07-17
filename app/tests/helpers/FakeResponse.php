@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\HamletCMS\tests;
+namespace HamletCMS\tests;
 
-use rbwebdesigns\HamletCMS\HamletCMSResponse;
+use HamletCMS\HamletCMSResponse;
 
 class FakeResponse extends HamletCMSResponse
 {

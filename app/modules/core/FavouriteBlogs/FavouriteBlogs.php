@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 class FavouriteBlogs {
 
@@ -10,8 +10,8 @@ class FavouriteBlogs {
     if ($args['id'] == 'blog_actions' && $currentUser) {
       $link = new MenuLink();
 
-      /** @var \rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouriteBlogs $favouriteBlogModel */
-      $favouriteBlogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
+      /** @var \HamletCMS\FavouriteBlogs\model\FavouriteBlogs $favouriteBlogModel */
+      $favouriteBlogModel = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
 
       if ($favouriteBlogModel->isFavourite($currentUser, $args['blog']->id)) {
         $link->url = HamletCMS::route('favourites.remove.blog', [

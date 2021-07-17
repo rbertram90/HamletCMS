@@ -1,20 +1,20 @@
 <?php
-namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
+namespace HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 class PostSettings extends GenericController
 {
 
-    /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
+    /** @var \HamletCMS\Blog\Blog */
     protected $blog;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
         $this->blog = HamletCMS::getActiveBlog();
 
         if (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {

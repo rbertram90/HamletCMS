@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets\widgets;
+namespace HamletCMS\Widgets\widgets;
 
-use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
+use HamletCMS\Widgets\AbstractWidget;
 
 class CustomHTML extends AbstractWidget
 {

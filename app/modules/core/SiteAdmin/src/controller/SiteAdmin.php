@@ -1,10 +1,10 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\SiteAdmin\controller;
+namespace HamletCMS\SiteAdmin\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
-use rbwebdesigns\HamletCMS\Module;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
+use HamletCMS\Module;
 
 class SiteAdmin extends GenericController
 {
@@ -21,7 +21,7 @@ class SiteAdmin extends GenericController
             $this->response->redirect('/');
         }
 
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\SiteAdmin\model\Modules');
+        $this->model = HamletCMS::model('\HamletCMS\SiteAdmin\model\Modules');
     }
 
     public function modules()
@@ -116,7 +116,7 @@ class SiteAdmin extends GenericController
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\HamletCMS\\'. $module->name;
+            $className = '\\HamletCMS\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 
@@ -159,7 +159,7 @@ class SiteAdmin extends GenericController
             
             require_once $moduleFile;
 
-            $className = '\\rbwebdesigns\\HamletCMS\\'. $module->name;
+            $className = '\\HamletCMS\\'. $module->name;
             $mainClass = new $className();
             $updateIndex = $currentVersion + 1;
 

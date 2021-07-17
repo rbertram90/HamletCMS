@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets;
+namespace HamletCMS\Widgets;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 class AbstractWidget

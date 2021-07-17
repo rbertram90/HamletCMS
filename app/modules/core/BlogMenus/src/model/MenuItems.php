@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogMenus\model;
+namespace HamletCMS\BlogMenus\model;
 
 use rbwebdesigns\core\model\RBFactory;
 
@@ -10,7 +10,7 @@ class MenuItems extends RBFactory {
     {
         $this->tableName = 'menuitems';
 
-        $this->subClass = '\rbwebdesigns\HamletCMS\BlogMenus\BlogMenuItem';
+        $this->subClass = '\HamletCMS\BlogMenus\BlogMenuItem';
 
         $this->fields = [
             'id' => 'number',
@@ -27,7 +27,7 @@ class MenuItems extends RBFactory {
     /**
      * @param int $linkID
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogMenus\MenuItem[]
+     * @return \HamletCMS\BlogMenus\MenuItem[]
      */
     public function getItemById($linkID)
     {
@@ -35,9 +35,9 @@ class MenuItems extends RBFactory {
     }
 
     /**
-     * @param \rbwebdesigns\HamletCMS\BlogMenus\Menu $menu
+     * @param \HamletCMS\BlogMenus\Menu $menu
      * 
-     * @return \rbwebdesigns\HamletCMS\BlogMenus\MenuItem[]
+     * @return \HamletCMS\BlogMenus\MenuItem[]
      */
     public function getByMenu($menu)
     {

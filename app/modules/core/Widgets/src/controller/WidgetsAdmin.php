@@ -1,11 +1,11 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets\controller;
+namespace HamletCMS\Widgets\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
-use rbwebdesigns\HamletCMS\Menu;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\Contributors\model\ContributorGroups;
+use HamletCMS\Menu;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use rbwebdesigns\core\HTMLFormTools;
@@ -15,7 +15,7 @@ use Codeliner\ArrayReader\ArrayReader;
 class WidgetsAdmin extends GenericController
 {
     /**
-     * @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions
+     * @var \HamletCMS\Contributors\model\Permissions
      */
     protected $modelPermissions;
     /**
@@ -34,7 +34,7 @@ class WidgetsAdmin extends GenericController
     public function __construct()
     {
         // Initialise Models
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
 

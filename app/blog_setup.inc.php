@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\HamletCMS\BlogView\controller\BlogContent;
+use HamletCMS\BlogView\controller\BlogContent;
 use Athens\CSRF;
 
 /**
@@ -48,7 +48,7 @@ CSRF::init();
 
     HamletCMS::$function = 'blogview'; // changing this variable to something other than 'cms' as otherwise custom domain routing does not work. @todo something cleaner
 
-    $modelPermissions = HamletCMS::model('rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+    $modelPermissions = HamletCMS::model('HamletCMS\Contributors\model\Permissions');
     HamletCMS::$userGroup = $modelPermissions->getUserGroup(BLOG_KEY);
 
     $request = HamletCMS::request();
@@ -94,7 +94,7 @@ CSRF::init();
     $response->setTitle('Default Page Title');
     $response->setDescription('Default Page Description');
 
-    $widgetsController = new \rbwebdesigns\HamletCMS\Widgets\controller\WidgetsView();
+    $widgetsController = new \HamletCMS\Widgets\controller\WidgetsView();
     $response->setVar('widgets', $widgetsController->generatePlaceholders());
     
     $response->setVar('user_is_contributor', HamletCMS::$userGroup !== false);

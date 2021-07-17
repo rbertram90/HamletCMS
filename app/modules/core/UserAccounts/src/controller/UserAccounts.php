@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\HamletCMS\UserAccounts\controller;
+namespace HamletCMS\UserAccounts\controller;
 
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 /**
  * Handles requests relating to user accounts.
@@ -13,7 +13,7 @@ use rbwebdesigns\HamletCMS\HamletCMS;
 class UserAccounts extends GenericController
 {
     /**
-     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
+     * @var \HamletCMS\UserAccounts\model\UserAccounts
      */
     protected $model;
     /**
@@ -21,7 +21,7 @@ class UserAccounts extends GenericController
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\HamletCMS\Response
+     * @var \HamletCMS\Response
      */
     protected $response;
     
@@ -30,7 +30,7 @@ class UserAccounts extends GenericController
      */
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->model = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
     }
@@ -53,11 +53,11 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms', 'User not found', 'error');
         }
 
-        $postsModel = HamletCMS::model("rbwebdesigns\HamletCMS\BlogPosts\model\Posts");
+        $postsModel = HamletCMS::model("HamletCMS\BlogPosts\model\Posts");
         $numberOfPost = $postsModel->count(['author_id' => $userID]);
         $this->response->setVar('postCount', $numberOfPost);
 
-        $contributorModel = HamletCMS::model('rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $contributorModel = HamletCMS::model('HamletCMS\Contributors\model\Contributors');
         $contributedBlogs = $contributorModel->getContributedBlogs($userID);
         $this->response->setVar('blogCount', count($contributedBlogs));
         $this->response->setVar('blogs', $contributedBlogs);

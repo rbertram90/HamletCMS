@@ -1,20 +1,20 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\FavouriteBlogs\controller;
+namespace HamletCMS\FavouriteBlogs\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 class Favourites extends GenericController
 {
 
-  /** @var \rbwebdesigns\HamletCMS\Blog\Blog */
+  /** @var \HamletCMS\Blog\Blog */
   protected $blog;
 
-  /** @var \rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouriteBlogs */
+  /** @var \HamletCMS\FavouriteBlogs\model\FavouriteBlogs */
   protected $modelFavouriteBlogs;
 
-  /** @var \rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouritePosts */
+  /** @var \HamletCMS\FavouriteBlogs\model\FavouritePosts */
   protected $modelFavouritePosts;
 
   protected $currentUserID;
@@ -25,8 +25,8 @@ class Favourites extends GenericController
 
     $this->blog = HamletCMS::getActiveBlog();
     $this->currentUserID = HamletCMS::session()->currentUser['id'];
-    $this->modelFavouriteBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
-    $this->modelFavouritePosts = HamletCMS::model('\rbwebdesigns\HamletCMS\FavouriteBlogs\model\FavouritePosts');
+    $this->modelFavouriteBlogs = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
+    $this->modelFavouritePosts = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouritePosts');
   }
 
   public function addPostToFavourites()

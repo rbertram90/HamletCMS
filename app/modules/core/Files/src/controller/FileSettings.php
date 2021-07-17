@@ -1,8 +1,8 @@
 <?php
-namespace rbwebdesigns\HamletCMS\Files\controller;
+namespace HamletCMS\Files\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\ImageUpload;
 
 class FileSettings extends GenericController
@@ -12,7 +12,7 @@ class FileSettings extends GenericController
     {
         parent::__construct();
 
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
         $this->blog = HamletCMS::getActiveBlog();
 
         if (!$this->modelPermissions->userHasPermission('change_settings', $this->blog->id)) {

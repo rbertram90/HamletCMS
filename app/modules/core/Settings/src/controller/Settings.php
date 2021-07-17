@@ -1,10 +1,10 @@
 <?php
-namespace rbwebdesigns\HamletCMS\Settings\controller;
+namespace HamletCMS\Settings\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups;
-use rbwebdesigns\HamletCMS\Menu;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\Contributors\model\ContributorGroups;
+use HamletCMS\Menu;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONhelper;
 use rbwebdesigns\core\ImageUpload;
@@ -16,13 +16,13 @@ use rbwebdesigns\core\ImageUpload;
  */
 class Settings extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
+    /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
-    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
+    /** @var \HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    /** @var \HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
     /** @var \rbwebdesigns\core\Request */
@@ -38,10 +38,10 @@ class Settings extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
 
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();

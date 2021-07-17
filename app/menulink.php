@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 /**
  * This class provides a structure for menu items within HamletCMS
@@ -54,7 +54,7 @@ class MenuLink
             return false;
         }
 
-        $modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
         return $modelPermissions->userHasPermission($this->permissions);
     }
 

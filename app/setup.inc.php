@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 /**
  * app/setup.php

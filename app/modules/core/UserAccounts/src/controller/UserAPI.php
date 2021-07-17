@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\HamletCMS\UserAccounts\controller;
+namespace HamletCMS\UserAccounts\controller;
 
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 /**
  * Handles requests relating to user accounts.
@@ -13,7 +13,7 @@ use rbwebdesigns\HamletCMS\HamletCMS;
 class UserAPI extends GenericController
 {
     /**
-     * @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts
+     * @var \HamletCMS\UserAccounts\model\UserAccounts
      */
     protected $model;
     /**
@@ -21,7 +21,7 @@ class UserAPI extends GenericController
      */
     protected $request;
     /**
-     * @var \rbwebdesigns\HamletCMS\Response
+     * @var \HamletCMS\Response
      */
     protected $response;
     
@@ -30,7 +30,7 @@ class UserAPI extends GenericController
      */
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->model = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
     }

@@ -1,12 +1,12 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 class BlogPosts
 {
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
     }
 
     public function onGenerateMenu($args)
@@ -37,7 +37,7 @@ class BlogPosts
 
         $dbc->query("CREATE TABLE `posts` (
             `id` int(8) NOT NULL,
-            `class` varchar(255) NOT NULL DEFAULT '\\rbwebdesigns\\HamletCMS\\BlogPosts\\Post',
+            `class` varchar(255) NOT NULL DEFAULT '\\HamletCMS\\BlogPosts\\Post',
             `title` varchar(255) NOT NULL,
             `summary` text,
             `content` text NOT NULL,
@@ -110,7 +110,7 @@ class BlogPosts
      */
     public function dashboardCounts($args)
     {
-        $modelPostViews = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\PostViews');
+        $modelPostViews = HamletCMS::model('\HamletCMS\BlogPosts\model\PostViews');
 
         $args['counts']['posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
         $args['counts']['totalviews'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);

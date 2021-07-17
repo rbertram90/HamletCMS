@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 class BlogMenus
 {
@@ -59,8 +59,8 @@ class BlogMenus
             $createBlogTest = new BlogMenus\tests\CreateMenuTest();
             $createBlogTest->run();
 
-            /** @var \rbwebdesigns\HamletCMS\BlogMenus\model\Menus $model */
-            $model = HamletCMS::model('\\rbwebdesigns\\HamletCMS\\BlogMenus\\model\\Menus');
+            /** @var \HamletCMS\BlogMenus\model\Menus $model */
+            $model = HamletCMS::model('\\HamletCMS\\BlogMenus\\model\\Menus');
             $newMenu = $model->get('*', ['blog_id' => $args['blogID']], null, null, false);
 
             // Run next level of tests

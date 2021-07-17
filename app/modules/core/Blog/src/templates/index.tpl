@@ -1,7 +1,7 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('Your Blogs', 'book')}
+            {viewPageHeader('My Blogs', 'book')}
         </div>
     </div>
     <div class="one column row">
@@ -40,9 +40,7 @@
                 </td>
                 <td>
                     {foreach from=$blog->contributors() item=contributor name=contributors}
-                        
                         <a href="/cms/account/user/{$contributor->id}" class="user-link">
-                        {* Remove whitespace after name *}
                         {strip}
                             {if $contributor->id == $smarty.session.user}
                                 <span data-userid="{$contributor->id}">You</span>
@@ -54,7 +52,6 @@
                             {if !$smarty.foreach.contributors.last},{/if}
                         {/strip}
                         </a>
-                        
                     {/foreach}
 
                     <script>
@@ -86,7 +83,7 @@
                     </script>
                 </td>
                 <td>
-                    <a href="/blogs/{$blog->id}" class="ui teal icon button" target="_blank">
+                    <a href="{$blog->url()}" class="ui teal icon button" target="_blank">
                         <i class="home icon"></i>
                     </a>
                 </td>
@@ -100,7 +97,7 @@
 
 {* This user doesn't have any blogs *}
 {else}
-    <p class="ui message info">You're not contributing to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
+    <p class="ui message info">You do not own or contribute to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
 
 {/if}
         </div>

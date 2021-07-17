@@ -1,12 +1,12 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 class Contributors
 {
     public function __construct()
     {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
+        $this->model = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
     }
 
     public function onGenerateMenu($args)

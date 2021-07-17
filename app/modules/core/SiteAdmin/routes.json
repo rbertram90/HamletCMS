@@ -2,49 +2,49 @@
     {
         "key": "admin.modules",
         "path": "/cms/admin/modules",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "modules",
         "permissions": []
     },
     {
         "key": "admin.reloadcache",
         "path": "/cms/admin/reloadcache",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "reloadCache",
         "permissions": []
     },
     {
         "key": "admin.modulescan",
         "path": "/cms/admin/modulescan",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "newModuleScan",
         "permissions": []
     },
     {
         "key": "admin.dbupdate",
         "path": "/cms/admin/updatedatabase",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "databaseChecker",
         "permissions": []
     },
     {
         "key": "admin.installmodule",
         "path": "/cms/admin/installmodule/{MODULE_NAME}",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "installModule",
         "permissions": []
     },
     {
         "key": "admin.uninstallmodule",
         "path": "/cms/admin/uninstallmodule/{MODULE_NAME}",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "uninstallModule",
         "permissions": []
     },
     {
         "key": "admin.phpinfo",
         "path": "/cms/admin/php",
-        "controller": "\\rbwebdesigns\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
+        "controller": "\\HamletCMS\\SiteAdmin\\controller\\SiteAdmin",
         "action": "phpInfo",
         "permissions": []
     }

@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\JSONHelper;
 
@@ -34,7 +34,7 @@ class Module
 
         if (file_exists($classFileName)) {
             require_once $classFileName;
-            $className = '\\rbwebdesigns\\HamletCMS\\' . $this->key;
+            $className = '\\HamletCMS\\' . $this->key;
             $this->instance = new $className();
         }
     }

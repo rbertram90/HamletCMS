@@ -1,15 +1,15 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets\controller;
+namespace HamletCMS\Widgets\controller;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\HamletCMS\GenericController;
+use HamletCMS\GenericController;
 
 class WidgetsView extends GenericController
 {
     /**
-     * @var rbwebdesigns\HamletCMS\Blog;
+     * @var HamletCMS\Blog;
      */
     protected $blog;
 

@@ -3,28 +3,28 @@
     "key": "favourites.add.post",
     "path": "/blogs/{BLOG_ID}/favourite/add/post",
     "permissions": [],
-    "controller": "\\rbwebdesigns\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
     "action": "addPostToFavourites"
   },
   {
     "key": "favourites.remove.post",
     "path": "/blogs/{BLOG_ID}/favourite/add/post",
     "permissions": [],
-    "controller": "\\rbwebdesigns\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
     "action": "removePostFromFavourites"
   },
   {
     "key": "favourites.add.blog",
     "path": "/blogs/{BLOG_ID}/favourite/add",
     "permissions": [],
-    "controller": "\\rbwebdesigns\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
     "action": "addBlogToFavourites"
   },
   {
     "key": "favourites.remove.blog",
     "path": "/blogs/{BLOG_ID}/favourite/add",
     "permissions": [],
-    "controller": "\\rbwebdesigns\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
     "action": "removeBlogFromFavourites"
   }
 ]

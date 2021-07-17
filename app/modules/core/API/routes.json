@@ -3,28 +3,28 @@
         "key": "api.blogs.byletter",
         "path": "/api/blogs/byLetter",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\API\\controller\\Api",
+        "controller": "\\HamletCMS\\API\\controller\\Api",
         "action": "blogs"
     },
     {
         "key": "api.blogs.byCategory",
         "path": "/api/blogs/byCategory",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\API\\controller\\Api",
+        "controller": "\\HamletCMS\\API\\controller\\Api",
         "action": "blogs"
     },
     {
         "key": "api.contributors.owner",
         "path": "/api/contributors/owner",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\API\\controller\\Api",
+        "controller": "\\HamletCMS\\API\\controller\\Api",
         "action": "contributors"
     },
     {
         "key": "api.tags",
         "path": "/api/tags",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\API\\controller\\Api",
+        "controller": "\\HamletCMS\\API\\controller\\Api",
         "action": "tags"
     }
 ]

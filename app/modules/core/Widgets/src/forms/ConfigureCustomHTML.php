@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets\forms;
+namespace HamletCMS\Widgets\forms;
 
 use rbwebdesigns\core\Form;
 

@@ -1,7 +1,7 @@
 <?php
-namespace rbwebdesigns\HamletCMS\Blog\model;
+namespace HamletCMS\Blog\model;
 
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
@@ -28,7 +28,7 @@ class Blogs extends RBFactory
     {
         $this->tableName = TBL_BLOGS;
         $this->tblcontributors = TBL_CONTRIBUTORS;
-        $this->subClass = '\\rbwebdesigns\\HamletCMS\\Blog\\Blog';
+        $this->subClass = '\\HamletCMS\\Blog\\Blog';
         $this->fields = [
             'id'          => 'number',
             'name'        => 'string',
@@ -49,7 +49,7 @@ class Blogs extends RBFactory
      * Load blog instance using ID.
      * 
      * @param int $blogID  ID of Blog
-     * @return \rbwebdesigns\HamletCMS\Blog\Blog
+     * @return \HamletCMS\Blog\Blog
      */
     public function getBlogById($blogID)
     {

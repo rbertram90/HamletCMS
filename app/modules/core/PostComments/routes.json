@@ -3,49 +3,49 @@
         "key": "comments.manage",
         "path": "/cms/comments/manage/{BLOG_ID}",
         "permissions": ["administer_comments"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "manage"
     },
     {
         "key": "comments.approve",
         "path": "/cms/comments/approve/{COMMENT_ID}",
         "permissions": ["administer_comments"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "approve"
     },
     {
         "key": "comments.approveall",
         "path": "/cms/comments/approveall/{BLOG_ID}",
         "permissions": ["administer_comments"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "approveAll"
     },
     {
         "key": "comments.delete",
         "path": "/cms/comments/delete/{COMMENT_ID}",
         "permissions": ["administer_comments"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "delete"
     },
     {
         "key": "comments.deleteunapproved",
         "path": "/cms/comments/deleteunapproved/{BLOG_ID}",
         "permissions": ["administer_comments"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "deleteUnapproved"
     },
     {
         "key": "comments.add",
         "path": "/cms/comments/add",
         "permissions": [],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "add"
     },
     {
         "key": "settings.comments",
         "path": "/cms/settings/comments/{BLOG_ID}",
         "permissions": ["administer_comments", "change_settings"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\PostComments\\Controller\\Comments",
+        "controller": "\\HamletCMS\\PostComments\\Controller\\Comments",
         "action": "settings"
     }
 ]

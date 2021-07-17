@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use Athens\CSRF;
 use rbwebdesigns\core\JSONhelper;
@@ -109,7 +109,7 @@ use rbwebdesigns\core\JSONhelper;
             $classPath = SERVER_ROOT .'/app/modules/'. $subFolder. '/'. $key .'/'. $key .'.php';
             if (file_exists($classPath)) {
                 require_once $classPath;
-                $className = '\\rbwebdesigns\\HamletCMS\\'. $key;
+                $className = '\\HamletCMS\\'. $key;
                 $class = new $className();
                 if (method_exists($class, 'install')) {
                     $class->install();
@@ -134,7 +134,7 @@ use rbwebdesigns\core\JSONhelper;
 
         HamletCMS::runHook('onReloadCache', []);
 
-        // $adminController = new \rbwebdesigns\HamletCMS\SiteAdmin\controller\SiteAdmin();
+        // $adminController = new \HamletCMS\SiteAdmin\controller\SiteAdmin();
         // $adminController->reloadCache(false);
 
         // Create admin user
@@ -150,7 +150,7 @@ use rbwebdesigns\core\JSONhelper;
             'admin'           => 1
         ];
 
-        $modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
+        $modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
 
         // Misc folders
         if (!file_exists(SERVER_AVATAR_FOLDER)) {

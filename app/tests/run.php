@@ -1,7 +1,7 @@
 <?php
-    namespace rbwebdesigns\HamletCMS\tests;
+    namespace HamletCMS\tests;
 
-    use rbwebdesigns\HamletCMS\HamletCMS;
+    use HamletCMS\HamletCMS;
 
     // 0 = User ID
     if (!isset($argv[1]) || $argv[1] <= 0) {

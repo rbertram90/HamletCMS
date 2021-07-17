@@ -4,7 +4,7 @@
         "description": "Show the manage menus page",
         "path": "/cms/menus/manage/{BLOG_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "listMenus"
     },
     {
@@ -12,7 +12,7 @@
         "description": "Create a new menu",
         "path": "/cms/menus/create/{BLOG_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "createMenu"
     },
     {
@@ -20,7 +20,7 @@
         "description": "Edit the links in a menu",
         "path": "/cms/menus/edit/{BLOG_ID}/{MENU_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "editLinks"
     },
     {
@@ -28,7 +28,7 @@
         "description": "Add a link to a menu",
         "path": "/cms/menus/addlink/{BLOG_ID}/{MENU_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "createLink"
     },
     {
@@ -36,7 +36,7 @@
         "description": "Edit a link properties",
         "path": "/cms/menus/editlink/{BLOG_ID}/{LINK_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "editLink"
     },
     {
@@ -44,7 +44,7 @@
         "description": "Move a link 1 position higher in order",
         "path": "/cms/menus/movelinkup/{BLOG_ID}/{LINK_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "moveLinkUp"
     },
     {
@@ -52,7 +52,7 @@
         "description": "Move a link 1 position lower in order",
         "path": "/cms/menus/movelinkdown/{BLOG_ID}/{LINK_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "moveLinkDown"
     },
     {
@@ -60,7 +60,7 @@
         "description": "Delete a menu link",
         "path": "/cms/menus/deletelink/{BLOG_ID}/{LINK_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "deleteLink"
     },
     {
@@ -68,7 +68,7 @@
         "description": "Delete a menu",
         "path": "/cms/menus/delete/{BLOG_ID}/{MENU_ID}",
         "permissions": ["manage_menus"],
-        "controller": "\\rbwebdesigns\\HamletCMS\\BlogMenus\\controller\\Menus",
+        "controller": "\\HamletCMS\\BlogMenus\\controller\\Menus",
         "action": "deleteMenu"
     }
 ]

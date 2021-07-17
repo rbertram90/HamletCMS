@@ -4,7 +4,7 @@
         "name": "Menu",
         "description": "Dynamic menu",
         "version": 0.1,
-        "form": "rbwebdesigns\\HamletCMS\\BlogMenus\\forms\\ConfigureMenuWidget",
-        "class": "rbwebdesigns\\HamletCMS\\BlogMenus\\widgets\\MenuWidget"
+        "form": "HamletCMS\\BlogMenus\\forms\\ConfigureMenuWidget",
+        "class": "HamletCMS\\BlogMenus\\widgets\\MenuWidget"
     }
 ]

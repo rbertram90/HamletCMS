@@ -1,16 +1,16 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Widgets\widgets;
+namespace HamletCMS\Widgets\widgets;
 
-use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\Widgets\AbstractWidget;
+use HamletCMS\HamletCMS;
 
 class AlsoTagged extends AbstractWidget
 {
 
     public function render() {
         if ($postID = $this->request->get('postID')) {
-            $postsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+            $postsModel = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
             $post = $postsModel->getPostById($postID, HamletCMS::$blogID);
             $posts = [];
 

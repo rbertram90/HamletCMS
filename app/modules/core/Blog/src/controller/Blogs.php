@@ -1,11 +1,11 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Blog\controller;
+namespace HamletCMS\Blog\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONhelper;
-use rbwebdesigns\HamletCMS\Menu;
+use HamletCMS\Menu;
 
 /**
  * controllers/Blogs
@@ -17,25 +17,25 @@ use rbwebdesigns\HamletCMS\Menu;
  */
 class Blogs extends GenericController
 {
-    /** @var \rbwebdesigns\HamletCMS\Blog\model\Blogs */
+    /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
 
-    /** @var \rbwebdesigns\HamletCMS\BlogPosts\model\Posts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
 
-    /** @var \rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts */
+    /** @var \HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Contributors */
+    /** @var \HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\Permissions */
+    /** @var \HamletCMS\Contributors\model\Permissions */
     protected $modelPermissions;
 
-    /** @var \rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups */
+    /** @var \HamletCMS\Contributors\model\ContributorGroups */
     protected $modelContributorGroups;
 
-    /** @var \rbwebdesigns\HamletCMS\EventLogger\model\EventLogger */
+    /** @var \HamletCMS\EventLogger\model\EventLogger */
     protected $modelActivityLog;
 
     /**
@@ -43,13 +43,13 @@ class Blogs extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
-        $this->modelContributorGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->modelActivityLog = HamletCMS::model('\rbwebdesigns\HamletCMS\EventLogger\model\EventLogger');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+        $this->modelContributorGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelActivityLog = HamletCMS::model('\HamletCMS\EventLogger\model\EventLogger');
 
         parent::__construct();
     }

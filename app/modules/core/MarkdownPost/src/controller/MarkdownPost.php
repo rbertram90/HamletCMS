@@ -1,8 +1,8 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\MarkdownPost\controller;
+namespace HamletCMS\MarkdownPost\controller;
 
-use rbwebdesigns\HamletCMS\BlogPosts\controller\AbstractPostType;
+use HamletCMS\BlogPosts\controller\AbstractPostType;
 
 class MarkdownPost extends AbstractPostType
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogPosts\widgets;
+namespace HamletCMS\BlogPosts\widgets;
 
-use rbwebdesigns\HamletCMS\Widgets\AbstractWidget;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\Widgets\AbstractWidget;
+use HamletCMS\HamletCMS;
 
 class TagList extends AbstractWidget
 {
@@ -17,7 +17,7 @@ class TagList extends AbstractWidget
 
     public function render()
     {
-        $model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+        $model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
 
         $this->response->setVar('tags', $model->countAllTagsByBlog($this->blog->id, $this->sort));
         $this->response->write('widgets/tagsList.tpl', 'BlogPosts');

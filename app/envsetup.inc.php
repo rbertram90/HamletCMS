@@ -1,5 +1,5 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\Database;
 use rbwebdesigns\core\JSONhelper;
@@ -52,14 +52,14 @@ use rbwebdesigns\core\JSONhelper;
 
     spl_autoload_register(function ($class) {
         $split = explode('\\', $class);
-        if (count($split) < 4) error_log('Unable to load class '. $class);
-        $type = strtolower($split[3]);
-        $subDirectory = file_exists(SERVER_MODULES_PATH ."/core/{$split[2]}") ? 'core' : 'addon';
+        if (count($split) < 3) error_log('Unable to load class '. $class);
+        $type = strtolower($split[2]);
+        $subDirectory = file_exists(SERVER_MODULES_PATH ."/core/{$split[1]}") ? 'core' : 'addon';
         if (in_array($type, ['controller', 'model', 'widgets', 'forms', 'tests'])) {
-            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[2]}/src/{$type}/{$split[4]}.php";
+            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[1]}/src/{$type}/{$split[3]}.php";
         }
         else {
-            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[2]}/src/{$split[3]}.php";
+            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[1]}/src/{$split[2]}.php";
         }
     });
 
@@ -116,7 +116,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
 
     // Import all modules
     // $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
-    $moduleModel = HamletCMS::model('\rbwebdesigns\HamletCMS\SiteAdmin\model\Modules');
+    $moduleModel = HamletCMS::model('\HamletCMS\SiteAdmin\model\Modules');
     $modules = $moduleModel->getList();
 
     foreach ($modules as $module) {

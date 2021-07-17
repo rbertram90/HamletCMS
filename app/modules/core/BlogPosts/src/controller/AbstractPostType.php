@@ -1,9 +1,9 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\BlogPosts\controller;
+namespace HamletCMS\BlogPosts\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\GenericController;
+use HamletCMS\HamletCMS;
 
 class AbstractPostType extends GenericController
 {
@@ -12,9 +12,9 @@ class AbstractPostType extends GenericController
     protected $modelBlogs;
 
     public function __construct() {
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
 
         parent::__construct();
     }

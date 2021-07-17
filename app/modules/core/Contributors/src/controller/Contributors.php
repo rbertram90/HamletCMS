@@ -1,11 +1,11 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\Contributors\controller;
+namespace HamletCMS\Contributors\controller;
 
-use rbwebdesigns\HamletCMS\GenericController;
+use HamletCMS\GenericController;
 use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\HamletCMS\HamletCMS;
+use HamletCMS\HamletCMS;
 
 /**
  * /app/controller/contributors_controller.inc.php
@@ -25,12 +25,12 @@ class Contributors extends GenericController
     
     public function __construct()
     {
-        $this->modelUsers =  HamletCMS::model('\rbwebdesigns\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->modelBlogs = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
-        $this->modelPosts = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
-        $this->model = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Contributors');
-        $this->modelGroups = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\ContributorGroups');
-        $this->modelPermissions = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
+        $this->modelUsers =  HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->model = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
         
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();
@@ -270,7 +270,7 @@ class Contributors extends GenericController
         }
 
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('permissions', \rbwebdesigns\HamletCMS\Contributors\model\Permissions::getList());
+        $this->response->setVar('permissions', \HamletCMS\Contributors\model\Permissions::getList());
         $this->response->setTitle('Add contributors group');
         $this->response->write('creategroup.tpl', 'Contributors');
     }

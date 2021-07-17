@@ -1,6 +1,6 @@
 <?php
 
-namespace rbwebdesigns\HamletCMS\UserAccounts;
+namespace HamletCMS\UserAccounts;
 
 class User
 {

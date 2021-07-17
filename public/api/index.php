@@ -1,9 +1,9 @@
 <?php
-namespace rbwebdesigns\HamletCMS;
+namespace HamletCMS;
 
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\Response;
-use rbwebdesigns\HamletCMS\API\controller\Api;
+use HamletCMS\API\controller\Api;
 
 /****************************************************************
   HamletCMS API Start Point
@@ -41,8 +41,8 @@ use rbwebdesigns\HamletCMS\API\controller\Api;
         $errored = true;
     }
 
-    $permissionsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Contributors\model\Permissions');
-    $blogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+    $permissionsModel = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+    $blogModel = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
 
     $blogID = $request->getInt('blogID', false);
 
