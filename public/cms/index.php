@@ -1,7 +1,8 @@
 <?php
-namespace HamletCMS;
 
 use Athens\CSRF;
+use HamletCMS\HamletCMS;
+use HamletCMS\Menu;
 
 /****************************************************************
   CMS Entry point
@@ -9,7 +10,6 @@ use Athens\CSRF;
 
     // Include cms setup script
     require_once __DIR__ . '/../../app/setup.inc.php';
-
     
 /****************************************************************
   Route request
