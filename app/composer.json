@@ -37,5 +37,8 @@
         "modules/addon/{$name}/": ["type:hamlet-cms-module"],
         "templates/addon/{$name}": ["type:hamlet-cms-template"]
     }
+  },
+  "autoload": {
+    "psr-4": { "HamletCMS\\": ["modules/core/", "modules/addon/"] }
   }
 }

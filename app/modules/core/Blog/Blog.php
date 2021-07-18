@@ -1,88 +1,148 @@
 <?php
 
-namespace HamletCMS;
+namespace HamletCMS\Blog;
 
-use HamletCMS\Link;
+use HamletCMS\HamletCMS;
+use rbwebdesigns\core\JSONHelper;
 
 class Blog
 {
+    public $id;
+    public $name;
+    public $description;
+    public $domain;
+    public $user_id;
+    public $anon_search;
+    public $visibility;
+    public $category;
+    public $logo;
+    public $icon;
 
-    public function onGenerateMenu($options)
+    protected $contributors = null;
+    protected $contributorsFactory = null;
+    protected $posts = null;
+    protected $postsFactory = null;
+
+    /**
+     * Blog class constructor
+     */
+    public function __construct()
     {
-        if ($options['id'] == 'cms_main_actions') {
-            $newLinks = [];
-            $currentLinks = $options['menu']->getLinks();
-            foreach ($currentLinks as $link) {
-                // Check if the BLOG_ID token has been replaced - if not
-                // remove the link
-                if ($link->url) {
-                    if (strpos($link->url, '{BLOG_ID}') === false) {
-                        $newLinks[] = $link;
-                    }
-                }
-                elseif (!HamletCMS::$blogID && strtolower($link->text) == 'blog actions') {
-                    // Yes this is not clean - difficult scenario...
-                    // don't want to show the "blog actions" label when no blog is selected
-                    // @todo maybe add a new key to menu link for dependency?
-                }
-                else {
-                    $newLinks[] = $link;
-                }
-            }
-            if ($blog = HamletCMS::getActiveBlog()) {
-                $viewBlogLink = new MenuLink();
-                $viewBlogLink->text = 'View blog';
-                $viewBlogLink->url = $blog->url();
-                $viewBlogLink->icon = 'book';
-                $newLinks[] = $viewBlogLink;
-            }
-            $options['menu']->setLinks($newLinks);
-        }
+        $this->contributorsFactory = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->postsFactory = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
     }
 
     /**
-     * Run database setup
+     * Get the url path to append to blog resources (stylesheets, scripts)
+     * 
+     * @return string
      */
-    public function install()
+    public function relativePath()
     {
-        $dbc = HamletCMS::databaseConnection();
-
-        $dbc->query("CREATE TABLE `blogs` (
-            `id` bigint(10) NOT NULL,
-            `name` varchar(150) NOT NULL,
-            `domain` varchar(150),
-            `description` text,
-            `icon` varchar(25),
-            `logo` varchar(25),
-            `user_id` int(8) NOT NULL,
-            `anon_search` tinyint(1) NOT NULL DEFAULT '1',
-            `visibility` enum('anon','private','members','friends') NOT NULL DEFAULT 'anon',
-            `category` varchar(50) NOT NULL DEFAULT 'general'
-          ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-
-        $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
+        return strlen($this->domain) ? "" : "/blogs/{$this->id}";
     }
 
-    public function runUnitTests($args)
+    /**
+     * Get the url to the front page of the blog
+     * 
+     * @return string
+     */
+    public function url()
     {
-        $context = $args['context'];
+        return strlen($this->domain) ? $this->domain : "/blogs/{$this->id}";
+    }
 
-        if ($context === 'root') {
+    /**
+     * Get the path to blogdata folder
+     */
+    public function resourcePath()
+    {
+        return strlen($this->domain) ? "" : "/blogdata/{$this->id}";
+    }
 
-            $createBlogTest = new blog\tests\CreateBlogTest();
-            $createBlogTest->run();
-        
-            // Run every other test!
-            HamletCMS::runHook('runUnitTests', ['context' => 'blog', 'blogID' => $createBlogTest->blogID]);
+    /**
+     * Get all the users that can contribute to this blog
+     * 
+     * @return \HamletCMS\UserAccounts\User[]
+     */
+    public function contributors()
+    {
+        if ($this->contributors) {
+            return $this->contributors;
+        }
+        return $this->contributorsFactory->getBlogContributors($this->id);
+    }
+
+    /**
+     * Is user a contributor to the blog
+     * 
+     * @param int $userID
+     */
+    public function isContributor($userID = 0)
+    {
+        if ($userID == 0) {
+            $userID = HamletCMS::session()->currentUser['id'];
+        }
+        return $this->contributorsFactory->isBlogContributor($userID, $this->id);
+    }
+
+    /**
+     * Get all the posts on this blog
+     * 
+     * @return \HamletCMS\BlogPosts\Post[]
+     */
+    public function posts()
+    {
+        if ($this->posts) {
+            return $this->posts;
+        }
+        return $this->postsFactory->getPostsByBlog($this->id);
+    }
+
+    /**
+     * Get the latest post on the blog
+     * 
+     * @return \HamletCMS\BlogPosts\Post|bool
+     */
+    public function latestPost()
+    {
+        $posts = $this->posts();
+        return count($posts) > 0 ? $posts[0] : false;
+    }
+
+    /**
+     * Get the config from JSON file
+     * 
+     * @return array
+     */
+    public function config()
+    {
+        $serverConfigPath = SERVER_PUBLIC_PATH ."/blogdata/{$this->id}/config.json";
+
+        if ($this->config) {
+            return $this->config;
+        }
+        elseif (file_exists($serverConfigPath)) {
+            $this->config = JSONhelper::JSONFileToArray($serverConfigPath);
+            return $this->config;
+        }
+        return null;
+    }
+    
+    /**
+     * Change the config
+     * 
+     * @param mixed[] $newConfig
+     */
+    public function updateConfig($newConfig)
+    {
+        if ($config = $this->config()) {
+            $newConfig = array_replace_recursive($config, $newConfig);
         }
 
-        // Required tests
-        // Overview?
-        // Delete Blog - note - this needs to run after everything else...
-
-        // $test = new \HamletCMS\Blog\tests\();
-        // $test->blogID = $blogID;
-        // $test->run();
+        $json = JSONhelper::arrayToJSON($newConfig);
+        $save = file_put_contents(SERVER_PUBLIC_PATH . "/blogdata/{$this->id}/config.json", $json);
+        return $save !== false;
     }
 
 }

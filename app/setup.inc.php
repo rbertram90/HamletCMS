@@ -1,6 +1,6 @@
 <?php
 
-namespace HamletCMS;
+use HamletCMS\HamletCMS;
 
 /**
  * app/setup.php

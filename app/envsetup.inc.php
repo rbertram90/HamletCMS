@@ -1,8 +1,7 @@
 <?php
-namespace HamletCMS;
 
-use rbwebdesigns\core\Database;
 use rbwebdesigns\core\JSONhelper;
+use HamletCMS\HamletCMS;
 
     // Load JSON config file
     // Note: cannot use core function to do this as hasn't been loaded
@@ -49,7 +48,7 @@ use rbwebdesigns\core\JSONhelper;
 /****************************************************************
   Includes
 ****************************************************************/
-
+/*
     spl_autoload_register(function ($class) {
         $split = explode('\\', $class);
         if (count($split) < 3) error_log('Unable to load class '. $class);
@@ -62,14 +61,14 @@ use rbwebdesigns\core\JSONhelper;
             include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[1]}/src/{$split[2]}.php";
         }
     });
-
+*/
     // Include core classes
-    require_once SERVER_ROOT .'/app/response.php';
-    require_once SERVER_ROOT .'/app/menu.php';
-    require_once SERVER_ROOT .'/app/menulink.php';
-    require_once SERVER_ROOT .'/app/module.php';
-    require_once SERVER_ROOT .'/app/cms.php';
-    require_once SERVER_ROOT .'/app/abstractcontroller.php';
+    // require_once SERVER_ROOT .'/app/response.php';
+    // require_once SERVER_ROOT .'/app/menu.php';
+    // require_once SERVER_ROOT .'/app/menulink.php';
+    // require_once SERVER_ROOT .'/app/module.php';
+    // require_once SERVER_ROOT .'/app/cms.php';
+    // require_once SERVER_ROOT .'/app/abstractcontroller.php';
 
     // Smarty
     require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
@@ -116,7 +115,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
 
     // Import all modules
     // $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
-    $moduleModel = HamletCMS::model('\HamletCMS\SiteAdmin\model\Modules');
+    $moduleModel = HamletCMS::model('\\HamletCMS\\SiteAdmin\\model\\Modules');
     $modules = $moduleModel->getList();
 
     foreach ($modules as $module) {
