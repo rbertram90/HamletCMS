@@ -32,7 +32,7 @@ class BlogMenuItem {
 
     public function menu() {
         if (is_null($this->menu)) {
-            $menusModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\Menus');
+            $menusModel = HamletCMS::model('\HamletCMS\BlogMenus\model\Menus');
             $this->menu = $menusModel->getMenuById($this->menu_id);
         }
         return $this->menu;
@@ -44,14 +44,14 @@ class BlogMenuItem {
             $this->url = '';
             switch ($this->type) {
                 case 'blog':
-                    $blogModel = HamletCMS::model('\rbwebdesigns\HamletCMS\Blog\model\Blogs');
+                    $blogModel = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
                     if ($blog = $blogModel->getBlogById($this->link_target)) {
                         $this->url = $blog->relativePath();
                     }
                     else $this->url = '#';
                     break;
                 case 'post':
-                    $postModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogPosts\model\Posts');
+                    $postModel = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
                     if ($post = $postModel->getPostById($this->link_target)) {
                         $this->url = $post->relativePath();
                     }

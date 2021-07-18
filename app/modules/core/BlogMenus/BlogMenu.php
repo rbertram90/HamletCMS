@@ -28,7 +28,7 @@ class BlogMenu {
     public function items()
     {
         if (is_null($this->items)) {
-            $itemsModel = HamletCMS::model('\rbwebdesigns\HamletCMS\BlogMenus\model\MenuItems');
+            $itemsModel = HamletCMS::model('\HamletCMS\BlogMenus\model\MenuItems');
             $this->items = $itemsModel->getByMenu($this);
         }
         return $this->items;
