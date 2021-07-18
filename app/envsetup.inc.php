@@ -48,29 +48,8 @@ use HamletCMS\HamletCMS;
 /****************************************************************
   Includes
 ****************************************************************/
-/*
-    spl_autoload_register(function ($class) {
-        $split = explode('\\', $class);
-        if (count($split) < 3) error_log('Unable to load class '. $class);
-        $type = strtolower($split[2]);
-        $subDirectory = file_exists(SERVER_MODULES_PATH ."/core/{$split[1]}") ? 'core' : 'addon';
-        if (in_array($type, ['controller', 'model', 'widgets', 'forms', 'tests'])) {
-            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[1]}/src/{$type}/{$split[3]}.php";
-        }
-        else {
-            include SERVER_MODULES_PATH ."/{$subDirectory}/{$split[1]}/src/{$split[2]}.php";
-        }
-    });
-*/
-    // Include core classes
-    // require_once SERVER_ROOT .'/app/response.php';
-    // require_once SERVER_ROOT .'/app/menu.php';
-    // require_once SERVER_ROOT .'/app/menulink.php';
-    // require_once SERVER_ROOT .'/app/module.php';
-    // require_once SERVER_ROOT .'/app/cms.php';
-    // require_once SERVER_ROOT .'/app/abstractcontroller.php';
 
-    // Smarty
+    // Smarty - do we still need this?!
     require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
         
     // Import view functions
