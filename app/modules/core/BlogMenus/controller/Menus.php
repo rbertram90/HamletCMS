@@ -65,7 +65,7 @@ class Menus extends GenericController {
             $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Menu deleted', 'success');
         }
         else {
-            $this->response->redirect($errorRedirectUrl, 'Unable to delete link', 'error');
+            $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Unable to delete link', 'error');
         }
     }
 
