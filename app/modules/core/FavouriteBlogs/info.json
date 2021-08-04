@@ -4,5 +4,5 @@
   "version": "0.0.1",
   "author": "Ricky",
   "locked": 0,
-  "dependencies": []
+  "dependencies": ["Blog", "BlogPosts"]
 }

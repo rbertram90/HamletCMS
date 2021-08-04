@@ -261,6 +261,7 @@ class HamletCMS
         if (self::$blogID) {
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
+                /** @var \HamletCMS\Contributors\model\Permissions $modelPermissions */
                 $modelPermissions = self::model('\HamletCMS\Contributors\model\Permissions');
                 $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;

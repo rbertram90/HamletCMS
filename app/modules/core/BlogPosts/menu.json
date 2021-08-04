@@ -6,7 +6,7 @@
         "url": "/cms/posts/manage/{BLOG_ID}",
         "icon": "copy outline",
         "text": "Posts",
-        "weight": 5
+        "weight": 7
     },
     {
         "menu": "settings",

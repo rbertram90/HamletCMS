@@ -64,6 +64,8 @@ class Permissions extends RBFactory
     public function userHasPermission($requiredPermissions, $blogID = 0)
     {
         if (gettype($requiredPermissions) == 'string') $requiredPermissions = [$requiredPermissions];
+        if (count($requiredPermissions) == 0) return true;
+
         if ($blogID == 0) $blogID = HamletCMS::$blogID;
         if (!$groupID = $this->getUserGroup($blogID)) return false;
         
@@ -72,6 +74,7 @@ class Permissions extends RBFactory
         // Override for all permissions
         if ($group->super == 1) return true;
 
+        $userID = HamletCMS::session()->currentUser['id'];
         $userPermissions = JSONHelper::JSONtoArray($group->data);
         $userPermissions['is_contributor'] = $this->modelContributors->isBlogContributor($userID, $blogID);
 

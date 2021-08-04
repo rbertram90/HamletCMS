@@ -103,16 +103,6 @@ CSRF::init();
     $response->setVar('header_content', $page_controller->generateHeader());
     $response->setVar('footer_content', $page_controller->generateFooter());
 
-    // Get side menu items
-    // @todo Pass current post through
-    $sideMenu = new Menu('blog_actions');
-    HamletCMS::runHook('onGenerateMenu', [
-      'id' => 'blog_actions',
-      'menu' => &$sideMenu,
-      'blog' => $blog
-    ]);
-    $response->setVar('blog_actions_menu', $sideMenu);
-
     $templateConfig = $page_controller->getTemplateConfig();
     $response->setVar('template_config', $templateConfig);
 
@@ -159,6 +149,19 @@ CSRF::init();
                 break;
         }
     }
+
+    // Get side menu items
+    $sideMenu = new Menu('blog_actions');
+    $params = [
+        'id' => 'blog_actions',
+        'menu' => &$sideMenu,
+        'blog' => $blog
+    ];
+    if ($post = $response->getVar('post')) {
+        $params['post'] = $post;
+    }
+    HamletCMS::runHook('onGenerateMenu', $params);
+    $response->setVar('blog_actions_menu', $sideMenu);
 
     $response->setBody(ob_get_contents());
 

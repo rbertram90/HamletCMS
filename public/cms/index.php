@@ -96,7 +96,7 @@ use HamletCMS\Menu;
     // Add default stylesheet(s)
     $response->addStylesheet('/css/semantic.css');
     // $this->addStylesheet('/resources/css/core');
-    $response->addStylesheet('/resources/css/header.css');
+    // $response->addStylesheet('/resources/css/header.css');
     // $this->addStylesheet('/resources/css/forms');
     $response->addStylesheet('/css/blogs_stylesheet.css');
     $response->addStylesheet('/css/messages.css');

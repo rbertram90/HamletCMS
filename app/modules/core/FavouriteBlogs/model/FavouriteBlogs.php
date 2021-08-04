@@ -24,6 +24,7 @@ class FavouriteBlogs extends RBFactory
             'user_id' => 'number',
             'blog_id' => 'number'
         ];
+        $this->subClass = '\\HamletCMS\\FavouriteBlogs\\FavouriteBlog';
     }
 
     /**
@@ -86,10 +87,12 @@ class FavouriteBlogs extends RBFactory
     
     /**
      * Get all the favourite blogs for a user
+     * 
+     * @return \HamletCMS\FavouriteBlogs\FavouriteBlog[]
      */
     public function getAllFavourites($userID)
     {
-        return $this->db->selectMultipleRows($this->tableName, '*', [
+        return $this->db->selectMultipleRows($this->subClass, $this->tableName, '*', [
             'user_id' => $userID
         ]);
     }

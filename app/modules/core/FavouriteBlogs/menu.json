@@ -1,0 +1,10 @@
+[
+    {
+        "menu": "cms_main_actions",
+        "type": "route",
+        "route": "favourites.view",
+        "icon": "heart outline",
+        "text": "Favourites",
+        "weight": 2
+    }
+]

@@ -11,7 +11,7 @@
         "menu": "cms_main_actions",
         "type": "text",
         "text": "Blog actions",
-        "weight": 2
+        "weight": 5
     },
     {
         "menu": "cms_main_actions",
@@ -19,6 +19,6 @@
         "route": "blog.overview",
         "icon": "chart bar",
         "text": "Dashboard",
-        "weight": 3
+        "weight": 6
     }
 ]

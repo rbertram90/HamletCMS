@@ -605,6 +605,7 @@ class BlogContent extends GenericController
             }
     
             $post = $this->modelPosts->getPostByURL($postUrl, $this->blogID);
+            $this->response->setVar('post', $post);
         }
         
         // Past this point we are viewing single post
