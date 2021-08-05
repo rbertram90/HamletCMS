@@ -34,7 +34,6 @@
                                         var ace_editor = ace.edit("ace_edit_view");
                                         ace_editor.setTheme("ace/theme/textmate");
                                         ace_editor.session.setMode("ace/mode/smarty");
-                                        $(".ace_editor").height('50vh');
                                         var textarea = $('textarea[name="fld_post_template"]');
                                         ace_editor.getSession().on("change", function () {
                                             textarea.val(ace_editor.getSession().getValue());
@@ -50,13 +49,12 @@
                                     <textarea id="ace_edit_view_card" name="ace_edit_view_card" rows="20" style="font-family: monospace;">{$cardTemplate}</textarea>
                                     <textarea name="fld_card_template" style="display: none;">{$cardTemplate}</textarea>
                                     <script>
-                                        var ace_editor = ace.edit("ace_edit_view_card");
-                                        ace_editor.setTheme("ace/theme/textmate");
-                                        ace_editor.session.setMode("ace/mode/smarty");
-                                        $(".ace_editor").height('50vh');
-                                        var textarea = $('textarea[name="fld_card_template"]');
-                                        ace_editor.getSession().on("change", function () {
-                                            textarea.val(ace_editor.getSession().getValue());
+                                        var ace_editor_card = ace.edit("ace_edit_view_card");
+                                        ace_editor_card.setTheme("ace/theme/textmate");
+                                        ace_editor_card.session.setMode("ace/mode/smarty");
+                                        var textarea_card = $('textarea[name="fld_card_template"]');
+                                        ace_editor_card.getSession().on("change", function () {
+                                            textarea_card.val(ace_editor_card.getSession().getValue());
                                         });
                                     </script>
                                 </div>

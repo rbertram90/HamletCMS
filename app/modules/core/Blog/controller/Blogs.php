@@ -188,7 +188,7 @@ class Blogs extends GenericController
             return;
         }
 
-        $this->response->redirect('/cms/blog/overview/'. $newblogkey, 'Blog created', 'Success');
+        $this->response->redirect('/cms/blog/overview/'. $newblogkey, 'Blog created', 'success');
     }
 
     /**
@@ -232,7 +232,7 @@ class Blogs extends GenericController
         try {
             $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
         }
-        catch (InvalidArgumentException $e) {
+        catch (\InvalidArgumentException $e) {
             // It doesn't really matter if the files still
             // exists in the file system - would be nice to notify
             // the system administrator though...
@@ -251,7 +251,7 @@ class Blogs extends GenericController
     protected function deleteDir($dirPath)
     {
         if (!is_dir($dirPath)) {
-            throw new InvalidArgumentException("$dirPath must be a directory");
+            throw new \InvalidArgumentException("$dirPath must be a directory");
         }
         if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
             $dirPath .= '/';

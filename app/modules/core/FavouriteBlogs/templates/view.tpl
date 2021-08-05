@@ -66,7 +66,7 @@
                             <p></p>
                         </div>
                         <div class="extra">
-                            {$post->author()->name} {$post->author()->surname}, {$post->timestamp|date_format}
+                            {$post->blog()->name}, written by {$post->author()->name} {$post->author()->surname} on {$post->timestamp|date_format}
                         </div>
                     </div>
                 </div>
