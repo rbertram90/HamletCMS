@@ -22,5 +22,13 @@
         "icon": "sign-out",
         "text": "Log out",
         "weight": 56
+    },
+    {
+        "menu": "cms_admin_actions",
+        "type": "route",
+        "route": "users.admin",
+        "weight": 20,
+        "text": "All user account",
+        "icon": "users"
     }
 ]

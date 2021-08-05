@@ -75,5 +75,12 @@
         "permissions": [],
         "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAPI",
         "action": "get"
+    },
+    {
+        "key": "users.admin",
+        "path": "/cms/users/admin",
+        "permissions": [],
+        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "action": "usersAdmin"
     }
 ]

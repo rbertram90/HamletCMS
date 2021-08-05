@@ -117,4 +117,11 @@ class UserAccounts extends RBFactory
         return $this->update(['id' => $user['id']], $fields);
     }
     
+    /**
+     * Get all users
+     */
+    public function getAll($order = '') {
+        return $this->db->selectAllRows($this->subClass, $this->tableName, '*', $order);
+    }
+
 }

@@ -440,4 +440,15 @@ class UserAccounts extends GenericController
         $this->response->write('usercard.tpl', 'UserAccounts');
     }
     
+    /**
+     * GET /cms/users/admin
+     */
+    public function usersAdmin()
+    {
+        $sort = $this->request->getString('sort', '');
+        $this->response->setTitle('User accounts login');
+        $this->response->setVar('users', $this->model->getAll($sort));
+        $this->response->write('admintable.tpl', 'UserAccounts');
+    }
+
 }
