@@ -19,6 +19,8 @@ class Blog
     public $icon;
 
     protected $contributors = null;
+
+    /** @var \HamletCMS\Contributors\model\Contributors */
     protected $contributorsFactory = null;
     protected $posts = null;
     protected $postsFactory = null;
@@ -83,6 +85,10 @@ class Blog
         if ($userID == 0) {
             $userID = HamletCMS::session()->currentUser['id'];
         }
+        if (!$userID) {
+            return false;
+        }
+
         return $this->contributorsFactory->isBlogContributor($userID, $this->id);
     }
 

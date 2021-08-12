@@ -20,6 +20,18 @@ class ConfigureMenuWidget extends Form
             "attributes" => [
                 "id" => "widget[menu]"
             ]
+        ],
+        "widget[orientation]" => [
+            "type" => "dropdown",
+            "label" => "Orientation",
+            "options" => [
+                "" => "Horizontal",
+                "vertical fluid" => "Vertical",
+            ],
+            "value" => "",
+            "attributes" => [
+                "id" => "widget[orientation]"
+            ]
         ]
     ];
 

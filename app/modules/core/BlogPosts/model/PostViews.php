@@ -15,7 +15,8 @@ class PostViews extends RBFactory
         $this->fields = [
             'postid',
             'userip',
-            'userviews'
+            'userviews',
+            'last_viewed'
         ];
 
         parent::__construct($modelManager);

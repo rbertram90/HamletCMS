@@ -59,7 +59,8 @@ class Module
         $dbc->query("CREATE TABLE `postviews` (
             `postid` int(8) NOT NULL,
             `userip` varchar(20) NOT NULL,
-            `userviews` smallint(11) NOT NULL
+            `userviews` smallint(11) NOT NULL,
+            `last_viewed` datetime NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("CREATE TABLE `postautosaves` (

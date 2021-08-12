@@ -181,9 +181,9 @@ function runConfigureWidgetForm(buttonElement) {
         var currentValues = fieldData.length > 0 ? JSON.parse(fieldData) : [];
         
         for(var item in currentValues) {
-            if (currentValues[item].length > 0) {
-                $('#editWidgetPopup .content form #widget\\[' + item + '\\]').val(currentValues[item]);
-            }
+            console.log('#editWidgetPopup .content form #widget\\[' + item + '\\] = ' + currentValues[item]);
+
+            $('#editWidgetPopup .content form #widget\\[' + item + '\\]').val(currentValues[item]);
         }
     });
     

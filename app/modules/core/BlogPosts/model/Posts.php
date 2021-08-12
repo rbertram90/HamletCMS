@@ -662,8 +662,9 @@ class Posts extends RBFactory
      * @param $userip - the user's ip
      */
     public function incrementUserView($postid, $userip)
-    {        
-        $sql = "UPDATE ".TBL_POST_VIEWS." SET userviews=userviews+1 WHERE postid='$postid' AND userip='$userip'";
+    {
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE ".TBL_POST_VIEWS." SET userviews=userviews+1,last_viewed='$now' WHERE postid='$postid' AND userip='$userip'";
         $this->db->query($sql);
     }
     
@@ -677,7 +678,8 @@ class Posts extends RBFactory
         $this->db->insertRow(TBL_POST_VIEWS, [
             'postid'=> $postid,
             'userip' => $userip,
-            'userviews' => 1
+            'userviews' => 1,
+            'last_viewed' => date('Y-m-d H:i:s')
         ]);
     }
     
@@ -694,7 +696,7 @@ class Posts extends RBFactory
     {
         if (is_null($startDate)) {
             // Default to 1 week ago
-            $date1 = new \DateTime('2000-01-20');
+            $date1 = new \DateTime();
             $date1->sub(new \DateInterval('P1W'));
             $startDate = $date1->format('Y-m-d H:i:s');
         }
@@ -704,16 +706,20 @@ class Posts extends RBFactory
             $endDate = $date2->format('Y-m-d H:i:s');
         }
 
-        $sql = "SELECT tp.class as classType, tp.*, count(*) as userviewcount
-            FROM {$this->tblviews} as tv
-            LEFT JOIN {$this->tableName} AS tp ON tv.postid = tp.id
-            WHERE postid IN (SELECT id FROM {$this->tableName} WHERE blog_id='{$blogID}')
-            AND last_viewed < '{$endDate}'
-            AND last_viewed > '{$startDate}'
-            GROUP BY postid
-            ORDER BY userviewcount DESC";
+        $subquery = $this->queryBuilder->select($this->tableName)
+            ->fields(['id'])
+            ->condition('blog_id', $blogID);
 
-        $statement = $this->db->query($sql);
+        $statement = $this->queryBuilder->select($this->tblviews, 'pv')
+            ->leftJoin($this->tableName, 'p', 'p.id = pv.postid')
+            ->fields(['p.class', 'p.*', 'count(*) AS userviewcount'])
+            ->condition('postid', $subquery, 'IN')
+            ->condition('pv.last_viewed', $endDate, '<=')
+            ->condition('pv.last_viewed', $startDate, '>')
+            ->groupBy('pv.postid')
+            ->orderBy('userviewcount', 'DESC')
+            ->execute();
+
         return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
 

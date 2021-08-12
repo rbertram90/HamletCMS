@@ -870,12 +870,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rbertram90/core.git",
-                "reference": "1ca16bbb2cb6f6af1ac43335579e34ad73233fb0"
+                "reference": "a6f9b7d4d52b63c12aac7499ae9ae9f25a98bca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rbertram90/core/zipball/1ca16bbb2cb6f6af1ac43335579e34ad73233fb0",
-                "reference": "1ca16bbb2cb6f6af1ac43335579e34ad73233fb0",
+                "url": "https://api.github.com/repos/rbertram90/core/zipball/a6f9b7d4d52b63c12aac7499ae9ae9f25a98bca0",
+                "reference": "a6f9b7d4d52b63c12aac7499ae9ae9f25a98bca0",
                 "shasum": ""
             },
             "default-branch": true,
@@ -893,7 +893,7 @@
                 "source": "https://github.com/rbertram90/core/tree/master",
                 "issues": "https://github.com/rbertram90/core/issues"
             },
-            "time": "2020-12-31T12:37:58+00:00"
+            "time": "2021-08-10T18:18:09+00:00"
         },
         {
             "name": "rbwebdesigns/hamlet-cms-installer",

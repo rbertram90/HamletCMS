@@ -7,7 +7,9 @@ use HamletCMS\HamletCMS;
 
 class MenuWidget extends AbstractWidget
 {
-
+    public $menu;
+    public $orientation;
+    
     public function render()
     {   
         $menuID = $this->config()['menu'];

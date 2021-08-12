@@ -37,25 +37,27 @@
             {$columncount = $template_config.Layout.ColumnCount}
         {/if}
         
-        {if $columncount == 1}
-            {include file='body/onecolumn.tpl'}
-        {elseif $columncount == 3}
-            {$postcolumn = $template_config.Layout.PostsColumn}
-            {if $postcolumn == 1}
-                {include file='body/threecolumnsleft.tpl'}
-            {elseif $postcolumn == 2}
-                {include file='body/threecolumnscentre.tpl'}
+        <div class="row posts-outer">
+            {if $columncount == 1}
+                {include file='body/onecolumn.tpl'}
+            {elseif $columncount == 3}
+                {$postcolumn = $template_config.Layout.PostsColumn}
+                {if $postcolumn == 1}
+                    {include file='body/threecolumnsleft.tpl'}
+                {elseif $postcolumn == 2}
+                    {include file='body/threecolumnscentre.tpl'}
+                {else}
+                    {include file='body/threecolumnsright.tpl'}
+                {/if}
             {else}
-                {include file='body/threecolumnsright.tpl'}
+                {$postcolumn = $template_config.Layout.PostsColumn}
+                {if $postcolumn == 1}
+                    {include file='body/twocolumnsleft.tpl'}
+                {else}
+                    {include file='body/twocolumnsright.tpl'}
+                {/if}
             {/if}
-        {else}
-            {$postcolumn = $template_config.Layout.PostsColumn}
-            {if $postcolumn == 1}
-                {include file='body/twocolumnsleft.tpl'}
-            {else}
-                {include file='body/twocolumnsright.tpl'}
-            {/if}
-        {/if}
+        </div>
         
         {* Dynamic footer template *}
         {$footer_content}

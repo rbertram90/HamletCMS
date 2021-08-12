@@ -1,13 +1,9 @@
 <?php
 namespace HamletCMS\BlogPosts\controller;
 
-use HamletCMS\Contributors\model\ContributorGroups;
-use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\AppSecurity;
 use HamletCMS\GenericController;
 use HamletCMS\HamletCMS;
 use HamletCMS\Menu;
-use Codeliner\ArrayReader\ArrayReader;
 
 /**
  * class Posts
@@ -188,15 +184,14 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $autosaveModel = HamletCMS::model('HamletCMS\BlogPosts\model\Autosaves');
-        $autosaveModel->removeAutosave($this->post->id);
+        $this->modelAutosaves->removeAutosave($this->post->id);
 
-        if ($this->post['initialautosave'] == 1) {
+        if ($this->post->initialautosave == 1) {
             // Delete post
             $this->model->delete(['id' => $this->post->id]);
         }
 
         $this->response->redirect('/cms/posts/manage/' . $this->blog->id);
     }
-        
+    
 }

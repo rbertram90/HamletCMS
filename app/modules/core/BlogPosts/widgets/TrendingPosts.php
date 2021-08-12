@@ -10,6 +10,7 @@ class TrendingPosts extends AbstractWidget
 
     public function render()
     {
+        /** @var \HamletCMS\BlogPosts\model\Posts */
         $model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
 
         $this->response->setVar('blogUrl', $this->blog->url());

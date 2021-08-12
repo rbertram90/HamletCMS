@@ -7,12 +7,19 @@ use rbwebdesigns\core\JSONHelper;
 
 class AbstractWidget
 {
+    /** @var \rbwebdesigns\core\Request */
     protected $request;
+
+    /** @var \HamletCMS\HamletCMSResponse */
     protected $response;
+
+    /** @var \HamletCMS\Blog\Blog */
     protected $blog;
+
     protected $config = null;
 
     public $section;
+    
     public $widget;
 
     public function __construct()

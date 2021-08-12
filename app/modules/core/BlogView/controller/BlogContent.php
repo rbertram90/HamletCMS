@@ -315,36 +315,34 @@ class BlogContent extends GenericController
         $blogConfig = $this->blog->config();
         
         // Check that the footer key exists
-        if (!is_array($blogConfig) || !array_key_exists('footer', $blogConfig)) {
-            return '';
-        }
-        
-        // Get data from config
-        $footerContent = '';
-        $configReader = new Codeliner\ArrayReader\ArrayReader($blogConfig);
-        $backgroundImage = $configReader->stringValue('footer.background_image', false); // Background Image
-        
-        // Generate Background CSS
-        if ($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0) {
-            // Background position
-            $h = $configReader->stringValue('footer.bg_image_post_horizontal', false);
-            $v = $configReader->stringValue('footer.bg_image_post_vertical', false);
+        if (is_array($blogConfig) && array_key_exists('footer', $blogConfig)) {      
+            // Get data from config
+            $footerContent = '';
+            $configReader = new Codeliner\ArrayReader\ArrayReader($blogConfig);
+            $backgroundImage = $configReader->stringValue('footer.background_image', false); // Background Image
             
-            if($h != 'r' && $v == 'n') $br = 'background-repeat:repeat-x;';
-            elseif($h == 'n' && $v != 'r') $br = 'background-repeat:repeat-y;';
-            elseif($h == 'r' && $v == 'r') $br = 'background-repeat:repeat;'; // repeat both
-            else $br = '';
-            
-            if($h == 's' && $v == 's') $br.= 'background-size:100% 100%;';
-            elseif($h == 's') $br.= 'background-size:100% auto;'; // stretch
-            elseif($v == 's') $br.= 'background-size:auto 100%;';
-            
-            $footerContent.= '<style type="text/css">
-                .page-footer {
-                    background-image:url("'.$backgroundImage.'");
-                    '.$br.'
-                }
-            </style>';
+            // Generate Background CSS
+            if ($backgroundImage && strlen($blogConfig['footer']['background_image']) > 0) {
+                // Background position
+                $h = $configReader->stringValue('footer.bg_image_post_horizontal', false);
+                $v = $configReader->stringValue('footer.bg_image_post_vertical', false);
+                
+                if($h != 'r' && $v == 'n') $br = 'background-repeat:repeat-x;';
+                elseif($h == 'n' && $v != 'r') $br = 'background-repeat:repeat-y;';
+                elseif($h == 'r' && $v == 'r') $br = 'background-repeat:repeat;'; // repeat both
+                else $br = '';
+                
+                if($h == 's' && $v == 's') $br.= 'background-size:100% 100%;';
+                elseif($h == 's') $br.= 'background-size:100% auto;'; // stretch
+                elseif($v == 's') $br.= 'background-size:auto 100%;';
+                
+                $footerContent.= '<style type="text/css">
+                    .page-footer {
+                        background-image:url("'.$backgroundImage.'");
+                        '.$br.'
+                    }
+                </style>';
+            }
         }
 
         $footerTemplate = SERVER_PATH_BLOGS .'/'. $this->blogID .'/templates/footer.tpl';
@@ -368,6 +366,8 @@ class BlogContent extends GenericController
         $footerResponse->setVar('user', HamletCMS::session()->currentUser);
         $footerResponse->setVar('blog', $this->blog);
         $footerResponse->setVar('widgets', $this->response->getVar('widgets'));
+
+        
 
         return $footerResponse->write($templatePath, $source, false) . $footerContent;
     }
