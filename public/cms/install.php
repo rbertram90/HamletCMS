@@ -3,6 +3,7 @@ namespace HamletCMS;
 
 use Athens\CSRF;
 use rbwebdesigns\core\JSONhelper;
+use HamletCMS\HamletCMS;
 
 /****************************************************************
   Install Entry point
@@ -18,7 +19,9 @@ use rbwebdesigns\core\JSONhelper;
     $modules = [];
 
     foreach ($coreModules as $module) {
-        if ($module == '.' || $module == '..') continue;
+        if ($module == '.' || $module == '..' || $module == 'tests') continue;
+
+        if (!is_dir(SERVER_MODULES_PATH. '/core/' . $module)) continue;
 
         $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/core/{$module}/info.json");
 
@@ -106,10 +109,8 @@ use rbwebdesigns\core\JSONhelper;
             }
 
             $subFolder = $module['core'] ? 'core' : 'addon';
-            $classPath = SERVER_ROOT .'/app/modules/'. $subFolder. '/'. $key .'/'. $key .'.php';
-            if (file_exists($classPath)) {
-                require_once $classPath;
-                $className = '\\HamletCMS\\'. $key;
+            $className = '\\HamletCMS\\'. $key . '\\Module';
+            if (class_exists($className)) {
                 $class = new $className();
                 if (method_exists($class, 'install')) {
                     $class->install();

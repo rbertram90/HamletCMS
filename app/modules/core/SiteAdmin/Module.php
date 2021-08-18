@@ -2,7 +2,7 @@
 
 namespace HamletCMS\SiteAdmin;
 
-class SiteAdmin
+class Module
 {
     
 }
