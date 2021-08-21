@@ -35,7 +35,7 @@
                 <script>Galleria.run("#galleria_{$post->id}");</script>
             {/if}
 
-            {$post->trimmedContent}
+            {$post->summary}
         </div>
         
         <div class="extra post-footer">

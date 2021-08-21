@@ -14,7 +14,7 @@ class ConfigureCustomHTML extends Form
         "widget[heading]" => [
             "type"    => "text",
             "label"   => "Heading",
-            "value" => "Test",
+            "value" => "",
             "attributes" => [
                 "id" => "widget[heading]"
             ]

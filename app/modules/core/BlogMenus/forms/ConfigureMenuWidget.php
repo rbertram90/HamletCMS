@@ -32,6 +32,29 @@ class ConfigureMenuWidget extends Form
             "attributes" => [
                 "id" => "widget[orientation]"
             ]
+        ],
+        "widget[colour]" => [
+            "type" => "dropdown",
+            "label" => "Colour",
+            "options" => [
+                "" => "White",
+                "red inverted" => "Red",
+                "orange inverted" => "Orange",
+                "yellow inverted" => "Yellow",
+                "olive inverted" => "Olive",
+                "green inverted" => "Green",
+                "teal inverted" => "Teal",
+                "blue inverted" => "Blue",
+                "violet inverted" => "Violet",
+                "purple inverted" => "Purple",
+                "pink inverted" => "Pink",
+                "brown inverted" => "Brown",
+                "grey inverted" => "Grey",
+            ],
+            "value" => "",
+            "attributes" => [
+                "id" => "widget[colour]"
+            ]
         ]
     ];
 

@@ -1,4 +1,4 @@
-<div class="ui {$orientation} menu">
+<div class="ui {$orientation} {$colour} menu">
     {foreach $menu->items() as $link}
         {if $link->new_window}
             <a href="{$link->url()}" class="item" target="_blank">{$link->text}</a>

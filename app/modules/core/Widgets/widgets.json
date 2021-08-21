@@ -14,5 +14,13 @@
         "version": 1.0,
         "form": "HamletCMS\\Widgets\\forms\\ConfigureAlsoTagged",
         "class": "HamletCMS\\Widgets\\widgets\\AlsoTagged"
+    },
+    {
+        "key": "twitterfeed",
+        "name": "Twitter Feed",
+        "description": "Lists a twitter feed or list",
+        "version": 1.0,
+        "form": "HamletCMS\\Widgets\\forms\\ConfigureTwitterWidget",
+        "class": "HamletCMS\\Widgets\\widgets\\TwitterFeed"
     }
 ]
