@@ -128,6 +128,7 @@ use HamletCMS\HamletCMS;
             HamletCMS::registerModule($key);
         }
 
+        HamletCMS::generateModelAliasCache();
         HamletCMS::generateRouteCache();
         HamletCMS::generateMenuCache();
         HamletCMS::generatePermissionCache();

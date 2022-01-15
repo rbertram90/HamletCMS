@@ -4,8 +4,8 @@ namespace HamletCMS\Blog\controller;
 
 use HamletCMS\GenericController;
 use HamletCMS\HamletCMS;
-use rbwebdesigns\core\JSONhelper;
 use HamletCMS\Menu;
+use rbwebdesigns\core\JSONhelper;
 
 /**
  * controllers/Blogs
@@ -17,59 +17,25 @@ use HamletCMS\Menu;
  */
 class Blogs extends GenericController
 {
-    /** @var \HamletCMS\Blog\model\Blogs */
-    protected $modelBlogs;
-
-    /** @var \HamletCMS\BlogPosts\model\Posts */
-    protected $modelPosts;
-
-    /** @var \HamletCMS\UserAccounts\model\UserAccounts */
-    protected $modelUsers;
-
-    /** @var \HamletCMS\Contributors\model\Contributors */
-    protected $modelContributors;
-
-    /** @var \HamletCMS\Contributors\model\Permissions */
-    protected $modelPermissions;
-
-    /** @var \HamletCMS\Contributors\model\ContributorGroups */
-    protected $modelContributorGroups;
-
-    /** @var \HamletCMS\EventLogger\model\EventLogger */
-    protected $modelActivityLog;
-
-    /**
-     * Create blog controller instance
-     */
-    public function __construct()
-    {
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        $this->modelContributorGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->modelActivityLog = HamletCMS::model('\HamletCMS\EventLogger\model\EventLogger');
-
-        parent::__construct();
-    }
-    
     /**
      * Route: /cms/blog
      *
-     * View the cms main dashboard which shows all blogs that the user
+     * View the cms main dashboard that shows all blogs that the user
      * contributes to.
      */
     public function home()
     {
         $user = HamletCMS::session()->currentUser;
-        $blogs = $this->modelContributors->getContributedBlogs($user['id']);
+        $blogs = $this->model('contributors')->getContributedBlogs($user['id']);
         
-        // Add in extra information
+        // Allow other modules to add their own links
         foreach ($blogs as $key => $blog) {
-            // Get all menu items
             $blogActions = new Menu('bloglist');
-            HamletCMS::runHook('onGenerateMenu', ['id' => 'bloglist', 'menu' => &$blogActions, 'blog' => $blog]);
+            HamletCMS::runHook('onGenerateMenu', [
+                'id' => 'bloglist',
+                'menu' => &$blogActions,
+                'blog' => $blog
+            ]);
             $blogs[$key]->actions = $blogActions->getLinks();
         }
         
@@ -101,7 +67,7 @@ class Blogs extends GenericController
     public function overview()
     {
         $blogID = $this->request->getUrlParameter(1);
-        $blog = $this->modelBlogs->getBlogById($blogID);
+        $blog = $this->model('blogs')->getBlogById($blogID);
 
         // Validation
         if (!$blog) {
@@ -120,10 +86,10 @@ class Blogs extends GenericController
         HamletCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
         $this->response->setVar('blog', $blog);
-        $this->response->setVar('posts', $this->modelPosts->getPostsByBlog($blogID, 1, 5, 1, 1));
+        $this->response->setVar('posts', $this->model('posts')->getPostsByBlog($blogID, 1, 5, 1, 1));
         
         if (HamletCMS::getModule('EventLogger')) {
-            $this->response->setVar('activitylog', $this->modelActivityLog->byBlog($blogID));
+            $this->response->setVar('activitylog', $this->model('eventlogger')->byBlog($blogID));
         }
 
         HamletCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
@@ -158,13 +124,13 @@ class Blogs extends GenericController
         if (isset($config['general']) && isset($config['general']['maxUserBlogLimit'])) {
             $limit = $config['general']['maxUserBlogLimit'];
         }
-        if ($this->modelBlogs->countBlogsByUser($currentUser['id']) > $limit) {
+        if ($this->model('blogs')->countBlogsByUser($currentUser['id']) > $limit) {
             $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
             return;
         }
         
         // Create blog db entry
-        $newblogkey = $this->modelBlogs->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
+        $newblogkey = $this->model('blogs')->createBlog($this->request->getString('fld_blogname'), $this->request->getString('fld_blogdesc'));
 
         if (!$newblogkey) {
             $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
@@ -173,17 +139,17 @@ class Blogs extends GenericController
 
         // Create admin groups
         // @todo get this function to return the admin group ID!
-        if (!$this->modelContributorGroups->createDefaultGroups($newblogkey)) {
+        if (!$this->model('contributorgroups')->createDefaultGroups($newblogkey)) {
             $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
             return;
         }
 
-        $adminGroup = $this->modelContributorGroups->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
+        $adminGroup = $this->model('contributorgroups')->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
 
         if (!$adminGroup) die('No admin found' . $newblogkey);
 
         // Add the user as contributor
-        if (!$this->modelContributors->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
+        if (!$this->model('contributors')->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
             $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
             return;
         }
@@ -199,7 +165,7 @@ class Blogs extends GenericController
         $currentUser = HamletCMS::session()->currentUser;
         $blogID = $this->request->getUrlParameter(1);
 
-        if (!$blog = $this->modelBlogs->getBlogById($blogID)) {
+        if (!$blog = $this->model('blogs')->getBlogById($blogID)) {
             $this->response->redirect('/cms', 'Blog not found', 'error');
         }
 
@@ -224,10 +190,10 @@ class Blogs extends GenericController
         HamletCMS::runHook('onDeleteBlog', ['blog' => $blog]);
 
         // Delete posts
-        $this->modelContributors->delete(['blog_id' => $blog->id]);
-        $this->modelContributorGroups->delete(['blog_id' => $blog->id]);
-        $this->modelPosts->delete(['blog_id' => $blog->id]);
-        $this->modelBlogs->delete(['id' => $blog->id]);
+        $this->model('contributors')->delete(['blog_id' => $blog->id]);
+        $this->model('contributorgroups')->delete(['blog_id' => $blog->id]);
+        $this->model('posts')->delete(['blog_id' => $blog->id]);
+        $this->model('blogs')->delete(['id' => $blog->id]);
 
         try {
             $this->deleteDir(SERVER_PATH_BLOGS . '/' . $blog->id);
@@ -282,7 +248,7 @@ class Blogs extends GenericController
             $results = [];
         }
         else {
-            $results = $this->modelBlogs->search($search);
+            $results = $this->model('blogs')->search($search);
         }
 
         $data = [];

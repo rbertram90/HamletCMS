@@ -13,18 +13,6 @@ use HamletCMS\HamletCMS;
  */
 class Comments extends GenericController
 {
-    /** @var \HamletCMS\PostComments\model\Comments */
-    protected $model;
-    /** @var \HamletCMS\BlogPosts\model\Posts */
-    protected $modelPosts = null;
-    /** @var \HamletCMS\Contributors\model\Permissions */
-    protected $modelPermissions = null;
-
-    /** @var \rbwebdesigns\core\Request */
-    protected $request;
-    /** @var \rbwebdesigns\core\Response */
-    protected $response;
-
     /** @var \HamletCMS\Blog\Blog Active blog */
     protected $blog = null;
 
@@ -34,13 +22,8 @@ class Comments extends GenericController
 
     public function __construct()
     {
-        $this->model = HamletCMS::model('\HamletCMS\PostComments\model\Comments');
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
         $this->blog = HamletCMS::getActiveBlog();
-
         HamletCMS::$activeMenuLink = '/cms/comments/manage/'. $this->blog->id;
-
         parent::__construct();
     }
 
@@ -49,11 +32,11 @@ class Comments extends GenericController
      */
     protected function canAdminister($commentID)
     {
-        if (!$comment = $this->model->getCommentById($commentID)) {
+        if (!$comment = $this->model('comments')->getCommentById($commentID)) {
             return false;
         }
         HamletCMS::$blogID = $comment->blog_id;
-        return $this->modelPermissions->userHasPermission('administer_comments');
+        return $this->model('permissions')->userHasPermission('administer_comments');
     }
 
     /**
@@ -73,23 +56,23 @@ class Comments extends GenericController
 
         switch ($filter) {
             case 'approved':
-                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit, 1);
-                $total = $this->model->countBlogComments($this->blog->id, 1);
+                $comments = $this->model('comments')->getCommentsByBlog($this->blog->id, $limit, 1);
+                $total = $this->model('comments')->countBlogComments($this->blog->id, 1);
             break;
             case 'pending':
-                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit, 0);
-                $total = $this->model->countBlogComments($this->blog->id, 0);
+                $comments = $this->model('comments')->getCommentsByBlog($this->blog->id, $limit, 0);
+                $total = $this->model('comments')->countBlogComments($this->blog->id, 0);
             break;
             case 'all':
             default:
-                $comments = $this->model->getCommentsByBlog($this->blog->id, $limit);
-                $total = $this->model->countBlogComments($this->blog->id);
+                $comments = $this->model('comments')->getCommentsByBlog($this->blog->id, $limit);
+                $total = $this->model('comments')->countBlogComments($this->blog->id);
             break;
         }
 
         $pageCount = ceil($total / $perPage);
 
-        $this->model->getCommentsByBlog($this->blog->id);
+        $this->model('comments')->getCommentsByBlog($this->blog->id);
 
         $this->response->setVar('current_page', $start);
         $this->response->setVar('page_count', $pageCount);
@@ -114,7 +97,7 @@ class Comments extends GenericController
         if (!$this->canAdminister($commentID)) {
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
-        elseif ($this->model->deleteComment($commentID)) {
+        elseif ($this->model('comments')->deleteComment($commentID)) {
             $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/manage/'. $blog->id, 'Comment removed', 'success');
         }
@@ -129,7 +112,7 @@ class Comments extends GenericController
      */
     public function deleteUnapproved()
     {
-        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
+        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model('comments')->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
             $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Comments removed', 'success');
         }
         else {
@@ -143,12 +126,12 @@ class Comments extends GenericController
     public function approve()
     {
         $commentID = $this->request->getUrlParameter(1);
-        $comment = $this->model->getCommentById($commentID);
+        $comment = $this->model('comments')->getCommentById($commentID);
 
         if (!$this->canAdminister($commentID)) {
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
-        elseif ($this->model->approve($comment->id)) {
+        elseif ($this->model('comments')->approve($comment->id)) {
             $blog = HamletCMS::getActiveBlog();
             $this->response->redirect('/cms/comments/manage/' . $blog->id, 'Comment approved', 'success');
         }
@@ -163,7 +146,7 @@ class Comments extends GenericController
      */
     public function approveAll()
     {
-        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model->approveAll($this->blog->id)) {
+        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model('comments')->approveAll($this->blog->id)) {
             $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Comments approved', 'success');
         }
         else {
@@ -180,7 +163,7 @@ class Comments extends GenericController
     public function add()
     {
         $postID = $this->request->getInt('fld_postid', -1);
-        $post = $this->modelPosts->getPostByID($postID);
+        $post = $this->model('posts')->getPostByID($postID);
         $blogID = $post->blog_id;
         $commentText = $this->request->getString('fld_comment');
         $currentUser = HamletCMS::session()->currentUser;
@@ -207,12 +190,12 @@ class Comments extends GenericController
 
         // Check that the user isn't comment spamming
         // Maximum 5 posts per minute - any post
-        if ($this->model->count(['user_id' => $currentUser['id'], 'timestamp' => '>' . date('Y-m-d H:i:s', strtotime('-1 minute'))]) >= 5) {
+        if ($this->model('comments')->count(['user_id' => $currentUser['id'], 'timestamp' => '>' . date('Y-m-d H:i:s', strtotime('-1 minute'))]) >= 5) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Maximum 5 comments per minute', 'error');
         }
 
         // Success
-        if ($this->model->addComment($commentText, $post->id, $blogID, $currentUser['id'])) {
+        if ($this->model('comments')->addComment($commentText, $post->id, $blogID, $currentUser['id'])) {
             $this->response->redirect("/blogs/{$blogID}/posts/{$post->link}", 'Comment submitted - awaiting approval', 'success');
         }
         // Failed to save

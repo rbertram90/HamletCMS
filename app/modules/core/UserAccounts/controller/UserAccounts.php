@@ -13,29 +13,6 @@ use HamletCMS\HamletCMS;
 class UserAccounts extends GenericController
 {
     /**
-     * @var \HamletCMS\UserAccounts\model\UserAccounts
-     */
-    protected $model;
-    /**
-     * @var \rbwebdesigns\core\Request
-     */
-    protected $request;
-    /**
-     * @var \HamletCMS\Response
-     */
-    protected $response;
-    
-    /**
-     * Create an account controller instance
-     */
-    public function __construct()
-    {
-        $this->model = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
-    }
-    
-    /**
      * View a users profile.
      * 
      * GET /account/user/[userid]
@@ -47,18 +24,16 @@ class UserAccounts extends GenericController
             $userID = HamletCMS::session()->currentUser['id'];
         }
 
-        $user = $this->model->getById($userID);
+        $user = $this->model('useraccounts')->getById($userID);
 
         if (!$user) {
             $this->response->redirect('/cms', 'User not found', 'error');
         }
 
-        $postsModel = HamletCMS::model("HamletCMS\BlogPosts\model\Posts");
-        $numberOfPost = $postsModel->count(['author_id' => $userID]);
+        $numberOfPost = $this->model('posts')->count(['author_id' => $userID]);
         $this->response->setVar('postCount', $numberOfPost);
 
-        $contributorModel = HamletCMS::model('HamletCMS\Contributors\model\Contributors');
-        $contributedBlogs = $contributorModel->getContributedBlogs($userID);
+        $contributedBlogs = $this->model('contributors')->getContributedBlogs($userID);
         $this->response->setVar('blogCount', count($contributedBlogs));
         $this->response->setVar('blogs', $contributedBlogs);
 
@@ -132,7 +107,7 @@ class UserAccounts extends GenericController
         $newpassword = $this->request->getString('fld_password');
         $newpasswordrpt = $this->request->getString('fld_password_rpt');
 
-        $user = $this->model->get('*', [
+        $user = $this->model('useraccounts')->get('*', [
             'username' => $username,
             'email' => $email,
             'name' => $firstname,
@@ -148,7 +123,7 @@ class UserAccounts extends GenericController
 
         $hashpassword = password_hash($newpassword, PASSWORD_DEFAULT);
 
-        if (!$this->model->update(['id' => $user['id']], ['password' => $hashpassword])) {
+        if (!$this->model('useraccounts')->update(['id' => $user['id']], ['password' => $hashpassword])) {
             $this->response->redirect('/cms/account/resetpassword', 'Failed to save new password', 'error');
         }
 
@@ -169,7 +144,7 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/login', 'Please complete all fields', 'error');
         }
 
-        if ($this->model->login($username, $password)) {
+        if ($this->model('useraccounts')->login($username, $password)) {
             HamletCMS::runHook('onAccountLogin', []);
 
             $this->response->redirect('/cms', 'Welcome back', 'success');
@@ -208,7 +183,7 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/register', 'Email or passwords did not match', 'error');
         }
 
-        if ($this->model->register($details)) {
+        if ($this->model('useraccounts')->register($details)) {
             HamletCMS::runHook('onAccountCreated', []);
             $this->response->redirect('/cms/account/login', 'Account created', 'success');
         }
@@ -240,7 +215,7 @@ class UserAccounts extends GenericController
     {
         if($this->request->method() == 'POST') return $this->saveAccountSettings();
 
-        $this->response->setVar('user', $this->model->getById(HamletCMS::session()->currentUser['id']));
+        $this->response->setVar('user', $this->model('useraccounts')->getById(HamletCMS::session()->currentUser['id']));
         $this->response->setTitle('Profile settings');
         $this->response->write('editdetails.tpl', 'UserAccounts');
     }
@@ -274,7 +249,7 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/settings', 'Invalid date of birth', 'error');
         }
         
-        if ($this->model->saveSettings($details)) {
+        if ($this->model('useraccounts')->saveSettings($details)) {
             HamletCMS::runHook('onAccountUpdated', []);
             $this->response->redirect('/cms/account/settings', 'Account updated', 'success');
         }
@@ -316,7 +291,7 @@ class UserAccounts extends GenericController
         }
 
         $user = HamletCMS::session()->currentUser;
-        $current = $this->model->get('password', ['id' => $user['id']], '', '', false);
+        $current = $this->model('useraccounts')->get('password', ['id' => $user['id']], '', '', false);
 
         if (!$user || !password_verify($details['current_password'], $current['password'])) {
             $this->response->redirect('/cms/account/password', 'Unable to verify current password', 'error');
@@ -324,7 +299,7 @@ class UserAccounts extends GenericController
 
         $newPassword = password_hash($details['new_password'], PASSWORD_DEFAULT);
 
-        if (!$this->model->update(['id' => $user['id']], ['password' => $newPassword])) {
+        if (!$this->model('useraccounts')->update(['id' => $user['id']], ['password' => $newPassword])) {
             $this->response->redirect('/cms/account/password', 'Failed to save new password', 'error');
         }
         
@@ -375,7 +350,6 @@ class UserAccounts extends GenericController
         RESTRICTED TO JPG
         */
         $userID = HamletCMS::session()->currentUser['id'];
-        // $user = $this->model->getById($userID);
 
         if (!($_FILES['avatar']['type'] == 'image/jpeg' && $_FILES['avatar']['size'] < 200000)) {
             $this->response->redirect('/cms/account/avatar', 'Unsuitable Photo - file must be a JPEG image under 20KB', 'error');
@@ -391,7 +365,7 @@ class UserAccounts extends GenericController
         
         move_uploaded_file($_FILES['avatar']['tmp_name'], SERVER_AVATAR_FOLDER . '/' . $_FILES['avatar']['name']);
         
-        $this->model->update(['id' => $userID], [
+        $this->model('useraccounts')->update(['id' => $userID], [
             'profile_picture' => $_FILES['avatar']["name"]
         ]);
 
@@ -429,7 +403,7 @@ class UserAccounts extends GenericController
     {
         $userID = $this->request->getUrlParameter(1);
 
-        if (!$user = $this->model->getById($userID)) {
+        if (!$user = $this->model('useraccounts')->getById($userID)) {
             $this->response->write('No user found');
             die();
         }
@@ -447,7 +421,7 @@ class UserAccounts extends GenericController
     {
         $sort = $this->request->getString('sort', '');
         $this->response->setTitle('User accounts login');
-        $this->response->setVar('users', $this->model->getAll($sort));
+        $this->response->setVar('users', $this->model('useraccounts')->getAll($sort));
         $this->response->write('admintable.tpl', 'UserAccounts');
     }
 

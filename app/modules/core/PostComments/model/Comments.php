@@ -12,6 +12,8 @@ use rbwebdesigns\core\Sanitize;
  */
 class Comments extends RBFactory
 {
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'comments';
 
     /**
      * @param \rbwebdesigns\core\model\ModelManager $modelFactory

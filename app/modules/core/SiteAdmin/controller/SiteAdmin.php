@@ -8,8 +8,6 @@ use HamletCMS\Module;
 
 class SiteAdmin extends GenericController
 {
-    protected $model;
-
     public function __construct()
     {
         parent::__construct();
@@ -20,19 +18,18 @@ class SiteAdmin extends GenericController
         if (!$currentUser || $currentUser['admin'] != 1) {
             $this->response->redirect('/');
         }
-
-        $this->model = HamletCMS::model('\HamletCMS\SiteAdmin\model\Modules');
     }
 
     public function modules()
     {
         $this->response->setTitle('All modules');
-        $this->response->setVar('modules', $this->model->getList());
+        $this->response->setVar('modules', $this->model('modules')->getList());
         $this->response->write('modulelist.tpl', 'SiteAdmin');
     }
 
     public function reloadCache($redirect = true)
     {
+        HamletCMS::generateModelAliasCache();
         HamletCMS::generateRouteCache();
         HamletCMS::generateMenuCache();
         HamletCMS::generatePermissionCache();
@@ -65,7 +62,7 @@ class SiteAdmin extends GenericController
                 }
             }
 
-            $dbModules = $this->model->getList();
+            $dbModules = $this->model('modules')->getList();
             $deleteCount = 0;
             $addCount = 0;
 
@@ -76,7 +73,7 @@ class SiteAdmin extends GenericController
                 }
                 else {
                     // Module removed from file system!
-                    $this->model->delete(['name' => $module->name]);
+                    $this->model('modules')->delete(['name' => $module->name]);
                     $deleteCount++;
                 }
             }
@@ -84,7 +81,7 @@ class SiteAdmin extends GenericController
             foreach ($modulesList as $name => $status) {
                 // Ones that remain are new
                 $core = $status == 'core';
-                $insert = $this->model->insert(['name' => $name, 'enabled' => 0, 'locked' => 0, 'core' => $core]);
+                $insert = $this->model('modules')->insert(['name' => $name, 'enabled' => 0, 'locked' => 0, 'core' => $core]);
                 if (!$insert) $this->response->redirect('/cms/admin/modules', 'Unable to update database', 'error');
                 $addCount++;
             }
@@ -104,7 +101,7 @@ class SiteAdmin extends GenericController
             return $this->runDatabaseUpdates();
         }
 
-        $modules = $this->model->getList();
+        $modules = $this->model('modules')->getList();
         $updates = [];
 
         foreach ($modules as $module) {
@@ -148,7 +145,7 @@ class SiteAdmin extends GenericController
      */
     protected function runDatabaseUpdates()
     {
-        $modules = $this->model->getList();
+        $modules = $this->model('modules')->getList();
         
         foreach ($modules as $module) {
             $currentVersion = $module->dbversion;
@@ -170,7 +167,7 @@ class SiteAdmin extends GenericController
             }
 
             // Note update was done
-            $this->model->update(['name' => $module->name], ['dbversion' => $updateIndex-1]);
+            $this->model('modules')->update(['name' => $module->name], ['dbversion' => $updateIndex-1]);
         }
 
         $this->response->redirect('/cms/admin/modules', 'Database updates done', 'success');
@@ -192,7 +189,7 @@ class SiteAdmin extends GenericController
         }
 
         // Update module database
-        $this->model->update(['name' => $module->key], ['enabled' => 1]);
+        $this->model('modules')->update(['name' => $module->key], ['enabled' => 1]);
 
         // Run hook
         HamletCMS::runHook('onModuleInstalled', ['module' => $module]);
@@ -216,7 +213,7 @@ class SiteAdmin extends GenericController
         }
 
         // Update module database
-        $this->model->update(['name' => $module->key], ['enabled' => 0]);
+        $this->model('modules')->update(['name' => $module->key], ['enabled' => 0]);
 
         HamletCMS::runHook('onModuleUninstalled', ['module' => $module]);
 

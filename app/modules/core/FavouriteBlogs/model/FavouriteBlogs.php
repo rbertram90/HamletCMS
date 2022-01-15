@@ -13,6 +13,9 @@ class FavouriteBlogs extends RBFactory
     /** @var \rbwebdesigns\core\ObjectDatabase */
     protected $db;
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'favouriteblogs';
+
     /**
      * Instantiate the Factory passing in access to the database.
      * 

@@ -38,10 +38,10 @@ class Settings extends GenericController
      */
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('blogs');
+        $this->modelPermissions = HamletCMS::model('permissions');
+        $this->modelPosts = HamletCMS::model('posts');
+        $this->modelUsers = HamletCMS::model('useraccounts');
 
         $this->request = HamletCMS::request();
         $this->response = HamletCMS::response();

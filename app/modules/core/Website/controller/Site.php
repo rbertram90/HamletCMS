@@ -40,8 +40,8 @@ class Site
     {
         $this->request = $request;
         $this->response = $response;
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelBlogs = HamletCMS::model('blogs');
+        $this->modelPosts = HamletCMS::model('posts');
     }
 
     /**

@@ -3,13 +3,13 @@
 namespace HamletCMS\Widgets\controller;
 
 use HamletCMS\HamletCMS;
-use rbwebdesigns\core\JSONhelper;
 use HamletCMS\GenericController;
+use rbwebdesigns\core\JSONhelper;
 
 class WidgetsView extends GenericController
 {
     /**
-     * @var HamletCMS\Blog;
+     * @var \HamletCMS\Blog\Blog;
      */
     protected $blog;
 

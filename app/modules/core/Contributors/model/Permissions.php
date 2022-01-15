@@ -12,6 +12,9 @@ class Permissions extends RBFactory
 
     protected $subClass;
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'permissions';
+
     public function __construct($modelFactory)
     {
         $this->db = $modelFactory->getDatabaseConnection();

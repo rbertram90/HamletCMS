@@ -15,8 +15,8 @@ class Files extends GenericController
     
     public function __construct()
     {
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        $this->modelBlogs = HamletCMS::model('blogs');
+        $this->modelContributors = HamletCMS::model('contributors');
         $this->blog = HamletCMS::getActiveBlog();
 
         parent::__construct();

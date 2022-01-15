@@ -23,27 +23,6 @@ use HamletCMS\Menu;
  */
 class Posts extends GenericController
 {
-    /** @var \HamletCMS\BlogPosts\model\Posts */
-    protected $model;
-
-    /** @var \HamletCMS\Blog\model\Blogs */
-    protected $modelBlogs;
-
-    /** @var \HamletCMS\Contributors\model\Contributors */
-    protected $modelContributors;
-
-    /** @var \HamletCMS\Contributors\model\Permissions */
-    protected $modelPermissions;
-
-    /** @var \HamletCMS\BlogPosts\model\Autosaves */
-    protected $modelAutosaves;
-
-    /** @var \rbwebdesigns\core\Request */
-    protected $request;
-
-    /** @var \HamletCMS\HamletCMSResponse */
-    protected $response;
-
     /** @var \HamletCMS\Blog\Blog Active blog */
     protected $blog = null;
 
@@ -55,15 +34,7 @@ class Posts extends GenericController
      */
     public function __construct()
     {
-        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        $this->modelAutosaves = HamletCMS::model('\HamletCMS\BlogPosts\model\Autosaves');
-
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
-
+        parent::__construct();
         $this->setup();
     }
     
@@ -83,7 +54,7 @@ class Posts extends GenericController
 
         if (!HamletCMS::$blogID) {
             $postID = $this->request->getUrlParameter(1);
-            $this->post = $this->model->getPostById($postID);
+            $this->post = $this->model('posts')->getPostById($postID);
             HamletCMS::$blogID = $this->post->blog_id;
         }
 
@@ -91,7 +62,7 @@ class Posts extends GenericController
         HamletCMS::$activeMenuLink = '/cms/posts/manage/'. $this->blog->id;
 
         // Check the user is a contributor of the blog to begin with
-        if (!$this->modelContributors->isBlogContributor($currentUser['id'], $this->blog->id)) {
+        if (!$this->model('contributors')->isBlogContributor($currentUser['id'], $this->blog->id)) {
             $access = false;
         }
 
@@ -99,24 +70,24 @@ class Posts extends GenericController
         switch ($action) {
             case 'edit':
                 if ($this->post->author_id !== $currentUser['id']) {
-                    $access = $this->modelPermissions->userHasPermission('edit_all_posts', $this->blog->id);
+                    $access = $this->model('permissions')->userHasPermission('edit_all_posts', $this->blog->id);
                 }
                 elseif ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog->id);
+                    $access = $this->model('permissions')->userHasPermission('publish_posts', $this->blog->id);
                 }
                 break;
 
             case 'create':
                 if ($this->request->method() == 'POST' && $this->request->getInt('fld_draft') == 0) {
-                    $access = $this->modelPermissions->userHasPermission('publish_posts', $this->blog->id);
+                    $access = $this->model('permissions')->userHasPermission('publish_posts', $this->blog->id);
                 }
                 else {
-                    $access = $this->modelPermissions->userHasPermission('create_posts', $this->blog->id);
+                    $access = $this->model('permissions')->userHasPermission('create_posts', $this->blog->id);
                 }
                 break;
 
             case 'delete':
-                $access = $this->modelPermissions->userHasPermission('delete_posts', $this->blog->id);
+                $access = $this->model('permissions')->userHasPermission('delete_posts', $this->blog->id);
                 break;
         }
 
@@ -167,7 +138,7 @@ class Posts extends GenericController
      */
     public function delete()
     {
-        if ($this->model->delete(['id' => $this->post->id]) && $this->modelAutosaves->removeAutosave($this->post->id)) {
+        if ($this->model('posts')->delete(['id' => $this->post->id]) && $this->model('autosaves')->removeAutosave($this->post->id)) {
             HamletCMS::runHook('onPostDeleted', ['post' => $this->post]);
             $this->response->redirect('/cms/posts/manage/' . $this->blog->id, 'Post deleted', 'success');
         }
@@ -184,11 +155,11 @@ class Posts extends GenericController
     public function cancelsave()
     {
         // Delete autosave
-        $this->modelAutosaves->removeAutosave($this->post->id);
+        $this->model('autosaves')->removeAutosave($this->post->id);
 
         if ($this->post->initialautosave == 1) {
             // Delete post
-            $this->model->delete(['id' => $this->post->id]);
+            $this->model('posts')->delete(['id' => $this->post->id]);
         }
 
         $this->response->redirect('/cms/posts/manage/' . $this->blog->id);

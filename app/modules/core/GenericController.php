@@ -2,6 +2,8 @@
 
 namespace HamletCMS;
 
+use HamletCMS\HamletCMS;
+
 class GenericController
 {
     /**
@@ -20,5 +22,16 @@ class GenericController
     }
 
     public function defaultAction() {}
+
+    /**
+     * Shortcut to get a Model
+     * 
+     * @param string $model
+     * 
+     * @return \rbwebdesigns\core\RBFactory Model
+     */
+    protected function model($model) {
+        return HamletCMS::model($model);
+    }
     
 }

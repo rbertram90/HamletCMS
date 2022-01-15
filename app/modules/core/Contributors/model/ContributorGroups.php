@@ -14,6 +14,9 @@ use rbwebdesigns\core\Sanitize;
 class ContributorGroups extends RBFactory
 {
     protected $db;
+
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'contributorgroups';
     
     public function __construct($modelFactory)
     {

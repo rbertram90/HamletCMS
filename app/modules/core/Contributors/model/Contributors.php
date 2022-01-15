@@ -15,6 +15,9 @@ class Contributors extends RBFactory
     protected $db;
     protected $tblbloguser;
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'contributors';
+
     public function __construct($modelFactory)
     {
         $this->db = $modelFactory->getDatabaseConnection();

@@ -3,7 +3,6 @@
 namespace HamletCMS\Contributors\controller;
 
 use HamletCMS\GenericController;
-use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
 use HamletCMS\HamletCMS;
 
@@ -14,27 +13,12 @@ use HamletCMS\HamletCMS;
  */
 class Contributors extends GenericController
 {
-    // Models
-    protected $modelUsers;
-    protected $modelBlogs;
-    protected $modelPosts;
-    protected $model;
-    protected $modelGroups;
-    protected $request, $response;
+    /** @var \HamletCMS\Blog\Blog */
     protected $blog;
     
     public function __construct()
     {
-        $this->modelUsers =  HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-        $this->model = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->modelGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
-
+        parent::__construct();
         $this->setup();
     }
 
@@ -63,7 +47,7 @@ class Contributors extends GenericController
         if (!$this->blog) {
             $access = false;
         }
-        elseif (!$this->modelPermissions->userHasPermission('manage_contributors', $this->blog->id)) {
+        elseif (!$this->model('permissions')->userHasPermission('manage_contributors', $this->blog->id)) {
             $access = false;
         }
 
@@ -77,15 +61,15 @@ class Contributors extends GenericController
      */
     public function manage()
     {
-        $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog->id]);
+        $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $this->blog->id]);
 
         if (count($groups) == 0) {
-            $this->modelGroups->createDefaultGroups($this->blog->id);
-            $groups = $this->modelGroups->get('*', ['blog_id' => $this->blog->id]);
+            $this->model('contributorgroups')->createDefaultGroups($this->blog->id);
+            $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $this->blog->id]);
         }
 
         $this->response->setVar('groups', $groups);
-        $this->response->setVar('contributors', $this->model->getBlogContributors($this->blog->id));
+        $this->response->setVar('contributors', $this->model('contributors')->getBlogContributors($this->blog->id));
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Blog Contributors - '. $this->blog->name);
         $this->response->write('manage.tpl', 'Contributors');
@@ -99,7 +83,7 @@ class Contributors extends GenericController
         if ($this->request->method() == 'POST') return $this->runCreate();
 
         $blog = HamletCMS::getActiveBlog();
-        $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
+        $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $blog->id]);
 
         $this->response->setVar('blog', $blog);
         $this->response->setVar('groups', $groups);
@@ -114,7 +98,7 @@ class Contributors extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->runInvite();
         $blog = HamletCMS::getActiveBlog();
-        $groups = $this->modelGroups->get('*', ['blog_id' => $blog->id]);
+        $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $blog->id]);
         $this->response->setVar('blog', $blog);
         $this->response->setVar('groups', $groups);
         $this->response->setTitle('Invite Contributor');
@@ -144,23 +128,23 @@ class Contributors extends GenericController
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
-            $response->redirect('/cms/contributors/manage', 'Email or passwords did not match', 'error');
+            $this->response->redirect('/cms/contributors/manage', 'Email or passwords did not match', 'error');
         }
 
-        $checkUser = $this->modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
+        $checkUser = $this->model('useraccounts')->get('id', ['username' => $accountData['username']], '', '', false);
         if ($checkUser && $checkUser->id) {
-            $response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
+            $this->response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
         }
 
-        if ($this->modelUsers->register($accountData)) {
+        if ($this->model('useraccounts')->register($accountData)) {
             // Get the user ID of the user just created
-            $user = $this->modelUsers->get('id', ['email' => $accountData['email']], '', '', false);
+            $user = $this->model('useraccounts')->get('id', ['email' => $accountData['email']], '', '', false);
         }
         else {
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error creating account', 'error');
         }
 
-        if (!$this->model->addBlogContributor($user->id, $blog->id, $groupID)) {
+        if (!$this->model('contributors')->addBlogContributor($user->id, $blog->id, $groupID)) {
             $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error assigning contributor', 'error');
         }
 
@@ -179,11 +163,11 @@ class Contributors extends GenericController
 
         if (!$userID) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
 
-        $user = $this->modelUsers->get('id', ['id' => $userID], '', '', false);
+        $user = $this->model('useraccounts')->get('id', ['id' => $userID], '', '', false);
 
         if (!$user) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
         
-        if (!$this->model->addBlogContributor($user->id, $blog->id, $groupID)) {
+        if (!$this->model('contributors')->addBlogContributor($user->id, $blog->id, $groupID)) {
             $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'Error assigning contributor', 'error');
         }
         
@@ -197,7 +181,7 @@ class Contributors extends GenericController
     {
         $contributorID = $this->request->getUrlParameter(2);
 
-        if (!$user = $this->modelUsers->getById($contributorID)) {
+        if (!$user = $this->model('useraccounts')->getById($contributorID)) {
             $this->response->redirect('/cms', 'Unable to find contributor', 'error');
         }
 
@@ -208,7 +192,7 @@ class Contributors extends GenericController
         $this->response->setVar('contributor', $user);
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Edit contributor - '. $user->name);
-        $this->response->setVar('groups', $this->modelGroups->get('*', ['blog_id' => $this->blog->id]));
+        $this->response->setVar('groups', $this->model('contributorgroups')->get('*', ['blog_id' => $this->blog->id]));
         $this->response->write('edit.tpl', 'Contributors');
     }
     
@@ -221,14 +205,14 @@ class Contributors extends GenericController
         $groupID = $this->request->getInt('fld_group');
 
         // Check group exists and belongs to this blog
-        if (!$group = $this->modelGroups->getGroupById($groupID)) {
+        if (!$group = $this->model('contributorgroups')->getGroupById($groupID)) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
         if ($group->blog_id != $this->blog->id) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
         }
 
-        if($this->model->update(['user_id' => $contributor->id, 'blog_id' => $this->blog->id], ['group_id' => $group->id])) {
+        if($this->model('contributors')->update(['user_id' => $contributor->id, 'blog_id' => $this->blog->id], ['group_id' => $group->id])) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Update successful', 'success');
         }
         else {
@@ -244,11 +228,11 @@ class Contributors extends GenericController
     {
         $contributorID = $this->request->getUrlParameter(2);
 
-        if (!$user = $this->modelUsers->getById($contributorID)) {
+        if (!$user = $this->model('useraccounts')->getById($contributorID)) {
             $this->response->redirect('/cms', 'Unable to find contributor', 'error');
         }
 
-        if ($this->model->delete(['blog_id' => $this->blog->id, 'user_id' => $contributorID])) {
+        if ($this->model('contributors')->delete(['blog_id' => $this->blog->id, 'user_id' => $contributorID])) {
             $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Contributor removed', 'success');
         }
         else {
@@ -270,7 +254,7 @@ class Contributors extends GenericController
         }
 
         $this->response->setVar('blog', $this->blog);
-        $this->response->setVar('permissions', \HamletCMS\Contributors\model\Permissions::getList());
+        $this->response->setVar('permissions', $this->model('permissions')::getList());
         $this->response->setTitle('Add contributors group');
         $this->response->write('creategroup.tpl', 'Contributors');
     }
@@ -307,7 +291,7 @@ class Contributors extends GenericController
             }
         }
 
-        $insert = $this->modelGroups->insert([
+        $insert = $this->model('contributorgroups')->insert([
             'blog_id'     => $this->blog->id,
             'name'        => $this->request->getString('fld_name'),
             'description' => $this->request->getString('fld_description'),
@@ -330,11 +314,11 @@ class Contributors extends GenericController
     {
         $groupID = $this->request->getUrlParameter(1);
 
-        if (!$group = $this->modelGroups->getGroupById($groupID)) {
+        if (!$group = $this->model('contributorgroups')->getGroupById($groupID)) {
             $this->response->redirect('/cms', 'Group not found', 'error');
         }
 
-        $this->blog = $this->modelBlogs->getBlogById($group->blog_id);
+        $this->blog = $this->model('blogs')->getBlogById($group->blog_id);
 
         $this->checkUserAccess();
 
@@ -344,7 +328,7 @@ class Contributors extends GenericController
             return $this->runEditGroup($group);
         }
 
-        $this->response->setVar('permissions', $this->modelPermissions->getList());
+        $this->response->setVar('permissions', $this->model('permissions')->getList());
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('group', $group);
         $this->response->setTitle('Edit contributors group');
@@ -377,7 +361,7 @@ class Contributors extends GenericController
             }
         }
 
-        $update = $this->modelGroups->update(['id' => $group->id], [
+        $update = $this->model('contributorgroups')->update(['id' => $group->id], [
             'name'        => $this->request->getString('fld_name'),
             'description' => $this->request->getString('fld_description'),
             'data'        => JSONHelper::arrayToJSON($data)

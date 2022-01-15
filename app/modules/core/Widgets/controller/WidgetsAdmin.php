@@ -19,14 +19,6 @@ class WidgetsAdmin extends GenericController
      */
     protected $modelPermissions;
     /**
-     * @var \rbwebdesigns\core\Request
-     */
-    protected $request;
-    /**
-     * @var \rbwebdesigns\core\Response
-     */
-    protected $response;
-    /**
      * @var \HamletCMS\Blog\Blog Active blog
      */
     protected $blog = null;
@@ -34,10 +26,8 @@ class WidgetsAdmin extends GenericController
     public function __construct()
     {
         // Initialise Models
-        $this->modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
-
+        $this->modelPermissions = HamletCMS::model('permissions');
+        parent::__construct();
         $this->setup();
     }
 

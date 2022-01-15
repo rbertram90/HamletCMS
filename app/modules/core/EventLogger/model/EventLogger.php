@@ -7,6 +7,9 @@ class EventLogger extends RBFactory
 {
     protected $tableName = 'eventlog';
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'eventlogger';
+
     const EVENT_POST_CREATED = 0;
     const EVENT_POST_UPDATED = 1;
     const EVENT_POST_DELETED = 2;

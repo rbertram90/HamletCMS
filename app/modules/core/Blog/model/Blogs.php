@@ -19,6 +19,9 @@ class Blogs extends RBFactory
     /** @var string */
     protected $tblcontributors;
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'blogs';
+
     /**
      * Instantiate the Factory passing in access to the database.
      * 

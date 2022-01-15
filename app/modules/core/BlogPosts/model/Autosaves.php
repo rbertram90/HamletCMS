@@ -13,6 +13,9 @@ class Autosaves extends RBFactory
     /** @var \rbwebdesigns\core\Database */
     protected $db;
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'autosaves';
+
     /**
      * Autosaves factory constructor
      * 

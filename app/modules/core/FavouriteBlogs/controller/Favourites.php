@@ -25,8 +25,8 @@ class Favourites extends GenericController
 
         $this->blog = HamletCMS::getActiveBlog();
         $this->currentUserID = HamletCMS::session()->currentUser['id'];
-        $this->modelFavouriteBlogs = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
-        $this->modelFavouritePosts = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouritePosts');
+        $this->modelFavouriteBlogs = HamletCMS::model('favouriteblogs');
+        $this->modelFavouritePosts = HamletCMS::model('favouriteposts');
     }
 
     public function addPostToFavourites()

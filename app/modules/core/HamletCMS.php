@@ -27,11 +27,14 @@ class HamletCMS
     /** @var array  parsed config files */
     protected static $config = [];
 
-    /** @var array  enabled modules */
+    /** @var \HamletCMS\Module[]  enabled modules */
     public static $modules = [];
 
     /** @var \rbwebdesigns\core\model\ModelManager */
     protected static $modelManager = null;
+
+    /** @var string[] aliases for model class */
+    protected static $modelMapping = [];
 
     /** @var string */
     public static $function = 'cms';
@@ -171,6 +174,13 @@ class HamletCMS
 
         // Establish connection
         self::databaseConnection();
+
+        if (substr($modelName, 0, 1) !== '\\') {
+            $modelCache = self::getCache('models');
+            if (array_key_exists($modelName, $modelCache)) {
+                $modelName = $modelCache[$modelName];
+            }
+        }
 
         return self::$modelManager->get($modelName);
     }
@@ -491,6 +501,10 @@ class HamletCMS
             $dirPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/templates";
             if (file_exists($dirPath)) {
                 $templatesCache[$module->key] = $dirPath;
+
+                if (php_sapi_name() == "cli") {
+                    print "INFO: Added template directory - ". $dirPath .PHP_EOL;
+                }
             }
         }
 
@@ -498,6 +512,38 @@ class HamletCMS
         fclose($file);
     }
 
+    /**
+     * Generate list of model aliases
+     */
+    public static function generateModelAliasCache() {
+        $cacheDir = self::getCacheDirectory();
 
-    
+        $file = fopen($cacheDir .'/models.json', 'w');
+        $modelCache = [];
+
+        foreach (self::$modules as $module) {
+            $folder = $module->core ? 'core' : 'addon';
+            $dirPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/model";
+            $namespace = '\\HamletCMS\\' . $module->key . '\\model\\';
+            if (file_exists($dirPath)) {
+                foreach (scandir($dirPath) as $modelfile) {
+                    $path_parts = pathinfo($modelfile);
+                    if ($path_parts['extension'] = 'php') {
+                        $class = $namespace . $path_parts['filename'];
+                        if (class_exists($class) && isset($class::$alias)) {
+                            $modelCache[$class::$alias] = $class;
+
+                            if (php_sapi_name() == "cli") {
+                                print "INFO: Added model alias - ". $class::$alias .PHP_EOL;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        fwrite($file, JSONHelper::arrayToJSON($modelCache));
+        fclose($file);
+    }
+
 }

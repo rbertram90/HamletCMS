@@ -13,6 +13,9 @@ class UserAccounts extends RBFactory
     /** @var string Database table name for this model */
     protected $tableName = 'users';
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'useraccounts';
+
     protected $passwordHash = '';
     protected $subClass = '\\HamletCMS\\UserAccounts\\User';
     

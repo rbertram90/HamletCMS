@@ -9,6 +9,9 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class Modules extends RBFactory
 {
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'modules';
+
     /**
      * @param \rbwebdesigns\core\model\ModelManager $modelFactory
      */

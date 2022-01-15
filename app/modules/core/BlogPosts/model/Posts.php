@@ -19,6 +19,9 @@ class Posts extends RBFactory
 
     /** @var string */
     protected $subClass;
+    
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'posts';
 
     /**
      * Posts factory constructor

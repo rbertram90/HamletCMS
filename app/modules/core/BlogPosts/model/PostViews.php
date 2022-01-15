@@ -6,6 +6,9 @@ use rbwebdesigns\core\model\RBFactory;
 class PostViews extends RBFactory
 {
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'postviews';
+
     function __construct($modelManager)
     {
         $this->tableName = TBL_POST_VIEWS;

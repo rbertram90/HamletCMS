@@ -6,6 +6,9 @@ use rbwebdesigns\core\model\RBFactory;
 
 class Menus extends RBFactory {
 
+    /** @var string Class alias for Hamlet model map */
+    public static $alias = 'menus';
+
     function __construct($modelManager)
     {
         $this->tableName = 'menus';
