@@ -21,7 +21,7 @@ class Modules extends RBFactory
 
     public function getList()
     {
-        return $this->db->selectAllRows($this->subClass, $this->tableName, '*', 'name ASC');
+        return $this->db->selectAllObjects($this->subClass, $this->tableName, '*', 'name ASC');
     }
 
 }

@@ -24,7 +24,7 @@
   "prefer-stable": true,
   "require": {
     "codeliner/array-reader" : "^2.0",
-    "smarty/smarty": "^3.1",
+    "smarty/smarty": "^4.0",
     "michelf/php-markdown": "^1.0",
     "athens/csrf": "^1.0",
     "rbertram90/core": "dev-master",

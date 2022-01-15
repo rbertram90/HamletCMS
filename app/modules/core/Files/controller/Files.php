@@ -9,6 +9,8 @@ use rbwebdesigns\core\ImageUpload;
 class Files extends GenericController
 {
     protected $modelBlogs;
+
+    /** @var \HamletCMS\Blog\Blog */
     protected $blog;
     
     public function __construct()
@@ -76,7 +78,7 @@ class Files extends GenericController
             $files = scandir($imagesDirectory);
             
             foreach($files as $filename) {
-                $ext = explode('.', $filename)[1];
+                $ext = explode('.', $filename)[1] ?? '';
                 if(strtolower($ext) == 'jpg' || strtolower($ext) == 'jpeg' || strtolower($ext) == 'png') {
                     $images[] = [
                         'name' => $filename,
@@ -185,7 +187,7 @@ class Files extends GenericController
             $upload->fileTypes = ['image/jpeg','image/png','image/jpg','image/gif','image/pjpeg'];
             $upload->upload($imageDirectory, $filename);
 
-            $blogConfig = $blog->config();
+            $blogConfig = $this->blog->config();
             $filesConfigExists = array_key_exists('files', $blogConfig) && array_key_exists('imagestyles', $blogConfig['files']);
 
             if ($filesConfigExists) {

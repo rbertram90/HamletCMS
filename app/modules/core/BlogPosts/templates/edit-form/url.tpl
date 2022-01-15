@@ -4,7 +4,7 @@
         <input type="checkbox" name="field_override_url" id="field_override_url" class="post-data-field" data-key="overrideLink" data-type="checkbox">
         <label for="field_override_url" class="inline">Manually set URL?</label>
     </p>
-    <input type="text" name="post_url" id="post_url" required size="50" autocomplete="off" value="{$post->link}" class="post-data-field" data-key="link">
+    <input type="text" name="post_url" id="post_url" required size="50" autocomplete="off" value="{if isset($post)}{$post->link}{/if}" class="post-data-field" data-key="link">
 </div>
 <script>
 {if $post->link_override}

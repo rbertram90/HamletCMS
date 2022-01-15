@@ -28,7 +28,7 @@
             Blogs <i class="dropdown icon"></i>
             <div class="menu">
                 {foreach from=$blogs item=blog}
-                    <a href="/cms/blog/overview/{$blog->id}" class="{$active} item">{$blog->name}</a>
+                    <a href="/cms/blog/overview/{$blog->id}" class="item">{$blog->name}</a>
                 {/foreach}
             </div>
         </div>

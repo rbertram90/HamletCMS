@@ -2,7 +2,7 @@
     <label for="teaser_image">Teaser image</label>
     <style>#teaser_image_image img { max-height: 200px; max-width: 200px; }</style>
     <div id="teaser_image_image">
-    {if $post->teaser_image != ''}
+    {if isset($post) && $post->teaser_image != ''}
         <img src="/blogdata/{$blog->id}/images/{$post->teaser_image}">
     {/if}
     </div>
@@ -12,7 +12,7 @@
     <button type="button" id="remove_teaser_image" class="ui icon button" data-no-spinner="true">
         <i class="remove icon"></i>
     </button>
-    <input type="hidden" name="teaser_image" value="{$post->teaser_image}" class="post-data-field" data-key="teaserImage">
+    <input type="hidden" name="teaser_image" value="{if isset($post)}{$post->teaser_image}{/if}" class="post-data-field" data-key="teaserImage">
 </div>
 
 <script>

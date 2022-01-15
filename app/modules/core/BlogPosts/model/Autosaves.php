@@ -10,14 +10,18 @@ class Autosaves extends RBFactory
 {
     protected $modelPosts;
 
+    /** @var \rbwebdesigns\core\Database */
+    protected $db;
+
     /**
      * Autosaves factory constructor
      * 
-     * @param \rbwebdesigns\core\ModelManager $modelManager
+     * @param \rbwebdesigns\core\model\ModelManager $modelManager
      */
     function __construct($modelManager)
     {
         // Access to the database class
+        
         $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_AUTOSAVES;
         $this->subClass = '\\HamletCMS\\BlogPosts\\Autosave';

@@ -24,6 +24,7 @@ class Blog
     protected $contributorsFactory = null;
     protected $posts = null;
     protected $postsFactory = null;
+    protected $config = null;
 
     /**
      * Blog class constructor
@@ -125,14 +126,15 @@ class Blog
     {
         $serverConfigPath = SERVER_PUBLIC_PATH ."/blogdata/{$this->id}/config.json";
 
-        if ($this->config) {
+        if ($this->config ?? false) {
             return $this->config;
         }
         elseif (file_exists($serverConfigPath)) {
             $this->config = JSONhelper::JSONFileToArray($serverConfigPath);
             return $this->config;
         }
-        return null;
+
+        return [];
     }
     
     /**

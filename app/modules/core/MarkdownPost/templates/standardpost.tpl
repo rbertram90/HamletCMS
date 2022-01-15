@@ -47,7 +47,7 @@
                 <button type="button" id="dark_mode_toggle" class="ui icon button" title="Toggle dark mode" data-no-spinner="true">
                     <i class="moon icon"></i>
                 </button>
-                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{$post->content}</textarea>
+                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{if isset($post)}{$post->content}{/if}</textarea>
                 <p style="font-size:80%;"><a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
             </div>
             

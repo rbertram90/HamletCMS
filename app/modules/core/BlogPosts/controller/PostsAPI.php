@@ -356,7 +356,7 @@ class PostsAPI extends GenericController
             'posts'     => $this->model->getPostsByBlog($blogID, $start, $limit, $showDrafts, $showScheduled, $sort),
         ];
         
-        if (CUSTOM_DOMAIN) {
+        if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
             $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
         }
 

@@ -29,7 +29,7 @@ class Module
         $templates = [];
         foreach ($templates_dir_contents as $folder) {
             if ($folder == '.' || $folder == '..') continue;
-            if (is_dir($templates_dir_contents . '/' . $folder)) {
+            if (is_dir(SERVER_PATH_TEMPLATES . '/' . $folder)) {
                 $templates[] = [
                     'name' => $folder
                 ];

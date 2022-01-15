@@ -31,7 +31,7 @@ class WidgetsView extends GenericController
         $widgets = [];
         $currentPost = HamletCMS::getActivePost();
 
-        if (CUSTOM_DOMAIN) {
+        if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
             $config = HamletCMS::config();
             $cmsDomain = $config['environment']['canonical_domain'];
         }
@@ -87,7 +87,7 @@ class WidgetsView extends GenericController
         }
 
         $config = HamletCMS::config();
-        if (CUSTOM_DOMAIN) {
+        if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
             $cmsDomain = $config['environment']['canonical_domain'];
             $pathPrefix = '';
         }

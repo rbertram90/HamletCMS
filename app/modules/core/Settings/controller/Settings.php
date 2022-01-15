@@ -103,7 +103,7 @@ class Settings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->updateBlogGeneral();
 
-        $config = $this->blog->config()['blog'];
+        $config = $this->blog->config()['blog'] ?? [];
         $this->response->setVar('config', $config);
         $this->response->setVar('tagList', json_encode($this->modelPosts->getAllTagsByBlog($this->blog->id)));
         $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
@@ -195,6 +195,7 @@ class Settings extends GenericController
      * @return array
      */
     protected function getTemplateList($type) {
+        if (!file_exists(SERVER_PATH_TEMPLATES . "/{$type}")) return [];
         $templateFolders = scandir(SERVER_PATH_TEMPLATES . "/{$type}");
         $templateData = [];
 
@@ -222,6 +223,14 @@ class Settings extends GenericController
         $configFile = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/template_config.json';
         if (file_exists($configFile)) {
             $config = JSONhelper::JSONFileToArray($configFile);
+            if (!isset($config['Zones'])) {
+                $config['Zones'] = [
+                    'header', 'footer', 'leftpanel', 'rightpanel'
+                ];
+            }
+            if (!isset($config['Imports'])) {
+                $config['Imports'] = [];
+            }
             $this->response->setVar('config', $config);
         }
         else {
@@ -235,7 +244,8 @@ class Settings extends GenericController
                 ],
                 'Includes' => [
                     'semantic-ui' => true
-                ]
+                ],
+                'Imports' => []
             ]);
         }
 

@@ -114,7 +114,7 @@ class HamletCMSResponse extends Response
      */
     public function enableSecureMode()
     {
-        $this->smarty->security = true;
+        $this->smarty->enableSecurity();
     }
     
 }

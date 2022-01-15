@@ -121,7 +121,7 @@ class UserAccounts extends RBFactory
      * Get all users
      */
     public function getAll($order = '') {
-        return $this->db->selectAllRows($this->subClass, $this->tableName, '*', $order);
+        return $this->db->selectAllObjects($this->subClass, $this->tableName, '*', $order);
     }
 
 }

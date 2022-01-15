@@ -20,9 +20,9 @@
 
     <link rel="stylesheet" href="{$blog->resourcePath()}/default.css?v={'His'|date}" type="text/css">
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS 
     <style type="text/css" id="customcss">{$custom_css}</style>
-    
+    -->
     {$page_headerbackground}
 </head>
 <body id="blog">

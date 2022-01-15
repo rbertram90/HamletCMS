@@ -37,12 +37,14 @@ use HamletCMS\HamletCMS;
     if (!isset($_SESSION)) session_start();
     
     if (IS_DEVELOPMENT) {
-        error_reporting(E_STRICT && E_ALL);
         ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
     }
     else {
         error_reporting(0);
         ini_set('display_errors', 0);
+        ini_set('display_startup_errors', 0);
     }
 
 /****************************************************************
@@ -58,10 +60,6 @@ use HamletCMS\HamletCMS;
     // Store the configuration
     HamletCMS::addToConfig($config);
 
-// Continue if not installing
-if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
-
-
 /****************************************************************
   Database Constants
 ****************************************************************/
@@ -69,6 +67,15 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     if(!array_key_exists('database', $config)) die("Setup error - no database config found");
     $databaseCredentials = $config['database'];
 
+    define("TBL_BLOGS", $databaseCredentials['name'] . ".blogs");
+    define("TBL_POSTS", $databaseCredentials['name'] . ".posts");
+    define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
+    define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
+    define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
+    define("TBL_USERS", $databaseCredentials['name'] . ".users");
+
+if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
+    /** @var rbwebdesigns\core\ObjectDatabase */
     $dbc = HamletCMS::databaseConnection();
     $checkInstall = $dbc->countRows("information_schema.tables", [
         'table_schema' => $databaseCredentials['name'],
@@ -79,21 +86,14 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
     if ($checkInstall == 0) {
         HamletCMS::response()->redirect('/cms/install.php');
     }
-
-    define("TBL_BLOGS", $databaseCredentials['name'] . ".blogs");
-    define("TBL_POSTS", $databaseCredentials['name'] . ".posts");
-    define("TBL_POST_VIEWS", $databaseCredentials['name'] . ".postviews");
-    define("TBL_AUTOSAVES", $databaseCredentials['name'] . ".postautosaves");
-    define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
-    define("TBL_USERS", $databaseCredentials['name'] . ".users");
     
-
 /****************************************************************
   Set-Up Hooks
 ****************************************************************/    
 
     // Import all modules
     // $directoryListing = new \DirectoryIterator(SERVER_ROOT . '/app/modules');
+    /** @var \HamletCMS\SiteAdmin\model\Modules */
     $moduleModel = HamletCMS::model('\\HamletCMS\\SiteAdmin\\model\\Modules');
     $modules = $moduleModel->getList();
 
@@ -101,5 +101,4 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
         if ($module->enabled != 1) continue;
         HamletCMS::registerModule($module->name);
     }
-
 }

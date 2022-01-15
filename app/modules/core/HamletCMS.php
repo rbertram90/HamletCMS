@@ -5,6 +5,7 @@ use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\model\ModelManager;
 use rbwebdesigns\core\JSONHelper;
+use rbwebdesigns\core\ObjectDatabase;
 
 /**
  * /app/cms.php
@@ -184,7 +185,7 @@ class HamletCMS
             self::$modelManager = ModelManager::getInstance(self::$config['database']['name']);
 
             // Now returning all SELECT results as objects
-            self::$modelManager->setDatabaseClass(new \rbwebdesigns\core\ObjectDatabase());
+            self::$modelManager->setDatabaseClass(new ObjectDatabase());
         }
 
         if (!self::$modelManager->getDatabaseConnection()->isConnected()) {
@@ -375,8 +376,8 @@ class HamletCMS
 
         foreach (self::$modules as $module) {
             $folder = $module->core ? 'core' : 'addon';
-            if (file_exists(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/menu.json")) {
-                $links = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/menu.json");
+            $jsonPath = SERVER_MODULES_PATH . "/{$folder}/{$module->key}/menu.json";
+            if ($links = JSONhelper::JSONFileToArray($jsonPath)) {
                 foreach ($links as $link) {
                     if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
 

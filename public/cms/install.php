@@ -40,8 +40,8 @@ use HamletCMS\HamletCMS;
     
         $modules[$module] = [
             'core' => 0,
-            'description' => $info['description'],
-            'dependencies' => $info['dependencies'],
+            'description' => $info['description'] ?? '',
+            'dependencies' => $info['dependencies'] ?? [],
             'locked' => 0 // addon modules cannot be locked
         ];
     }
@@ -121,7 +121,7 @@ use HamletCMS\HamletCMS;
                 'name' => $key,
                 'enabled' => 1,
                 'locked' => $module['locked'],
-                'description' => $module['description'],
+                'description' => $module['description'] ?? '',
                 'core' => $module['core']
             ]);
 
@@ -151,6 +151,7 @@ use HamletCMS\HamletCMS;
             'admin'           => 1
         ];
 
+        /** @var \HamletCMS\UserAccounts\model\UserAccounts  */
         $modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
 
         // Misc folders
@@ -164,6 +165,7 @@ use HamletCMS\HamletCMS;
             || $accountData['password'] != $accountData['passwordConfirm']) {
             $response->redirect('/cms/install.php', 'Email or passwords did not match', 'error');
         }
+        var_dump($accountData['username']);
 
         $checkUser = $modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
         if ($checkUser && $checkUser['id']) {

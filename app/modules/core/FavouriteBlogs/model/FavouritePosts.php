@@ -11,6 +11,9 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class FavouritePosts extends RBFactory
 {
+    /** @var \rbwebdesigns\core\ObjectDatabase */
+    protected $db;
+
     /**
      * Instantiate the Factory passing in access to the database.
      *
@@ -91,7 +94,7 @@ class FavouritePosts extends RBFactory
      */
     public function getAllFavourites($userID)
     {
-        return $this->db->selectMultipleRows($this->subClass, $this->tableName, '*', [
+        return $this->db->selectMultipleObjects($this->subClass, $this->tableName, '*', [
             'user_id' => $userID
         ]);
     }

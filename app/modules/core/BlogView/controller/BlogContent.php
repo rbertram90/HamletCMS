@@ -216,9 +216,13 @@ class BlogContent extends GenericController
         $summarylength = 150;
         $postsperpage = 5;
         $loadtype = 'paginated'; // loadmore
+        $this->response->setVar('postConfig', [
+            'listtype' => 'default',
+            'parentclasslist' => '',
+        ]);
 
         if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'];
+            $postConfig = $blogConfig['posts'] ?? [];
             if (isset($postConfig['loadtype'])) $loadtype = $postConfig['loadtype'];
 
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
@@ -369,7 +373,7 @@ class BlogContent extends GenericController
 
         
 
-        return $footerResponse->write($templatePath, $source, false) . $footerContent;
+        return $footerResponse->write($templatePath, $source, false) . ($footerContent ?? '');
     }
     
     /**
@@ -442,7 +446,7 @@ class BlogContent extends GenericController
         $postsperpage = 5;
 
         if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'];
+            $postConfig = $blogConfig['posts'] ?? [];
             if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
             $this->response->setVar('postConfig', $postConfig);
         }
@@ -489,7 +493,7 @@ class BlogContent extends GenericController
         $postsperpage = 5;
 
         if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'];
+            $postConfig = $blogConfig['posts'] ?? [];
             if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
             $this->response->setVar('postConfig', $postConfig);
         }
@@ -559,7 +563,7 @@ class BlogContent extends GenericController
         $postsperpage = 5;
 
         if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'];
+            $postConfig = $blogConfig['posts'] ?? [];
             if (isset($postConfig['loadtype'])) $loadtype = $postConfig['loadtype'];
 
             if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];

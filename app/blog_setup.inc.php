@@ -57,7 +57,7 @@ CSRF::init();
     $config = HamletCMS::config();
     $page_controller = new BlogContent(BLOG_KEY);
     
-    if (CUSTOM_DOMAIN) {
+    if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
         $host = $config['environment']['canonical_domain'];
         $action = $request->getControllerName();
         $pathPrefix = $blogDir = '';
@@ -72,11 +72,8 @@ CSRF::init();
     $session = HamletCMS::session();
 
     // Check if we are logged in
-    if (gettype($session->currentUser) == 'array') {
-        define('USER_AUTHENTICATED', true);
-    }
-    else {
-        define('USER_AUTHENTICATED', false);
+    if (!defined('USER_AUTHENTICATED')) {
+        define('USER_AUTHENTICATED', gettype($session->currentUser) === 'array');
     }
 
     $response->addScript($host .'/resources/js/jquery-1.8.0.min.js');

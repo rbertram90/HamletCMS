@@ -1,4 +1,4 @@
-{if count($posts) == 0}
+{if strlen($posts) === 0}
     <p class="ui message info">Nothing has been posted on this blog</p>
 {/if}
 

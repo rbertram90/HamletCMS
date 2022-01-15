@@ -74,7 +74,7 @@ class Api extends GenericController
 
         $tags = $this->modelPosts->countAllTagsByBlog($blog->id, $sort);
 
-        if (CUSTOM_DOMAIN) {
+        if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
             $this->response->addHeader('Access-Control-Allow-Origin', $blog->domain);
         }
         $this->response->setBody(JSONhelper::arrayToJSON($tags));

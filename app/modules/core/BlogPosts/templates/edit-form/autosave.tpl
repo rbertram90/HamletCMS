@@ -1,4 +1,4 @@
-{if $mode=='edit' and array_key_exists('autosave', $post)}
+{if $mode=='edit' and property_exists($post, 'autosave')}
 <script>
     function replaceContent() {
         $("#post_title").val($("#autosave_title").val());

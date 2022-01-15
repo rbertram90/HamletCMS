@@ -32,7 +32,7 @@ class PostSettings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->updatePostsSettings();
 
-        $this->response->setVar('postConfig', $this->getPostConfig());
+        $this->response->setVar('postConfig', $this->getPostConfig() ?? []);
         $this->response->setVar('postTemplate', $this->getPostTeaserTemplate());
         $this->response->setVar('postFullTemplate', $this->getFullPostTemplate());
         $this->response->setVar('cardTemplate', $this->getPostCardTemplate());
@@ -56,11 +56,13 @@ class PostSettings extends GenericController
             if (!isset($config['posts']['postsperpage'])) $config['posts']['postsperpage'] = 5;
             if (!isset($config['posts']['postsummarylength'])) $config['posts']['postsummarylength'] = 200;
             if (!isset($config['posts']['listtype'])) $config['posts']['listtype'] = 'items';
+            if (!isset($config['posts']['parentclasslist'])) $config['posts']['parentclasslist'] = '';
+            if (!isset($config['posts']['loadtype'])) $config['posts']['loadtype'] = 'default';
             return $config['posts'];
         }
         else {
             // No posts config exists - send defaults
-            return ['postsperpage' => 5, 'postsummarylength' => 200];
+            return ['postsperpage' => 5, 'postsummarylength' => 200, 'parentclasslist' => '', 'listtype' => '', 'loadtype' => ''];
         }
     }
 
