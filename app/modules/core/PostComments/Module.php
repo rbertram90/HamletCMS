@@ -189,4 +189,15 @@ class Module
         };
     }
 
+    /**
+     * Run tests
+     */
+    public function runUnitTests($args) {
+        if ($args['context'] === 'post') {
+            $test = new tests\CommentsTest();
+            $test->postID = $args['post'];
+            $test->blogID = $args['blogID'];
+            $test->run();
+        }
+    }
 }

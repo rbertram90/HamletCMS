@@ -32,4 +32,12 @@ abstract class TestResult implements TestResultInterface
         print "Debug: " . $message . PHP_EOL;
     }
 
+    /**
+     * 
+     */
+    protected function fail(string $message) {
+        print "Test Failed: " . $message . PHP_EOL;
+        exit;
+    }
+
 }

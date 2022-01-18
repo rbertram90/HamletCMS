@@ -9,7 +9,7 @@ class FakeRequest extends Request
     public $method = 'GET';
 
     /**
-     * Allow request variables to be set manually
+     * Set a $_REQUEST variable
      * 
      * @param string $name
      * @param mixed $value

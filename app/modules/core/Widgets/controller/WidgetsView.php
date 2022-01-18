@@ -96,7 +96,7 @@ class WidgetsView extends GenericController
             $pathPrefix = "/blogs/{$this->blog->id}";
         }
 
-        $widgetCache = WidgetsAdmin::getInstalledWidgets();
+        $widgetCache = HamletCMS::getCache('widgets');
         if (!array_key_exists($widget, $widgetCache)) {
             die('widget "'.$widget.'" not found in available widgets');
         }

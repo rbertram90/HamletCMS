@@ -3,6 +3,7 @@ namespace HamletCMS;
 
 use rbwebdesigns\core\Response;
 use rbwebdesigns\core\JSONHelper;
+use Smarty_Security;
 
 class HamletCMSResponse extends Response
 {
@@ -13,7 +14,8 @@ class HamletCMSResponse extends Response
         $this->smarty = new \Smarty;
 
         $cacheDirectories = [
-            'main' => SERVER_ROOT.'/app/view/smarty/'
+            'main' => SERVER_ROOT.'/app/view/smarty/',
+            'public' => SERVER_PATH_BLOGS,
         ];
 
         $cacheDir = HamletCMS::getCacheDirectory();
@@ -114,7 +116,12 @@ class HamletCMSResponse extends Response
      */
     public function enableSecureMode()
     {
-        $this->smarty->enableSecurity();
+        $my_security_policy = new Smarty_Security($this->smarty);
+        $my_security_policy->php_functions = array_merge($my_security_policy->php_functions, [
+            'strlen', 'str_replace'
+        ]);
+
+        $this->smarty->enableSecurity($my_security_policy);
     }
     
 }
