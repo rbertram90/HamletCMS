@@ -66,9 +66,11 @@ class Module
         $dbc->query("CREATE TABLE `postautosaves` (
             `post_id` int(11) NOT NULL,
             `content` text NOT NULL,
-            `summary` text NOT NULL,
+            `summary` text,
             `title` varchar(255) NOT NULL,
-            `tags` varchar(255) NOT NULL,
+            `tags` varchar(255),
+            `link` varchar(150) NOT NULL,
+            `link_override` tinyint(1) NOT NULL DEFAULT '0',
             `date_last_saved` datetime NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 

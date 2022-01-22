@@ -8,6 +8,7 @@ use rbwebdesigns\core\Sanitize;
 
 class Autosaves extends RBFactory
 {
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
 
     /** @var \rbwebdesigns\core\Database */
@@ -28,7 +29,7 @@ class Autosaves extends RBFactory
         $this->db = $modelManager->getDatabaseConnection();
         $this->tableName = TBL_AUTOSAVES;
         $this->subClass = '\\HamletCMS\\BlogPosts\\Autosave';
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->modelPosts = HamletCMS::model('posts');
         
         // @todo can we determine these dynamically?
         $this->fields = [
@@ -44,9 +45,10 @@ class Autosaves extends RBFactory
     }
 
     /**
-     * Auto Save Functionality
+     * Autosave functionality
      * 
-     * @todo Add hook for custom post type fields!
+     * @param int $postID
+     * @param mixed[] $data
      */
     public function autosavePost($postID, $data)
     {
@@ -54,62 +56,62 @@ class Autosaves extends RBFactory
         $newTags = Posts::createSafeTagList($data['tags']);
         $currentUser = HamletCMS::session()->currentUser;
 
+        // if (isset($data['timestamp'])) {
+        //     $data['timestamp'] = date('Y-m-d H:i:s', strtotime($data['timestamp']));
+        // }
+
         if ($postID <= 0) {
             // Post is not saved into the main table - create it as a draft
-            $this->modelPosts->insert([
-                'content'         => $data['content'],
-                'title'           => $data['title'],
+            $this->modelPosts->insert(array_merge($data, [
                 'tags'            => $newTags,
-                'type'            => $data['type'],
-                'blog_id'         => $data['blogID'],
                 'author_id'       => $currentUser['id'],
                 'draft'           => 1,
                 'initialautosave' => 1,
-                'link'            => Posts::createSafePostUrl($data['title']),
+                'link'            => $data['link'] ?? Posts::createSafePostUrl($data['title']),
                 'timestamp'       => date('Y-m-d H:i:s')
-            ]);
+            ]));
             
             $postID = $this->db->getLastInsertID();
         }
         else {
+            // Update the post if it's only ever been autosaved.
             $arrayPost = $this->modelPosts->get('initialautosave', ['id' => $postID], '', '', false);
-        
+
+            // These fields should not be changed at this point.
+            unset($data['type'], $data['blog_id']);
+
             if ($arrayPost->initialautosave == 1) {
-                // Update the post
-                $update = $this->modelPosts->update(['id' => $postID], [
-                    'content'         => $data['content'],
-                    'title'           => $data['title'],
-                    'link'            => Posts::createSafePostUrl($data['title']),
-                    'tags'            => $newTags,
-                ]);
+                $update = $this->modelPosts->update(['id' => $postID], array_merge($data, [
+                    'link' => $data['link'] ?? Posts::createSafePostUrl($data['title']),
+                    'tags' => $newTags,
+                ]));
             }
         }
+
+        // These fields are not part of autosave table
+        unset($data['type'], $data['blog_id'], $data['timestamp']);
         
         // Check for existing save for this post
         $autosaveCheck = $this->db->countRows($this->tableName, ["post_id" => $postID]);
         
         if ($autosaveCheck == 1) {
             // Found - Update
-            $update = $this->db->updateRow($this->tableName, ['post_id' => $postID], [
-                'content'         => $data['content'],
-                'title'           => $data['title'],
+            $update = $this->db->updateRow($this->tableName, ['post_id' => $postID], array_merge($data, [
                 'tags'            => $newTags,
+                'link'            => $data['link'] ?? Posts::createSafePostUrl($data['title']),
                 'date_last_saved' => date('Y-m-d H:i:s')
-            ]);
-            if ($update === false) return false;
-            else return $postID;
+            ]));
+            return $update ? $postID : false;
         }
         else {
             // Not Found - Create
-            $insert = $this->db->insertRow($this->tableName, array(
+            $insert = $this->db->insertRow($this->tableName, array_merge($data, [
                 'post_id'         => $postID,
-                'content'         => $data['content'],
-                'title'           => $data['title'],
                 'tags'            => $newTags,
+                'link'            => $data['link'] ?? Posts::createSafePostUrl($data['title']),
                 'date_last_saved' => date('Y-m-d H:i:s')
-            ));
-            if ($insert === false) return false;
-            else return $postID;
+            ]));
+            return $insert ? $postID : false;
         }
     }
     

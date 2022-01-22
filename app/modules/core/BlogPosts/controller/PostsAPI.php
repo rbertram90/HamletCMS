@@ -281,14 +281,27 @@ class PostsAPI extends GenericController
         $postID = $this->request->getInt('postID');
 
         $data = [
-            'title'         => $this->request->getString('title'),
-            'summary'       => $this->request->getString('summary'),
-            'content'       => $this->request->getString('content'),
-            'tags'          => $this->request->getString('tags'),
-            'type'          => $this->request->getString('type'),
-            'blogID'        => $this->request->getInt('blogID'),
-            'timestamp'     => $this->request->getInt('date'),
+            'title'     => $this->request->getString('title'),
+            'summary'   => $this->request->getString('summary'),
+            'content'   => $this->request->getString('content'),
+            'tags'      => $this->request->getString('tags'),
+            'type'      => $this->request->getString('type'),
+            'blog_id'   => $this->request->getInt('blogID'),
+            'timestamp' => $this->request->getString('date'),
         ];
+
+        // Set the URL path
+        $url = '';
+        if ($this->request->get('overrideLink', false)) {
+            $data['link_override'] = 1;
+            $url = $this->request->getString('link');
+            $url = $this->model->createSafePostUrl($url);
+        }
+        if (!$url) {
+            $data['link_override'] = 0;
+            $url = $this->model->createSafePostUrl($data['title']);
+        }
+        $data['link'] = $url;
 
         // Populate custom fields
         HamletCMS::runHook('onBeforeAutosave', ['post' => &$data]);
