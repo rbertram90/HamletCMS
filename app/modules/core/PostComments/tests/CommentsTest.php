@@ -53,7 +53,7 @@ class CommentsTest extends TestResult
         $comment = $commentsModel->get('*', ['message' => $commentText], '', 1, false);
         
         if (!$comment instanceof Comment) {
-            $this->fail("Error: Test failed - could not load created comment.");
+            $this->fail("Could not load created comment.");
         }
 
         $this->request->setUrlParameter(1, $comment->id);
@@ -62,7 +62,7 @@ class CommentsTest extends TestResult
         $redirect = $this->response->redirect;
 
         if ($redirect['messageType'] !== 'success') {
-            $this->fail("Error: Test failed - " . $redirect['message']);
+            $this->fail($redirect['message']);
         }
 
         $this->log("Passed CommentsTest::Approve");

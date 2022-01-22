@@ -209,35 +209,17 @@ class BlogContent extends GenericController
      */
     public function viewPostLister()
     {
-        $blogConfig = $this->blog->config();
         $pageNum = $this->request->getInt('s', 1);
-        $postConfig = null;
-        $showsocialicons = 1;
-        $summarylength = 150;
-        $postsperpage = 5;
-        $loadtype = 'paginated'; // loadmore
-        $this->response->setVar('postConfig', [
-            'listtype' => 'default',
-            'parentclasslist' => '',
-        ]);
-
-        if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'] ?? [];
-            if (isset($postConfig['loadtype'])) $loadtype = $postConfig['loadtype'];
-
-            if (isset($postConfig['postsummarylength'])) $summarylength = $postConfig['postsummarylength'];
-            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
-            if (!key_exists('extraclasses', $postConfig)) $postConfig['extraclasses'] = 'ui items';
-
-            $this->response->setVar('postConfig', $postConfig);
-        }
+        $postConfig = $this->getPostListerConfig();
+        $postsperpage = $postConfig['postsperpage'] ?? 5;
+        $this->response->setVar('postConfig', $postConfig);
 
         $postlist = $this->modelPosts->getPostsByBlog($this->blogID, $pageNum, $postsperpage);
-        $output = "";
-
+        
         $isContributor = HamletCMS::$userGroup !== false;
         $this->response->setVar('userIsContributor', $isContributor);
 
+        $output = "";
         foreach ($postlist as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
         }
@@ -250,7 +232,7 @@ class BlogContent extends GenericController
         $this->response->setVar('pagecount', ceil($postTotal / $postsperpage));
 
         $this->response->setTitle($this->blog->name);
-        $this->response->setVar('loadtype', $loadtype);
+        $this->response->setVar('loadtype', $postConfig['loadtype']);
         $this->response->setVar('posts', $output);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postshome.tpl', 'BlogView');
@@ -441,17 +423,17 @@ class BlogContent extends GenericController
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
-        $blogConfig = $this->blog->config();
-        $postConfig = null;
-        $postsperpage = 5;
+        $postConfig = $this->getPostListerConfig();
+        $this->response->setVar('postConfig', $postConfig);
+        $postsperpage = $postConfig['postsperpage'] ?? 5;
+        $postlist = [];
+        $authorName = 'Unknown';
 
-        if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'] ?? [];
-            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
-            $this->response->setVar('postConfig', $postConfig);
+        if ($author) {
+            $postlist = $this->modelPosts->getPostsByAuthor($this->blogID, $author_id, $postsperpage, $pageNum);
+            $authorName = $author->name;
         }
 
-        $postlist = $this->modelPosts->getPostsByAuthor($this->blogID, $author_id, $postsperpage, $pageNum);
         $output = "";
         foreach ($postlist as $post) {
             $output.= $this->generatePostTemplate($post, $postConfig, 'teaser');
@@ -465,9 +447,10 @@ class BlogContent extends GenericController
         $this->response->setVar('pagecount', ceil($totalPosts / $postsperpage));
 
         // Set Page Title
-        $this->response->setTitle("Posts created by {$author->name} - {$this->blog->name}");
+        $this->response->setTitle("Posts created by {$authorName} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
-        $this->response->setVar('authorName', $author->name);
+        $this->response->setVar('loadtype', $postConfig['loadtype']);
+        $this->response->setVar('authorName', $author->name ?? '');
         $this->response->setVar('posts', $output);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postsbyauthor.tpl', 'BlogView');
@@ -488,16 +471,9 @@ class BlogContent extends GenericController
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
 
-        $blogConfig = $this->blog->config();
-        $postConfig = null;
-        $postsperpage = 5;
-
-        if (isset($blogConfig['posts'])) {
-            $postConfig = $blogConfig['posts'] ?? [];
-            if (isset($postConfig['postsperpage'])) $postsperpage = $postConfig['postsperpage'];
-            $this->response->setVar('postConfig', $postConfig);
-        }
-
+        $postConfig = $this->getPostListerConfig();
+        $this->response->setVar('postConfig', $postConfig);
+        $postsperpage = $postConfig['postsperpage'] ?? 5;
         $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag, $postsperpage, $pageNum);
 
         $output = "";
@@ -520,6 +496,28 @@ class BlogContent extends GenericController
         $this->response->write('posts/postsbytag.tpl', 'BlogView');
     }
     
+    /**
+     * Get the config required to pass to multipleposts.tpl
+     */
+    protected function getPostListerConfig()
+    {
+        $blogConfig = $this->blog->config();
+        $postConfig = [
+            'listtype' => 'default',
+            'parentclasslist' => '',
+            'postsummarylength' => 300,
+            'loadtype' => 'default',
+            'postsperpage' => 5,
+            'extraclasses' => 'ui items',
+        ];
+
+        if (isset($blogConfig['posts'])) {
+            $postConfig = array_merge($postConfig, $blogConfig['posts']);
+        }
+
+        return $postConfig;
+    }
+
     /**
      * Get template configuration data from file
      * 

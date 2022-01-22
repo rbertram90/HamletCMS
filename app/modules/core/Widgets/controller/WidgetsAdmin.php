@@ -3,21 +3,17 @@
 namespace HamletCMS\Widgets\controller;
 
 use HamletCMS\GenericController;
-use HamletCMS\Contributors\model\ContributorGroups;
-use HamletCMS\Menu;
 use HamletCMS\HamletCMS;
-use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\JSONHelper;
-use rbwebdesigns\core\HTMLFormTools;
-use rbwebdesigns\core\AppSecurity;
-use Codeliner\ArrayReader\ArrayReader;
 
 class WidgetsAdmin extends GenericController
 {
+    
     /**
      * @var \HamletCMS\Contributors\model\Permissions
      */
     protected $modelPermissions;
+
     /**
      * @var \HamletCMS\Blog\Blog Active blog
      */
@@ -135,11 +131,32 @@ class WidgetsAdmin extends GenericController
         
         if (file_exists($widgetSettingsFilePath) && filesize($widgetSettingsFilePath) > 0) {
             // Make sure the groups match the template settings
-            $widgets = JSONhelper::JSONFileToArray($widgetSettingsFilePath);
-            return $widgets;
+            return array_merge(
+                $this->getZonesFromTemplate($blogID),
+                JSONhelper::JSONFileToArray($widgetSettingsFilePath)
+            );
         }
         
         return $this->createWidgetSettingsFile($blogID);
+    }
+
+    /**
+     * Get zones from template settings
+     * 
+     * @return string[]
+     */
+    protected function getZonesFromTemplate($blogID) {
+        $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            
+        if (array_key_exists('Zones', $templateConfig)) {
+            $zones = [];
+            foreach ($templateConfig['Zones'] as $zone) {
+                $zones[$zone] = [];
+            }
+            return $zones;
+        }
+
+        return [];
     }
     
     /**
@@ -152,12 +169,10 @@ class WidgetsAdmin extends GenericController
         if($widgetConfigFile = fopen(SERVER_PATH_BLOGS . '/' . $blogID . '/widgets.json', 'w'))
         {
             $defaultWidgetConfig = [];
-            $templateConfig = JSONHelper::JSONFileToArray(SERVER_PATH_BLOGS.'/' . $blogID . '/template_config.json');
+            $templateZones = $this->getZonesFromTemplate($blogID);
             
-            if (array_key_exists('Zones', $templateConfig)) {
-                foreach ($templateConfig['Zones'] as $zone) {
-                    $defaultWidgetConfig[$zone] = [];
-                }
+            if (count($templateZones) > 0) {
+                $defaultWidgetConfig = $this->getZonesFromTemplate($blogID);
             }
             else {
                 $defaultWidgetConfig['header'] = [];

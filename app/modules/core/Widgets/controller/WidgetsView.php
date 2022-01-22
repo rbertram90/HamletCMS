@@ -86,23 +86,19 @@ class WidgetsView extends GenericController
             die('widget "'.$widget.'" not found');
         }
 
-        $config = HamletCMS::config();
-        if (defined('CUSTOM_DOMAIN') && CUSTOM_DOMAIN) {
-            $cmsDomain = $config['environment']['canonical_domain'];
-            $pathPrefix = '';
-        }
-        else {
-            $cmsDomain = '';
-            $pathPrefix = "/blogs/{$this->blog->id}";
-        }
-
         $widgetCache = HamletCMS::getCache('widgets');
         if (!array_key_exists($widget, $widgetCache)) {
-            die('widget "'.$widget.'" not found in available widgets');
+            die('widget "'.$widget.'" not found in available widgets.');
         }
         $className = $widgetCache[$widget]['class'];
         $widgetClass = new $className();
-        foreach ($widgetsConfig[$section][$widget] as $name => $value) {
+        $settings = $widgetsConfig[$section][$widget] ?? [];
+
+        if (method_exists($widgetClass, 'defaultSettings')) {
+            $settings = array_merge($widgetClass->defaultSettings(), $settings);
+        }
+
+        foreach ($settings as $name => $value) {
             $widgetClass->$name = $value;
             $this->response->setVar($name, $value);
         }

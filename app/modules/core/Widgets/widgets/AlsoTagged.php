@@ -27,4 +27,11 @@ class AlsoTagged extends AbstractWidget
         $this->response->write('alsotagged.tpl', 'Widgets');
     }
 
+    public function defaultSettings() {
+        return [
+            'heading' => 'Also tagged',
+            'current_post' => false,
+        ];
+    }
+
 }

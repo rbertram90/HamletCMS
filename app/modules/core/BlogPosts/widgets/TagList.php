@@ -23,4 +23,14 @@ class TagList extends AbstractWidget
         $this->response->write('widgets/tagsList.tpl', 'BlogPosts');
     }
 
+    public function defaultSettings() {
+        return [
+            'heading' => 'Tags',
+            'maxposts' => 10,
+            'lowerlimit' => 1,
+            'display' => 'list',
+            'sort' => 'text',
+        ];
+    }
+
 }

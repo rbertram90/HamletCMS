@@ -5,7 +5,7 @@ namespace HamletCMS\Widgets;
 use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
-class AbstractWidget
+abstract class AbstractWidget
 {
     /** @var \rbwebdesigns\core\Request */
     protected $request;
@@ -34,7 +34,7 @@ class AbstractWidget
     public function config()
     {
         if (is_null($this->config)) {
-            $file = SERVER_PATH_BLOGS ."/{$this->blog->id}/widgets.json";
+            $file = SERVER_PATH_BLOGS . "/{$this->blog->id}/widgets.json";
             if (file_exists($file)) {
                 $widgetsConfig = JSONhelper::JSONFileToArray($file);
                 $this->config = $widgetsConfig[$this->section][$this->widget];
@@ -49,7 +49,6 @@ class AbstractWidget
      * function to get the data required and then pass
      * to a smarty template.
      */
-    public function render() {
-        
-    }
+    abstract public function render();
+
 }

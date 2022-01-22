@@ -18,4 +18,12 @@ class TrendingPosts extends AbstractWidget
         $this->response->write('widgets/recentPosts.tpl', 'BlogPosts');
     }
 
+    public function defaultSettings() {
+        return [
+            'heading' => 'Trending posts',
+            'maxposts' => 6,
+            'style' => 'none',
+        ];
+    }
+
 }

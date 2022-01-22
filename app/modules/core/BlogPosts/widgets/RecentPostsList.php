@@ -22,4 +22,12 @@ class RecentPostsList extends AbstractWidget
         $this->response->write('widgets/recentPosts.tpl', 'BlogPosts');
     }
 
+    public function defaultSettings() {
+        return [
+            'heading' => 'Recent Posts',
+            'maxposts' => 6,
+            'style' => 'none',
+        ];
+    }
+
 }
