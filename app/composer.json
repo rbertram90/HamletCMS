@@ -10,14 +10,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/rbertram90/HamletCMS-Installer.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/rbertram90/SteamImport.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/rbertram90/LayoutPost.git"
     }
   ],
   "minimum-stability": "dev",
@@ -27,9 +19,7 @@
     "smarty/smarty": "^4.0",
     "michelf/php-markdown": "^1.0",
     "athens/csrf": "^1.0",
-    "rbertram90/core": "dev-master",
-    "rbwebdesigns/hamlet-cms-steam-import": "dev-master",
-    "rbwebdesigns/hamlet-cms-layout-post": "dev-master"
+    "rbertram90/core": "dev-master"
   },
   "extra": {
 	  "installer-types": ["hamlet-cms-module", "hamlet-cms-template"],
