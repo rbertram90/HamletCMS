@@ -4,6 +4,12 @@ namespace HamletCMS;
 
 use rbwebdesigns\core\JSONHelper;
 
+/**
+ * Class Menu.
+ * 
+ * Provides a structure for CMS menus, menus for blogs are
+ * handled seperately in the BlogMenus module.
+ */
 class Menu
 {
     /**
@@ -27,6 +33,8 @@ class Menu
     }
 
     /**
+     * Add a link to the menu.
+     * 
      * @param \HamletCMS\MenuLink $link
      * 
      * @return self
@@ -38,6 +46,8 @@ class Menu
     }
     
     /**
+     * Get all links in this menu.
+     * 
      * @return array
      */
     public function getLinks()
@@ -57,14 +67,11 @@ class Menu
      */
     protected function populateLinksFromCache()
     {
-        $cacheFilePath = SERVER_ROOT . '/cache/menus.json';
-
-        if (!file_exists($cacheFilePath)) {
+        $cache = HamletCMS::getCache('menus');
+        if (!$cache) {
             HamletCMS::generateMenuCache();
+            $cache = HamletCMS::getCache('menus');
         }
-
-        $cache = JSONHelper::JSONFileToArray($cacheFilePath);
-
         if (!array_key_exists($this->key, $cache)) return false;
 
         foreach ($cache[$this->key] as $linkData) {

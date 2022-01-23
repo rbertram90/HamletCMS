@@ -12,9 +12,7 @@ class Menus extends RBFactory {
     function __construct($modelManager)
     {
         $this->tableName = 'menus';
-
         $this->subClass = '\HamletCMS\BlogMenus\BlogMenu';
-
         $this->fields = [
             'id' => 'number',
             'name' => 'string',
@@ -24,10 +22,27 @@ class Menus extends RBFactory {
         parent::__construct($modelManager);
     }
 
-
+    /**
+     * Get a menu by primary key.
+     * 
+     * @param int
+     * 
+     * @return \HamletCMS\BlogMenus\BlogMenu
+     */
     public function getMenuById($menuID)
     {
         return $this->get('*', ['id' => $menuID], null, null, false);
+    }
+
+    /**
+     * Get menus by blog.
+     * 
+     * @param \HamletCMS\blog\Blog $blog
+     * 
+     * @return \HamletCMS\BlogMenus\BlogMenu[]
+     */
+    public function getMenusByBlog($blog) {
+        return $this->get('*', ['blog_id' => $blog->id]);
     }
     
 }

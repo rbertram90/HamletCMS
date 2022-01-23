@@ -112,7 +112,7 @@ class Comments extends GenericController
      */
     public function deleteUnapproved()
     {
-        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model('comments')->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
+        if ($this->model('permissions')->userHasPermission('administer_comments') && $this->model('comments')->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
             $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Comments removed', 'success');
         }
         else {
@@ -146,7 +146,7 @@ class Comments extends GenericController
      */
     public function approveAll()
     {
-        if ($this->modelPermissions->userHasPermission('administer_comments') && $this->model('comments')->approveAll($this->blog->id)) {
+        if ($this->model('permissions')->userHasPermission('administer_comments') && $this->model('comments')->approveAll($this->blog->id)) {
             $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Comments approved', 'success');
         }
         else {

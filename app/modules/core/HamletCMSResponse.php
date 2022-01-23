@@ -35,7 +35,7 @@ class HamletCMSResponse extends Response
     /**
      * Provide a render function that uses smarty template
      */
-    public function write($templatePath, $source='main', $output = true)
+    public function write($templatePath, $source = 'main', $output = true)
     {
         $session = HamletCMS::session();
         $currentUser = $session->currentUser;
@@ -66,7 +66,7 @@ class HamletCMSResponse extends Response
     /**
      * Output the template SMARTY style
      */
-    public function writeTemplate($templatePath, $source='main')
+    public function writeTemplate($templatePath, $source = 'main')
     {
         $session = HamletCMS::session();
 
@@ -124,4 +124,18 @@ class HamletCMSResponse extends Response
         $this->smarty->enableSecurity($my_security_policy);
     }
     
+    /**
+     * Redirect, but using a HamletCMS route.
+     */
+    public function routeRedirect($route, $message = '', $messageType = '', $data = [])
+    {
+        $path = HamletCMS::route($route, $data);
+        if (!$path) {
+            $path = '/cms';
+            $message = 'Access Denied';
+            $messageType = 'error';
+        }
+        parent::redirect($path, $message, $messageType);
+    }
+
 }

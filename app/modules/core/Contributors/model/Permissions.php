@@ -8,21 +8,22 @@ use rbwebdesigns\core\JSONHelper;
 
 class Permissions extends RBFactory
 {
-    protected $db;
-
-    protected $subClass;
-
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'permissions';
 
+    /**
+     * @var mixed[] Cached list of all the permissions that have
+     *   been requested to reduce DB load.
+     */
+    protected $usersPermissionCache = [];
+
     public function __construct($modelFactory)
     {
-        $this->db = $modelFactory->getDatabaseConnection();
+        parent::__construct($modelFactory);
         $this->tableName = 'contributors';
         $this->subClass = '\\HamletCMS\\Contributors\\Contributor';
-
-        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->modelContributorGroups = HamletCMS::model('\HamletCMS\Contributors\model\ContributorGroups');
+        $this->modelContributors = HamletCMS::model('contributors');
+        $this->modelContributorGroups = HamletCMS::model('contributorgroups');
     }
 
     /**
@@ -43,10 +44,16 @@ class Permissions extends RBFactory
 
     /**
      * Get the group ID a user belongs to for a blog
+     * 
+     * @param int|string $blogID
+     * @param int|string $userID
+     * 
+     * @return int
+     *   ID for the group a user is in for a blog
      */
-    public function getUserGroup($blogID)
+    public function getUserGroup($blogID, $userID=false)
     {
-        $userID = HamletCMS::session()->currentUser['id'];
+        $userID = $userID ?: HamletCMS::session()->currentUser['id'];
         
         if (!$userID) return false;
 
@@ -63,29 +70,53 @@ class Permissions extends RBFactory
 
     /**
      * Check if the user has permission to perform an action
+     * 
+     * @param string|string[] List of permissions, or single permission to check.
+     * @param int|string $blogID
+     * @param int|string $userID
+     * 
+     * @return boolean
+     *   true if user has permission, false otherwise.
      */
-    public function userHasPermission($requiredPermissions, $blogID = 0)
+    public function userHasPermission($requiredPermissions, $blogID = 0, $userID = false)
     {
-        if (gettype($requiredPermissions) == 'string') $requiredPermissions = [$requiredPermissions];
-        if (count($requiredPermissions) == 0) return true;
+        $userID = $userID ?: HamletCMS::session()->currentUser['id'];
+        if (gettype($requiredPermissions) === 'string') $requiredPermissions = [$requiredPermissions];
+        if (count($requiredPermissions) === 0) return true; // no permissions required
+
+        // Search request cache.
+        $permissionsPassed = 0;
+        foreach ($requiredPermissions as $permission) {
+            $cacheKey = $userID . '_' . $blogID . '_' . $permission;
+            if (array_key_exists($cacheKey, $this->usersPermissionCache) &&
+                $this->usersPermissionCache[$cacheKey] === 0) {
+                return false;
+            }
+            $permissionsPassed++;
+        }
+        // All permissions queried already.
+        if ($permissionsPassed === count($requiredPermissions)) return true;
 
         if ($blogID == 0) $blogID = HamletCMS::$blogID;
+        // check if users is in a contributor group for this blog.
         if (!$groupID = $this->getUserGroup($blogID)) return false;
         
         $group = $this->modelContributorGroups->getGroupById($groupID);
         
-        // Override for all permissions
+        // Admin override for all permissions.
         if ($group->super == 1) return true;
 
-        $userID = HamletCMS::session()->currentUser['id'];
         $userPermissions = JSONHelper::JSONtoArray($group->data);
         $userPermissions['is_contributor'] = $this->modelContributors->isBlogContributor($userID, $blogID);
 
         foreach ($requiredPermissions as $permission) {
+            $cacheKey = $userID . '_' . $blogID . '_' . $permission;
             if (!array_key_exists($permission, $userPermissions) || 
               $userPermissions[$permission] == 0) {
+                $this->usersPermissionCache[$cacheKey] = 0;
                 return false;
             }
+            $this->usersPermissionCache[$cacheKey] = 1;
         }
         return true;
     }

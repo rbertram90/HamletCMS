@@ -21,7 +21,7 @@ class BlogContent extends GenericController
     /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
 
-    /** @var \HamletCMS\BlogPosts\model\Posts $modelPosts */
+    /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
 
     /** @var \HamletCMS\UserAccounts\model\UserAccounts */
@@ -39,10 +39,10 @@ class BlogContent extends GenericController
     public function __construct($blog_key)
     {
         // Instantiate models
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
-        $this->modelContributors = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->modelPosts = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-        $this->modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $this->modelBlogs = HamletCMS::model('blogs');
+        $this->modelContributors = HamletCMS::model('contributors');
+        $this->modelPosts = HamletCMS::model('posts');
+        $this->modelUsers = HamletCMS::model('useraccounts');
         
         // Cached information for this blog
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);

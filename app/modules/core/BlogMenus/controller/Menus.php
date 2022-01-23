@@ -5,15 +5,17 @@ namespace HamletCMS\BlogMenus\controller;
 use HamletCMS\HamletCMS;
 use HamletCMS\GenericController;
 
-class Menus extends GenericController {
+/**
+ * Controller Class Menus.
+ * 
+ * Provides implementation for routes for managing blog menus.
+ */
+class Menus extends GenericController
+{
 
     public function __construct()
     {
         parent::__construct();
-
-        $this->model = HamletCMS::model('\HamletCMS\BlogMenus\model\Menus');
-        $this->modelItems = HamletCMS::model('\HamletCMS\BlogMenus\model\MenuItems');
-
         $this->blog = HamletCMS::getActiveBlog();
         $this->response->setVar('blog', $this->blog);
     }
@@ -23,8 +25,9 @@ class Menus extends GenericController {
      */
     public function listMenus()
     {
+        $menus = $this->model('menus')->getMenusByBlog($this->blog);
         $this->response->setTitle('Manage menus - ' . $this->blog->name);
-        $this->response->setVar('menus', $this->model->get('*', ['blog_id' => $this->blog->id]));
+        $this->response->setVar('menus', $menus);
         $this->response->write('allMenus.tpl', 'BlogMenus');
     }
 
@@ -36,17 +39,16 @@ class Menus extends GenericController {
         if ($this->request->method() != 'POST') return;
 
         $menuName = $this->request->getString('menu_name', false);
-        $managePath = '/cms/menus/manage/'. $this->blog->id;
 
         if (!$menuName || strlen($menuName) == 0) {
-            $this->response->redirect($managePath, 'Please enter the menu name', 'error');
+            $this->response->routeRedirect('menus.manage', 'Please enter the menu name', 'error');
         }
 
-        if ($this->model->insert(['name' => $menuName, 'blog_id' => $this->blog->id])) {
-            $this->response->redirect($managePath, 'Menu created', 'success');
+        if ($this->model('menus')->insert(['name' => $menuName, 'blog_id' => $this->blog->id])) {
+            $this->response->routeRedirect('menus.manage', 'Menu created', 'success');
         }
         else {
-            $this->response->redirect($managePath, 'Failed to create menu', 'error');
+            $this->response->routeRedirect('menus.manage', 'Failed to create menu', 'error');
         }
 
     }
@@ -59,13 +61,13 @@ class Menus extends GenericController {
         $menu = $this->requireMenuFromRequest();
         
         // Run delete
-        $delete = $this->model->delete(['id' => $menu->id]);
+        $delete = $this->model('menus')->delete(['id' => $menu->id]);
 
         if ($delete) {
-            $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Menu deleted', 'success');
+            $this->response->routeRedirect('menus.manage', 'Menu deleted', 'success');
         }
         else {
-            $this->response->redirect('/cms/menus/manage/'. $this->blog->id, 'Unable to delete link', 'error');
+            $this->response->routeRedirect('menus.manage', 'Unable to delete link', 'error');
         }
     }
 
@@ -103,10 +105,10 @@ class Menus extends GenericController {
         }
 
         // Move up the item below
-        $update1 = $this->modelItems->update(['weight' => $link->weight + 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
+        $update1 = $this->model('menuitems')->update(['weight' => $link->weight + 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
 
         // Move down this item
-        $update2 = $this->modelItems->update(['id' => $link->id], ['weight' => $link->weight + 1]);
+        $update2 = $this->model('menuitems')->update(['id' => $link->id], ['weight' => $link->weight + 1]);
 
         if ($update1 && $update2) {
             $this->response->redirect($redirect, 'Link order changed', 'success');
@@ -129,17 +131,15 @@ class Menus extends GenericController {
             $this->response->redirect($redirect, 'Blog mismatch', 'error');
         }
 
-        $menuItems = $menu->items();
-
         if ($link->weight <= 1) {
             $this->response->redirect($redirect, 'Link cannot be moved up', 'error');
         }
 
         // Move up the item below
-        $update1 = $this->modelItems->update(['weight' => $link->weight - 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
+        $update1 = $this->model('menuitems')->update(['weight' => $link->weight - 1, 'menu_id' => $menu->id], ['weight' => $link->weight]);
 
         // Move down this item
-        $update2 = $this->modelItems->update(['id' => $link->id], ['weight' => $link->weight - 1]);
+        $update2 = $this->model('menuitems')->update(['id' => $link->id], ['weight' => $link->weight - 1]);
 
         if ($update1 && $update2) {
             $this->response->redirect($redirect, 'Link order changed', 'success');
@@ -165,7 +165,7 @@ class Menus extends GenericController {
             $this->response->redirect($redirect, 'Name field is required', 'error');
         }
 
-        if ($this->model->update(['id' => $menu->id], ['name' => $name, 'sort' => $sort])) {
+        if ($this->model('menus')->update(['id' => $menu->id], ['name' => $name, 'sort' => $sort])) {
             $this->response->redirect($redirect, 'Menu updated', 'success');
         }
         else {
@@ -184,7 +184,7 @@ class Menus extends GenericController {
         
         $this->response->setTitle('Add menu item - '. $menu->name);
         $this->response->setVar('menu', $menu);
-        $postsModel = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $postsModel = HamletCMS::model('posts');
         $this->response->setVar('tags', $postsModel->getAllTagsByBlog($this->blog->id));
         $this->response->write('addLink.tpl', 'BlogMenus');
     }
@@ -199,14 +199,16 @@ class Menus extends GenericController {
         $target = false;
 
         $errorRedirectUrl = '/cms/menus/addlink/'. $this->blog->id .'/'. $menu->id;
-        if (!$text || strlen($text) == 0) $this->response->redirect($errorRedirectUrl, 'Link text required', 'error');
+        if (!$text || strlen($text) == 0) {
+            $this->response->redirect($errorRedirectUrl, 'Link text required', 'error');
+        }
 
         $target = $this->getLinkTargetFromRequest();
         if ($target == false) {
             $this->response->redirect($errorRedirectUrl, 'Could not verify link target', 'error');
         }
 
-        $insert = $this->modelItems->insert([
+        $insert = $this->model('menuitems')->insert([
             'type' => $type,
             'text' => $text,
             'link_target' => $target,
@@ -257,7 +259,7 @@ class Menus extends GenericController {
             $this->response->redirect($errorRedirectUrl, 'Could not verify link target', 'error');
         }
 
-        $update = $this->modelItems->update(['id' => $link->id], [
+        $update = $this->model('menuitems')->update(['id' => $link->id], [
             'type' => $type,
             'text' => $text,
             'link_target' => $target,
@@ -283,8 +285,8 @@ class Menus extends GenericController {
         $errorRedirectUrl = '/cms/menus/edit/'. $this->blog->id .'/'. $menu->id;
 
         // Run delete
-        if ($this->modelItems->delete(['id' => $link->id])) {
-            $this->modelItems->reWeightLinks($link);
+        if ($this->model('menuitems')->delete(['id' => $link->id])) {
+            $this->model('menuitems')->reWeightLinks($link);
             $this->response->redirect('/cms/menus/edit/'. $this->blog->id .'/'. $menu->id, 'Link deleted', 'success');
         }
         else {
@@ -299,7 +301,7 @@ class Menus extends GenericController {
     {
         $linkID = $this->request->getUrlParameter(2);
 
-        if (is_numeric($linkID) && $linkID > 0) $link = $this->modelItems->getItemById($linkID);
+        if (is_numeric($linkID) && $linkID > 0) $link = $this->model('menuitems')->getItemById($linkID);
         if (!isset($link)) $this->response->redirect('/cms', 'Could not find link', 'error');
 
         return $link;
@@ -315,7 +317,7 @@ class Menus extends GenericController {
         $menu = null;
         $menuID = $this->request->getUrlParameter(2);
 
-        if (is_numeric($menuID) && $menuID > 0) $menu = $this->model->getMenuById($menuID);
+        if (is_numeric($menuID) && $menuID > 0) $menu = $this->model('menus')->getMenuById($menuID);
         if (is_null($menu)) $this->response->redirect('/cms', 'Could not find menu', 'error');
 
         return $menu;

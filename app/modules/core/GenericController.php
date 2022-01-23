@@ -10,8 +10,9 @@ class GenericController
      * @var \rbwebdesigns\core\Request
      */
     protected $request;
+    
     /**
-     * @var \rbwebdesigns\core\Response
+     * @var \HamletCMS\HamletCMSResponse
      */
     protected $response;
     

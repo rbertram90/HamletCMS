@@ -252,13 +252,16 @@ class HamletCMS
     }
 
     /**
-     * Transform a route into a URL
+     * Transform a route into a URL. And run access check (sort of...)
      * 
      * @param string $route
-     *  Name of the route to fetch
+     *   Name of the route to fetch.
+     * @param mixed[] $data
+     *   Replacement values for route parameters.
      * 
-     * @return string
-     *  URL that corresponds to the route
+     * @return string|false
+     *   URL path that corresponds to the route, false if access requirements
+     *   have not been met.
      */
     public static function route($route, $data = [])
     {
@@ -268,13 +271,13 @@ class HamletCMS
         }
         $url = $routeCache[$route]['path'];
 
-        // Check links applicable to the blog
+        // Check that if we've got the blog context, then the user
+        // has permission to view/action this request.
         if (self::$blogID) {
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
-                /** @var \HamletCMS\Contributors\model\Permissions $modelPermissions */
-                $modelPermissions = self::model('\HamletCMS\Contributors\model\Permissions');
-                $granted = $modelPermissions->userHasPermission($routeCache[$route]['permissions']);
+                $granted = self::model('permissions')
+                    ->userHasPermission($routeCache[$route]['permissions']);
                 if (!$granted) return false;
             }
             $url = str_replace('{BLOG_ID}', self::$blogID, $url);
