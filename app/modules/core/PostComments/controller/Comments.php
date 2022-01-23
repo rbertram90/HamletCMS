@@ -98,12 +98,10 @@ class Comments extends GenericController
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
         elseif ($this->model('comments')->deleteComment($commentID)) {
-            $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/manage/'. $blog->id, 'Comment removed', 'success');
+            $this->response->routeRedirect('comments.manage', 'Comment removed', 'success');
         }
         else {
-            $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/manage/'. $blog->id, 'Unable to remove comment', 'error');
+            $this->response->routeRedirect('comments.manage', 'Unable to remove comment', 'error');
         }
     }
 
@@ -112,11 +110,12 @@ class Comments extends GenericController
      */
     public function deleteUnapproved()
     {
-        if ($this->model('permissions')->userHasPermission('administer_comments') && $this->model('comments')->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
-            $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Comments removed', 'success');
+        if ($this->model('permissions')->userHasPermission('administer_comments') && 
+            $this->model('comments')->delete(['blog_id' => $this->blog->id, 'approved' => 0])) {
+            $this->response->routeRedirect('comments.manage', 'Comments removed', 'success');
         }
         else {
-            $this->response->redirect('/cms/comments/manage/'. $this->blog->id, 'Unable to remove comments', 'error');
+            $this->response->routeRedirect('comments.manage', 'Unable to remove comments', 'error');
         }
     }
     
@@ -132,12 +131,10 @@ class Comments extends GenericController
             $this->response->redirect('/cms', 'Unable to remove comment', 'error');
         }
         elseif ($this->model('comments')->approve($comment->id)) {
-            $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/manage/' . $blog->id, 'Comment approved', 'success');
+            $this->response->routeRedirect('comments.manage', 'Comment approved', 'success');
         }
         else {
-            $blog = HamletCMS::getActiveBlog();
-            $this->response->redirect('/cms/comments/manage/' . $blog->id, 'Unable to approve comment', 'error');
+            $this->response->routeRedirect('comments.manage', 'Unable to approve comment', 'error');
         }
     }
 
@@ -146,11 +143,12 @@ class Comments extends GenericController
      */
     public function approveAll()
     {
-        if ($this->model('permissions')->userHasPermission('administer_comments') && $this->model('comments')->approveAll($this->blog->id)) {
-            $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Comments approved', 'success');
+        if ($this->model('permissions')->userHasPermission('administer_comments') && 
+            $this->model('comments')->approveAll($this->blog->id)) {
+            $this->response->routeRedirect('comments.manage', 'Comments approved', 'success');
         }
         else {
-            $this->response->redirect('/cms/comments/manage/' . $this->blog->id, 'Unable to approve comments', 'error');
+            $this->response->routeRedirect('comments.manage', 'Unable to approve comments', 'error');
         }
     }
 
@@ -243,10 +241,10 @@ class Comments extends GenericController
         $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl', $template);
 
         if ($update) {
-            $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Settings saved', 'success');
+            $this->response->routeRedirect('settings.comments', 'Settings saved', 'success');
         }
         else {
-            $this->response->redirect('/cms/settings/comments/' . $this->blog->id, 'Failed to save template', 'error');
+            $this->response->routeRedirect('settings.comments', 'Failed to save template', 'error');
         }
     }
 
