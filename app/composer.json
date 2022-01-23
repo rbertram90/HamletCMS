@@ -30,5 +30,10 @@
   },
   "autoload": {
     "psr-4": { "HamletCMS\\": ["modules/core/", "modules/addon/"] }
+  },
+  "config": {
+    "allow-plugins": {
+      "rbwebdesigns/hamlet-cms-installer": true
+    }
   }
 }
