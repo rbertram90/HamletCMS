@@ -40,6 +40,9 @@ class AbstractPostType extends GenericController
         if (!$post) {
             $this->response->redirect('/cms', 'Could not find post', 'error');
         }
+        if ($autosave = $this->model('autosaves')->getAutosave($post->id)) {
+            $post->autosave = $autosave;
+        }
 
         $blog = $this->model('blogs')->getBlogById($post->blog_id);
 

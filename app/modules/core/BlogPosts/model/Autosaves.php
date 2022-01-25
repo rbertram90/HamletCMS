@@ -131,8 +131,7 @@ class Autosaves extends RBFactory
     
     public function getAutosave($postID)
     {
-        $postid = Sanitize::int($postID);
-        return $this->db->selectSingleRow($this->tableName, '*', ['post_id' => $postID]);
+        return $this->get('*', ['post_id' => $postID], null, null, false);
     }
 
 }

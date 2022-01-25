@@ -6,6 +6,7 @@ use HamletCMS\BlogPosts\controller\AbstractPostType;
 
 class MarkdownPost extends AbstractPostType
 {
+    
     public function create()
     {
         parent::create();
@@ -17,4 +18,5 @@ class MarkdownPost extends AbstractPostType
         parent::edit();
         $this->response->write('standardpost.tpl', 'MarkdownPost');
     }
+
 }
