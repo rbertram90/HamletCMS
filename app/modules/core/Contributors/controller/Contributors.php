@@ -5,6 +5,7 @@ namespace HamletCMS\Contributors\controller;
 use HamletCMS\GenericController;
 use rbwebdesigns\core\JSONHelper;
 use HamletCMS\HamletCMS;
+use rbwebdesigns\core\Email;
 
 /**
  * /app/controller/contributors_controller.inc.php
@@ -128,12 +129,12 @@ class Contributors extends GenericController
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
-            $this->response->redirect('/cms/contributors/manage', 'Email or passwords did not match', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Email or passwords did not match', 'error');
         }
 
         $checkUser = $this->model('useraccounts')->get('id', ['username' => $accountData['username']], '', '', false);
         if ($checkUser && $checkUser->id) {
-            $this->response->redirect('/cms/contributors/manage', 'Username is already taken', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Username is already taken', 'error');
         }
 
         if ($this->model('useraccounts')->register($accountData)) {
@@ -141,14 +142,29 @@ class Contributors extends GenericController
             $user = $this->model('useraccounts')->get('id', ['email' => $accountData['email']], '', '', false);
         }
         else {
-            $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error creating account', 'error');
+            $this->response->routeRedirect('contributors.create', 'Error creating account', 'error');
         }
 
         if (!$this->model('contributors')->addBlogContributor($user->id, $blog->id, $groupID)) {
-            $this->response->redirect('/cms/contributors/create/' . $blog->id, 'Error assigning contributor', 'error');
+            $this->response->routeRedirect('contributors.create', 'Error assigning contributor', 'error');
         }
 
-        $this->response->redirect('/cms/contributors/manage/' . $blog->id, 'Contributor created', 'success');
+        $emailConfig = HamletCMS::config()['email'] ?? [];
+
+        if ($emailConfig['enable'] ?? false) {
+            $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
+            $email = new Email();
+            $email->sender = $emailConfig['system_sender'];
+            $email->recipient = $accountData['email'];
+            $email->subject = 'You have been invited to contribute on ' . $blog->name;
+            $email->message = "An account has been created for you, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?";
+
+            if (!$email->send()) {
+                HamletCMS::session()->addMessage('Failed to send email', 'error');
+            }
+        }
+        
+        $this->response->routeRedirect('contributors.manage', 'Contributor created', 'success');
     }
 
     /**
@@ -157,21 +173,39 @@ class Contributors extends GenericController
     protected function runInvite()
     {
         $blog = HamletCMS::getActiveBlog();
-
         $userID = $this->request->getInt('selected_user', false);
         $groupID = $this->request->getInt('group', false);
 
-        if (!$userID) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
+        if (!$userID) {
+            $this->response->routeRedirect('contributors.invite', 'User not found', 'error');
+        }
 
-        $user = $this->model('useraccounts')->get('id', ['id' => $userID], '', '', false);
+        $user = $this->model('useraccounts')->getById($userID);
 
-        if (!$user) $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'User not found', 'error');
-        
-        if (!$this->model('contributors')->addBlogContributor($user->id, $blog->id, $groupID)) {
-            $this->response->redirect('/cms/contributors/invite/'. $blog->id, 'Error assigning contributor', 'error');
+        if (!$user) {
+            $this->response->routeRedirect('contributors.invite', 'User not found', 'error');
         }
         
-        $this->response->redirect('/cms/contributors/manage/'. $blog->id, 'Contributor added', 'success');
+        if (!$this->model('contributors')->addBlogContributor($user->id, $blog->id, $groupID)) {
+            $this->response->routeRedirect('contributors.invite', 'Error assigning contributor', 'error');
+        }
+
+        $emailConfig = HamletCMS::config()['email'] ?? [];
+
+        if ($emailConfig['enable'] ?? false) {
+            $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
+            $email = new Email();
+            $email->sender = $emailConfig['system_sender'];
+            $email->recipient = $user->email;
+            $email->subject = 'You have been invited to contribute on ' . $blog->name;
+            $email->message = "You have been added as a contributor on {$blog->name}, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?";
+
+            if (!$email->send()) {
+                HamletCMS::session()->addMessage('Failed to send email', 'error');
+            }
+        }
+
+        $this->response->routeRedirect('contributors.manage', 'Contributor added', 'success');
     }
     
     /**
@@ -206,17 +240,17 @@ class Contributors extends GenericController
 
         // Check group exists and belongs to this blog
         if (!$group = $this->model('contributorgroups')->getGroupById($groupID)) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Group not found', 'error');
         }
         if ($group->blog_id != $this->blog->id) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group not found', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Group not found', 'error');
         }
 
         if($this->model('contributors')->update(['user_id' => $contributor->id, 'blog_id' => $this->blog->id], ['group_id' => $group->id])) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Update successful', 'success');
+            $this->response->routeRedirect('contributors.manage', 'Update successful', 'success');
         }
         else {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Could not update contributor', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Could not update contributor', 'error');
         }
     }
 
@@ -233,10 +267,10 @@ class Contributors extends GenericController
         }
 
         if ($this->model('contributors')->delete(['blog_id' => $this->blog->id, 'user_id' => $contributorID])) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Contributor removed', 'success');
+            $this->response->routeRedirect('contributors.manage', 'Contributor removed', 'success');
         }
         else {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Unable to remove contributor', 'error');
+            $this->response->routeRedirect('contributors.manage', 'Unable to remove contributor', 'error');
         }
     }
 
@@ -300,7 +334,7 @@ class Contributors extends GenericController
         ]);
 
         if ($insert) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group created', 'success');
+            $this->response->routeRedirect('contributors.manage', 'Group created', 'success');
         }
         else {
             $this->response->redirect('/cms', 'Could not insert to database', 'error');
@@ -368,7 +402,7 @@ class Contributors extends GenericController
         ]);
 
         if ($update) {
-            $this->response->redirect('/cms/contributors/manage/'. $this->blog->id, 'Group updated', 'success');
+            $this->response->routeRedirect('contributors.manage', 'Group updated', 'success');
         }
         else {
             $this->response->redirect('/cms', 'Could not update database', 'error');

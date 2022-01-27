@@ -17,6 +17,10 @@
         "root_directory": "/var/www/hamlet",
         "timezone": "Europe/London"
     },
+    "email": {
+        "enable": true,
+        "system_sender": "Hamlet CMS Admin<admin@hamlet.localhost>"
+    },
     "files":
     {
         "upload_bytes_limit": 50000000,

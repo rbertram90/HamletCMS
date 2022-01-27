@@ -72,6 +72,8 @@ class HamletCMS
 
     /**
      * Get the active blog we're looking at
+     * 
+     * @return \HamletCMS\Blog\Blog
      */
     public static function getActiveBlog()
     {
@@ -86,6 +88,8 @@ class HamletCMS
 
     /**
      * Get the active post we're looking at
+     * 
+     * @return \HamletCMS\BlogPosts\Post
      */
     public static function getActivePost()
     {
