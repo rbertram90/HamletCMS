@@ -403,6 +403,8 @@ class Posts extends RBFactory
         // Simple SQL row copy
         $query = $this->db->query("CREATE TEMPORARY TABLE `{$tempTableName}` SELECT * FROM {$this->tableName} WHERE id = {$postID}");
         if (!$query) return false;
+        $query= $this->db->query("ALTER TABLE `{$tempTableName}` MODIFY id INT"); // make id nullable
+        if (!$query) return false;
         $query = $this->db->query("UPDATE `{$tempTableName}` SET id = NULL");
         if (!$query) return false;
         $query = $this->db->query("INSERT INTO {$this->tableName} SELECT * FROM `{$tempTableName}`");

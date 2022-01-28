@@ -2,6 +2,7 @@
 namespace HamletCMS\tests;
 
 use HamletCMS\HamletCMSResponse;
+use HamletCMS\HamletCMS;
 
 class FakeResponse extends HamletCMSResponse
 {
@@ -15,6 +16,19 @@ class FakeResponse extends HamletCMSResponse
     public function redirect($location, $message = '', $messageType = 'info') {
         $this->redirect = [
             'location' => $location,
+            'message' => $message,
+            'messageType' => $messageType
+        ];
+    }
+
+    /**
+     * Overwrite routeRedirect to just return information
+     */
+    public function routeRedirect($route, $message = '', $messageType = '', $data = [])
+    {
+        $this->redirect = [
+            'route' => $route,
+            'location' => HamletCMS::route($route, $data),
             'message' => $message,
             'messageType' => $messageType
         ];
