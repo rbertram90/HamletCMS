@@ -61,4 +61,12 @@ class Module
         $args['counts']['contributors'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
     }
 
+    public function runUnitTests($args) {
+        if ($args['context'] === 'blog') {
+            $test = new tests\ContributorsTests();
+            $test->blogID = $args['blogID'];
+            $test->run();
+        }
+    }
+
 }

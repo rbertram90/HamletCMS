@@ -149,12 +149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rbertram90/core.git",
-                "reference": "daef67e5440820464d219d298d9b10546c50c48f"
+                "reference": "0dd409bc515eb24707b4b748ab2dd8ce23bd6e5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rbertram90/core/zipball/daef67e5440820464d219d298d9b10546c50c48f",
-                "reference": "daef67e5440820464d219d298d9b10546c50c48f",
+                "url": "https://api.github.com/repos/rbertram90/core/zipball/0dd409bc515eb24707b4b748ab2dd8ce23bd6e5d",
+                "reference": "0dd409bc515eb24707b4b748ab2dd8ce23bd6e5d",
                 "shasum": ""
             },
             "default-branch": true,
@@ -172,7 +172,7 @@
                 "source": "https://github.com/rbertram90/core/tree/master",
                 "issues": "https://github.com/rbertram90/core/issues"
             },
-            "time": "2022-01-15T11:47:07+00:00"
+            "time": "2022-01-27T23:45:14+00:00"
         },
         {
             "name": "smarty/smarty",
@@ -251,5 +251,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }

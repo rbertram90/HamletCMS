@@ -99,8 +99,6 @@ class Blogs extends GenericController
     
     /**
      * Create a new blog
-     * 
-     * @todo add blog limit into config
      */
     public function runCreateBlog()
     {
@@ -116,7 +114,7 @@ class Blogs extends GenericController
 
             // Copy file
             $copy = file_put_contents(SERVER_PATH_BLOGS.'/root.inc.php', $fileContents);
-            if (!$copy) die("Failed to create root file, please check directory permissions for: ".SERVER_PATH_BLOGS);
+            if (!$copy) die("Failed to create root file, please check directory permissions for: " . SERVER_PATH_BLOGS);
         }
 
         $config = HamletCMS::config();
@@ -125,8 +123,7 @@ class Blogs extends GenericController
             $limit = $config['general']['maxUserBlogLimit'];
         }
         if ($this->model('blogs')->countBlogsByUser($currentUser['id']) > $limit) {
-            $this->response->redirect('/cms', 'Unable to Continue - Maximum number of blogs exceeded!', 'Error');
-            return;
+            $this->response->redirect('/cms', 'Unable to continue - maximum number of blogs exceeded!', 'Error');
         }
         
         // Create blog db entry
@@ -134,24 +131,20 @@ class Blogs extends GenericController
 
         if (!$newblogkey) {
             $this->response->redirect('/cms', 'Error creating blog please try again later', 'error');
-            return;
         }
 
         // Create admin groups
         // @todo get this function to return the admin group ID!
         if (!$this->model('contributorgroups')->createDefaultGroups($newblogkey)) {
             $this->response->redirect('/cms', 'Error creating contributor groups please try again later', 'error');
-            return;
         }
 
         $adminGroup = $this->model('contributorgroups')->get(['id'], ['blog_id' => $newblogkey, 'name' => 'Admin'], '', '', false);
-
-        if (!$adminGroup) die('No admin found' . $newblogkey);
+        if (!$adminGroup) die('No admin group found ' . $newblogkey);
 
         // Add the user as contributor
         if (!$this->model('contributors')->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
             $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
-            return;
         }
 
         $this->response->redirect('/cms/blog/overview/'. $newblogkey, 'Blog created', 'success');
