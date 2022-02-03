@@ -18,17 +18,10 @@ class Settings extends GenericController
 {
     /** @var \HamletCMS\Blog\model\Blogs */
     protected $modelBlogs;
-    /** @var \HamletCMS\BlogPosts\model\Posts */
-    protected $modelPosts;
     /** @var \HamletCMS\UserAccounts\model\UserAccounts */
     protected $modelUsers;
     /** @var \HamletCMS\Contributors\model\Contributors */
     protected $modelContributors;
-
-    /** @var \rbwebdesigns\core\Request */
-    protected $request;
-    /** @var \rbwebdesigns\core\Response */
-    protected $response;
 
     /** @var \HamletCMS\Blog\Blog Active blog */
     protected $blog = null;
@@ -40,11 +33,9 @@ class Settings extends GenericController
     {
         $this->modelBlogs = HamletCMS::model('blogs');
         $this->modelPermissions = HamletCMS::model('permissions');
-        $this->modelPosts = HamletCMS::model('posts');
         $this->modelUsers = HamletCMS::model('useraccounts');
 
-        $this->request = HamletCMS::request();
-        $this->response = HamletCMS::response();
+        parent::__construct();
 
         $this->setup();
     }
@@ -105,7 +96,7 @@ class Settings extends GenericController
 
         $config = $this->blog->config()['blog'] ?? [];
         $this->response->setVar('config', $config);
-        $this->response->setVar('tagList', json_encode($this->modelPosts->getAllTagsByBlog($this->blog->id)));
+        $this->response->setVar('tagList', json_encode($this->model('posts')->getAllTagsByBlog($this->blog->id)));
         $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
 
         $this->response->setTitle('General Settings - ' . $this->blog->name);
@@ -327,10 +318,10 @@ class Settings extends GenericController
 
         if ($update) {
             HamletCMS::runHook('onBlogSettingsUpdated', ['blog' => $this->blog]);
-            $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Blog settings updated", "success");
+            $this->response->routeRedirect('settings.general', 'Blog settings updated', 'success');
         }
         else {
-            $this->response->redirect('/cms/settings/general/'. $this->blog->id, "Error saving to database", "error");
+            $this->response->routeRedirect('settings.general', 'Error saving to database', 'error');
         }
     }
 
@@ -387,16 +378,17 @@ class Settings extends GenericController
             ]
         ]);
 
-        if (!$update) $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Updated failed', 'error');
+        if (!$update) $this->response->routeRedirect('settings.footer', 'Updated failed', 'error');
         
         // Save template file
         $save = $this->saveTemplateFile('footer.tpl', $this->request->get('footer_template'));
         if ($save === FALSE) {
-            $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Unable to save footer template file', 'error');
+            $this->response->routeRedirect('settings.footer', 'Unable to save footer template file', 'error');
         }
 
         HamletCMS::runHook('onFooterSettingsUpdated', ['blog' => $this->blog]);
-        $this->response->redirect('/cms/settings/footer/' . $this->blog->id, 'Footer updated', 'success');
+        
+        $this->response->routeRedirect('settings.footer', 'Footer updated', 'success');
     }
     
     /**

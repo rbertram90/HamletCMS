@@ -7,6 +7,7 @@ use HamletCMS\MenuLink;
 
 class Module
 {
+    
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
@@ -36,4 +37,13 @@ class Module
             }
         }
     }
+
+    public function runUnitTests($args) {
+        if ($args['context'] === 'blog') {
+            $test = new tests\SettingsTests();
+            $test->blogID = $args['blogID'];
+            $test->run();
+        }
+    }
+
 }
