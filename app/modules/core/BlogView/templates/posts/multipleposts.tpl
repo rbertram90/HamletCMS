@@ -79,3 +79,13 @@
         {/if}
     </div>
 {/if}
+
+<script>
+    $(document).ready(function() {
+        $("a[data-modal]").click(function (e) {
+            e.preventDefault();
+            var modalClass = $(this).data('modal');
+            $('.' + modalClass).modal('show');
+        });
+    });
+</script>
