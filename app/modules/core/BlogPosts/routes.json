@@ -86,6 +86,13 @@
         "action": "clonePost"
     },
     {
+        "key": "api.posts.bulk_update",
+        "path": "/api/posts/bulkupdate",
+        "permissions": [],
+        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "action": "bulkUpdatePosts"
+    },
+    {
         "key": "settings.posts",
         "path": "/cms/settings/posts/{BLOG_ID}",
         "permissions": ["change_settings"],
