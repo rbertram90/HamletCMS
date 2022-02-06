@@ -37,7 +37,7 @@ class PostSettings extends GenericController
         $this->response->setVar('postFullTemplate', $this->getFullPostTemplate());
         $this->response->setVar('cardTemplate', $this->getPostCardTemplate());
         $this->response->setVar('blog', $this->blog);
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Post Settings - ' . $this->blog->name);
         $this->response->write('settings.tpl', 'BlogPosts');
     }

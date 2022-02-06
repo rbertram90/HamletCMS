@@ -243,7 +243,7 @@ class Files extends GenericController
         // Append or replace
         $returnReplace = $request->getInt('replace', 0);
 
-        $path = SERVER_PUBLIC_PATH. "/blogdata/{$this->blog->id}/images";
+        $path = SERVER_PATH_BLOGS . "/{$this->blog->id}/images";
 
         $request->isAjax = true;
         $response->setVar('blog', $this->blog);

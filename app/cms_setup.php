@@ -8,13 +8,23 @@ use HamletCMS\Menu;
   CMS Entry point
 ****************************************************************/
 
-    // Include cms setup script
-    require_once __DIR__ . '/../../app/setup.inc.php';
-    
-/****************************************************************
-  Route request
-****************************************************************/
-    
+    // Create custom request, shifting the query path along one.
+    // First part of query variable is the controller name.
+    $queryPath = filter_input(INPUT_GET, 'query');
+    $queryParts = explode('/', $queryPath);
+    $controllerName = $queryParts[0] ?? '';
+
+    // Set the correct controller.
+    $_REQUEST['p'] = $controllerName ?: 'index';
+
+    // Set the correct query.
+    if (count($queryParts) > 1) {
+        $_REQUEST['query'] = implode('/', array_slice($queryParts, 1));
+    }
+    else {
+        $_REQUEST['query'] = '';
+    }
+
     $request = HamletCMS::request();
     $response = HamletCMS::response();
     
@@ -50,7 +60,7 @@ use HamletCMS\Menu;
     }
 
     $user = HamletCMS::session()->currentUser;
-    $modelPermissions = HamletCMS::model('\HamletCMS\Contributors\model\Permissions');
+    $modelPermissions = HamletCMS::model('permissions');
     
     // Check the user has access to view/edit this blog
     $blogID = $request->getUrlParameter(1);
@@ -94,17 +104,17 @@ use HamletCMS\Menu;
 ****************************************************************/
 
     // Add default stylesheet(s)
-    $response->addStylesheet('/css/semantic.css');
-    $response->addStylesheet('/css/blogs_stylesheet.css');
-    $response->addStylesheet('/css/messages.css');
+    $response->addStylesheet('/hamlet/css/semantic.css');
+    $response->addStylesheet('/hamlet/css/blogs_stylesheet.css');
+    $response->addStylesheet('/hamlet/css/messages.css');
 
     // Add default script(s)
-    $response->addScript('/resources/js/jquery-1.8.0.min.js');
-    $response->addScript('/js/semantic.js');
-    $response->addScript('/resources/js/core-functions.js');
-    $response->addScript('/resources/js/validate.js');
-    $response->addScript('/resources/js/ajax.js');
-    $response->addScript('/js/sidemenu.js');
+    $response->addScript('/hamlet/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/hamlet/js/semantic.js');
+    $response->addScript('/hamlet/resources/js/core-functions.js');
+    $response->addScript('/hamlet/resources/js/validate.js');
+    $response->addScript('/hamlet/resources/js/ajax.js');
+    $response->addScript('/hamlet/js/sidemenu.js');
 
     $response->setTitle('Default title');
     $response->setDescription('Default page description');

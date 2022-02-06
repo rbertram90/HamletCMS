@@ -104,8 +104,8 @@ class Posts extends GenericController
     {
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Posts - ' . $this->blog->name);
-        $this->response->addScript('/js/showUserCard.js');
-        $this->response->addScript('/js/managePosts.js');
+        $this->response->addScript('/hamlet/js/showUserCard.js');
+        $this->response->addScript('/hamlet/js/managePosts.js');
         $this->response->write('manage.tpl', 'BlogPosts');
     }
     

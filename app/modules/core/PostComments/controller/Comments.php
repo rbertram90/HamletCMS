@@ -83,7 +83,7 @@ class Comments extends GenericController
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Comments - ' . $this->blog->name);
-        $this->response->addScript('/resources/js/paginate.js');
+        $this->response->addScript('/hamlet/resources/js/paginate.js');
         $this->response->write('comments.tpl', 'PostComments');
     }
     
@@ -223,7 +223,7 @@ class Comments extends GenericController
 
         $this->response->setVar('commentTemplate', $commentTemplate);
         $this->response->setVar('settings', $config);
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Comment settings - ' . $this->blog->name);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('settings.tpl', 'PostComments');

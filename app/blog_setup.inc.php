@@ -76,11 +76,11 @@ CSRF::init();
         define('USER_AUTHENTICATED', gettype($session->currentUser) === 'array');
     }
 
-    $response->addScript($host .'/resources/js/jquery-1.8.0.min.js');
-    $response->addScript($host .'/resources/js/core-functions.js');
-    $response->addScript($host .'/resources/js/validate.js');
-    $response->addScript($host .'/resources/js/galleria-1.4.2.min.js');
-    $response->addScript($host .'/resources/js/galleria.classic.min.js');
+    $response->addScript($host .'/hamlet/resources/js/jquery-1.8.0.min.js');
+    $response->addScript($host .'/hamlet/resources/js/core-functions.js');
+    $response->addScript($host .'/hamlet/resources/js/validate.js');
+    $response->addScript($host .'/hamlet/resources/js/galleria-1.4.2.min.js');
+    $response->addScript($host .'/hamlet/resources/js/galleria.classic.min.js');
     
     $response->setVar('cms_url', $host);
     $response->setVar('blog', $blog);
@@ -106,8 +106,8 @@ CSRF::init();
     if (isset($templateConfig['Includes'])) {
         $includes = $templateConfig['Includes'];
         if (isset($includes['semantic-ui']) && $includes['semantic-ui']) {
-            $response->addStylesheet($host . '/css/semantic.css');
-            $response->addScript($host . '/js/semantic.js');
+            $response->addStylesheet($host . '/hamlet/css/semantic.css');
+            $response->addScript($host . '/hamlet/js/semantic.js');
         }
     }
     if (isset($templateConfig['Imports'])) {

@@ -631,7 +631,7 @@ class BlogContent extends GenericController
 
         $this->response->setTitle($post->title);
 
-        // $response->addScript('/resources/ace/ace.js');
+        // $response->addScript('/hamlet/resources/ace/ace.js');
         // $response->setVar('mdContent', $mdContent);
         // $response->write('posts/singlepost.tpl', 'BlogView');
     }

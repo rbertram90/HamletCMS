@@ -124,7 +124,7 @@ class Blog
      */
     public function config()
     {
-        $serverConfigPath = SERVER_PUBLIC_PATH ."/blogdata/{$this->id}/config.json";
+        $serverConfigPath = SERVER_PATH_BLOGS . "/{$this->id}/config.json";
 
         if ($this->config ?? false) {
             return $this->config;
@@ -149,7 +149,7 @@ class Blog
         }
 
         $json = JSONhelper::arrayToJSON($newConfig);
-        $save = file_put_contents(SERVER_PUBLIC_PATH . "/blogdata/{$this->id}/config.json", $json);
+        $save = file_put_contents(SERVER_PATH_BLOGS . "/{$this->id}/config.json", $json);
         return $save !== false;
     }
 

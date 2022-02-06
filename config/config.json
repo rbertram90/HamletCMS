@@ -1,0 +1,59 @@
+{
+    "general":
+    {
+        "maxUserBlogLimit": 4
+    },
+    "database":
+    {
+        "server": "localhost",
+        "name": "hamlet",
+        "user": "root",
+        "password": ""
+    },
+    "environment":
+    {
+        "development_mode": true,
+        "canonical_domain": "http://www.hamletcms.localhost",
+        "root_directory": "C:/xampp_8.0.13/htdocs/HamletCMS/server",
+        "public_directory": "C:/xampp_8.0.13/htdocs/HamletCMS/public_html",
+        "timezone": "Europe/London"
+    },
+    "email": {
+        "enable": true,
+        "system_sender": "Hamlet CMS Admin<admin@hamletcms.com>"
+    },
+    "files":
+    {
+        "upload_bytes_limit": 50000000,
+        "single_upload_limit": 2000000
+    },
+    "users":
+    {
+        "allow_anon_registration": true
+    },
+    "blogcategories":
+    [
+        "general",
+        "travel",
+        "sports",
+        "gaming",
+        "fashion",
+        "music",
+        "film",
+        "comedy",
+        "food",
+        "celebrity",
+        "lifestype",
+        "health",
+        "beauty",
+        "nature",
+        "design",
+        "diy",
+        "automotive",
+        "technology",
+        "education",
+        "parenting",
+        "art",
+        "architecture"
+    ]
+}

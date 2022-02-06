@@ -10,7 +10,7 @@
     }
 
     // Run the same setup as with normal requests
-    require __DIR__ .'/../../../setup.inc.php';
+    require_once __DIR__ . '/../../../setup.inc.php';
 
     // Arguments
     error_reporting(E_ALL);

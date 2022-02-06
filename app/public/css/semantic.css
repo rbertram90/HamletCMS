@@ -11,22 +11,22 @@
 @font-face {
     font-family: Lato;
     font-weight: 400; font-style: normal;
-    src: url(/fonts/Lato/Lato-Regular.ttf);
+    src: url(/hamlet/fonts/Lato/Lato-Regular.ttf);
 }
 @font-face {
     font-family: Lato;
     font-weight: 400; font-style: italic;
-    src: url(/fonts/Lato/Lato-Italic.ttf);
+    src: url(/hamlet/fonts/Lato/Lato-Italic.ttf);
 }
 @font-face {
     font-family: Lato;
     font-weight: 700; font-style: normal;
-    src: url(/fonts/Lato/Lato-Bold.ttf);
+    src: url(/hamlet/fonts/Lato/Lato-Bold.ttf);
 }
 @font-face {
     font-family: Lato;
     font-weight: 700; font-style: italic;
-    src: url(/fonts/Lato/Lato-BoldItalic.ttf);
+    src: url(/hamlet/fonts/Lato/Lato-BoldItalic.ttf);
 }
 
 /*!

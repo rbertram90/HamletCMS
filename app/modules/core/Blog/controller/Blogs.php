@@ -43,7 +43,7 @@ class Blogs extends GenericController
 
         // Add to template
         $this->response->setVar('blogs', $blogs);
-        $this->response->addScript('/js/showUserCard.js');
+        $this->response->addScript('/hamlet/js/showUserCard.js');
         $this->response->setTitle('My Blogs');
         $this->response->write('index.tpl', 'Blog');
     }

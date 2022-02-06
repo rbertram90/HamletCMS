@@ -21,7 +21,7 @@ In development: dev-master has known issues
 ## Technical
 Front end utilises Semantic UI (https://semantic-ui.com/)
 
-Back-end is all vanilla PHP other than views which are now largely all using the Smarty templating engine. The code is dependent on the `rbwebdesigns\core` library, see https://github.com/rbertram90/core.
+The application is build upon my own library of PHP classes, see https://github.com/rbertram90/core. Views use the Smarty templating engine.
 
 Data is stored both in MySQL database and within the file system (defaulted to /public/blogdata)
  * default.php - one line file which includes the blog setup script
@@ -32,11 +32,12 @@ Data is stored both in MySQL database and within the file system (defaulted to /
 
 ### Installation
 1. Clone repository
-2. Create database (default name = hamlet)
-3. Copy app/config/config_default.json -> app/config/config.json
-4. Change database connection details in config.json
-5. Change root_directory in config.json
-6. Run `composer update` from /app directory
-7. Navigate to the site - you should be redirected to /cms/install.php
-8. Complete the install form
-9. Check everything is working - if not please raise a ticket with details!
+2. Run `composer install`
+3. Create database (default name = hamlet)
+4. Copy `/config/config_default.json` -> `/config/config.json`
+5. Change database connection details in config.json
+6. Change `environment.root_directory` and `environment.public_directory` in config.json to reflect your file system
+7. Run `php ./app/updatepublic.php` to copy accross required Hamlet files into your public directory - this will overwrite both `index.php` and `.htaccess` files if they already exist
+8. Navigate to the site - you should be redirected to /cms/install
+9. Complete the install form
+10. Check everything is working, if not raise a <a href="https://github.com/rbertram90/HamletCMS/issues">Github issue</a> with details!

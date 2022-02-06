@@ -22,7 +22,7 @@
 
                 <div class="field">
                     <label for="fld_logo">Logo</label>
-                    {if strlen("{$blog->logo}") && file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->logo}")}
+                    {if strlen("{$blog->logo}") && file_exists("{$smarty.const.SERVER_PATH_BLOGS}/{$blog->id}/{$blog->logo}")}
                         <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="logo" style="max-width: 150px; max-height: 150px;">
                     {/if}
                     <p><small>Max upload size = 100 KB</small></p>
@@ -31,7 +31,7 @@
 
                 <div class="field">
                     <label for="fld_favicon">Favicon</label>
-                    {if strlen("{$blog->icon}") && file_exists("{$smarty.const.SERVER_PUBLIC_PATH}/blogdata/{$blog->id}/{$blog->icon}")}
+                    {if strlen("{$blog->icon}") && file_exists("{$smarty.const.SERVER_PATH_BLOGS}/{$blog->id}/{$blog->icon}")}
                         <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="icon" style="max-width: 150px; max-height: 150px;">
                     {/if}
                     <p><small>Max upload size = 50 KB, for best results this should be a square image</small></p>

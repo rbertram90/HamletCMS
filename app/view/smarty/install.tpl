@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/css/semantic.css">
-    <script src="/resources/js/jquery-3.3.1.min.js"></script>
-    <script src="/js/semantic.js"></script>
+    <link rel="stylesheet" type="text/css" href="/hamlet/css/semantic.css">
+    <script src="/hamlet/resources/js/jquery-3.3.1.min.js"></script>
+    <script src="/hamlet/js/semantic.js"></script>
 </head>
 <body>
 <div class="ui text container">
     <div class="ui padded grid">
         <div class="row">
             <div class="teal center aligned column">
-                <img src="/images/logo.png" alt="HamletCMS" />
+                <img src="/hamlet/images/logo.png" alt="HamletCMS" />
             </div>
         </div>
         <div class="row">
@@ -34,7 +34,7 @@
                     </div>
                     <div class="content active">
                         <div class="transition visible">
-                            <div class="ui teal message">Change these variables & more in /app/config/config.json</div>
+                            <div class="ui teal message">Change these variables & more in {$config.environment.root_directory}/config/config.json</div>
                             <div class="ui clearing segment">
                                 <h4 class="ui teal header">Database</h4>
                                 <div class="ui list">
@@ -62,8 +62,14 @@
                                     </div>
                                     <div class="item">
                                         <div class="content">
-                                            <div class="header">Root directory</div>
+                                            <div class="header">Application directory</div>
                                             {$config.environment.root_directory}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="content">
+                                            <div class="header">Public directory</div>
+                                            {$config.environment.public_directory}
                                         </div>
                                     </div>
                                     <div class="item">

@@ -5,13 +5,42 @@ use rbwebdesigns\core\Request;
 use HamletCMS\Website\controller\Site;
 use HamletCMS\Widgets\controller\WidgetsView;
 
+// http://www.hamletcms.localhost/api/blogs/byCategory?category=General
+
 /****************************************************************
   Website entrypoint
 ****************************************************************/
 
-    // Include cms setup script
-    require_once __DIR__ .'/../app/setup.inc.php';
+    $server_config = __DIR__ . '/hamlet.json';
 
+    if (!file_exists($server_config)) {
+        print "Cannot find Hamlet config - please run app/updatepublic.php to setup.";
+        exit;
+    }
+
+    $server_config = json_decode(file_get_contents($server_config), true);
+    $server_root = $server_config['application_directory'];
+    
+    // Include cms setup script
+    require_once $server_root . '/app/setup.inc.php';
+
+    $entrypoint = filter_input(INPUT_GET, 'p');
+
+    // Handle API requests
+    if ($entrypoint === 'api') {
+        require_once $server_root . '/app/api_setup.php';
+        exit;
+    }
+
+    // Handle CMS requests
+    if ($entrypoint === 'cms') {
+        if (filter_input(INPUT_GET, 'query') === 'install') {
+            require_once $server_root . '/app/install.php';
+            exit;
+        }
+        require_once $server_root . '/app/cms_setup.php';
+        exit;
+    }
 
 /****************************************************************
   Route request
@@ -23,12 +52,11 @@ use HamletCMS\Widgets\controller\WidgetsView;
     $response = new HamletCMSResponse();
 
     // Add default stylesheet(s)
-    $response->addStylesheet('/css/semantic.css');
-    // $response->addStylesheet('/css/blogs_stylesheet.css');
+    $response->addStylesheet('/hamlet/css/semantic.css');
 
     // Add default script(s)
-    $response->addScript('/resources/js/jquery-1.8.0.min.js');
-    $response->addScript('/js/semantic.js');
+    $response->addScript('/hamlet/resources/js/jquery-1.8.0.min.js');
+    $response->addScript('/hamlet/js/semantic.js');
     
     // Set default meta data
     $response->setTitle('Default title');
@@ -54,7 +82,7 @@ use HamletCMS\Widgets\controller\WidgetsView;
             $response->redirect('/');
         }
         
-        require SERVER_ROOT .'/app/blog_setup.inc.php';
+        require $server_root . '/app/blog_setup.inc.php';
         exit;
     }
 

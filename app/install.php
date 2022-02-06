@@ -10,12 +10,12 @@ use HamletCMS\HamletCMS;
 ****************************************************************/
 
     // Include cms setup script
-    require_once __DIR__ . '/../../app/setup.inc.php';
-        
+    require_once __DIR__ . '/setup.inc.php';
+    
     $request = HamletCMS::request();
     $response = HamletCMS::response();
 
-    $coreModules = scandir(SERVER_MODULES_PATH. '/core');
+    $coreModules = scandir(SERVER_MODULES_PATH . '/core');
     $modules = [];
 
     foreach ($coreModules as $module) {
@@ -31,27 +31,24 @@ use HamletCMS\HamletCMS;
         ];
     }
 
-    $addonModules = scandir(SERVER_MODULES_PATH . '/addon');
-
-    foreach ($addonModules as $module) {
-        if ($module == '.' || $module == '..') continue;
-    
-        $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/addon/{$module}/info.json");
-    
-        $modules[$module] = [
-            'core' => 0,
-            'description' => $info['description'] ?? '',
-            'dependencies' => $info['dependencies'] ?? [],
-            'locked' => 0 // addon modules cannot be locked
-        ];
+    if (file_exists(SERVER_MODULES_PATH . '/addon')) {
+        $addonModules = scandir(SERVER_MODULES_PATH . '/addon');
+        
+        foreach ($addonModules as $module) {
+            if ($module == '.' || $module == '..') continue;
+        
+            $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/addon/{$module}/info.json");
+        
+            $modules[$module] = [
+                'core' => 0,
+                'description' => $info['description'] ?? '',
+                'dependencies' => $info['dependencies'] ?? [],
+                'locked' => 0 // addon modules cannot be locked
+            ];
+        }
     }
 
     if ($request->method() == 'POST') {
-
-        if (!file_exists(SERVER_ROOT . '/public/blogdata')) {
-            $blogdata = mkdir(SERVER_ROOT . '/public/blogdata');
-            if (!$blogdata) die('Unable to create directory for blog data - check /public directory permissions');
-        }
 
         $dbc = HamletCMS::databaseConnection();
 
@@ -153,7 +150,7 @@ use HamletCMS\HamletCMS;
         ];
 
         /** @var \HamletCMS\UserAccounts\model\UserAccounts  */
-        $modelUsers = HamletCMS::model('\HamletCMS\UserAccounts\model\UserAccounts');
+        $modelUsers = HamletCMS::model('useraccounts');
 
         // Misc folders
         if (!file_exists(SERVER_AVATAR_FOLDER)) {
@@ -164,17 +161,16 @@ use HamletCMS\HamletCMS;
         // Validate
         if ($accountData['email'] != $accountData['emailConfirm']
             || $accountData['password'] != $accountData['passwordConfirm']) {
-            $response->redirect('/cms/install.php', 'Email or passwords did not match', 'error');
+            $response->redirect('/cms/install', 'Email or passwords did not match', 'error');
         }
-        var_dump($accountData['username']);
 
         $checkUser = $modelUsers->get('id', ['username' => $accountData['username']], '', '', false);
         if ($checkUser && $checkUser['id']) {
-            $response->redirect('/cms/install.php', 'Username is already taken', 'error');
+            $response->redirect('/cms/install', 'Username is already taken', 'error');
         }
 
         if (!$modelUsers->register($accountData)) {
-            $response->redirect('/cms/install.php', 'Error creating admin account', 'error');
+            $response->redirect('/cms/install', 'Error creating admin account', 'error');
         }
 
         $response->redirect('/cms', 'Installation complete', 'success');

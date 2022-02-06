@@ -122,7 +122,7 @@ class Settings extends GenericController
             $defaultTemplate = SERVER_MODULES_PATH .'/core/BlogView/templates/header.tpl';
             $this->response->setVar('headerTemplate', file_get_contents($defaultTemplate));
         }
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Customise Blog Header - ' . $this->blog->name);
         $this->response->write('header.tpl', 'Settings');
     }
@@ -147,7 +147,7 @@ class Settings extends GenericController
             $this->response->setVar('footerTemplate', file_get_contents($defaultTemplate));
         }
 
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Customise Blog Footer - ' . $this->blog->name);
         $this->response->write('footer.tpl', 'Settings');
     }
@@ -159,7 +159,7 @@ class Settings extends GenericController
     {
         if($this->request->method() == 'POST') return $this->saveStylesheet();
 
-        $this->response->addScript('/resources/ace/ace.js');
+        $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setVar('serverroot', SERVER_ROOT);
         $this->response->setTitle('Edit Stylesheet - ' . $this->blog->name);
         $this->response->write('stylesheet.tpl', 'Settings');
@@ -337,9 +337,6 @@ class Settings extends GenericController
         $zones = array_filter($zones);
         array_push($zones, 'leftpanel', 'rightpanel');
         $zones = array_unique($zones);
-
-        // var_dump($zones);
-        // die();
 
         $newConfig = [
             'Layout' => [

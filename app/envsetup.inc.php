@@ -6,11 +6,11 @@ use HamletCMS\HamletCMS;
     // Load JSON config file
     // Note: cannot use core function to do this as hasn't been loaded
     // at this stage - chicken and egg situation
-    if (!file_exists(__DIR__ . '/config/config.json')) {
-        die('Site not configured - please create file /app/config/config.json');
+    if (!file_exists(__DIR__ . '/../config/config.json')) {
+        die('Site not configured - please create file /config/config.json');
     }
 
-    $config = JSONhelper::JSONFileToArray(__DIR__ . '/config/config.json');
+    $config = JSONhelper::JSONFileToArray(__DIR__ . '/../config/config.json');
 
     define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
     
@@ -18,11 +18,11 @@ use HamletCMS\HamletCMS;
         define('SERVER_ROOT', $config['environment']['root_directory']);  // Absolute path to root folder
     }
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
-    define('SERVER_PUBLIC_PATH', SERVER_ROOT . '/public');           // Path to public document root
+    define('SERVER_PUBLIC_PATH', $config['environment']['public_directory']); // Path to public document root
     define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');     // Path to modules
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/app/templates'); // Path to the blog templates
-    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/blogdata');   // Path to public blog data
-    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/avatars'); // Path to the folder containing user avatars
+    define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/hamlet/blogdata');   // Path to public blog data
+    define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/hamlet/avatars'); // Path to the folder containing user avatars
     define('SERVER_PATH_WIDGETS', SERVER_ROOT . '/app/widgets');     // Path to installed widgets
 
     // Make sure we're in the right timezone
@@ -50,12 +50,9 @@ use HamletCMS\HamletCMS;
 /****************************************************************
   Includes
 ****************************************************************/
-
-    // Smarty - do we still need this?!
-    require_once SERVER_ROOT .'/app/vendor/smarty/smarty/libs/Smarty.class.php';
         
     // Import view functions
-    require_once SERVER_ROOT .'/app/view/helper_functions.php';
+    require_once SERVER_ROOT . '/app/view/helper_functions.php';
 
     // Store the configuration
     HamletCMS::addToConfig($config);
@@ -74,7 +71,7 @@ use HamletCMS\HamletCMS;
     define("TBL_CONTRIBUTORS", $databaseCredentials['name'] . ".contributors");
     define("TBL_USERS", $databaseCredentials['name'] . ".users");
 
-if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
+if (php_sapi_name() === 'cli' || $_SERVER['REQUEST_URI'] !== '/cms/install') {
     /** @var rbwebdesigns\core\ObjectDatabase */
     $dbc = HamletCMS::databaseConnection();
     $checkInstall = $dbc->countRows("information_schema.tables", [
@@ -84,7 +81,7 @@ if ($_SERVER['SCRIPT_NAME'] != '/cms/install.php') {
 
     // Didn't find any modules - run install!
     if ($checkInstall == 0) {
-        HamletCMS::response()->redirect('/cms/install.php');
+        HamletCMS::response()->redirect('/cms/install');
     }
     
 /****************************************************************

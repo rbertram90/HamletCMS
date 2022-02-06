@@ -15,6 +15,7 @@
         "development_mode": false,
         "canonical_domain": "http://hamlet.localhost",
         "root_directory": "/var/www/hamlet",
+        "public_directory": "/var/www/html",
         "timezone": "Europe/London"
     },
     "email": {

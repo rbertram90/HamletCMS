@@ -13,7 +13,7 @@ use HamletCMS\HamletCMS;
  */
 
     // Composer setup
-    require_once __DIR__ .'/vendor/autoload.php';
+    require_once __DIR__ .'/../vendor/autoload.php';
 
     // Setup common between cms and blog front-end
     require_once __DIR__ .'/envsetup.inc.php';
