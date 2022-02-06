@@ -7,7 +7,7 @@
 /vendor
 templates_c/
 
-/app/config/config.json
+/config/config.json
 /cache
 
 *.log

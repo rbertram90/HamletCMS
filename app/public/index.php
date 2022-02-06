@@ -90,15 +90,19 @@ use HamletCMS\Widgets\controller\WidgetsView;
   Setup controller
 ****************************************************************/
 
+    $applyTemplate = true;
+
     if ($action == 'widgets') {
         // @todo make this go through proper routing system
         $controller = new WidgetsView();
         $action = 'generateWidget';
         $applyTemplate = false;
     }
+    elseif ($siteController = HamletCMS::config()['environment']['site_controller'] ?? false) {
+        $controller = new $siteController($request, $response);
+    }
     else {
         $controller = new Site($request, $response);
-        $applyTemplate = true;
     }
 
     // Check that the route exists
@@ -120,7 +124,10 @@ use HamletCMS\Widgets\controller\WidgetsView;
 ****************************************************************/
 
     // Run Template here
-    if ($applyTemplate) {
+    if (method_exists($controller, 'applyPageTemplate')) {
+        $controller->applyPageTemplate();
+    }
+    elseif ($applyTemplate) {
         $response->writeTemplate('wrapper.tpl', 'Website');
     }
     else {
