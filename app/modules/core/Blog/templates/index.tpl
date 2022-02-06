@@ -1,11 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewPageHeader('My Blogs', 'book')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
 
 {* Check if this user contributes/ owns to at least 1 blog *}
 {if count($blogs) > 0}
