@@ -18,10 +18,10 @@
                     </div>
                     
                     <textarea id="ace_edit_view" name="ace_edit_view" rows="20" style="font-family: monospace;">{strip}
-                        {file_get_contents("{$serverroot}/public/blogdata/{$blog->id}/default.css")}
+                        {file_get_contents("{$serverroot}/{$blog->id}/default.css")}
                     {/strip}</textarea>
                     <textarea name="fld_css"  id="fld_css" style="display: none;">{strip}
-                        {file_get_contents("{$serverroot}/public/blogdata/{$blog->id}/default.css")}
+                        {file_get_contents("{$serverroot}/{$blog->id}/default.css")}
                     {/strip}</textarea>
                     <script>
                         var ace_editor = ace.edit("ace_edit_view");

@@ -105,7 +105,7 @@ class Blogs extends GenericController
         $currentUser = HamletCMS::session()->currentUser;
 
         // Check we've got the root.inc.php file under blogdata root
-        if (!file_exists(SERVER_PATH_BLOGS .'/root.inc.php')) {
+        if (!file_exists(SERVER_PATH_BLOGS . '/root.inc.php')) {
             // Replace contents
             $fileContents = file_get_contents(SERVER_ROOT.'/app/root.default.php');
 
@@ -113,7 +113,7 @@ class Blogs extends GenericController
             $fileContents = str_replace("{CMS_DOMAIN}", HamletCMS::config()['environment']['canonical_domain'], $fileContents);
 
             // Copy file
-            $copy = file_put_contents(SERVER_PATH_BLOGS.'/root.inc.php', $fileContents);
+            $copy = file_put_contents(SERVER_PATH_BLOGS . '/root.inc.php', $fileContents);
             if (!$copy) die("Failed to create root file, please check directory permissions for: " . SERVER_PATH_BLOGS);
         }
 

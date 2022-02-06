@@ -40,11 +40,11 @@
                 <div class="card">
                     <div class="image">
                         {if strlen({$contributor->profile_picture}) > 0 and trim({$contributor->profile_picture}) != "profile_default.jpg"}
-                            <img src="/avatars/thumbs/{$contributor->profile_picture}">
+                            <img src="/hamlet/avatars/thumbs/{$contributor->profile_picture}">
                         {elseif $contributor->gender == 'Female'}
-                            <img src="/avatars/default_woman.png">
+                            <img src="/hamlet/avatars/default_woman.png">
                         {else}
-                            <img src="/avatars/default_man.png">
+                            <img src="/hamlet/avatars/default_man.png">
                         {/if}
                     </div>
 

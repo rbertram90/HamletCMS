@@ -84,7 +84,7 @@
             
             // Make the ajax call
             ajax_PostFile("/cms/files/uploadimages/{$blog->id}?replace=1", formData, function(xmlhttp) {
-                closeUploadWindow('/blogdata/{$blog->id}/images/' + xmlhttp.responseText.trim());
+                closeUploadWindow('{$blog->resourcePath()}/images/' + xmlhttp.responseText.trim());
             });
             
             e.preventDefault();

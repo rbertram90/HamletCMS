@@ -42,7 +42,7 @@
             </div>
         {/if}
         <div class="ui dropdown item user-menu" title="Account menu">
-            <img src="/avatars/thumbs/{$user->profile_picture}" alt="Profile image" class="user-icon"> {$user->username} <i class="dropdown icon"></i>
+            <img src="/hamlet/avatars/thumbs/{$user->profile_picture}" alt="Profile image" class="user-icon"> {$user->username} <i class="dropdown icon"></i>
             {viewMenu($page_user_menu)}
         </div>
     </div>

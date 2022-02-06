@@ -13,7 +13,7 @@
                 <div class="card">
                     {if $blog->logo}
                         <a href="{$blog->url()}" class="image">
-                            <img src="/blogdata/{$blog->id}/{$blog->logo}" alt="">
+                            <img src="{$blog->resourcePath()}/{$blog->logo}" alt="">
                         </a>
                     {/if}        
                     <div class="content">
@@ -54,7 +54,7 @@
                 <div class="item">
                     {if $post->teaser_image != ''}
                         <a href="{$post->url()}" class="image">
-                            <img src="/blogdata/{$post->blog()->id}/images/s/{$post->teaser_image}" alt="">
+                            <img src="{$post->blog()->resourcePath()}/images/s/{$post->teaser_image}" alt="">
                         </a>
                     {/if}
                     <div class="content">

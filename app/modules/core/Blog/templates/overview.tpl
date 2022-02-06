@@ -11,7 +11,7 @@
 
         <h1 class="ui header cms-page-header">
             {if $blog->logo}
-                <img src="/blogdata/{$blog->id}/{$blog->icon}" alt="Blog logo">
+                <img src="{$blog->resourcePath()}/{$blog->icon}" alt="Blog logo">
             {else}
                 <i class="book icon"></i>
             {/if}
@@ -90,7 +90,7 @@
                     <div class="ui segments">
                         {foreach $activitylog as $activity}
                             <div class="ui clearing segment">
-                                <img src="/avatars/thumbs/{$activity.user_image}" class="ui left floated spaced mini circular image">
+                                <img src="/hamlet/avatars/thumbs/{$activity.user_image}" class="ui left floated spaced mini circular image">
                                 <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
                                 <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
                             </div>

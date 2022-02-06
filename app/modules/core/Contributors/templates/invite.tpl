@@ -48,7 +48,7 @@
                 var user = data[0];
                 $("#selected_user").val(user.id);
                 $("#user_preview").html("<div class='ui card'>" +
-                    "<div class='image'><img src='/avatars/" + user.profile_picture + "' alt='" + user.username + "'></div>" +
+                    "<div class='image'><img src='/hamlet/avatars/" + user.profile_picture + "' alt='" + user.username + "'></div>" +
                     "<div class='content'><a class='header'>" + user.name + " " + user.surname + "</a>" +
                     "<div class='description'>" + user.description + "</div></div>" + 
                     "<button class='ui bottom attached teal button'><i class='add icon'></i>Invite</button></div>");

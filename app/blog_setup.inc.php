@@ -66,7 +66,7 @@ CSRF::init();
         $host = '';
         $action = strtolower($request->getUrlParameter(1));
         $pathPrefix = "/blogs/{$blog->id}";
-        $blogDir = "/blogdata/{$blog->id}";
+        $blogDir = $blog->resourcePath();
     }
 
     $session = HamletCMS::session();

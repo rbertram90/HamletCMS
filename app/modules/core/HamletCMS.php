@@ -79,7 +79,7 @@ class HamletCMS
     {
         if (self::$blog) return self::$blog;
         if (self::$blogID) {
-            $blogsModel = self::model('\HamletCMS\Blog\model\Blogs');
+            $blogsModel = self::model('blogs');
             self::$blog = $blogsModel->getBlogById(self::$blogID);
             return self::$blog;
         }

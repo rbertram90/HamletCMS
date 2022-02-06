@@ -4,7 +4,7 @@
     {foreach $contributors as $contributor}
         <div class="ui card">
             <div class="image">
-                <img src="/avatars/thumbs/{$contributor->profile_picture}">
+                <img src="/hamlet/avatars/thumbs/{$contributor->profile_picture}">
             </div>
             <div class="content">
                 <a class="header" href="/cms/account/user/{$contributor->id}">{$contributor->name} {$contributor->surname}</a>

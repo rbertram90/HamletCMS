@@ -23,6 +23,9 @@ use rbwebdesigns\core\Request;
     if (count($queryParts) > 1) {
         $_REQUEST['query'] = implode('/', array_slice($queryParts, 1));
     }
+    else {
+        $_REQUEST['query'] = '';
+    }
     
     $request = HamletCMS::request();
     $response = HamletCMS::response();

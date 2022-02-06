@@ -3,7 +3,7 @@
     <style>#teaser_image_image img { max-height: 200px; max-width: 200px; }</style>
     <div id="teaser_image_image">
     {if isset($post) && $post->teaser_image != ''}
-        <img src="/blogdata/{$blog->id}/images/{$post->teaser_image}">
+        <img src="{$blog->resourcePath()}/images/{$post->teaser_image}">
     {/if}
     </div>
     <button type="button" id="teaser_image_select" title="Select Image" class="ui icon button" data-no-spinner="true">

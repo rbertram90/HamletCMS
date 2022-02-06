@@ -259,7 +259,7 @@ class Files extends GenericController
                 while (false !== ($file = readdir($handle))) {
                     $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
                     if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                        $imagesHTML .= '<img src="/blogdata/'. $this->blog->id .'/images/sq/'. $file .'" height="100" data-file="'. $file .'" width="" class="selectableimage">';
+                        $imagesHTML .= '<img src="'. $this->blog->resourcePath() .'/images/sq/'. $file .'" height="100" data-file="'. $file .'" width="" class="selectableimage">';
                     }
                 }
                 closedir($handle);

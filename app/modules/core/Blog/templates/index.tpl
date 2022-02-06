@@ -21,7 +21,7 @@
             <tr>
                 <td width="50">
                     {if $blog->icon}
-                        <img src="/blogdata/{$blog->id}/{$blog->icon}" class="blog-icon">
+                        <img src="{$blog->resourcePath()}/{$blog->icon}" class="blog-icon">
                     {/if}
                 </td>
                 <td>

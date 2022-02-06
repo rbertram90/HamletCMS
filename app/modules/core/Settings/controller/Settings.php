@@ -160,7 +160,7 @@ class Settings extends GenericController
         if($this->request->method() == 'POST') return $this->saveStylesheet();
 
         $this->response->addScript('/hamlet/resources/ace/ace.js');
-        $this->response->setVar('serverroot', SERVER_ROOT);
+        $this->response->setVar('serverroot', SERVER_PATH_BLOGS);
         $this->response->setTitle('Edit Stylesheet - ' . $this->blog->name);
         $this->response->write('stylesheet.tpl', 'Settings');
     }

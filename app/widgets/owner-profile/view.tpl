@@ -8,7 +8,7 @@
 $.get('{$cms_url}/api/contributors/owner', { blogID: {$blog->id} }, function(owner) {
 
     var profile = '<div class="ui fluid card"><div class="image">';
-        profile += '  <img src="/avatars/thumbs/' + owner.profile_picture + '">';
+        profile += '  <img src="/hamlet/avatars/thumbs/' + owner.profile_picture + '">';
         profile += '</div><div class="content">';
         profile += '<a class="header" href="/cms/account/user/' + owner.id + '">' + owner.name + ' ' + owner.surname + '</a>';
         profile += '<div class="meta">' + owner.username + '</div>';

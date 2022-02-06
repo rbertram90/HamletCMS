@@ -60,7 +60,7 @@ class Blog
      */
     public function resourcePath()
     {
-        return strlen($this->domain) ? "" : "/blogdata/{$this->id}";
+        return strlen($this->domain) ? "" : "/hamlet/blogdata/{$this->id}";
     }
 
     /**
