@@ -10,6 +10,8 @@
 
 <input type="button" value="Cancel" id="cancel_create_post" name="goback" onclick="if(confirm('You will lose any changes made')) {ldelim} window.location = getCancelLocation(); window.content_changed = false; {rdelim}" class="ui button right floated">
 
+<input type="submit" name="submit_preview_post" id="preview_post" value="Preview" class="ui button teal basic right floated">
+
 <input type="submit" name="submit_create_post" id="submit_create_post" value="{$submitLabel}" class="ui button teal right floated">
 
 
@@ -27,6 +29,13 @@
     <a href="/cms/posts/create/{$blog->id}" class="large ui basic inverted teal button"><i class="plus icon"></i> Create another</a>
     <a href="/cms/posts/manage/{$blog->id}" class="large ui basic inverted teal button"><i class="copy outline icon"></i>Manage posts</a>
   </div>
+</div>
+
+
+<div class="ui modal" id="preview_window">
+    <i class="close icon"></i>
+    <div class="header">Preview post</div>
+    <div class="content"><!-- content here --></div>
 </div>
 
 
@@ -69,20 +78,8 @@
         enableUnloadMessage();
     };
 
-    // Handle form submission
-    $("#form_create_post").submit(function(event) {
-
-        // Update UI
-        disableForm();
-        $(".form_status").html("Saving post...").show(300);
-
-        event.preventDefault();
-
-        // Build up the fields object with properties to
-        // pass to the server to be saved
-        var formData = {
-            token: CSRFTOKEN
-        };
+    var collectFormData = function() {
+        var formData = {};
 
         $(".post-data-field").each(function() {
             var key, type;
@@ -115,6 +112,34 @@
             }
         });
 
+        return formData;
+    };
+
+    $("#preview_post").click(function(event) {
+        event.preventDefault();
+
+        var formData = collectFormData();
+        formData.csrf_token = CSRFTOKEN;
+
+        $.ajax({ url: '/cms/posts/preview', async: true, type: 'POST', data: formData }).done(function (data) {
+            $('#preview_window').find('.content').html(data);
+            $('#preview_window').modal('show');
+        });
+    });
+
+    // Handle form submission
+    $("#form_create_post").submit(function(event) {
+        // Update UI
+        disableForm();
+        $(".form_status").html("Saving post...").show(300);
+
+        event.preventDefault();
+
+        // Build up the fields object with properties to
+        // pass to the server to be saved
+        var formData = collectFormData();
+        formData.token = CSRFTOKEN;
+
         if ($("#teaser_image_image img").length > 0) {
             var imageSrc = $("#teaser_image_image img").attr('src');
             srcSplit = imageSrc.split('/');
@@ -137,7 +162,6 @@
 
         $.ajax({ url: saveURL, async: false, type: 'POST', data: formData }).done(function (data) {
             if (data.success) {
-                // window.location = '/cms/posts/manage/' + formData.blogID;
                 $('#post_save_success').modal('setting', 'closable', false).modal('show');
                 $('#edit_post_link').attr('href', '/cms/posts/edit/' + data.post.id);
                 $('#view_post_link').attr('href', '/blogs/{$blog->id}/posts/' + data.post.link);

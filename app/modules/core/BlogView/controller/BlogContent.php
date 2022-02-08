@@ -2,6 +2,7 @@
 namespace HamletCMS\BlogView\controller;
 
 use Codeliner;
+use HamletCMS\BlogPosts\Post;
 use HamletCMS\HamletCMS;
 use HamletCMS\HamletCMSResponse;
 use HamletCMS\GenericController;
@@ -36,8 +37,17 @@ class BlogContent extends GenericController
     protected $blogID;           // ID of current blog
     protected $blogConfig;       // Config array of current blog
         
-    public function __construct($blog_key)
+    public function __construct($blog_key = false)
     {
+        parent::__construct();
+
+        if (!$blog_key) {
+            $blog_key = $this->request->get('blogID', false);
+            if (!$blog_key) {
+                throw new \Exception('No blog key found');
+            }
+        }
+
         // Instantiate models
         $this->modelBlogs = HamletCMS::model('blogs');
         $this->modelContributors = HamletCMS::model('contributors');
@@ -48,8 +58,6 @@ class BlogContent extends GenericController
         $this->blog          = $this->modelBlogs->getBlogById($blog_key);
         $this->blogID        = $blog_key;
         $this->blogConfig    = null;
-
-        parent::__construct();
     }
     
     /**
@@ -170,6 +178,31 @@ class BlogContent extends GenericController
         }
 
         throw new \Exception("Post template mode {$mode} not found.");
+    }
+
+    /**
+     * Preview post
+     */
+    public function previewPost() {
+        $this->request->isAjax = true;
+        $post = new Post([
+            'id' => -1,
+            'title' => $this->request->get('title', ''),
+            'summary' => $this->request->get('summary', ''),
+            'content' => $this->request->get('content', ''),
+            'blog_id' => $this->request->get('blogID', $this->blog->id),
+            'link' => $this->request->get('link', ''),
+            'tags' => explode(',', $this->request->get('tags', '')),
+            'author_id' => HamletCMS::session()->currentUser['id'],
+            'draft' => $this->request->get('draft', 1),
+            'type' => $this->request->get('type', 'standard'),
+            'teaser_image' => $this->request->get('teaserImage', ''),
+            'timestamp' => $this->request->get('date', ''),
+        ]);
+
+        HamletCMS::runHook('onPreviewPost', ['post' => &$post]);
+
+        return $this->generateSinglePost($post, null);
     }
 
     /**

@@ -1,3 +1,9 @@
 [
-
+    {
+        "key": "posts.preview",
+        "path": "/cms/posts/preview",
+        "permissions": [],
+        "controller": "\\HamletCMS\\BlogView\\controller\\BlogContent",
+        "action": "previewPost"
+    }
 ]

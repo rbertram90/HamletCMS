@@ -200,4 +200,13 @@ class Module
             $test->run();
         }
     }
+
+    /**
+     * Add comments field to post preview
+     */
+    public function onPreviewPost($args) {
+        $post = $args['post'];
+        $post->allowcomments = 0;
+    }
+
 }

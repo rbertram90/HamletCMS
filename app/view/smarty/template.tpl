@@ -70,6 +70,6 @@
         </div>
     {/if}
 
-    <script src="/js/messages.js"></script>
+    <script src="/hamlet/js/messages.js"></script>
 </body>
 </html>
