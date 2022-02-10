@@ -1,12 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}), 'Settings')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Settings', 'sliders horizontal', {$blog->name})}
             <div class="ui teal message">
                 This section allows you to change the look and feel of the blog.
             </div>

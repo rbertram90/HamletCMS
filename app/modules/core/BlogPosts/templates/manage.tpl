@@ -1,17 +1,7 @@
 {* Manage Posts *}
 
 <div class="ui grid">
-    
     <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Manage posts')}
-        </div>
-    </div>
-    
-    <div class="two column row">
-        <div class="column">
-            {viewPageHeader('Manage posts', 'copy outline', "{$blog->name}")}
-        </div>
         <div class="column">
             <div class="ui form">
                 <div class="ui horizontal segments margin" style="margin:0;">

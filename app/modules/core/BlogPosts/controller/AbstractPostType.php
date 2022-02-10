@@ -20,6 +20,15 @@ class AbstractPostType extends GenericController
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Create blog post');
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Posts' => '/cms/posts/manage/' . $this->blog->id,
+            'Create' => '/cms/posts/create/' . $this->blog->id,
+            'Markdown' => null
+        ]);
+        $this->response->headerIcon = 'edit outline';
+        $this->response->headerText = 'Create new post';
+
         $extraFields = [];
         HamletCMS::runHook('editPostForm', [
             'blog' => $this->blog,

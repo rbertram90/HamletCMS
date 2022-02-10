@@ -33,6 +33,22 @@
             </div>
         </div>
     {/if}
+
+
+    {if count($breadcrumbs)}
+        <div class="ui breadcrumb borderless item">
+            {foreach from=$breadcrumbs item=link key=key}
+                {if $link}
+                    <a href="{$link}" class="section">{$key}</a>
+                {else}
+                    <div class="active section">{$key}</div>
+                {/if}
+                {if not $link@last}
+                 <i class="right angle icon divider"></i>
+                {/if}
+            {/foreach}
+        </div>        
+    {/if}
     
     <div class="right menu">
         {if $user->admin}
@@ -52,11 +68,14 @@
     $(".blog-menu").dropdown();
 </script>
 
+<div class="cms-header">
+    <h1>{if $header_icon}<i class="{$header_icon} icon"></i>{/if} {if $header_text}{$header_text}{else}{$page_title}{/if}</h1>
+</div>
     <div class="ui stackable two column grid cms-body">
         <div class="four wide tablet three wide computer column">
             {viewMenu($page_side_menu, "cms_main_menu", "fluid vertical pointing")}
         </div>
-        <div class="twelve wide tablet thirteen wide computer column">            
+        <div class="twelve wide tablet thirteen wide computer column">
             {* Output main content *}
             {$body_content}
         </div>

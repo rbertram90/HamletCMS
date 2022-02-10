@@ -1,27 +1,6 @@
 {* Blog Overview *}
 
 <div class="ui grid">
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array(), $blog->name)}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-
-        <h1 class="ui header cms-page-header">
-            {if $blog->logo}
-                <img src="{$blog->resourcePath()}/{$blog->icon}" alt="Blog logo">
-            {else}
-                <i class="book icon"></i>
-            {/if}
-            <div class="content">
-                {$blog->name}
-            </div>
-        </h1>
-        </div>
-    </div>
-
     {if count($counts) is div by 4}
         {$columnCount = 'four'}
     {elseif count($counts) is div by 3}

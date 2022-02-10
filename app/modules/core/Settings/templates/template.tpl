@@ -1,17 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Template gallery')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Template gallery', 'sliders horizontal', $blog->name)}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-
             <div class="ui message">
                 <p>When a new template is applied the system copies each of the files in the template so that you can then make changes without affecting the original template.</p>
                 <a href="/cms/settings/templateConfig/{$blog->id}" class="ui button">Edit current template settings</a>

@@ -1,16 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Template settings')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Template settings', 'sliders horizontal', $blog->name)}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             <form method="POST" class="ui form" id="template_settings_form">
                 <div class="field">
                     <label for="column_count">Number of columns</label>

@@ -95,6 +95,13 @@ class Files extends GenericController
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
+        $response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Files' => null
+        ]);
+        $response->headerIcon = 'file image outline';
+        $response->headerText = $this->blog->name . ': Manage files';
+
         $config = HamletCMS::config();
         $response->setVar('maxfoldersize', $config['files']['upload_bytes_limit'] / 1000000);        
         $response->setTitle('Manage Files - ' . $blog->name);

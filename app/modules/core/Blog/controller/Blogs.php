@@ -92,6 +92,12 @@ class Blogs extends GenericController
             $this->response->setVar('activitylog', $this->model('eventlogger')->byBlog($blogID));
         }
 
+        $this->response->setBreadcrumbs([
+            $blog->name => null
+        ]);
+        $this->response->headerIcon = 'book';
+        $this->response->headerText = $blog->name;
+
         HamletCMS::$activeMenuLink = '/cms/blog/overview/'. $blog->id;
         $this->response->setTitle('Dashboard - '. $blog->name);
         $this->response->write('overview.tpl', 'Blog');

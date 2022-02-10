@@ -2,16 +2,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Files')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('File settings', 'sliders horizontal', {$blog->name})}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             <h2>Image sizes</h2>
             <div class="ui icon info message">
                 <i class="info circle icon"></i>

@@ -23,7 +23,7 @@ class Module
             `dob` date,
             `gender` varchar(10),
             `location` varchar(50),
-            `profile_picture` varchar(255) NOT NULL DEFAULT 'profile_default.jpg',
+            `profile_picture` varchar(255),
             `description` text,
             `admin` tinyint(1) NOT NULL DEFAULT '0',
             `signup_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -31,8 +31,8 @@ class Blog
      */
     public function __construct()
     {
-        $this->contributorsFactory = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
-        $this->postsFactory = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $this->contributorsFactory = HamletCMS::model('contributors');
+        $this->postsFactory = HamletCMS::model('posts');
     }
 
     /**
@@ -73,7 +73,9 @@ class Blog
         if ($this->contributors) {
             return $this->contributors;
         }
-        return $this->contributorsFactory->getBlogContributors($this->id);
+        $contributorIds = $this->contributorsFactory->getBlogContributors($this->id, true);
+        $this->contributors = HamletCMS::model('useraccounts')->getByIds(array_column($contributorIds, 'user_id'));
+        return $this->contributors;
     }
 
     /**

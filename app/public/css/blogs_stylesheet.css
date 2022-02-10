@@ -36,8 +36,25 @@ p {
     border-radius: 50%;
     margin-right: 10px;
 }
-#cms .cms-body {
+.cms-body {
     margin-top: 60px;
+}
+.cms-header {
+    margin-top: 52px;
+    background-color: #4a4a4a;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 16px;
+    color: #eee;
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    border-bottom: 2px solid #00B5AD;
+}
+.cms-header h1 {
+    font-size: 1.45rem;
+    font-weight: normal;
+}
+.cms-header + .cms-body {
+    margin-top: 0;
 }
 
 .ui.vertical.menu .header.item {

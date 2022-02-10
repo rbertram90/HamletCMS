@@ -104,7 +104,7 @@ class UserAccounts extends RBFactory
      */
     public function getByIds($userIDs)
     {
-        return $this->db->query("SELECT * FROM {$this->tablename} WHERE id IN " . implode(',', $userIDs));
+        return $this->get('*', ['id' => $userIDs]);
     }
 
     /**

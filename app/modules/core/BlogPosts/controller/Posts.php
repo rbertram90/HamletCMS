@@ -103,7 +103,13 @@ class Posts extends GenericController
     public function manage()
     {
         $this->response->setVar('blog', $this->blog);
-        $this->response->setTitle('Manage Posts - ' . $this->blog->name);
+        $this->response->setTitle('Manage posts - ' . $this->blog->name);
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Posts' => null
+        ]);
+        $this->response->headerIcon = 'copy outline';
+        $this->response->headerText = $this->blog->name . ': Manage posts';
         $this->response->addScript('/hamlet/js/showUserCard.js');
         $this->response->addScript('/hamlet/js/managePosts.js');
         $this->response->write('manage.tpl', 'BlogPosts');
@@ -114,10 +120,16 @@ class Posts extends GenericController
      */
     public function create()
     {
-        // if ($this->request->method() == 'POST') return $this->runCreatePost();
-
         $newPostMenu = new Menu('create_post');
         HamletCMS::runHook('onGenerateMenu', ['id' => 'create_post', 'menu' => &$newPostMenu]);
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Posts' => '/cms/posts/manage' .  $this->blog->id,
+            'Create' => null
+        ]);
+        $this->response->headerIcon = 'file alternate outline';
+        $this->response->headerText = $this->blog->name . ': Create new post';
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('New Post');
@@ -130,6 +142,14 @@ class Posts extends GenericController
      */
     public function edit()
     {
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            $this->post->title => $this->post->url(),
+            'Edit' => null
+        ]);
+        $this->response->headerIcon = 'edit outline';
+        $this->response->headerText = 'Editing post: &ldquo;' . $this->post->title . '&rdquo;';
+
         // Now passing this on individual modules
         HamletCMS::runHook('onViewEditPost', ['type' => $this->post->type]);
     }

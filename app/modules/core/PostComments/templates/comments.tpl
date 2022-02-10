@@ -1,20 +1,5 @@
 {* Manage Comments *}
 
-<div class="ui grid">
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}), 'Comments')}
-        </div>
-    </div>
-
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Comments', 'comment outline', {$blog->name})}
-        </div>
-    </div>
-</div>
-
-
     <div class="ui clearing segment">
         <div class="ui buttons">
             <a href="?filter=all" class="ui {if $filter == 'all'}teal{/if} button">All</a>

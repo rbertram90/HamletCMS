@@ -2,12 +2,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}), 'Files')}
-            {viewPageHeader('Files', 'file image outline', {$blog->name})}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             {if count($images) == 0}
                 <p class="ui message info">No images have been uploaded to this blog</p>
             {/if}

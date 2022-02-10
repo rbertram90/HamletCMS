@@ -8,6 +8,9 @@ use Smarty_Security;
 class HamletCMSResponse extends Response
 {
     protected $smarty;
+    protected $breadcrumbs = [];
+    public $headerText = '';
+    public $headerIcon = '';
 
     public function __construct()
     {
@@ -75,6 +78,9 @@ class HamletCMSResponse extends Response
         $this->setVar('body_content', $this->body);
         $this->setVar('current_user', $session->currentUser);
         $this->setVar('messages', $session->getAllMessages());
+        $this->setVar('breadcrumbs', $this->breadcrumbs);
+        $this->setVar('header_text', $this->headerText);
+        $this->setVar('header_icon', $this->headerIcon);
 
         if(!file_exists($this->smarty->getTemplateDir($source) . $templatePath)) {
             $debug = print_r(debug_backtrace(), true);
@@ -136,6 +142,10 @@ class HamletCMSResponse extends Response
             $messageType = 'error';
         }
         parent::redirect($path, $message, $messageType);
+    }
+
+    public function setBreadcrumbs($links) {
+        $this->breadcrumbs = ['Home' => '/cms/blog'] + $links;
     }
 
 }

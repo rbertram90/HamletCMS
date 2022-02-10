@@ -32,6 +32,14 @@ class PostSettings extends GenericController
     {
         if ($this->request->method() == 'POST') return $this->updatePostsSettings();
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Posts' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Post settings';
+
         $this->response->setVar('postConfig', $this->getPostConfig() ?? []);
         $this->response->setVar('postTemplate', $this->getPostTeaserTemplate());
         $this->response->setVar('postFullTemplate', $this->getFullPostTemplate());

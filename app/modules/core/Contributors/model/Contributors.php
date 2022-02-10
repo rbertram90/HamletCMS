@@ -20,7 +20,8 @@ class Contributors extends RBFactory
 
     public function __construct($modelFactory)
     {
-        $this->db = $modelFactory->getDatabaseConnection();
+        parent::__construct($modelFactory);
+
         $this->tableName = TBL_CONTRIBUTORS;
         $this->tableGroups = 'contributorgroups';
         $this->subClass = '\\HamletCMS\\Contributors\\Contributor';
@@ -43,12 +44,17 @@ class Contributors extends RBFactory
         return $results->fetchAll(\PDO::FETCH_CLASS, '\\HamletCMS\\Blog\\Blog');
     }
     
-    // Get all users that can contribute to a $blog
-    public function getBlogContributors($blogid)
+    /**
+     * Get contributor objects (doesn't load user account data).
+     * 
+     * @return \HamletCMS\Contributors\Contributor[]
+     */
+    public function getBlogContributors($blogid, $returnArray = false)
     {
-        $query_string = 'SELECT a.group_id, (SELECT `name` FROM contributorgroups WHERE id=a.group_id) as groupname, b.* FROM '.$this->tableName.' as a LEFT JOIN '.$this->tblusers.' as b ON a.user_id = b.id WHERE a.blog_id='.$blogid;
-        $statement = $this->db->query($query_string);
-        return $statement->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
+        if ($returnArray) {
+            return $this->get('*', ['blog_id' => $blogid], '', '', true, true);
+        }
+        return $this->get('*', ['blog_id' => $blogid]);
     }
     
     // Check if user is the blog owner

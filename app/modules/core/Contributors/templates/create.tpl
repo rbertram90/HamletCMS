@@ -1,18 +1,4 @@
-<div class="ui grid">
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/contributors/manage/{$blog->id}", "Contributors"], 'Create Contributor')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Create Contributor', 'user plus', "{$blog->name}")}
-        </div>
-    </div>
-</div>
-
-<form action="/cms/contributors/create/{$blog->id}" method="POST" class="ui form">
-                    
+<form action="/cms/contributors/create/{$blog->id}" method="POST" class="ui form">             
     <h2 class="ui header">Basic Details</h2>
     <div class="two fields">
         <div class="field">

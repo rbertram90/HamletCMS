@@ -1,16 +1,6 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'Contributors')}
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
-            {viewPageHeader('Contributors', 'users', "{$blog->name}")}
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
             <h2>Groups</h2>
             <p class="ui teal message">Groups allow you to define the set of actions that a contributor can perform on a granular level</p>
             <div class="ui segments">
@@ -39,13 +29,7 @@
             {foreach $contributors as $contributor}
                 <div class="card">
                     <div class="image">
-                        {if strlen({$contributor->profile_picture}) > 0 and trim({$contributor->profile_picture}) != "profile_default.jpg"}
-                            <img src="/hamlet/avatars/thumbs/{$contributor->profile_picture}">
-                        {elseif $contributor->gender == 'Female'}
-                            <img src="/hamlet/avatars/default_woman.png">
-                        {else}
-                            <img src="/hamlet/avatars/default_man.png">
-                        {/if}
+                        <img src="{$contributor->avatar()}" alt="Avatar">
                     </div>
 
                     <div class="content">

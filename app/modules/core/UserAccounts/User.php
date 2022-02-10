@@ -26,4 +26,16 @@ class User
         return $this->name . ' ' . $this->surname;
     }
 
+    public function avatar() {
+        if (strlen($this->profile_picture) > 0) {
+            return "/hamlet/avatars/thumbs/{$this->profile_picture}";
+        }
+        elseif ($this->gender == 'Female') {
+            return "/hamlet/images/female_default_avatar.png";
+        }
+        else{
+            return "/hamlet/images/male_default_avatar.png";
+        }
+    }
+
 }

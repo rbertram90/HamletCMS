@@ -80,6 +80,12 @@ class Settings extends GenericController
 
         HamletCMS::runHook('onGenerateMenu', ['id' => 'settings', 'menu' => &$settingsMenu]);
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Settings menu';
         $this->response->setVar('menu', $settingsMenu->getLinks());
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Blog Settings - ' . $this->blog->name);
@@ -99,6 +105,13 @@ class Settings extends GenericController
         $this->response->setVar('tagList', json_encode($this->model('posts')->getAllTagsByBlog($this->blog->id)));
         $this->response->setVar('categorylist', HamletCMS::config()['blogcategories']);
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'General' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': General settings';
         $this->response->setTitle('General Settings - ' . $this->blog->name);
         $this->response->write('general.tpl', 'Settings');
     }
@@ -122,6 +135,15 @@ class Settings extends GenericController
             $defaultTemplate = SERVER_MODULES_PATH .'/core/BlogView/templates/header.tpl';
             $this->response->setVar('headerTemplate', file_get_contents($defaultTemplate));
         }
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Header' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Header settings';
+
         $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Customise Blog Header - ' . $this->blog->name);
         $this->response->write('header.tpl', 'Settings');
@@ -147,6 +169,14 @@ class Settings extends GenericController
             $this->response->setVar('footerTemplate', file_get_contents($defaultTemplate));
         }
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Footer' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Footer settings';
+
         $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setTitle('Customise Blog Footer - ' . $this->blog->name);
         $this->response->write('footer.tpl', 'Settings');
@@ -158,6 +188,14 @@ class Settings extends GenericController
     public function stylesheet()
     {
         if($this->request->method() == 'POST') return $this->saveStylesheet();
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Stylesheet' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Edit stylesheet';
 
         $this->response->addScript('/hamlet/resources/ace/ace.js');
         $this->response->setVar('serverroot', SERVER_PATH_BLOGS);
@@ -174,6 +212,14 @@ class Settings extends GenericController
 
         $this->response->setVar('core_templates', $this->getTemplateList('core'));
         $this->response->setVar('addon_templates', $this->getTemplateList('addon'));
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Template' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Template settings';
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Choose Template - ' . $this->blog->name);

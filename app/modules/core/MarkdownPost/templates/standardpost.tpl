@@ -15,21 +15,6 @@
 {/if}
 
 <div class="ui grid">
-    
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'New Post')}
-        </div>
-    </div>
-    
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog->name}")}
-
-            {include 'edit-form/autosave.tpl'}
-        </div>
-    </div>
-
     <div class="form_status"></div>
 
     <form action="{$formAction}" method="POST" name="form_create_post" id="form_create_post" class="two column row ui form">

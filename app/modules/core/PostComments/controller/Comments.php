@@ -81,6 +81,13 @@ class Comments extends GenericController
         $this->response->setVar('comments', $comments);
         $this->response->setVar('filter', $filter);
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Comments' => null
+        ]);
+        $this->response->headerIcon = 'comment outline';
+        $this->response->headerText = $this->blog->name . ': Manage comments';
+
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Comments - ' . $this->blog->name);
         $this->response->addScript('/hamlet/resources/js/paginate.js');

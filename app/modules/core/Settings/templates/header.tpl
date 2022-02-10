@@ -1,13 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", $blog->name, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Header')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Customise header', 'sliders horizontal', $blog->name)}
-
             <form method="post" id="frm_updateheader" class="ui form">
                 <div class="field">
                     <label>Template</label>

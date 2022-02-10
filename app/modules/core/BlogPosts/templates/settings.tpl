@@ -2,16 +2,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Post settings')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Post settings', 'sliders horizontal', {$blog->name})}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             <form method="POST" class="ui form" id="post_settings_form">
                 <div class="ui grid">
                     <div class="one column row">

@@ -69,8 +69,31 @@ class Contributors extends GenericController
             $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $this->blog->id]);
         }
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Contributors' => null
+        ]);
+        $this->response->headerIcon = 'users';
+        $this->response->headerText = $this->blog->name . ': Manage contributors';
+
+        $contributors = $this->model('contributors')->getBlogContributors($this->blog->id, true);
+        $users = $this->model('useraccounts')->getByIds(array_column($contributors, 'user_id'));
+
+        // Extract groups from user data
+        array_walk($users, function($user) use ($contributors, $groups) {
+            $contributorData = array_filter($contributors, function($contributor) use ($user) {
+                return $contributor['user_id'] === $user->id;
+            });
+            $user->groupid = reset($contributorData)['group_id'];
+
+            $groupData = array_filter($groups, function($group) use ($user) {
+                return $group->id === $user->groupid;
+            });
+            $user->groupname = reset($groupData)->name;
+        });
+
         $this->response->setVar('groups', $groups);
-        $this->response->setVar('contributors', $this->model('contributors')->getBlogContributors($this->blog->id));
+        $this->response->setVar('contributors', $users);
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Manage Blog Contributors - '. $this->blog->name);
         $this->response->write('manage.tpl', 'Contributors');
@@ -86,6 +109,14 @@ class Contributors extends GenericController
         $blog = HamletCMS::getActiveBlog();
         $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $blog->id]);
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Contributors' => "/cms/contributors/manage/{$this->blog->id}",
+            'Add contributor' => null
+        ]);
+        $this->response->headerIcon = 'user plus';
+        $this->response->headerText = $this->blog->name . ': Create contributor';
+
         $this->response->setVar('blog', $blog);
         $this->response->setVar('groups', $groups);
         $this->response->setTitle('Create Contributor');
@@ -100,6 +131,15 @@ class Contributors extends GenericController
         if ($this->request->method() == 'POST') return $this->runInvite();
         $blog = HamletCMS::getActiveBlog();
         $groups = $this->model('contributorgroups')->get('*', ['blog_id' => $blog->id]);
+
+        $this->response->setBreadcrumbs([
+            $blog->name => $this->blog->url(),
+            'Contributors' => "/cms/contributors/manage/{$blog->id}",
+            'Invite' => null
+        ]);
+        $this->response->headerIcon = 'user plus';
+        $this->response->headerText = $blog->name . ': Invite contributor';
+
         $this->response->setVar('blog', $blog);
         $this->response->setVar('groups', $groups);
         $this->response->setTitle('Invite Contributor');
@@ -286,6 +326,14 @@ class Contributors extends GenericController
         if ($this->request->method() == 'POST') {
             return $this->runCreateGroup();
         }
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Contributors' => "/cms/contributors/manage/{$this->blog->id}",
+            'Add group' => null
+        ]);
+        $this->response->headerIcon = 'user plus';
+        $this->response->headerText = $this->blog->name . ': Create contributors group';
 
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('permissions', $this->model('permissions')::getList());

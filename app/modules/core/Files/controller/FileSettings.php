@@ -101,6 +101,14 @@ class FileSettings extends GenericController
             $this->response->redirect('/cms/files/settings/'. $this->blog->id, 'File settings updated', 'success');
         }
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Files' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': File settings';
+
         $this->response->setVar('blog', $this->blog);
         $this->response->setVar('config', $fileConfig);
         $this->response->setTitle('Manage file settings');
