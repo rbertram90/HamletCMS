@@ -2,11 +2,20 @@
 
 namespace HamletCMS\FavouriteBlogs;
 
+use HamletCMS\FavouriteBlogs\tests\FavouriteBlogTest;
 use HamletCMS\HamletCMS;
 use HamletCMS\MenuLink;
 
 class Module
 {
+
+    public function runUnitTests($args) {
+        if ($args['context'] === 'blog') {
+            $addFavouriteBlogTest = new FavouriteBlogTest();
+            $addFavouriteBlogTest->blogID = $args['blogID'];
+            $addFavouriteBlogTest->run();
+        }
+    }
 
     public function onGenerateMenu($args)
     {
@@ -83,4 +92,5 @@ class Module
         $dbc->query("DROP TABLE IF EXISTS `favouriteposts`;");
         $dbc->query("DROP TABLE IF EXISTS `favouriteblogs`;");
     }
+    
 }
