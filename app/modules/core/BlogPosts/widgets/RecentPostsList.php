@@ -15,10 +15,10 @@ class RecentPostsList extends AbstractWidget
     public function render()
     {
         /** @var \HamletCMS\BlogPosts\model\Posts */
-        $model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        $model = HamletCMS::model('posts');
 
         $this->response->setVar('blogUrl', $this->blog->url());
-        $this->response->setVar('posts', $model->getPostsByBlog($this->blog->id, 1, $this->maxposts));
+        $this->response->setVar('posts', $model->getVisiblePosts($this->blog->id, $this->maxposts));
         $this->response->write('widgets/recentPosts.tpl', 'BlogPosts');
     }
 

@@ -70,6 +70,37 @@ class Posts extends RBFactory
     }
     
     /**
+     * Create a custom query
+     * 
+     * @return \RBwebdesigns\core\querybuilder\SelectQuery
+     */
+    public function getQuery() {
+        return $this->queryBuilder->select($this->tableName);
+    }
+    
+    /**
+     * Run the query and fetch a single post
+     * 
+     * @param \RBwebdesigns\core\querybuilder\SelectQuery $query
+     * 
+     * @return \HamletCMS\BlogPosts\Post
+     */
+    public function getPostFromQuery($query) {
+        return $query->execute()->fetchObject($this->subClass);
+    }
+
+    /**
+     * Run the query and fetch a multiple posts
+     * 
+     * @param \RBwebdesigns\core\querybuilder\SelectQuery $query
+     * 
+     * @return \HamletCMS\BlogPosts\Post[]
+     */
+    public function getPostsFromQuery($query) {
+        return $query->execute()->fetchAll(\PDO::FETCH_OBJ, $this->subClass);
+    }
+
+    /**
      * Get all available information on a single blog post
      * 
      * @param int $postID
@@ -78,10 +109,9 @@ class Posts extends RBFactory
      */
     public function getPostById($postID)
     {
-        return $this->queryBuilder->select($this->tableName)
-          ->condition('id', $postID)
-          ->execute()
-          ->fetchObject($this->subClass);
+        return $this->getPostFromQuery(
+            $this->getQuery()->condition('id', $postID)
+        );
     }
     
     /**
@@ -95,11 +125,10 @@ class Posts extends RBFactory
      */
     public function getPostByURL($link, $blogID)
     {
-        return $this->queryBuilder->select($this->tableName)
-          ->condition('link', $link)
-          ->condition('blog_id', $blogID)
-          ->execute()
-          ->fetchObject($this->subClass);
+        $query = $this->getQuery()
+            ->condition('link', $link)
+            ->condition('blog_id', $blogID);
+        return $this->getPostFromQuery($query);
     }
 
     /**
@@ -138,13 +167,13 @@ class Posts extends RBFactory
      */
     public function getLatestPost($blogID)
     {
-        return $this->queryBuilder->select($this->tableName)
+        $query = $this->getQuery()
           ->condition('blog_id', $blogID)
           ->condition('draft', 0)
           ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
-          ->orderBy('timestamp', 'DESC')
-          ->execute()
-          ->fetchObject($this->subClass);
+          ->orderBy('timestamp', 'DESC');
+
+        return $this->getPostFromQuery($query);
     }
     
     /**
@@ -157,14 +186,14 @@ class Posts extends RBFactory
      */
     public function getNextPost($blogID, $currentPostTimestamp)
     {
-        return $this->queryBuilder->select($this->tableName)
+        $query = $this->getQuery()
           ->condition('blog_id', $blogID)
           ->condition('draft', 0)
           ->condition('timestamp', $currentPostTimestamp, '>')
           ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
-          ->orderBy('timestamp')
-          ->execute()
-          ->fetchObject($this->subClass);
+          ->orderBy('timestamp');
+
+        return $this->getPostFromQuery($query);
     }
     
     /**
@@ -177,14 +206,14 @@ class Posts extends RBFactory
      */
     public function getPreviousPost($blogID, $currentPostTimestamp)
     {
-        return $this->queryBuilder->select($this->tableName)
+        $query = $this->getQuery()
           ->condition('blog_id', $blogID)
           ->condition('draft', 0)
           ->condition('timestamp', $currentPostTimestamp, '<')
           ->condition('timestamp', 'CURRENT_TIMESTAMP', '<')
-          ->orderBy('timestamp', 'DESC')
-          ->execute()
-          ->fetchObject($this->subClass);
+          ->orderBy('timestamp', 'DESC');
+          
+        return $this->getPostFromQuery($query);
     }
     
     /**
@@ -327,7 +356,29 @@ class Posts extends RBFactory
         $statement = $this->db->query($sql);
         return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_CLASSTYPE);
     }
-        
+
+    /**
+     * Get all posts that are published and have a publish date <= NOW
+     * 
+     * @param string|int $blogID
+     * @param int|false $limit
+     * @param int $pageIndex
+     * 
+     * @return \HamletCMS\BlogPosts\Post[]
+     */
+    public function getVisiblePosts($blogID, $limit=false, $pageIndex=0) {
+        $query = $this->getQuery()
+            ->condition('blog_id', $blogID)
+            ->condition('draft', 0)
+            ->condition('timestamp', 'CURRENT_TIMESTAMP', '<=')
+            ->orderBy('timestamp', 'DESC');
+        if ($limit) {
+            $query->limit($limit);
+            $query->offset($pageIndex * $limit);
+        }
+        return $this->getPostFromQuery($query);
+    }
+
     /**
      * Get Recent Posts - Get posts made within the last X days for either a single or an array of blogs
      * 
