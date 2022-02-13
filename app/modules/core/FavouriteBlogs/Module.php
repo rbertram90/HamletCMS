@@ -19,13 +19,13 @@ class Module
 
     public function onGenerateMenu($args)
     {
-        $currentUser = HamletCMS::session()->currentUser['id'];
+        $currentUser = HamletCMS::session()->currentUser['id'] ?? false;
 
         if ($args['id'] == 'blog_actions' && $currentUser) {
             $link = new MenuLink();
 
-            /** @var \HamletCMS\FavouriteBlogs\model\FavouriteBlogs $favouriteBlogModel */
-            $favouriteBlogModel = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouriteBlogs');
+            /** @var \HamletCMS\FavouriteBlogs\model\FavouriteBlogs */
+            $favouriteBlogModel = HamletCMS::model('favouriteblogs');
 
             if ($favouriteBlogModel->isFavourite($currentUser, $args['blog']->id)) {
                 $link->url = HamletCMS::route('favourites.remove.blog', [
@@ -45,8 +45,8 @@ class Module
             if (isset($args['post'])) {
                 $link = new MenuLink();
                 
-                /** @var \HamletCMS\FavouriteBlogs\model\FavouritePosts $favouritePostModel */
-                $favouritePostModel = HamletCMS::model('\HamletCMS\FavouriteBlogs\model\FavouritePosts');
+                /** @var \HamletCMS\FavouriteBlogs\model\FavouritePosts */
+                $favouritePostModel = HamletCMS::model('favouriteposts');
 
                 if ($favouritePostModel->isFavourite($currentUser, $args['post']->id)) {
                     $link->url = HamletCMS::route('favourites.remove.post', [

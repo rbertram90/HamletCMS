@@ -11,7 +11,7 @@ class FavouriteBlog {
 
     public function blog() {
         /** @var \HamletCMS\Blog\model\Blogs $blogs_model */
-        $blogs_model = HamletCMS::model('\\HamletCMS\\Blog\\model\\Blogs');
+        $blogs_model = HamletCMS::model('blogs');
         return $blogs_model->getBlogById($this->blog_id);
     }
 

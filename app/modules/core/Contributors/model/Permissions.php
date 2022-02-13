@@ -53,7 +53,7 @@ class Permissions extends RBFactory
      */
     public function getUserGroup($blogID, $userID=false)
     {
-        $userID = $userID ?: HamletCMS::session()->currentUser['id'];
+        $userID = $userID ?: HamletCMS::session()->currentUser['id'] ?? false;
         
         if (!$userID) return false;
 

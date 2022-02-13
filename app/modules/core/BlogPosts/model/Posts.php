@@ -772,6 +772,7 @@ class Posts extends RBFactory
             ->condition('postid', $subquery, 'IN')
             ->condition('pv.last_viewed', $endDate, '<=')
             ->condition('pv.last_viewed', $startDate, '>')
+            ->condition('draft', 0)
             ->groupBy('pv.postid')
             ->orderBy('userviewcount', 'DESC')
             ->execute();

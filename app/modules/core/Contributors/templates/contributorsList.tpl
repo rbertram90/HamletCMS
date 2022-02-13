@@ -4,7 +4,7 @@
     {foreach $contributors as $contributor}
         <div class="ui card">
             <div class="image">
-                <img src="/hamlet/avatars/thumbs/{$contributor->profile_picture}">
+                <img src="{$contributor->avatar()}">
             </div>
             <div class="content">
                 <a class="header" href="/cms/account/user/{$contributor->id}">{$contributor->name} {$contributor->surname}</a>
@@ -13,7 +13,10 @@
             </div>
             <div class="extra content">
                 <span class="right floated"><i class="venus mars icon"></i> {$contributor->gender}</span>
-                <span><i class="map marker alternate icon"></i> {$contributor->location}</span>
+                {if $contributor->location}
+                    <span><i class="map marker alternate icon"></i> {$contributor->location}</span>
+                {/if}
+                
             </div>
         </div>
     {/foreach}

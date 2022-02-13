@@ -127,8 +127,8 @@
 
 <input type="hidden" id="widget_location" name="widget_location" value="">
 
-<script src="/resources/js/dragula.min.js"></script>
-<link href="/resources/css/dragula.min.css" rel="stylesheet" type="text/css" />
+<script src="/hamlet/resources/js/dragula.min.js"></script>
+<link href="/hamlet/resources/css/dragula.min.css" rel="stylesheet" type="text/css" />
 
 <script>
 function submitAddWidget(buttonElement) {

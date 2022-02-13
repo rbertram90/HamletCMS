@@ -9,9 +9,12 @@ class ContributorsList extends AbstractWidget
 {
 
     public function render() {
-        $model = HamletCMS::model('\HamletCMS\Contributors\model\Contributors');
+        /** @var \HamletCMS\Contributors\model\Contributors */
+        $model = HamletCMS::model('contributors');
+        $contributorIds = $model->getBlogContributors($this->blog->id, true);
+        $contributors = HamletCMS::model('useraccounts')->getByIds(array_column($contributorIds, 'user_id'));
 
-        $this->response->setVar('contributors', $model->getBlogContributors($this->blog->id));
+        $this->response->setVar('contributors', $contributors);
         $this->response->write('contributorsList.tpl', 'Contributors');
     }
 
