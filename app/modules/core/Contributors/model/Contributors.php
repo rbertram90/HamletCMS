@@ -3,13 +3,11 @@ namespace HamletCMS\Contributors\model;
 
 use rbwebdesigns\core\model\RBFactory;
 use rbwebdesigns\core\Sanitize;
-use rbwebdesigns\core\JSONHelper;
 use HamletCMS\HamletCMS;
 
 /**
- * /app/model/mdl_contributor.inc.php
+ * Contributors factory model.
  */
-
 class Contributors extends RBFactory
 {
     protected $db;
@@ -35,7 +33,11 @@ class Contributors extends RBFactory
         );
     }
     
-    // Get all blogs a user can contribute too
+    /**
+     * Get all blogs a user can contribute too
+     * 
+     * @return \HamletCMS\Blog\Blog[]
+     */
     public function getContributedBlogs($userid)
     {
         // Get all the blog id for this user
@@ -43,21 +45,43 @@ class Contributors extends RBFactory
         $results = $this->db->query($query_string);
         return $results->fetchAll(\PDO::FETCH_CLASS, '\\HamletCMS\\Blog\\Blog');
     }
+
+    /**
+     * Get contributors by group
+     * 
+     * @return \HamletCMS\Contributors\Contributor[]
+     */
+    public function getByGroup($groupID) {
+        return $this->get('*', ['group_id' => $groupID]);
+    }
     
     /**
      * Get contributor objects (doesn't load user account data).
      * 
-     * @return \HamletCMS\Contributors\Contributor[]
+     * @param string|int $blogID
+     * @param bool $returnRaw
+     *   True to return an associative array of values, false (default)
+     *   returns Contributor objects.
+     * 
+     * @return \HamletCMS\Contributors\Contributor[]|mixed[]
      */
-    public function getBlogContributors($blogid, $returnArray = false)
+    public function getBlogContributors($blogid, $returnRaw = false)
     {
-        if ($returnArray) {
+        if ($returnRaw) {
             return $this->get('*', ['blog_id' => $blogid], '', '', true, true);
         }
         return $this->get('*', ['blog_id' => $blogid]);
     }
     
-    // Check if user is the blog owner
+    /**
+     * Check if a user is the owner of a blog.
+     * 
+     * The user is the owner if they are the one who originally created it.
+     * 
+     * @todo could do with a option to change ownership?
+     * 
+     * @return bool
+     */
     public function isBlogOwner($userid, $blogid)
     {
         return  $this->db->countRows($this->tblblogs, ['user_id' => $userid, 'id' => $blogid]) >= 1;
@@ -115,6 +139,18 @@ class Contributors extends RBFactory
         ]);
         
         return $rowCount > 0;
+    }
+
+    /**
+     * Determine if a user is in a group
+     * 
+     * @return bool
+     */
+    public function userIsInGroup($userID, $groupID) {
+        return $this->count([
+            'user_id' => $userID,
+            'group_id' => $groupID
+        ]);
     }
 
 }

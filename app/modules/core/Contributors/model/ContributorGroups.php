@@ -34,11 +34,25 @@ class ContributorGroups extends RBFactory
         parent::__construct($modelFactory);
     }
 
+    /**
+     * Get a contributor group by ID
+     * 
+     * @return \HamletCMS\Contributors\ContributorGroup
+     */
     public function getGroupById($groupID)
     {
         $group = $this->get('*', ['id' => $groupID], '', '', false);
         $group->permissions = JSONHelper::JSONtoArray($group->data);
         return $group;
+    }
+
+    /**
+     * Get contributor groups by blog ID
+     * 
+     * @return \HamletCMS\Contributors\ContributorGroup[]
+     */
+    public function getByBlog($blogID) {
+        return $this->get('*', ['blog_id' => $blogID]);
     }
 
     /**
@@ -55,4 +69,5 @@ class ContributorGroups extends RBFactory
             'super' => 1,
         ]);
     }
+
 }

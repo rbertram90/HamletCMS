@@ -47,5 +47,12 @@
         "permissions": ["manage_contributors"],
         "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
         "action": "editgroup"
+    },
+    {
+        "key": "contributors.deletegroup",
+        "path": "/api/contributors/deletegroup",
+        "permissions": ["manage_contributors"],
+        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "action": "deletegroup"
     }
 ]

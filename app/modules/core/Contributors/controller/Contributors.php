@@ -474,4 +474,42 @@ class Contributors extends GenericController
         }
     }
 
+    /**
+     * [API] Delete a group POST
+     */
+    public function deletegroup() {
+        if ($this->request->method() !== 'POST') {
+            $this->response->setBody('{ "success": false, "message": "Request method not accepted." }');
+            return;
+        }
+        $groupID = $this->request->get('groupID', false);
+        $blogID = $this->request->get('blogID');
+
+        /** @var \HamletCMS\Contributors\ContributorGroup|false $group */
+        if (!$groupID || !$group = $this->model('contributorgroups')->getGroupById($groupID)) {
+            $this->response->setBody('{ "success": false, "message": "Unable to find group" }');
+            return;
+        }
+
+        $this->blog = $this->model('blogs')->getBlogById($group->blog_id);
+        $this->checkUserAccess();
+        
+        // Can only delete group if there are no users assigned
+        if ($group->hasContributors()) {
+            $this->response->setBody('{ "success": false, "message": "Unable to delete group as it still has contributors." }');
+            return;
+        }
+
+        $delete = $this->model('contributorgroups')->delete(['id' => $groupID]);
+
+        if ($delete) {
+            $this->response->setBody('{ "success": true, "message": "Group has been removed succesfully" }');
+            return;
+        }
+        else {
+            $this->response->setBody('{ "success": false, "message": "Deleted failed" }');
+            return;
+        }
+    }
+
 }
