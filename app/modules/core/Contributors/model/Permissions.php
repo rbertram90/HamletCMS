@@ -83,6 +83,9 @@ class Permissions extends RBFactory
         $userID = $userID ?: HamletCMS::session()->currentUser['id'];
         if (gettype($requiredPermissions) === 'string') $requiredPermissions = [$requiredPermissions];
         if (count($requiredPermissions) === 0) return true; // no permissions required
+        
+        if ($blogID == 0) $blogID = HamletCMS::$blogID ?? HamletCMS::$blog->id;
+        if (!$blogID) return false; // this is some sort of error state!
 
         // Search request cache.
         $permissionsPassed = 0;
@@ -92,17 +95,19 @@ class Permissions extends RBFactory
                 $this->usersPermissionCache[$cacheKey] === 0) {
                 return false;
             }
-            $permissionsPassed++;
+            elseif (array_key_exists($cacheKey, $this->usersPermissionCache)) {
+                $permissionsPassed++;
+            }
         }
+
         // All permissions queried already.
         if ($permissionsPassed === count($requiredPermissions)) return true;
 
-        if ($blogID == 0) $blogID = HamletCMS::$blogID;
         // check if users is in a contributor group for this blog.
         if (!$groupID = $this->getUserGroup($blogID)) return false;
         
         $group = $this->modelContributorGroups->getGroupById($groupID);
-        
+
         // Admin override for all permissions.
         if ($group->super == 1) return true;
 

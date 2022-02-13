@@ -263,6 +263,15 @@ class Contributors extends GenericController
             return $this->runUpdateContributor($user);
         }
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Contributors' => "/cms/contributors/manage/{$this->blog->id}",
+            $user->username => "/cms/account/user/{$user->id}",
+            'Edit' => null
+        ]);
+        $this->response->headerIcon = 'user';
+        $this->response->headerText = $this->blog->name . ': Edit contributor ' . $user->username;
+
         $this->response->setVar('contributor', $user);
         $this->response->setVar('blog', $this->blog);
         $this->response->setTitle('Edit contributor - '. $user->name);
@@ -409,6 +418,14 @@ class Contributors extends GenericController
         if ($this->request->method() == 'POST') {
             return $this->runEditGroup($group);
         }
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Contributors' => "/cms/contributors/manage/{$this->blog->id}",
+            'Edit group' => null
+        ]);
+        $this->response->headerIcon = 'users';
+        $this->response->headerText = $this->blog->name . ': Edit contributors group &ldquo;' . $group->name . '&rdquo;';
 
         $this->response->setVar('permissions', $this->model('permissions')->getList());
         $this->response->setVar('blog', $this->blog);

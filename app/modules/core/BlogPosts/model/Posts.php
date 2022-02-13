@@ -97,7 +97,7 @@ class Posts extends RBFactory
      * @return \HamletCMS\BlogPosts\Post[]
      */
     public function getPostsFromQuery($query) {
-        return $query->execute()->fetchAll(\PDO::FETCH_OBJ, $this->subClass);
+        return $query->execute()->fetchAll(\PDO::FETCH_CLASS, $this->subClass);
     }
 
     /**
@@ -376,7 +376,7 @@ class Posts extends RBFactory
             $query->limit($limit);
             $query->offset($pageIndex * $limit);
         }
-        return $this->getPostFromQuery($query);
+        return $this->getPostsFromQuery($query);
     }
 
     /**

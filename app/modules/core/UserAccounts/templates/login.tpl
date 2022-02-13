@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{$page_title}</title>
-        <link rel="stylesheet" href="/css/semantic.css" type="text/css">
-        <link rel="stylesheet" href="/css/blogs_stylesheet.css" type="text/css">
-        <script src="/js/semantic.js" type="text/javascript"></script>
+        <title>{$page_title} - powered by HamletCMS</title>
+        <link rel="stylesheet" href="/hamlet/css/semantic.css" type="text/css">
+        <link rel="stylesheet" href="/hamlet/css/blogs_stylesheet.css" type="text/css">
+        <script src="/hamlet/resources/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+        <script src="/hamlet/js/semantic.js" type="text/javascript"></script>
     </head>
     <body>
         <style>
@@ -14,7 +15,7 @@
         </style>
         <div id="loginbox">
             <div id="logoholder">
-                <img src="/images/logo.png" alt="HamletCMS" />
+                <img src="/hamlet/images/logo.png" alt="HamletCMS" />
             </div>
             
             <h1>Welcome</h1>

@@ -16,7 +16,9 @@ class Module
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Files';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
         }
     }
 }

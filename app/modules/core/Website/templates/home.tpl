@@ -134,7 +134,7 @@
     };
 
     var setResultsLoading = function() {
-        $('#browse-results').html('<img src="/images/ajax-loader.gif" alt="Loading...">');
+        $('#browse-results').html('<img src="/hamlet/images/ajax-loader.gif" alt="Loading...">');
     };
 
     // Add event listener to dropdown

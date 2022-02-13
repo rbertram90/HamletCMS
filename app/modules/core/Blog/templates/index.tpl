@@ -37,7 +37,7 @@
                     {foreach from=$blog->contributors() item=contributor name=contributors}
                         <a href="/cms/account/user/{$contributor->id}" class="user-link">
                         {strip}
-                            {if $contributor->id == $smarty.session.user}
+                            {if $contributor->id == $smarty.session.user.id}
                                 <span data-userid="{$contributor->id}">You</span>
                             {else}
                                 <span data-userid="{$contributor->id}">{$contributor->username}</span>

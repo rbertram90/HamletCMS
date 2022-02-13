@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Register</title>
-        <link rel="stylesheet" href="/css/semantic.css" type="text/css">
-        <link rel="stylesheet" href="/css/blogs_stylesheet.css">
-        
-        <script src="/resources/js/jquery-1.8.0.min.js"></script>
-        <script src="/js/semantic.js"></script>
+        <title>{$page_title} - powered by HamletCMS</title>
+        <link rel="stylesheet" href="/hamlet/css/semantic.css" type="text/css">
+        <link rel="stylesheet" href="/hamlet/css/blogs_stylesheet.css" type="text/css">
+        <script src="/hamlet/resources/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+        <script src="/hamlet/js/semantic.js" type="text/javascript"></script>
     </head>
     <body>
         <style>
@@ -17,7 +16,7 @@
         
         <div id="loginbox">
             <div id="logoholder">
-                <img src="/images/logo.png" alt="HamletCMS" />
+                <img src="/hamlet/images/logo.png" alt="HamletCMS" />
             </div>
             
             <form method="POST" class="ui form">

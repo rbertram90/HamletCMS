@@ -69,7 +69,7 @@
         <div class="content">Upload Images</div>
     </div>
     <div class="content main">
-        <img src="/images/ajax-loader.gif" alt="Loading..." />
+        <img src="/hamlet/images/ajax-loader.gif" alt="Loading..." />
     </div>
     <div class="actions">
         <button id="finishButton" class="ui labeled icon teal button" onclick="window.location.reload();"><i class="check icon"></i>Finish</button>

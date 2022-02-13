@@ -65,7 +65,7 @@ class Settings extends GenericController
         }
 
         if (!$access) {
-            $this->response->redirect('/', '403 Access Denied', 'error');
+            $this->response->routeRedirect('blog.overview', 'Access Denied', 'error');
         }
 
         HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;

@@ -1,5 +1,5 @@
 <div class="widget">
-    <div id="js-owner-profile"><img src="/images/ajax-loader.gif" alt="Loading..."></div>
+    <div id="js-owner-profile"><img src="/hamlet/images/ajax-loader.gif" alt="Loading..."></div>
 </div>
 
 {* Currently can only view full profile if they are logged in. Need to do a page with posts written by that user *}

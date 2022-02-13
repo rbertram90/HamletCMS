@@ -21,7 +21,9 @@ class Module
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Contributors';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
         }
     }
 

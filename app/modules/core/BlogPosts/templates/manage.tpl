@@ -72,7 +72,7 @@
     <div class="one column row">
         <div class="column">
             <div id="manage_posts_messages"></div>
-            <div id="posts_display"><img src="/images/ajax-loader.gif" alt="Loading..."></div>
+            <div id="posts_display"><img src="/hamlet/images/ajax-loader.gif" alt="Loading..."></div>
         </div>
     </div>
     

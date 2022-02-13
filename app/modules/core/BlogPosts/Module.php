@@ -20,14 +20,18 @@ class Module
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Manage posts';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
 
             $link = new MenuLink();
+            $link->text = 'Create new post';
             $link->url = HamletCMS::route('posts.create', [
                 'BLOG_ID' => $args['blog']->id
             ]);
-            $link->text = 'Create new post';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
         }
     }
 

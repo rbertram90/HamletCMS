@@ -277,14 +277,16 @@ class HamletCMS
 
         // Check that if we've got the blog context, then the user
         // has permission to view/action this request.
-        if (self::$blogID) {
+        $blogID = $data['BLOG_ID'] ?? self::$blogID ?? false;
+
+        if ($blogID) {
             if (array_key_exists('permissions', $routeCache[$route])) {
                 // Check permissions
                 $granted = self::model('permissions')
-                    ->userHasPermission($routeCache[$route]['permissions']);
+                    ->userHasPermission($routeCache[$route]['permissions'], $blogID);
                 if (!$granted) return false;
             }
-            $url = str_replace('{BLOG_ID}', self::$blogID, $url);
+            $url = str_replace('{BLOG_ID}', $blogID, $url);
         }
         
         foreach ($data as $key => $var) {

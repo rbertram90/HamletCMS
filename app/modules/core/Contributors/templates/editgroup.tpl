@@ -1,16 +1,6 @@
 <div class="ui grid">
     <div class="row">
         <div class="column">
-            {viewCrumbtrail(["/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/contributors/manage/{$blog->id}", "Contributors"], 'Edit Group')}
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
-            {viewPageHeader("Edit Group", 'users', "{$group->name} - {$blog->name}")}
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
             <form class="ui form" method="POST">
                 <h2>Basic Information</h2>
                 <div class="field">

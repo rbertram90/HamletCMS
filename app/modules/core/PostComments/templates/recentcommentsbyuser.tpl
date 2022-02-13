@@ -13,6 +13,6 @@
     </div>
 {foreachelse}
     <div class="ui message">
-        {$user.name} has not made any comments
+        {$user->username} has not made any comments
     </div>
 {/foreach}

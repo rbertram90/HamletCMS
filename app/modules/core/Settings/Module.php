@@ -11,13 +11,14 @@ class Module
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
-
             $link = new MenuLink();
+            $link->text = 'Settings';
             $link->url = HamletCMS::route('settings.menu', [
                 'BLOG_ID' => $args['blog']->id
             ]);
-            $link->text = 'Settings';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
         }
     }
 

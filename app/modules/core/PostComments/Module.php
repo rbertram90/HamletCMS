@@ -13,12 +13,6 @@ use HamletCMS\HamletCMSResponse;
  */
 class Module
 {
-    protected $model;
-
-    public function __construct()
-    {
-        $this->model = HamletCMS::model('\HamletCMS\PostComments\model\Comments');
-    }
 
     /**
      * Adds comments block to the user dashboard
@@ -27,7 +21,8 @@ class Module
     {
         if ($args['key'] == 'userProfile') {
             $tempResponse = new HamletCMSResponse();
-            $tempResponse->setVar('comments', $this->model->getCommentsByUser($args['user']->id, 0));
+            $tempResponse->setVar('comments', HamletCMS::model('comments')->getCommentsByUser($args['user']->id, 0));
+            $tempResponse->setVar('user', HamletCMS::model('useraccounts')->getById($args['user']->id));
             $args['content'] .= $tempResponse->write('recentcommentsbyuser.tpl', 'PostComments', false);
         }
     }
@@ -88,7 +83,7 @@ class Module
      */
     public function dashboardCounts($args)
     {
-        $args['counts']['comments'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
+        $args['counts']['comments'] = HamletCMS::model('comments')->getCount(['blog_id' => $args['blog']->id]);
     }
 
     /**
@@ -99,7 +94,7 @@ class Module
         $tempResponse = new HamletCMSResponse();
         $tempResponse->setVar('blog', $args['blog']);
         $tempResponse->setVar('currentUser', HamletCMS::session()->currentUser);
-        $tempResponse->setVar('comments', $this->model->getCommentsByBlog($args['blog']->id, 5));
+        $tempResponse->setVar('comments', HamletCMS::model('comments')->getCommentsByBlog($args['blog']->id, 5));
         $args['panels'][] = $tempResponse->write('recentcommentsbyblog.tpl', 'PostComments', false);
     }
 
@@ -120,7 +115,7 @@ class Module
             $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
 
             $args['response']->setVar('commentTemplatePath', $templatePath);
-            $args['response']->setVar('comments', $this->model->getCommentsByPost($args['post']->id, false));
+            $args['response']->setVar('comments', HamletCMS::model('comments')->getCommentsByPost($args['post']->id, false));
         }
     }
 
@@ -140,7 +135,9 @@ class Module
                 'BLOG_ID' => $args['blog']->id
             ]);
             $link->text = 'Comments';
-            $args['menu']->addLink($link);
+            if ($link->url) {
+                $args['menu']->addLink($link);
+            }
         }
     }
 
@@ -166,7 +163,7 @@ class Module
      */
     public function onPostDeleted($args) {
         $post = $args['post'];
-        $this->model->delete(['post_id' => $post->id]);
+        HamletCMS::model('comments')->delete(['post_id' => $post->id]);
     }
 
     /**
@@ -174,7 +171,7 @@ class Module
      */
     public function onDeleteBlog($args) {
         $blog = $args['blog'];
-        $this->model->delete(['blog_id' => $blog->id]);
+        HamletCMS::model('comments')->delete(['blog_id' => $blog->id]);
     }
 
     /**
@@ -182,7 +179,7 @@ class Module
      */
     public function onPostConstruct($args) {
         $args['functions']['getComments'] = function($post) {
-            return $this->model->getCommentsByPost($post->id, false);
+            return HamletCMS::model('comments')->getCommentsByPost($post->id, false);
         };
         $args['functions']['commentsEnabled'] = function($post) {
             return $post->allowComments;
