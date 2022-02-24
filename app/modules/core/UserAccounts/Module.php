@@ -28,6 +28,7 @@ class Module
             `admin` tinyint(1) NOT NULL DEFAULT '0',
             `signup_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             `last_login` datetime,
+            `reset_token` varchar(50),
             `security_q` varchar(300),
             `security_a` varchar(55)
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");

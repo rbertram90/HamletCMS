@@ -1,9 +1,9 @@
 <?php
 namespace HamletCMS\UserAccounts\controller;
 
-use rbwebdesigns\core\Sanitize;
 use HamletCMS\GenericController;
 use HamletCMS\HamletCMS;
+use rbwebdesigns\core\Email;
 
 /**
  * Handles requests relating to user accounts.
@@ -87,7 +87,27 @@ class UserAccounts extends GenericController
      */
     public function resetpassword()
     {
-        if($this->request->method() == 'POST') return $this->runResetPassword();
+        if ($this->request->method() == 'POST') {
+            return $this->runResetPassword();
+        }
+
+        $email = $this->request->get('email', false);
+        $token = $this->request->get('token', false);
+
+        if ($email && $token) {
+            /** @var \HamletCMS\UserAccounts\User */
+            $user = $this->model('useraccounts')->get('*', [
+                'email' => $email,
+            ], '', '', false);
+
+            if ($user->reset_token === $token) {
+                $this->response->setVar('email', $email);
+                $this->response->setVar('token', $token);
+                $this->response->setTitle('Reset your password');
+                $this->response->writeTemplate('resetpassword.tpl', 'UserAccounts');
+                return;
+            }
+        }
 
         $this->response->setTitle('Reset your password');
         $this->response->writeTemplate('resetpassword.tpl', 'UserAccounts');
@@ -100,34 +120,56 @@ class UserAccounts extends GenericController
      */
     protected function runResetPassword()
     {
-        $username = $this->request->getString('fld_username');
-        $email = $this->request->getString('fld_email');
-        $firstname = $this->request->getString('fld_firstname');
-        $surname = $this->request->getString('fld_surname');
-        $newpassword = $this->request->getString('fld_password');
-        $newpasswordrpt = $this->request->getString('fld_password_rpt');
+        $email = $this->request->getString('email');
+        $token = $this->request->getString('token');
+        $password = $this->request->getString('password');
+        $password_repeat = $this->request->getString('password_repeat');
 
+        /** @var \HamletCMS\UserAccounts\User */
         $user = $this->model('useraccounts')->get('*', [
-            'username' => $username,
-            'email' => $email,
-            'name' => $firstname,
-            'surname' => $surname
+            'email' => $email
         ], '', '', false);
 
-        if ($newpassword !== $newpasswordrpt) {
-            $this->response->redirect('/cms/account/resetpassword', 'Passwords did not match', 'error');
-        }
         if (!$user) {
             $this->response->redirect('/cms/account/resetpassword', 'Account details incorrect', 'error');
         }
 
-        $hashpassword = password_hash($newpassword, PASSWORD_DEFAULT);
+        if ($token && $token === $user->reset_token) {
+            if (strlen($password) < 3 || $password !== $password_repeat) {
+                $this->response->redirect('/cms/account/resetpassword?email='.$email.'&token='.$token, 'Please check your input.', 'error');
+            }
 
-        if (!$this->model('useraccounts')->update(['id' => $user['id']], ['password' => $hashpassword])) {
-            $this->response->redirect('/cms/account/resetpassword', 'Failed to save new password', 'error');
+            $hashpassword = $this->model('useraccounts')->hashPassword($password);
+            $update = $this->model('useraccounts')->update(['id' => $user->id], [
+                'password' => $hashpassword,
+                'reset_token' => '',
+            ]);
+
+            if (!$update) {
+                $this->response->redirect('/cms/account/resetpassword', 'Failed to save new password', 'error');
+            }
+
+            $this->response->redirect('/cms/account/login', 'New password saved, you can now login.', 'success');
         }
 
-        $this->response->redirect('/cms/account/login', 'Password updated', 'success');
+        $emailConfig = HamletCMS::config()['email'] ?? [];
+        $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
+
+        $resetUpdate = $user->setResetPasswordToken();
+       
+        if ($resetUpdate) {
+            $resetEmail = new Email();
+            $resetEmail->recipient = $email;
+            $resetEmail->subject = 'Reset your password - HamletCMS';
+            $resetEmail->message = 'A password reset has been requested on your account, click <a href="'.$siteDomain.'/cms/account/resetpassword?email='.$email.'&token='.$user->reset_token.'">this link</a> to reset your password.';
+            $resetEmail->sender = $emailConfig['system_sender'];
+
+            if ($resetEmail->send()) {
+                $this->response->redirect('/cms/account/login', 'Email has been sent with a link to reset your password.', 'success');
+            }
+        }
+
+        $this->response->redirect('/cms/account/resetpassword', 'Unable to send the reset email, please try again later.', 'error');
     }
 
     /**

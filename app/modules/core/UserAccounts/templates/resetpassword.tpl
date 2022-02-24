@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>{$page_title}</title>
-        <link rel="stylesheet" href="/css/semantic.css" type="text/css">
-        <link rel="stylesheet" href="/css/blogs_stylesheet.css" type="text/css">
-        <script src="/js/semantic.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="/hamlet/css/semantic.css" type="text/css">
+        <link rel="stylesheet" href="/hamlet/css/blogs_stylesheet.css" type="text/css">
+        <script src="/hamlet/js/semantic.js" type="text/javascript"></script>
     </head>
     <body>
         <style>
@@ -14,7 +14,7 @@
         </style>
         <div id="loginbox">
             <div id="logoholder">
-                <img src="/images/logo.png" alt="HamletCMS" />
+                <img src="/hamlet/images/logo.png" alt="HamletCMS" />
             </div>
             
             <h1>Reset password</h1>
@@ -23,50 +23,30 @@
             {/foreach}
             
             <form method="POST" class="ui form">
-                <div class="field">
-                    <label for="fld_username">Username</label>
-                    <input type="text" name="fld_username" id="fld_username" value="" required>
-                </div>
-                
-                <div class="field">
-                    <label for="fld_email">Email</label>
-                    <input type="text" name="fld_email" id="fld_email" value="" required>
-                </div>
+                {if isset($email) && isset($token)}
+                    <div class="field">
+                        <label for="password">New password</label>
+                        <input type="password" name="password" />
+                    </div>
+                    <div class="field">
+                        <label for="password_repeat">Re-type password</label>
+                        <input type="password" name="password_repeat" />
+                    </div>
+                    <input type="hidden" name="email" value="{$email}" />
+                    <input type="hidden" name="token" value="{$token}" />
+                {else}
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email" value="" required>
+                    </div>
+                {/if}
 
-                <div class="field">
-                    <label for="fld_firstname">First name</label>
-                    <input type="text" name="fld_firstname" id="fld_firstname" value="" required>
-                </div>
-
-                <div class="field">
-                    <label for="fld_surname">Surname</label>
-                    <input type="text" name="fld_surname" id="fld_surname" value="" required>
-                </div>
-
-                <div class="field">
-                    <label for="fld_password">New Password</label>
-                    <input type="password" name="fld_password" id="fld_password" value="" required>
-                </div>
-
-                <div class="field">
-                    <label for="fld_password_rpt">Retype New Password</label>
-                    <input type="password" name="fld_password_rpt" id="fld_password_rpt" value="" required>
-                </div>
 
                 <a href="/cms/account/login">Login</a> | <a href="/cms/account/register">Register new account</a>
                 
                 <button class="ui right floated teal button">Reset &nbsp;&#10095;</button>
                 <div class="clear"></div>
             </form>
-                        
-            <script>
-            $('.ui.form').form({
-                fields: {
-                  fld_username : 'empty',
-                  fld_password : 'empty'
-                }
-            });
-            </script>
         </div>
     </body>
 </html>

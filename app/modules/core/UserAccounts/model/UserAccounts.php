@@ -73,7 +73,7 @@ class UserAccounts extends RBFactory
             'name' => $details['firstname'],
             'surname' => $details['surname'],
             'username' => $details['username'],
-            'password' => password_hash($details['password'], PASSWORD_DEFAULT),
+            'password' => $this->hashPassword($details['password']),
             'email' => $details['email'],
             'signup_date' => date('Y-m-d H:i:s'),
             'admin' => array_key_exists('admin', $details) ? $details['admin'] : 0
@@ -125,6 +125,10 @@ class UserAccounts extends RBFactory
      */
     public function getAll($order = '') {
         return $this->db->selectAllObjects($this->subClass, $this->tableName, '*', $order);
+    }
+
+    public function hashPassword($password) {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
 }
