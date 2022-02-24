@@ -1,4 +1,5 @@
 <?php
+
 namespace HamletCMS\BlogPosts\controller;
 
 use HamletCMS\GenericController;
@@ -6,12 +7,16 @@ use HamletCMS\HamletCMS;
 use rbwebdesigns\core\JSONHelper;
 
 /**
- * Class PostsAPI
+ * Class PostsAPI.
+ * 
+ * Access checks are mostly done in api_setup.php if blogID is passed as
+ * a request parameter, and the permissions are defined in route.
  * 
  * @author R Bertram <ricky@rbwebdesigns.co.uk>
  */
 class PostsAPI extends GenericController
 {
+    
     /** @var \HamletCMS\BlogPosts\model\Autosaves */
     protected $modelAutosaves;
     
@@ -23,30 +28,17 @@ class PostsAPI extends GenericController
      */
     public function __construct()
     {
-        $this->modelAutosaves = HamletCMS::model('\HamletCMS\BlogPosts\model\Autosaves');
-        $this->modelBlogs = HamletCMS::model('\HamletCMS\Blog\model\Blogs');
+        $this->modelAutosaves = HamletCMS::model('autosaves');
+        $this->modelBlogs = HamletCMS::model('blogs');
 
         parent::__construct();
-
-        /*
-        if (!HamletCMS::$blogID) {
-            $postID = $this->request->getUrlParameter(1);
-            $this->post = $this->model->getPostById($postID);
-            HamletCMS::$blogID = $this->post['blog_id'];
-        }
-
-        $this->blog = HamletCMS::getActiveBlog();
-        */
     }
 
     /**
-     * Create a new post
-     * 
-     * This is run as ajax request
+     * Create a new post.
      */
     public function create()
     {
-        // We've already validated that user has got access to create this post
         $blogID = $this->request->getInt('blogID', false);
         $blog = $this->modelBlogs->getBlogById($blogID);
         
@@ -136,6 +128,12 @@ class PostsAPI extends GenericController
         if ($post->blog_id != $blogID) {
             $this->response->setBody('{ "success": false, "errorMessage": "Blog ID mismatch" }');
             $this->response->code(406);
+            return;
+        }
+
+        if (!$this->model('permissions')->userHasPermission('edit_all_posts', $blogID)) {
+            $this->response->setBody('{ "success": false, "errorMessage": "Access denied" }');
+            $this->response->code(403);
             return;
         }
 
@@ -267,7 +265,13 @@ class PostsAPI extends GenericController
         }
     }
     
-
+    /**
+     * Handles /api/posts/bulkupdate
+     * 
+     * Update many posts, this method is responsible for checking permissions
+     * as there are many different actions that can be taken, requiring different
+     * access levels.
+     */
     public function bulkUpdatePosts() {
         if ($this->request->method() !== 'POST') {
             $this->response->setBody('{ "success": false, "errorMessage": "Invalid request method" }');

@@ -1,4 +1,4 @@
-<h3 class="ui header">Recent Comments</h3>
+<h3 class="ui header">Recent comments</h3>
 {foreach $comments as $comment}
     <div class="ui segment">
         &quot;{$comment->message}&quot;

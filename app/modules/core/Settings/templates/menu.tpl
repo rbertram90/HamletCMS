@@ -1,15 +1,7 @@
 <div class="ui grid">
-    <div class="one column row">
-        <div class="column">
-            <div class="ui teal message">
-                This section allows you to change the look and feel of the blog.
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="column">
-            <h3 class="ui header">General</h3>
+            <h2>General</h2>
         </div>
     </div>
 
@@ -29,7 +21,7 @@
 
     <div class="row">
         <div class="column">
-            <h3 class="ui header">Design</h3>
+            <h2>Design</h2>
         </div>
     </div>
     

@@ -53,7 +53,7 @@
     {
         "key": "api.posts.update",
         "path": "/api/posts/update",
-        "permissions": [],
+        "permissions": ["edit_all_posts"],
         "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
         "action": "edit"
     },

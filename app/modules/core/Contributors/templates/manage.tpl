@@ -35,7 +35,7 @@
                     <div class="content">
                         <div class="header">
                             <a href="/cms/account/user/{$contributor->id}">{$contributor->name} {$contributor->surname}</a>
-                            {if $blog->user_id == $contributor->id}(owner){/if}
+                            {if $blog->user_id == $contributor->id}<span class="ui mini yellow label">owner</span>{/if}
                         </div>
                         <div class="meta">
                             {$contributor->groupname}

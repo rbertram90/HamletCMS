@@ -1,6 +1,6 @@
 {* This needs to be injected into the user view *}
 
-<h2>Recent Comments</h2>
+<h2>Recent comments</h2>
 {foreach from=$comments item=comment}
     <div class="ui segment">
         &quot;{$comment->message}&quot;

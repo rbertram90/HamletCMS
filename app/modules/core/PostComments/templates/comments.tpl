@@ -43,7 +43,7 @@
                 {if $comment->approved == 1}
                     <div class="ui label green"><i class="icon checkmark"></i> Approved</div>
                 {else}
-                    <div class="ui label yellow">Pending Approval</div>
+                    <div class="ui label yellow">Pending approval</div>
                 {/if}
             </td>
             <td class="single line right aligned">

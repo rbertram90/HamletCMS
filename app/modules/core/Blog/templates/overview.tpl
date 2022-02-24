@@ -69,8 +69,8 @@
                     <div class="ui segments">
                         {foreach $activitylog as $activity}
                             <div class="ui clearing segment">
-                                <img src="/hamlet/avatars/thumbs/{$activity.user_image}" class="ui left floated spaced mini circular image">
-                                <a href="/cms/account/user/{$activity.user_id}">{$activity.username}</a> {$activity.text}
+                                <img src="{$activity.user->avatar()}" class="ui left floated spaced mini circular image">
+                                <a href="/cms/account/user/{$activity.user->id}">{$activity.username}</a> {$activity.text}
                                 <div class="comment-info">{$activity.timestamp|date_format:"H:i jS F Y"}</div>
                             </div>
                         {/foreach}

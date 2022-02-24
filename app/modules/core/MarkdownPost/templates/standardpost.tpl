@@ -16,6 +16,7 @@
 
 <div class="ui grid">
     <div class="form_status"></div>
+    {include 'edit-form/autosave.tpl'}
 
     <form action="{$formAction}" method="POST" name="form_create_post" id="form_create_post" class="two column row ui form">
         

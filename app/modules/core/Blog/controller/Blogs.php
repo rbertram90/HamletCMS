@@ -89,7 +89,17 @@ class Blogs extends GenericController
         $this->response->setVar('posts', $this->model('posts')->getPostsByBlog($blogID, 1, 5, 1, 1));
         
         if (HamletCMS::getModule('EventLogger')) {
-            $this->response->setVar('activitylog', $this->model('eventlogger')->byBlog($blogID));
+            $events = $this->model('eventlogger')->byBlog($blogID);
+            $userIDs = array_unique(array_column($events, 'user_id'));
+            $users = $this->model('useraccounts')->getByIds($userIDs);
+            $users_keyed = [];
+            foreach ($users as $user) $users_keyed[$user->id] = $user;
+
+            foreach ($events as &$event) {
+                $event['user'] = $users_keyed[$event['user_id']];
+            }
+
+            $this->response->setVar('activitylog', $events);
         }
 
         $this->response->setBreadcrumbs([

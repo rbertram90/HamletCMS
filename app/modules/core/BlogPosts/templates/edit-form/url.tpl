@@ -7,7 +7,7 @@
     <input type="text" name="post_url" id="post_url" required size="50" autocomplete="off" value="{if isset($post)}{$post->link}{/if}" class="post-data-field" data-key="link">
 </div>
 <script>
-{if $post->link_override}
+{if isset($post) && $post->link_override}
     $("#field_override_url").prop("checked", true);
 {/if}
 

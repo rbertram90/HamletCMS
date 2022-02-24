@@ -36,7 +36,8 @@ class EventLogger extends RBFactory
             FROM eventlog, users
             WHERE eventlog.blog_id = {$blogID}
             AND eventlog.user_id = users.id
-            ORDER BY eventlog.timestamp DESC"
+            ORDER BY eventlog.timestamp DESC
+            LIMIT $entries"
         )->fetchAll(\PDO::FETCH_ASSOC);
     }
 
