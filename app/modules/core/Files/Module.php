@@ -21,4 +21,11 @@ class Module
             }
         }
     }
+
+    public function imageUploader($args) {
+        $args['tabs'][] = [
+            'label' => 'Choose existing',
+            'url' => '/cms/files/choosefile/' . $args['blog']->id,
+        ];
+    }
 }

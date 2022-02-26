@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <button type="button" class="ui labeled icon teal button" title="Add images" id="add_images_button"><i class="upload icon"></i>Add images</button>
+            <button type="button" class="ui labeled icon teal button" title="Add images" id="add_images_button" data-no-spinner="true"><i class="upload icon"></i>Add images</button>
             <a href="/cms/files/settings/{$blog->id}" class="ui labeled icon button"><i class="cogs icon"></i>File settings</a>
         </div>
     </div>

@@ -246,9 +246,19 @@ class Files extends GenericController
         // Return Type
         $returnFormat = $request->getString('format', 'markdown');
         // Element ID
-        $returnElementID = $request->getString('elemid', 'fld_postcontent');
+        $returnElementID = $request->getString('elemid', 'post_content');
         // Append or replace
         $returnReplace = $request->getInt('replace', 0);
+
+        $tabs = [
+            [
+                'label' => 'Upload new',
+            ]
+        ];
+
+        // Get all menu items
+        HamletCMS::runHook('imageUploader', ['tabs' => &$tabs, 'blog' => $this->blog]);
+        $response->setVar('tabs', $tabs);
 
         $path = SERVER_PATH_BLOGS . "/{$this->blog->id}/images";
 
@@ -259,7 +269,15 @@ class Files extends GenericController
         $response->setVar('returnElementID', $returnElementID);
         $response->setVar('returnFormat', $returnFormat);
 
+        $response->write('select.tpl', 'Files');
+    }
+
+    /**
+     * Handles /cms/files/existing/<blogid>
+     */
+    public function chooseExisting(&$request, &$response) {
         $imagesHTML = "";
+        $path = SERVER_PATH_BLOGS . "/{$this->blog->id}/images";
 
         if (is_dir($path)) {
             if ($handle = opendir($path)) {
@@ -273,8 +291,8 @@ class Files extends GenericController
             }
         }
 
+        $request->isAjax = true;
         $response->setVar('imagesOutput', $imagesHTML);
-
-        $response->write('select.tpl', 'Files');
+        $response->write('existing.tpl', 'Files');
     }
 }

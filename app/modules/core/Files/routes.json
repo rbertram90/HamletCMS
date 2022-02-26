@@ -21,6 +21,13 @@
         "action": "fileselect"
     },
     {
+        "key": "files.existing",
+        "path": "/cms/files/choosefile/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\HamletCMS\\Files\\Controller\\Files",
+        "action": "chooseExisting"
+    },
+    {
         "key": "files.delete",
         "path": "/cms/files/delete/{BLOG_ID}/{FILE_NAME}",
         "permissions": ["delete_files"],
