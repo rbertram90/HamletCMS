@@ -10,31 +10,35 @@
     }
 </script>
 
-<div id="autosave_exists_message" class="ui yellow segment clearing">
-    <p>You have an autosaved draft for this post, do you want to continue with this edit?
-    <a href="#" onclick="$('#autosave_data').toggle(); return false;" class="ui basic right floated teal button" data-no-spinner="true">Show Content</a>
-    <a href="#" onclick="$('#autosave_data').hide(); $('#autosave_exists_message').hide(); return false;" class="ui right floated teal button">No</a>
-    <a href="#" onclick="replaceContent(); return false;" class="ui right floated teal button">Yes</a></p>
-</div>
+<div class="row">
+    <div class="column">
+        <div id="autosave_exists_message" class="ui yellow segment clearing">
+            <p>You have an autosaved draft for this post, do you want to continue with this edit?
+            <a href="#" onclick="$('#autosave_data').toggle(); return false;" class="ui basic right floated teal button" data-no-spinner="true">Show Content</a>
+            <a href="#" onclick="$('#autosave_data').hide(); $('#autosave_exists_message').hide(); return false;" class="ui right floated teal button">No</a>
+            <a href="#" onclick="replaceContent(); return false;" class="ui right floated teal button">Yes</a></p>
+        </div>
 
-<div id="autosave_data" class="ui segment" style="display:none;">
-    <div class="ui form">
-        <h2 class="ui heading">Autosaved Post</h2>
-        <div class="field">
-            <label for="autosave_title">Title</label>
-            <input disabled class="" type="text" id="autosave_title" name="autosave_title" value="{$post->autosave->title}" />
-        </div>
-        <div class="field">
-            <label for="autosave_title">Summary</label>
-            <input disabled class="" type="text" id="autosave_summary" name="autosave_summary" value="{$post->autosave->summary}" />
-        </div>
-        <div class="field">
-            <label for="autosave_content">Content</label>
-            <textarea disabled id="autosave_content" name="autosave_content">{$post->autosave->content}</textarea>
-        </div>
-        <div class="field">
-            <label for="autosave_tags">Tags</label>
-            <input disabled type="text" id="autosave_tags" name="autosave_tags" value="{$post->autosave->tags}" />
+        <div id="autosave_data" class="ui segment" style="display:none;">
+            <div class="ui form">
+                <h2 class="ui heading">Autosaved Post</h2>
+                <div class="field">
+                    <label for="autosave_title">Title</label>
+                    <input disabled class="" type="text" id="autosave_title" name="autosave_title" value="{$post->autosave->title}" />
+                </div>
+                <div class="field">
+                    <label for="autosave_title">Summary</label>
+                    <input disabled class="" type="text" id="autosave_summary" name="autosave_summary" value="{$post->autosave->summary}" />
+                </div>
+                <div class="field">
+                    <label for="autosave_content">Content</label>
+                    <textarea disabled id="autosave_content" name="autosave_content">{$post->autosave->content}</textarea>
+                </div>
+                <div class="field">
+                    <label for="autosave_tags">Tags</label>
+                    <input disabled type="text" id="autosave_tags" name="autosave_tags" value="{$post->autosave->tags}" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
