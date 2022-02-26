@@ -81,6 +81,9 @@ if (php_sapi_name() === 'cli' || $_SERVER['REQUEST_URI'] !== '/cms/install') {
 
     // Didn't find any modules - run install!
     if ($checkInstall == 0) {
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
         HamletCMS::response()->redirect('/cms/install');
     }
     
