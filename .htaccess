@@ -1,14 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine on
-
-    ErrorDocument 403 /accessdenied
-    ErrorDocument 404 /notfound    
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^$ public/ [L]
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule (.*) public/$1 [L]
+    RewriteRule    ^$    public/    [L]
+    RewriteRule    (.*) public/$1    [L]
 </IfModule>

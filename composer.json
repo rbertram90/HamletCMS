@@ -1,17 +1,6 @@
 {
   "name": "rbwebdesigns/hamlet-cms",
   "description": "PHP Blog content management system, using a modular MVC framework with Smarty templates",
-  "repositories":
-  [
-    {
-      "type": "vcs",
-      "url": "https://github.com/rbertram90/core"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/rbertram90/HamletCMS-Installer.git"
-    }
-  ],
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
@@ -21,19 +10,7 @@
     "athens/csrf": "^1.0",
     "rbertram90/core": "dev-master"
   },
-  "extra": {
-	  "installer-types": ["hamlet-cms-module", "hamlet-cms-template"],
-    "installer-paths": {
-        "modules/addon/{$name}/": ["type:hamlet-cms-module"],
-        "templates/addon/{$name}": ["type:hamlet-cms-template"]
-    }
-  },
   "autoload": {
-    "psr-4": { "HamletCMS\\": ["app/modules/core/", "app/modules/addon/"] }
-  },
-  "config": {
-    "allow-plugins": {
-      "rbwebdesigns/hamlet-cms-installer": true
-    }
+    "psr-4": { "HamletCMS\\": ["modules/core/", "modules/addon/"] }
   }
 }
