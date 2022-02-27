@@ -3,49 +3,49 @@
         "key": "settings.menu",
         "path": "/cms/settings/menu/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "menu"
     },
     {
         "key": "settings.general",
         "path": "/cms/settings/general/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "general"
     },
     {
         "key": "settings.header",
         "path": "/cms/settings/header/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "header"
     },
     {
         "key": "settings.footer",
         "path": "/cms/settings/footer/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "footer"
     },
     {
         "key": "settings.stylesheet",
         "path": "/cms/settings/stylesheet/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "stylesheet"
     },
     {
         "key": "settings.template",
         "path": "/cms/settings/template/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "template"
     },
     {
         "key": "settings.templateconfig",
         "path": "/cms/settings/templateConfig/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\Settings\\Controller\\Settings",
+        "controller": "\\HamletCMS\\Settings\\controller\\Settings",
         "action": "templateConfig"
     }
 ]

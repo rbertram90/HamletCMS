@@ -3,35 +3,35 @@
     "key": "favourites.add.post",
     "path": "/blogs/{BLOG_ID}/favourite/add/post",
     "permissions": [],
-    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\controller\\Favourites",
     "action": "addPostToFavourites"
   },
   {
     "key": "favourites.remove.post",
     "path": "/blogs/{BLOG_ID}/favourite/remove/post",
     "permissions": [],
-    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\controller\\Favourites",
     "action": "removePostFromFavourites"
   },
   {
     "key": "favourites.add.blog",
     "path": "/blogs/{BLOG_ID}/favourite/add",
     "permissions": [],
-    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\controller\\Favourites",
     "action": "addBlogToFavourites"
   },
   {
     "key": "favourites.remove.blog",
     "path": "/blogs/{BLOG_ID}/favourite/remove",
     "permissions": [],
-    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\controller\\Favourites",
     "action": "removeBlogFromFavourites"
   },
   {
     "key": "favourites.view",
     "path": "/cms/my-favourites",
     "permissions": [],
-    "controller": "\\HamletCMS\\FavouriteBlogs\\Controller\\Favourites",
+    "controller": "\\HamletCMS\\FavouriteBlogs\\controller\\Favourites",
     "action": "viewFavourites"
   }
 ]

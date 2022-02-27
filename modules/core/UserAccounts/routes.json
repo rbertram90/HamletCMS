@@ -3,84 +3,84 @@
         "key": "user.view",
         "path": "/cms/account/user/{USER_ID}",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "user"
     },
     {
         "key": "user.current",
         "path": "/cms/account/user",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "user"
     },
     {
         "key": "user.login",
         "path": "/cms/account/login",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "login"
     },
     {
         "key": "user.register",
         "path": "/cms/account/register",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "register"
     },
     {
         "key": "user.resetpassword",
         "path": "/cms/account/resetpassword",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "resetpassword"
     },
     {
         "key": "user.logout",
         "path": "/cms/account/logout",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "logout"
     },
     {
         "key": "user.settings",
         "path": "/cms/account/settings",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "settings"
     },
     {
         "key": "user.password",
         "path": "/cms/account/password",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "password"
     },
     {
         "key": "user.avatar",
         "path": "/cms/account/avatar",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "avatar"
     },
     {
         "key": "user.card",
         "path": "/cms/account/card/{USER_ID}",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "card"
     },
     {
         "key": "user.data",
         "path": "/api/user/get",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAPI",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAPI",
         "action": "get"
     },
     {
         "key": "users.admin",
         "path": "/cms/users/admin",
         "permissions": [],
-        "controller": "\\HamletCMS\\UserAccounts\\Controller\\UserAccounts",
+        "controller": "\\HamletCMS\\UserAccounts\\controller\\UserAccounts",
         "action": "usersAdmin"
     }
 ]

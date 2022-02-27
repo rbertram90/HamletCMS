@@ -3,56 +3,56 @@
         "key": "contributors.manage",
         "path": "/cms/contributors/manage/{BLOG_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "manage"
     },
     {
         "key": "contributors.create",
         "path": "/cms/contributors/create/{BLOG_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "create"
     },
     {
         "key": "contributors.invite",
         "path": "/cms/contributors/invite/{BLOG_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "invite"
     },
     {
         "key": "contributors.edit",
         "path": "/cms/contributors/edit/{BLOG_ID}/{CONTRIBUTOR_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "edit"
     },
     {
         "key": "contributors.remove",
         "path": "/cms/contributors/remove/{BLOG_ID}/{CONTRIBUTOR_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "remove"
     },
     {
         "key": "contributors.creategroup",
         "path": "/cms/contributors/creategroup/{BLOG_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "creategroup"
     },
     {
         "key": "contributors.editgroup",
         "path": "/cms/contributors/editgroup/{BLOG_ID}",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "editgroup"
     },
     {
         "key": "contributors.deletegroup",
         "path": "/api/contributors/deletegroup",
         "permissions": ["manage_contributors"],
-        "controller": "\\HamletCMS\\Contributors\\Controller\\Contributors",
+        "controller": "\\HamletCMS\\Contributors\\controller\\Contributors",
         "action": "deletegroup"
     }
 ]

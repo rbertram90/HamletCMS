@@ -3,7 +3,7 @@
         "key": "blogs.search",
         "path": "/blogs/{BLOG_ID}/search",
         "permissions": [],
-        "controller": "\\HamletCMS\\Search\\Controller\\Search",
+        "controller": "\\HamletCMS\\Search\\controller\\Search",
         "action": "search"
     }
 ]

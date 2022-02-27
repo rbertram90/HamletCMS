@@ -4,7 +4,7 @@
         "description": "Show the manage post page",
         "path": "/cms/posts/manage/{BLOG_ID}",
         "permissions": [],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\Posts",
         "action": "manage"
     },
     {
@@ -12,91 +12,91 @@
         "description": "Show the create post menu listing each of the enabled post types",
         "path": "/cms/posts/create/{BLOG_ID}",
         "permissions": ["create_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\Posts",
         "action": "create"
     },
     {
         "key": "posts.edit",
         "path": "/cms/posts/edit/{POST_ID}",
         "permissions": [],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\Posts",
         "action": "edit"
     },
     {
         "key": "posts.cancelsave",
         "path": "/cms/posts/cancelsave/{POST_ID}",
         "permissions": ["edit_all_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\Posts",
         "action": "cancelsave"
     },
     {
         "key": "api.posts",
         "path": "/api/posts",
         "permissions": [],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "getList"
     },
     {
         "key": "api.posts.searchtitle",
         "path": "/api/posts/search",
         "permissions": [],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "lookupTitle"
     },
     {
         "key": "api.posts.create",
         "path": "/api/posts/create",
         "permissions": ["create_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "create"
     },
     {
         "key": "api.posts.update",
         "path": "/api/posts/update",
         "permissions": ["edit_all_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "edit"
     },
     {
         "key": "api.posts.autosave",
         "path": "/api/posts/autosave",
         "permissions": ["create_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "autosave"
     },
     {
         "key": "api.posts.delete",
         "path": "/api/posts/delete",
         "permissions": ["delete_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "delete"
     },
     {
         "key": "posts.delete",
         "path": "/cms/posts/delete/{POST_ID}",
         "permissions": ["delete_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\Posts",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\Posts",
         "action": "delete"
     },
     {
         "key": "api.posts.clone",
         "path": "/api/posts/clone",
         "permissions": ["create_posts"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "clonePost"
     },
     {
         "key": "api.posts.bulk_update",
         "path": "/api/posts/bulkupdate",
         "permissions": [],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostsAPI",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostsAPI",
         "action": "bulkUpdatePosts"
     },
     {
         "key": "settings.posts",
         "path": "/cms/settings/posts/{BLOG_ID}",
         "permissions": ["change_settings"],
-        "controller": "\\HamletCMS\\BlogPosts\\Controller\\PostSettings",
+        "controller": "\\HamletCMS\\BlogPosts\\controller\\PostSettings",
         "action": "posts"
     }
 ]
