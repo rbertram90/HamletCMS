@@ -15,24 +15,10 @@
 {/if}
 
 <div class="ui grid">
-    
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}"), 'New Post')}
-        </div>
-    </div>
-    
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader("{$submitLabel} Blog Post", 'edit outline', "{$blog->name}")}
-
-            {include 'edit-form/autosave.tpl'}
-        </div>
-    </div>
-
     <div class="form_status"></div>
+    {include 'edit-form/autosave.tpl'}
 
-    <form action="{$formAction}" method="post" name="form_create_post" id="form_create_post" class="two column row ui form">
+    <form action="{$formAction}" method="POST" name="form_create_post" id="form_create_post" class="two column row ui form">
         
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
@@ -48,16 +34,19 @@
             </div>
             <div class="field"> 
                 <label for="video_id">Video ID <a href="#" onclick="alert('Youtube ID are found in the URL youtube.com/user/?v={ldelim}URL{rdelim}'); return false;">[?]</a></label>
-                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{$post->videoid}"  class="post-data-field" data-key="videoid">
+                <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{if isset($post)}{$post->videoid}{/if}"  class="post-data-field" data-key="videoid">
             </div>
 
             <div class="field">
                 <label for="post_content">Content</label>
-                <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image">
+                <button type="button" id="upload_post_image" class="ui icon button" title="Insert Image" data-no-spinner="true">
                     <i class="camera icon"></i>
                 </button>
-                <p style="font-size:80%;">Note - <a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
-                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{$post->content}</textarea>
+                <button type="button" id="dark_mode_toggle" class="ui icon button" title="Toggle dark mode" data-no-spinner="true">
+                    <i class="moon icon"></i>
+                </button>
+                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{if isset($post)}{$post->content}{/if}</textarea>
+                <p style="font-size:80%;"><a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
             </div>
             
             {include 'edit-form/tags.tpl'}
@@ -83,6 +72,7 @@
 
 <script>
 var content_changed = false;
+var isDarkMode = false;
 
 $("#video_source").on("keyup", function() { content_changed = true; });
 $("#video_id").on("keyup", function() { content_changed = true; });
@@ -114,6 +104,19 @@ $(document).ready(function () {
         $('.ui.upload_image_modal').load('/cms/files/fileselect/{$blog->id}', { 'csrf_token': CSRFTOKEN }, function() {
             $(this).modal('show');
         });
+    });
+
+    $("#dark_mode_toggle").click(function() {
+        if (isDarkMode) {
+            $("#post_content").removeClass('dark-mode');
+            $(this).find('i').removeClass('sun').addClass('moon');
+            isDarkMode = false;
+        }
+        else {
+            $("#post_content").addClass('dark-mode');
+            $(this).find('i').removeClass('moon').addClass('sun');
+            isDarkMode = true;
+        }
     });
 
     $(window).on('beforeunload', function() {
