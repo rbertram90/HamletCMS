@@ -195,14 +195,7 @@ class Files extends GenericController
             $upload->upload($imageDirectory, $filename);
 
             $blogConfig = $this->blog->config();
-            $filesConfigExists = array_key_exists('files', $blogConfig) && array_key_exists('imagestyles', $blogConfig['files']);
-
-            if ($filesConfigExists) {
-                $sizes = $blogConfig['files']['imagestyles'];
-            }
-            else {
-                $sizes = FileSettings::getDefaultImageSizes();
-            }
+            $sizes = $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes();
 
             // Create thumbnails
             $upload->createThumbnail($imageDirectory . '/xl', null, $sizes['xl']['w'], $sizes['xl']['h']);
