@@ -517,10 +517,8 @@ class Posts extends RBFactory
         $validTagsArray = Array();
         
         foreach ($splitCSV as $tag) {
-            $validTag = trim($tag);
-            // Remove anything that isn't alphanumeric or a space
-            $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag);
-            $validTag = str_replace(" ", "+", $validTag);
+            $validTag = self::createSafeTag($tag);
+
             // Check the entry doesn't already exists
             if (array_search($validTag, $validTagsArray) === false) {
                 // Append to new CSV
@@ -532,6 +530,17 @@ class Posts extends RBFactory
         }
         
         return $validTagsString;
+    }
+
+    /**
+     * Make the text of a tag 'safe' for saving to database
+     */
+    public static function createSafeTag($tag) {
+        $validTag = trim($tag);
+        // Remove anything that isn't alphanumeric or a space
+        $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag);
+        $validTag = str_replace(" ", "+", $validTag); // why do this?
+        return $validTag;
     }
     
     /**
@@ -668,9 +677,7 @@ class Posts extends RBFactory
             }
             
             foreach ($tags as $tag) {
-                $tag = str_replace("+", " ", $tag);
-
-                if (strtolower(trim($tag)) == strtolower(trim($ptag))) {
+                if ($tag === self::createSafeTag($ptag)) {
                     $hasTag = true;
                     break;
                 }
