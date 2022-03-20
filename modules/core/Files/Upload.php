@@ -33,9 +33,7 @@ class Upload {
         $imageDirectory = SERVER_PATH_BLOGS . '/' . $blog->id . '/images';
 
         $blogConfig = $blog->config();
-        $filesConfigExists = array_key_exists('files', $blogConfig) && array_key_exists('imagestyles', $blogConfig['files']);
-
-        $sizes = $filesConfigExists ? $blogConfig['files']['imagestyles'] : FileSettings::getDefaultImageSizes();
+        $sizes = $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes();
 
         $upload = new ImageUpload(['new_path' => $path, 'type' => 'image/' . $ext]);
 
