@@ -44,7 +44,7 @@ class Module
 
         $dbc->query("CREATE TABLE `posts` (
             `id` int(8) NOT NULL,
-            `class` varchar(255) NOT NULL DEFAULT '\\HamletCMS\\BlogPosts\\Post',
+            `class` varchar(255) NOT NULL DEFAULT '\\\\HamletCMS\\\\BlogPosts\\\\Post',
             `title` varchar(255) NOT NULL,
             `summary` text,
             `content` text NOT NULL,
