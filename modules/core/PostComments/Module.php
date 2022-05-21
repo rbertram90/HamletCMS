@@ -111,7 +111,7 @@ class Module
             $post = $args['post'];
             $blog = $post->blog();
             $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $blog->id .'/templates/comment.tpl';
-            $defaultTemplateFile = SERVER_MODULES_PATH .'/core/PostComments/templates/defaultcomment.tpl';
+            $defaultTemplateFile = SERVER_MODULES_PATH .'/PostComments/templates/defaultcomment.tpl';
             $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
 
             $args['response']->setVar('commentTemplatePath', $templatePath);

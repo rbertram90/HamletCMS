@@ -12,10 +12,10 @@ class TestHelper
      */
     public static function includeFiles($module)
     {
-        foreach (glob(SERVER_MODULES_PATH . "/core/{$module}/tests/*.php") as $filePath) {
+        foreach (glob(SERVER_MODULES_PATH . "/{$module}/tests/*.php") as $filePath) {
             require $filePath;
         }
-        foreach (glob(SERVER_MODULES_PATH . "/addon/{$module}/tests/*.php") as $filePath) {
+        foreach (glob(SERVER_ADDONS_PATH . "/modules/{$module}/tests/*.php") as $filePath) {
             require $filePath;
         }
     }

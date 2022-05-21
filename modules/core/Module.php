@@ -21,11 +21,11 @@ class Module
     {
         $this->key = $key;
 
-        $folder = file_exists(SERVER_MODULES_PATH . "/core/{$key}") ? 'core' : 'addon';
-        $this->core = $folder === 'core';
+        $folder = file_exists(SERVER_MODULES_PATH . "/{$key}") ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+        $this->core = $folder === SERVER_MODULES_PATH;
 
         // load config
-        $moduleInfo = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/{$folder}/{$this->key}/info.json");
+        $moduleInfo = JSONhelper::JSONFileToArray("{$folder}/{$this->key}/info.json");
         foreach ($moduleInfo as $propertykey => $property) {
             $this->$propertykey = $property;
         }

@@ -82,7 +82,7 @@ class PostSettings extends GenericController
     protected function getFullPostTemplate()
     {
         $customFullTemplate  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/singlepost.tpl';
-        $defaultFullTemplate = SERVER_MODULES_PATH .'/core/BlogView/templates/posts/singlepost.tpl';
+        $defaultFullTemplate = SERVER_MODULES_PATH .'/BlogView/templates/posts/singlepost.tpl';
         $postFullTemplate = file_exists($customFullTemplate) ? $customFullTemplate : $defaultFullTemplate;
         return file_get_contents($postFullTemplate);
     }
@@ -95,7 +95,7 @@ class PostSettings extends GenericController
     protected function getPostTeaserTemplate()
     {
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/teaser.tpl';
-        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/templates/posts/teaser.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/BlogView/templates/posts/teaser.tpl';
         $postTemplate = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         return file_get_contents($postTemplate);
     }
@@ -108,7 +108,7 @@ class PostSettings extends GenericController
     protected function getPostCardTemplate()
     {
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/card.tpl';
-        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/templates/posts/card.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/BlogView/templates/posts/card.tpl';
         $postTemplate = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         return file_get_contents($postTemplate);
     }

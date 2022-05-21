@@ -19,7 +19,8 @@ use HamletCMS\HamletCMS;
     }
     define('SERVER_CMS_ROOT', SERVER_ROOT . '/app/cms');
     define('SERVER_PUBLIC_PATH', $config['environment']['public_directory']); // Path to public document root
-    define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');     // Path to modules
+    define('SERVER_MODULES_PATH', SERVER_ROOT . '/app/modules');     // Path to core modules
+    define('SERVER_ADDONS_PATH', SERVER_ROOT . '/addons');     // Path to addons modules
     define('SERVER_PATH_TEMPLATES', SERVER_ROOT . '/app/templates'); // Path to the blog templates
     define('SERVER_PATH_BLOGS', SERVER_PUBLIC_PATH . '/hamlet/blogdata');   // Path to public blog data
     define('SERVER_AVATAR_FOLDER', SERVER_PUBLIC_PATH . '/hamlet/avatars'); // Path to the folder containing user avatars

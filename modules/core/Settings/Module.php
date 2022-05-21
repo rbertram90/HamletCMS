@@ -21,7 +21,8 @@ class Module
             }
         }
     }
-
+    
+/*
     public function onReloadCache() {
         $this->generateTemplateCache();
     }
@@ -38,6 +39,7 @@ class Module
             }
         }
     }
+*/
 
     public function runUnitTests($args) {
         if ($args['context'] === 'blog') {

@@ -394,8 +394,8 @@ class HamletCMS
         $menuCache = [];
 
         foreach (self::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            $jsonPath = SERVER_MODULES_PATH . "/{$folder}/{$module->key}/menu.json";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $jsonPath = "{$folder}/{$module->key}/menu.json";
             if ($links = JSONhelper::JSONFileToArray($jsonPath)) {
                 foreach ($links as $link) {
                     if (!array_key_exists($link['menu'], $menuCache)) $menuCache[$link['menu']] = [];
@@ -439,9 +439,9 @@ class HamletCMS
         $routeCache = [];
 
         foreach (self::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            if (file_exists(SERVER_MODULES_PATH . "/{$folder}/{$module->key}/routes.json")) {
-                $routes = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH ."/{$folder}/{$module->key}/routes.json");
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            if (file_exists("{$folder}/{$module->key}/routes.json")) {
+                $routes = JSONhelper::JSONFileToArray("/{$folder}/{$module->key}/routes.json");
                 foreach ($routes as $route) {
                     if (array_key_exists($route['key'], $routes)) {
                         print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $module->key.PHP_EOL;
@@ -472,8 +472,8 @@ class HamletCMS
         $permissionCache = [];
 
         foreach (self::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            $filePath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/permissions.json";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $filePath = "{$folder}/{$module->key}/permissions.json";
             
             if (file_exists($filePath)) {
                 $permissions = JSONhelper::JSONFileToArray($filePath);
@@ -506,8 +506,8 @@ class HamletCMS
         $templatesCache = [];
 
         foreach (self::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            $dirPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/templates";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $dirPath = "{$folder}/{$module->key}/templates";
             if (file_exists($dirPath)) {
                 $templatesCache[$module->key] = $dirPath;
 
@@ -531,8 +531,8 @@ class HamletCMS
         $modelCache = [];
 
         foreach (self::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            $dirPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/model";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $dirPath = "{$folder}/{$module->key}/model";
             $namespace = '\\HamletCMS\\' . $module->key . '\\model\\';
             if (file_exists($dirPath)) {
                 foreach (scandir($dirPath) as $modelfile) {

@@ -11,6 +11,6 @@
     "rbertram90/core": "dev-master"
   },
   "autoload": {
-    "psr-4": { "HamletCMS\\": ["modules/core/", "modules/addon/"] }
+    "psr-4": { "HamletCMS\\": ["modules/"] }
   }
 }

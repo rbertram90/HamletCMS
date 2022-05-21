@@ -276,8 +276,8 @@ class WidgetsAdmin extends GenericController
         $widgetCache = [];
 
         foreach (HamletCMS::$modules as $module) {
-            $folder = $module->core ? 'core' : 'addon';
-            $filePath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/widgets.json";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $filePath = "{$folder}/{$module->key}/widgets.json";
             if (file_exists($filePath)) {
                 $widgets = JSONhelper::JSONFileToArray($filePath);
                 foreach ($widgets as $widget) {
@@ -286,7 +286,7 @@ class WidgetsAdmin extends GenericController
                         continue;
                     }
 
-                    $configPath = SERVER_MODULES_PATH ."/{$folder}/{$module->key}/widgets/{$widget['key']}/config.json";
+                    $configPath = "{$folder}/{$module->key}/widgets/{$widget['key']}/config.json";
                     if (file_exists($configPath)) {
                         $widgetConfig = JSONHelper::JSONFileToArray($configPath);
                         $widget = array_merge($widget, $widgetConfig);

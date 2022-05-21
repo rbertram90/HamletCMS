@@ -7,10 +7,3 @@
 templates_c/
 
 *.log
-
-# =========================
-# Custom modules/templates
-# =========================
-
-modules/addon/*
-templates/addon/*

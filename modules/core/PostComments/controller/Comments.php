@@ -224,7 +224,7 @@ class Comments extends GenericController
         $config = array_key_exists('comments', $config) ? $config['comments'] : [];
         
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl';
-        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/PostComments/templates/defaultcomment.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/PostComments/templates/defaultcomment.tpl';
         $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         $commentTemplate = file_get_contents($templatePath);
 

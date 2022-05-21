@@ -44,20 +44,20 @@ class SiteAdmin extends GenericController
 
     public function newModuleScan()
     {
-        if ($coreModules = scandir(SERVER_MODULES_PATH . '/core')) {
+        if ($coreModules = scandir(SERVER_MODULES_PATH)) {
             $modulesList = [];
             
             // Get all directories
             foreach ($coreModules as $folder) {
                 if (strpos($folder, '.') !== false) continue;
-                if (!file_exists(SERVER_MODULES_PATH . "/core/{$folder}/info.json")) continue;
+                if (!file_exists(SERVER_MODULES_PATH . "/{$folder}/info.json")) continue;
                 $modulesList[$folder] = 'core';
             }
 
-            if ($addonModules = scandir(SERVER_MODULES_PATH . '/addon')) {
+            if ($addonModules = scandir(SERVER_ADDONS_PATH . '/modules')) {
                 foreach ($addonModules as $folder) {
                     if (strpos($folder, '.') !== false) continue;
-                    if (!file_exists(SERVER_MODULES_PATH . "/addon/{$folder}/info.json")) continue;
+                    if (!file_exists(SERVER_ADDONS_PATH . "/modules/{$folder}/info.json")) continue;
                     $modulesList[$folder] = 'addon';
                 }
             }
@@ -106,8 +106,8 @@ class SiteAdmin extends GenericController
 
         foreach ($modules as $module) {
             $currentVersion = $module->dbversion;
-            $folder = $module->core ? 'core' : 'addon';
-            $moduleFile = SERVER_MODULES_PATH ."/{$folder}/{$module->name}/{$module->name}.php";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $moduleFile = "{$folder}/{$module->name}/{$module->name}.php";
 
             if (!file_exists($moduleFile)) continue;
             
@@ -149,8 +149,8 @@ class SiteAdmin extends GenericController
         
         foreach ($modules as $module) {
             $currentVersion = $module->dbversion;
-            $folder = $module->core ? 'core' : 'addon';
-            $moduleFile = SERVER_MODULES_PATH ."/{$folder}/{$module->name}/{$module->name}.php";
+            $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
+            $moduleFile = "{$folder}/{$module->name}/{$module->name}.php";
 
             if (!file_exists($moduleFile)) continue;
             

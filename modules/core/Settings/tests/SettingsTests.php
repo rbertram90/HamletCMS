@@ -92,7 +92,7 @@ class SettingsTests extends TestResult {
      * POST /cms/settings/header/<blog id>
      */
     public function postHeaderSettings() {
-        $header_template = file_get_contents(SERVER_MODULES_PATH . '/core/BlogView/templates/header.tpl');
+        $header_template = file_get_contents(SERVER_MODULES_PATH . '/BlogView/templates/header.tpl');
         $this->request->setVariable('fld_headerbackgroundimage', '');
         $this->request->setVariable('fld_horizontalposition', 's');
         $this->request->setVariable('fld_veritcalposition', 's');
@@ -132,7 +132,7 @@ class SettingsTests extends TestResult {
      * POST /cms/settings/footer/<blog id>
      */
     public function postFooterSettings() {
-        $footer_template = file_get_contents(SERVER_MODULES_PATH . '/core/BlogView/templates/footer.tpl');
+        $footer_template = file_get_contents(SERVER_MODULES_PATH . '/BlogView/templates/footer.tpl');
         $this->request->setVariable('fld_footerbackgroundimage', '');
         $this->request->setVariable('fld_horizontalposition', 's');
         $this->request->setVariable('fld_veritcalposition', 's');

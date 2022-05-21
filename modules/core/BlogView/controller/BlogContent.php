@@ -280,7 +280,7 @@ class BlogContent extends GenericController
         $this->response->setTitle($this->blog->name);
 
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/card.tpl';
-        $defaultTemplateFile = SERVER_MODULES_PATH .'/core/BlogView/templates/posts/card.tpl';
+        $defaultTemplateFile = SERVER_MODULES_PATH .'/BlogView/templates/posts/card.tpl';
         $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         $this->response->setVar('cardTemplate', $templatePath);
 

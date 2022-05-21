@@ -15,15 +15,15 @@ use HamletCMS\HamletCMS;
     $request = HamletCMS::request();
     $response = HamletCMS::response();
 
-    $coreModules = scandir(SERVER_MODULES_PATH . '/core');
+    $coreModules = scandir(SERVER_MODULES_PATH);
     $modules = [];
 
     foreach ($coreModules as $module) {
         if ($module == '.' || $module == '..' || $module == 'tests') continue;
 
-        if (!is_dir(SERVER_MODULES_PATH. '/core/' . $module)) continue;
+        if (!is_dir(SERVER_MODULES_PATH. '/' . $module)) continue; // Could be wrong version?!
 
-        $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/core/{$module}/info.json");
+        $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/{$module}/info.json");
 
         $modules[$module] = [
             'core' => 1,
@@ -31,13 +31,13 @@ use HamletCMS\HamletCMS;
         ];
     }
 
-    if (file_exists(SERVER_MODULES_PATH . '/addon')) {
-        $addonModules = scandir(SERVER_MODULES_PATH . '/addon');
+    if (file_exists(SERVER_ADDONS_PATH . '/modules')) {
+        $addonModules = scandir(SERVER_ADDONS_PATH . '/modules');
         
         foreach ($addonModules as $module) {
             if ($module == '.' || $module == '..') continue;
         
-            $info = JSONhelper::JSONFileToArray(SERVER_MODULES_PATH . "/addon/{$module}/info.json");
+            $info = JSONhelper::JSONFileToArray(SERVER_ADDONS_PATH . "/modules/{$module}/info.json");
         
             $modules[$module] = [
                 'core' => 0,

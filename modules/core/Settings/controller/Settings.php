@@ -132,7 +132,7 @@ class Settings extends GenericController
             $this->response->setVar('headerTemplate', file_get_contents($headerTemplate));
         }
         else {
-            $defaultTemplate = SERVER_MODULES_PATH .'/core/BlogView/templates/header.tpl';
+            $defaultTemplate = SERVER_MODULES_PATH .'/BlogView/templates/header.tpl';
             $this->response->setVar('headerTemplate', file_get_contents($defaultTemplate));
         }
 
@@ -165,7 +165,7 @@ class Settings extends GenericController
             $this->response->setVar('footerTemplate', file_get_contents($footerTemplate));
         }
         else {
-            $defaultTemplate = SERVER_MODULES_PATH .'/core/BlogView/templates/footer.tpl';
+            $defaultTemplate = SERVER_MODULES_PATH .'/BlogView/templates/footer.tpl';
             $this->response->setVar('footerTemplate', file_get_contents($defaultTemplate));
         }
 
@@ -232,14 +232,15 @@ class Settings extends GenericController
      * @return array
      */
     protected function getTemplateList($type) {
-        if (!file_exists(SERVER_PATH_TEMPLATES . "/{$type}")) return [];
-        $templateFolders = scandir(SERVER_PATH_TEMPLATES . "/{$type}");
+        $mainFolder = $type === 'core' ? SERVER_PATH_TEMPLATES : SERVER_ADDONS_PATH . '/templates';
+        if (!file_exists($mainFolder)) return [];
+        $templateFolders = scandir($mainFolder);
         $templateData = [];
 
         foreach ($templateFolders as $folder) {
             if ($folder == '.' || $folder == '..') continue;
 
-            $infoPath = SERVER_PATH_TEMPLATES . "/{$type}/{$folder}/info.json";
+            $infoPath = "{$mainFolder}/{$folder}/info.json";
             if (!file_exists($infoPath)) continue;
 
             $templateData[] = JSONhelper::JSONFileToArray($infoPath) + [
@@ -486,7 +487,8 @@ class Settings extends GenericController
             $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
         }
 
-        $templateDirectory = SERVER_PATH_TEMPLATES . "/{$template_type}/{$template_id}";
+        $folder = $template_type === 'core' ? SERVER_PATH_TEMPLATES : SERVER_ADDONS_PATH . '/templates';
+        $templateDirectory = $folder . "/{$template_id}";
         $blogDirectory = SERVER_PATH_BLOGS .'/'. $this->blog->id;
         if (!is_dir($templateDirectory)) {
             $this->response->redirect('/cms/settings/template/' . $this->blog->id, 'Template not found', 'error');
