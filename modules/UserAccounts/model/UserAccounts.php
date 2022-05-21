@@ -104,6 +104,10 @@ class UserAccounts extends RBFactory
      */
     public function getByIds($userIDs)
     {
+        if (!count($userIDs)) {
+            return [];
+        }
+        
         return $this->get('*', ['id' => $userIDs]);
     }
 
