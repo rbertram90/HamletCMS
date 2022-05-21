@@ -441,7 +441,7 @@ class HamletCMS
         foreach (self::$modules as $module) {
             $folder = $module->core ? SERVER_MODULES_PATH : SERVER_ADDONS_PATH . '/modules';
             if (file_exists("{$folder}/{$module->key}/routes.json")) {
-                $routes = JSONhelper::JSONFileToArray("/{$folder}/{$module->key}/routes.json");
+                $routes = JSONhelper::JSONFileToArray("{$folder}/{$module->key}/routes.json");
                 foreach ($routes as $route) {
                     if (array_key_exists($route['key'], $routes)) {
                         print 'WARNING: Duplicate route key "'. $route['key'] .'" in '. $module->key.PHP_EOL;
