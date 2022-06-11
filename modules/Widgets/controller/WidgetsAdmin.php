@@ -215,6 +215,9 @@ class WidgetsAdmin extends GenericController
         $templateConfig = JSONhelper::JSONFileToArray($templateConfigPath);
         if (array_key_exists('Zones', $templateConfig)) {
             $zones = $templateConfig['Zones'];
+
+            if(!array_key_exists('header', $zones)) $zones[] = 'header';
+            if(!array_key_exists('footer', $zones)) $zones[] = 'footer';
         }
         else {
             $zones = ['header', 'footer', 'rightpanel', 'leftpanel'];

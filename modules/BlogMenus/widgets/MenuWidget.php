@@ -9,6 +9,7 @@ class MenuWidget extends AbstractWidget
 {
     public $menu;
     public $orientation;
+    public $heading;
     
     public function render()
     {   

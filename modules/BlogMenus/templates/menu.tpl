@@ -1,3 +1,7 @@
+{if $heading}
+    <h3>{$heading}</h3>
+{/if}
+
 <div class="ui {$orientation} {$colour} menu">
     {foreach $menu->items() as $link}
         {if $link->new_window}
