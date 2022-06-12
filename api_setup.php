@@ -74,6 +74,8 @@ use rbwebdesigns\core\Request;
         }
     }
 
+    HamletCMS::$blogID = $blogID;
+
     $controller = new $route['controller']();
     $action = $route['action'];
     $controller->$action();

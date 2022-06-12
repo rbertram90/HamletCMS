@@ -47,5 +47,19 @@
         "permissions": [],
         "controller": "\\HamletCMS\\Files\\controller\\FileSettings",
         "action": "settings"
+    },
+    {
+        "key": "files.addsize",
+        "path": "/cms/files/addsize/{BLOG_ID}",
+        "permissions": [],
+        "controller": "\\HamletCMS\\Files\\controller\\FileSettings",
+        "action": "addSize"
+    },
+    {
+        "key": "files.removesize",
+        "path": "/api/files/removesize",
+        "permissions": [],
+        "controller": "\\HamletCMS\\Files\\controller\\FileSettings",
+        "action": "removeSize"
     }
 ]

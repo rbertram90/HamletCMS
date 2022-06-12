@@ -30,13 +30,10 @@
                         <div class="content">
                             <div class="center">
                                 <form action="/cms/files/delete/{$blog->id}/{$image.file}">
-                                    <a href="{$blog->resourcePath()}/images/{$image.name}" class="ui tiny inverted button" target="_blank" title="Open original">O</a>
-                                    <a href="{$blog->resourcePath()}/images/xl/{$image.name}" class="ui tiny orange inverted button" target="_blank" title="Extra large">XL</a>
-                                    <a href="{$blog->resourcePath()}/images/l/{$image.name}" class="ui tiny yellow inverted button" target="_blank" title="Large">L</a>
-                                    <a href="{$blog->resourcePath()}/images/m/{$image.name}" class="ui tiny olive inverted button" target="_blank" title="Medium">M</a>
-                                    <a href="{$blog->resourcePath()}/images/s/{$image.name}" class="ui tiny blue inverted button" target="_blank" title="Small">S</a>
-                                    <a href="{$blog->resourcePath()}/images/xs/{$image.name}" class="ui tiny violet inverted button" target="_blank" title="Extra small">XS</a>
-                                    <a href="{$blog->resourcePath()}/images/sq/{$image.name}" class="ui tiny purple inverted button" target="_blank" title="Square">SQ</a><br><br>
+                                    {foreach $imagesizes as $name => $size}
+                                        <a href="{$blog->resourcePath()}/images/{$name}/{$image.name}" class="ui tiny inverted button" target="_blank" title="{$name}">{$name}</a>
+                                    {/foreach}
+                                    <br><br>
                                     <button class="ui red inverted button" onclick="return confirm('Are you sure you want to delete this image?');" title="Delete image">Delete</button>
                                 </form>
                             </div>

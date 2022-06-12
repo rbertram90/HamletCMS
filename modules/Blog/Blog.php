@@ -140,7 +140,7 @@ class Blog
     }
     
     /**
-     * Change the config
+     * Replaces the values in the config recursively
      * 
      * @param mixed[] $newConfig
      */
@@ -150,6 +150,20 @@ class Blog
             $newConfig = array_replace_recursive($config, $newConfig);
         }
 
+        $json = JSONhelper::arrayToJSON($newConfig);
+        $save = file_put_contents(SERVER_PATH_BLOGS . "/{$this->id}/config.json", $json);
+        return $save !== false;
+    }
+
+    /**
+     * Hard overwrite of the config.json file for the blog (allows removal of things)
+     * 
+     * @todo maybe something more friendly to remove items?
+     * 
+     * @param mixed[] $newConfig
+     */
+    public function overwriteConfig($newConfig)
+    {
         $json = JSONhelper::arrayToJSON($newConfig);
         $save = file_put_contents(SERVER_PATH_BLOGS . "/{$this->id}/config.json", $json);
         return $save !== false;

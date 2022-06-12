@@ -25,7 +25,7 @@ class Files extends GenericController
     /**
      * Get the size in bytes of a folder
      */
-    private function getDirectorySize($path)
+    protected function getDirectorySize($path)
     {
         $bytestotal = 0;
         $path = realpath($path);
@@ -84,14 +84,21 @@ class Files extends GenericController
                         'name' => $filename,
                         'size' => number_format(filesize($imagesDirectory.'/'.$filename) / 1000, 2),
                         'date' => date("F d Y", filemtime($imagesDirectory.'/'.$filename)),
+                        'sort' => filemtime($imagesDirectory.'/'.$filename),
                         'file' => str_replace('.', '_', $filename)
                     ];
                 }
             }
         }
         HamletCMS::$activeMenuLink = '/cms/files/manage/'. $blog->id;
+
+        usort($images, function ($a, $b) {
+            return $a['sort'] < $b['sort'];
+        });
         
         $response->setVar('blog', $blog);
+        $blogConfig = $blog->config();
+        $response->setVar('imagesizes', $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes());
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
@@ -133,14 +140,14 @@ class Files extends GenericController
         // Run delete
         unlink($imagesDirectory .'/'. $filename);
 
+        $blogConfig = $blog->config();
+        $imageSizes = $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes();
+
         // Delete resized images
-        if (file_exists("{$imagesDirectory}/xl/{$filename}")) unlink("{$imagesDirectory}/xl/{$filename}");
-        if (file_exists("{$imagesDirectory}/l/{$filename}")) unlink("{$imagesDirectory}/l/{$filename}");
-        if (file_exists("{$imagesDirectory}/m/{$filename}")) unlink("{$imagesDirectory}/m/{$filename}");
-        if (file_exists("{$imagesDirectory}/s/{$filename}")) unlink("{$imagesDirectory}/s/{$filename}");
-        if (file_exists("{$imagesDirectory}/xs/{$filename}")) unlink("{$imagesDirectory}/xs/{$filename}");
-        if (file_exists("{$imagesDirectory}/sq/{$filename}")) unlink("{$imagesDirectory}/sq/{$filename}");
-        
+        foreach ($imageSizes as $name => $size) {
+            if (file_exists("{$imagesDirectory}/{$name}/{$filename}")) unlink("{$imagesDirectory}/{$name}/{$filename}");
+        }
+                
         $this->response->redirect('/cms/files/manage/'. $blog->id, 'File deleted', 'success');
     }
 
@@ -198,12 +205,9 @@ class Files extends GenericController
             $sizes = $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes();
 
             // Create thumbnails
-            $upload->createThumbnail($imageDirectory . '/xl', null, $sizes['xl']['w'], $sizes['xl']['h']);
-            $upload->createThumbnail($imageDirectory . '/l', null, $sizes['l']['w'], $sizes['l']['h']);
-            $upload->createThumbnail($imageDirectory . '/m', null, $sizes['m']['w'], $sizes['m']['h']);
-            $upload->createThumbnail($imageDirectory . '/s', null, $sizes['s']['w'], $sizes['s']['h']);
-            $upload->createThumbnail($imageDirectory . '/xs', null, $sizes['xs']['w'], $sizes['xs']['h']);
-            $upload->createThumbnail($imageDirectory . '/sq', null, $sizes['sq']['w'], $sizes['sq']['h']);
+            foreach ($sizes as $name => $size) {
+                $upload->createThumbnail($imageDirectory . '/' . $name, null, $size['w'], $size['h']);
+            }
         }
         catch (\Exception $e) {
             die($e->getMessage());
@@ -268,7 +272,8 @@ class Files extends GenericController
     /**
      * Handles /cms/files/existing/<blogid>
      */
-    public function chooseExisting(&$request, &$response) {
+    public function chooseExisting(&$request, &$response)
+    {
         $imagesHTML = "";
         $path = SERVER_PATH_BLOGS . "/{$this->blog->id}/images";
 
@@ -277,7 +282,7 @@ class Files extends GenericController
                 while (false !== ($file = readdir($handle))) {
                     $ext = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
                     if($ext == 'JPG' || $ext == 'PNG' || $ext == 'GIF' || $ext == 'JPEG') {
-                        $imagesHTML .= '<img src="'. $this->blog->resourcePath() .'/images/sq/'. $file .'" height="100" data-file="'. $file .'" width="" class="selectableimage">';
+                        $imagesHTML .= '<img src="'. $this->blog->resourcePath() .'/images/square/'. $file .'" height="100" data-file="'. $file .'" width="" class="selectableimage">';
                     }
                 }
                 closedir($handle);

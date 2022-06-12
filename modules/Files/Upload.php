@@ -38,12 +38,9 @@ class Upload {
         $upload = new ImageUpload(['new_path' => $path, 'type' => 'image/' . $ext]);
 
         // Create thumbnails
-        $upload->createThumbnail($imageDirectory . '/xl', null, $sizes['xl']['w'], $sizes['xl']['h']);
-        $upload->createThumbnail($imageDirectory . '/l', null, $sizes['l']['w'], $sizes['l']['h']);
-        $upload->createThumbnail($imageDirectory . '/m', null, $sizes['m']['w'], $sizes['m']['h']);
-        $upload->createThumbnail($imageDirectory . '/s', null, $sizes['s']['w'], $sizes['s']['h']);
-        $upload->createThumbnail($imageDirectory . '/xs', null, $sizes['xs']['w'], $sizes['xs']['h']);
-        $upload->createThumbnail($imageDirectory . '/sq', null, $sizes['sq']['w'], $sizes['sq']['h']);
+        foreach ($sizes as $name => $size) {
+            $upload->createThumbnail($imageDirectory . '/' . $name, null, $size['w'], $size['h']);
+        }
 
         return $newFileName;
     }

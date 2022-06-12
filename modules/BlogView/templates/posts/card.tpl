@@ -1,7 +1,7 @@
 <div class="post ui card">
     {if $post->teaser_image}
         <a class="image" href="{$blog->relativePath()}/posts/{$post->link}">
-            <img src="{$blog->resourcePath()}/images/sq/{$post->teaser_image}">
+            <img src="{$blog->resourcePath()}/images/square/{$post->teaser_image}">
         </a>
     {/if}
     <div class="content">
