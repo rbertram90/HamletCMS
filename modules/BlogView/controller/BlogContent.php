@@ -507,7 +507,8 @@ class BlogContent extends GenericController
         $postConfig = $this->getPostListerConfig();
         $this->response->setVar('postConfig', $postConfig);
         $postsperpage = $postConfig['postsperpage'] ?? 5;
-        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag, $postsperpage, $pageNum);
+        $op = $this->request->getString('op') ?: 'or';
+        $postlist = $this->modelPosts->getBlogPostsByTag($this->blogID, $tag, $postsperpage, $pageNum, $op);
 
         $output = "";
         foreach ($postlist['posts'] as $post) {
@@ -519,11 +520,13 @@ class BlogContent extends GenericController
         $this->response->setVar('currentPage', $pageNum);
         $this->response->setVar('totalnumposts', $postlist['total']);
         $this->response->setVar('pagecount', ceil($postlist['total'] / $postsperpage));
+        $this->response->setVar('op', $op);
 
         // Set Page Title
         $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('tagName', $tag);
+        $this->response->setVar('tags', explode(',', $tag));
         $this->response->setVar('posts', $output);
         $this->response->setVar('blog', $this->blog);
         $this->response->write('posts/postsbytag.tpl', 'BlogView');

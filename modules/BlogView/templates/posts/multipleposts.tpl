@@ -25,6 +25,8 @@
     <div class="ui {$postConfig.parentclasslist} items">{$posts}</div>
 {/if}
 
+<div class="ui hidden divider"></div>
+
 {if $loadtype == 'loadmore'}
     <button class="loadmoreposts ui button">Load more</button>
     <script>
@@ -44,7 +46,7 @@
             });
         });
     </script>
-{else}
+{elseif strlen($posts) > 0}
     <div class="ui pagination menu">
         {if $currentPage > 1}
             <a href="?s={$currentPage - 1}" class="item"><i class="left angle icon"></i></a>

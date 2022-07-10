@@ -563,7 +563,7 @@ class Posts extends RBFactory
      * @param <int> $blogid - blog to get counts
      * @return <array> of tuples - array[tagname,count]
      */
-    public function countAllTagsByBlog($blogid, $sortby='text')
+    public function countAllTagsByBlog($blogid, $sortby='text', $count=0, $min=1)
     {
         $posts = $this->getAllPostsOnBlog($blogid);
         $res = array();
@@ -573,7 +573,7 @@ class Posts extends RBFactory
             if (count($tags) === 0) continue;
             
             foreach ($tags as $tag) {
-                $tag = trim($tag);
+                $tag = self::createSafeTag($tag);
                 
                 if (strlen($tag) === 0) continue;
 
@@ -592,6 +592,12 @@ class Posts extends RBFactory
                 }
             }
         }
+
+        if ($min > 1) {
+            $res = array_filter($res, function($value) use ($min) {
+                return $value['count'] >= $min;
+            });
+        }
         
         if ($sortby == 'count') {
             sksort($res, $sortby, false);
@@ -599,6 +605,11 @@ class Posts extends RBFactory
         else {
             sksort($res, $sortby, true);
         }
+
+        if ($count > 0 && count($res) > $count) {
+            $res = array_slice($res, 0, $count);
+        }
+
         return $res;
     }
 
@@ -658,7 +669,7 @@ class Posts extends RBFactory
      *
      * @return array
      */
-    public function getBlogPostsByTag($blogid, $ptag, $limit=-1, $page=0)
+    public function getBlogPostsByTag($blogid, $ptag, $limit=-1, $page=0, $op='or')
     {
         $posts = $this->getAllPostsOnBlog($blogid);
         $res = [];
@@ -666,20 +677,47 @@ class Posts extends RBFactory
         $offset = ($page-1) * $limit;
         $skipped = 0;
         $total = 0;
+
+        $ptags = explode(',', $ptag);
+
+        array_walk($ptags, function(&$value, $key) {
+            $value = strtolower(self::createSafeTag($value));
+        });
         
         // Loop through all tags in all posts
         foreach ($posts as $post) {
             $tags = explode(",", $post->tags);
+
+            array_walk($tags, function(&$value, $key) {
+                $value = strtolower(self::createSafeTag($value));
+            });
+
             $hasTag = false;
 
-            if (count($tags) == 0) {
+            if (count($tags) === 0) {
                 continue;
             }
             
-            foreach ($tags as $tag) {
-                if ($tag === self::createSafeTag($ptag)) {
-                    $hasTag = true;
-                    break;
+            if (count($ptags) === 1) {
+                $hasTag = in_array($ptags[0], $tags);
+            }
+            elseif ($op === 'and') {
+                // Must contain ALL tags
+                $hasTag = true;
+                foreach ($ptags as $tag) {
+                    if (!in_array($tag, $tags)) {
+                        $hasTag = false;
+                        break;
+                    }
+                }
+            }
+            else {
+                // Must contain ANY tag
+                foreach ($ptags as $tag) {
+                    if (in_array($tag, $tags)) {
+                        $hasTag = true;
+                        break;
+                    }
                 }
             }
 

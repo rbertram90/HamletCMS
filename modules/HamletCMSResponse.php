@@ -33,6 +33,13 @@ class HamletCMSResponse extends Response
         $this->smarty->setTemplateDir($cacheDirectories);
 
         $this->smarty->setCacheDir($cacheDir); // not sure this is taking effect? need one for each key?
+
+        $this->smarty->registerPlugin('modifier', 'except', function ($array, $valueToRemove) {
+            if (($key = array_search($valueToRemove, $array)) !== FALSE) {
+                unset($array[$key]);
+            }
+            return implode(',', $array);
+        });
     }
 
     /**

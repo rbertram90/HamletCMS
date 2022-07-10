@@ -17,9 +17,20 @@ class TagList extends AbstractWidget
 
     public function render()
     {
-        $model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
+        /** @var \HamletCMS\BlogPosts\model\Posts */
+        $model = HamletCMS::model('posts');
 
-        $this->response->setVar('tags', $model->countAllTagsByBlog($this->blog->id, $this->sort));
+        $refererPath = parse_url($_SERVER['HTTP_REFERER'])['path'];
+        parse_str(parse_url($_SERVER['HTTP_REFERER'])['query'], $refererQuery);
+
+        if (($start = strpos($refererPath, '/tags/')) !== false) {
+            $currentTags = substr($refererPath, $start + 6);
+            $this->response->setVar('currentTagsList', explode(',', strtolower($currentTags)));
+            $this->response->setVar('currentTags', $currentTags);
+            $this->response->setVar('op', $refererQuery['op'] ?? 'or');
+        }
+
+        $this->response->setVar('tags', $model->countAllTagsByBlog($this->blog->id, $this->sort, $this->numtoshow, $this->lowerlimit));
         $this->response->write('widgets/tagsList.tpl', 'BlogPosts');
     }
 
