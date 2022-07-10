@@ -15,14 +15,14 @@
  
 {if isset($postConfig)}
     {if $postConfig.listtype == 'cards'}
-        <div class="ui {$postConfig.parentclasslist} cards">{$posts}</div>
+        <div class="ui {$postConfig.parentclasslist} cards posts-column-inner">{$posts}</div>
     {elseif $postConfig.listtype == 'none'}
         {$posts}
     {else}
-        <div class="ui {$postConfig.parentclasslist} items">{$posts}</div>
+        <div class="ui {$postConfig.parentclasslist} items posts-column-inner">{$posts}</div>
     {/if}
 {else}
-    <div class="ui {$postConfig.parentclasslist} items">{$posts}</div>
+    <div class="ui {$postConfig.parentclasslist} items posts-column-inner">{$posts}</div>
 {/if}
 
 <div class="ui hidden divider"></div>
@@ -35,8 +35,8 @@
             currentPage++;
             $(this).prop('disabled', true).addClass('loading');
             $.get('{$blog->relativePath()}/posts/loadmore?page=' + currentPage, function(data) {
-                if ($('.column.posts .ui').length > 0) {
-                    $elemt = $('.column.posts > div')
+                if ($('.column.posts .posts-column-inner').length > 0) {
+                    $elemt = $('.column.posts .posts-column-inner')
                 }
                 else {
                     $elemt = $('.column.posts');
