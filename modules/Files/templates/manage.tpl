@@ -39,7 +39,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="{$blog->resourcePath()}/images/m/{$image.name}">
+                    <img src="{$blog->resourcePath()}/images/{$defaultimagesize}/{$image.name}">
                 </div>
                 <div class="content">
                     <div class="header">{$image.name}</div>

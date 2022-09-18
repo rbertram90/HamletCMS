@@ -63,7 +63,7 @@ class FileSettings extends GenericController
         $imageSizes = $fileConfig['imagestyles'];
 
         // Process other thumbnail sizes
-        foreach ($imageSizes as $imageSize) {
+        foreach ($imageSizes as $imageSize => $dimentions) {
             $width = $this->request->getInt($imageSize .'_image_width');
             $height = $this->request->getInt($imageSize .'_image_height');
 
@@ -71,7 +71,7 @@ class FileSettings extends GenericController
             $validHeight = is_int($height) && $height > 0;
 
             // Have the values changed?
-            if ($validWidth && $validHeight && ($imageSizes[$imageSize]['w'] != $width || $imageSizes[$imageSize]['h'] != $height)) {
+            if ($validWidth && $validHeight && ($dimentions['w'] != $width || $dimentions['h'] != $height)) {
                 $imageSizes[$imageSize] = ['w' => $width, 'h' => $height];
 
                 // Re-create the thumbnails for this size
@@ -86,6 +86,7 @@ class FileSettings extends GenericController
 
         $config = ['files' => ['imagestyles' => $imageSizes, 'defaultsize' => $defaultSize]];
         $this->blog->updateConfig($config);
+
         $this->response->redirect('/cms/files/settings/'. $this->blog->id, 'File settings updated', 'success');
     }
 

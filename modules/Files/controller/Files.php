@@ -99,6 +99,7 @@ class Files extends GenericController
         $response->setVar('blog', $blog);
         $blogConfig = $blog->config();
         $response->setVar('imagesizes', $blogConfig['files']['imagestyles'] ?? FileSettings::getDefaultImageSizes());
+        $response->setVar('defaultimagesize', $blogConfig['files']['defaultsize'] ?? 'square');
         $response->setVar('foldersize', number_format($this->getDirectorySize($imagesDirectory) / 1000000, 2));
         $response->setVar('images', $images);
 
