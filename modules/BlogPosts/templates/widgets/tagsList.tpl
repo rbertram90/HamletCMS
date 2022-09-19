@@ -14,7 +14,7 @@
             
             {if $display == 'list'}
                 <div class="item">
-                    <a href="{$blog->relativePath()}/tags/{$slug}?op={$op}">
+                    <a href="{$blog->relativePath()}/tags/{$slug}{if isset($op)}?op={$op}{/if}">
                         {if isset($currentTagsList) && in_array($tag.slug, $currentTagsList)}
                             <strong>{$tag.text}</strong>
                         {else}
@@ -23,7 +23,7 @@
                     </a>
                 </div>
             {else}
-                <a href="{$blog->relativePath()}/tags/{$slug}?op={$op}" class="ui label{if isset($currentTagsList) && in_array($tag.slug, $currentTagsList)} green{/if}">
+                <a href="{$blog->relativePath()}/tags/{$slug}{if isset($op)}?op={$op}{/if}" class="ui label{if isset($currentTagsList) && in_array($tag.slug, $currentTagsList)} green{/if}">
                     {$tag.text}
                     <div class="detail">{$tag.count}</div>
                 </a>

@@ -20,8 +20,10 @@ class TagList extends AbstractWidget
         /** @var \HamletCMS\BlogPosts\model\Posts */
         $model = HamletCMS::model('posts');
 
-        $refererPath = parse_url($_SERVER['HTTP_REFERER'])['path'];
-        parse_str(parse_url($_SERVER['HTTP_REFERER'])['query'], $refererQuery);
+        $refererUrl = parse_url($_SERVER['HTTP_REFERER']);
+
+        $refererPath = ($refererUrl)['path'];
+        parse_str($refererUrl['query'] ?? "", $refererQuery);
 
         if (($start = strpos($refererPath, '/tags/')) !== false) {
             $currentTags = substr($refererPath, $start + 6);
