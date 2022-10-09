@@ -455,6 +455,7 @@ class BlogContent extends GenericController
         if ($currentUser = HamletCMS::session()->currentUser) {
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
+        $this->response->setVar('userIsContributor', $isContributor);
 
         $postConfig = $this->getPostListerConfig();
         $this->response->setVar('postConfig', $postConfig);
@@ -481,7 +482,6 @@ class BlogContent extends GenericController
 
         // Set Page Title
         $this->response->setTitle("Posts created by {$authorName} - {$this->blog->name}");
-        $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('loadtype', $postConfig['loadtype']);
         $this->response->setVar('authorName', $author->name ?? '');
         $this->response->setVar('posts', $output);
@@ -503,6 +503,7 @@ class BlogContent extends GenericController
         if ($currentUser = HamletCMS::session()->currentUser) {
             $isContributor = $this->modelContributors->isBlogContributor($currentUser['id'], $this->blogID);
         }
+        $this->response->setVar('userIsContributor', $isContributor);
 
         $postConfig = $this->getPostListerConfig();
         $this->response->setVar('postConfig', $postConfig);
@@ -524,7 +525,6 @@ class BlogContent extends GenericController
 
         // Set Page Title
         $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
-        $this->response->setVar('userIsContributor', $isContributor);
         $this->response->setVar('loadtype', $postConfig['loadtype']);
         $this->response->setVar('tagName', $tag);
         $this->response->setVar('tags', explode(',', $tag));

@@ -538,7 +538,7 @@ class Posts extends RBFactory
     public static function createSafeTag($tag) {
         $validTag = trim($tag);
         // Remove anything that isn't alphanumeric or a space
-        $validTag = preg_replace("/[^A-Za-z0-9 ]/", '', $validTag);
+        $validTag = preg_replace("/[^A-Za-z0-9+ ]/", '', $validTag);
         $validTag = str_replace(" ", "+", $validTag); // why do this?
         return $validTag;
     }
