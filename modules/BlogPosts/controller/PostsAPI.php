@@ -279,7 +279,7 @@ class PostsAPI extends GenericController
             return;
         };
 
-        $blogID = $this->request->get('blogID');
+        $blogID = $this->request->getInt('blogID');
         HamletCMS::$blogID = $blogID;
         $userID = HamletCMS::session()->currentUser['id'];
         $postIDs = $this->request->get('posts', []);
