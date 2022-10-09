@@ -1,7 +1,7 @@
 {
     "name": "Default blue",
     "description": "Standard clean template, well tested, a good starting point to make your own customisations.",
-    "thumbnail": "/images/template_screenshots/defaultblue.png",
+    "thumbnail": "/hamlet/images/template_screenshots/defaultblue.png",
     "version": "0.1",
     "author": "Ricky <ricky@rbwebdesigns.co.uk>"
 }

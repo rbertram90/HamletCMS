@@ -1,7 +1,7 @@
 {
     "name": "DarkMode",
     "description": "Turn the lights off with this dark blog theme!",
-    "thumbnail": "/images/template_screenshots/darktheme.png",
+    "thumbnail": "/hamlet/images/template_screenshots/darktheme.png",
     "version": "0.1",
     "author": "Ricky Bertram <ricky@rbwebdesigns.co.uk>"
 }

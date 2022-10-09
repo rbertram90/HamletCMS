@@ -1,7 +1,7 @@
 {
     "name": "Hamletcraft theme",
     "description": "Based of a popular wordpress theme.",
-    "thumbnail": "/images/template_screenshots/hamletcraft.png",
+    "thumbnail": "/hamlet/images/template_screenshots/hamletcraft.png",
     "version": "0.1",
     "author": "Ricky <ricky@rbwebdesigns.co.uk>"
 }
