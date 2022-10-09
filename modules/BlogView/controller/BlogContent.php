@@ -525,6 +525,7 @@ class BlogContent extends GenericController
         // Set Page Title
         $this->response->setTitle("Posts tagged with {$tag} - {$this->blog->name}");
         $this->response->setVar('userIsContributor', $isContributor);
+        $this->response->setVar('loadtype', $postConfig['loadtype']);
         $this->response->setVar('tagName', $tag);
         $this->response->setVar('tags', explode(',', $tag));
         $this->response->setVar('posts', $output);
