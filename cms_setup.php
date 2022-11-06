@@ -137,8 +137,11 @@ use HamletCMS\Menu;
   Generate side menu
 ****************************************************************/
 
-    $sideMenu = new Menu('cms_main_actions');
-    HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
+    if (! HamletCMS::$hideActionsMenu) {
+        $sideMenu = new Menu('cms_main_actions');
+        HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
+        $response->setVar('page_side_menu', $sideMenu);
+    }
 
     if ($user['admin'] == 1) {
         $adminMenu = new Menu('cms_admin_actions');
@@ -148,8 +151,6 @@ use HamletCMS\Menu;
 
     $userMenu = new Menu('cms_user_actions');
     HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_user_actions', 'menu' => &$userMenu]);
-
-    $response->setVar('page_side_menu', $sideMenu);
     $response->setVar('page_user_menu', $userMenu);
 
     
@@ -163,5 +164,7 @@ use HamletCMS\Menu;
 
     $blogsModel = HamletCMS::model('\\HamletCMS\\Blog\\model\\Blogs');
     $response->setVar('blogs', $blogsModel->getBlogsByUser($user['id']));
+
+    $response->setVar('hideActionsMenu', HamletCMS::$hideActionsMenu);
     
     $response->writeTemplate('template.tpl');
