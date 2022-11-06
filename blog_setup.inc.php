@@ -22,7 +22,7 @@ use Athens\CSRF;
 
 // Setup for 'Plugins' Installed using composer
 if (!class_exists("\Composer\Autoload\ClassLoader")) {
-  require_once SERVER_ROOT . '/app/vendor/autoload.php';
+  require_once SERVER_ROOT . '/vendor/autoload.php';
 }
 
 // Setup - Stage 1
