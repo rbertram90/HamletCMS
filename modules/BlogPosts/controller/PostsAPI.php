@@ -301,8 +301,8 @@ class PostsAPI extends GenericController
         
         // Check all posts belong to this blog
         foreach ($posts as $post) {
-            if ($post->blog_id !== $blogID) {
-                $this->response->setBody('{ "success": false, "errorMessage": "Parameter mismatch" }');
+            if ($post->blog_id != $blogID) {
+                $this->response->setBody('{ "success": false, "errorMessage": "Parameter mismatch", "debug": "' . $blogID . ' = ' . $post->blog_id . '" }');
                 $this->response->code(400);
                 return;
             }

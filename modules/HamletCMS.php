@@ -54,6 +54,9 @@ class HamletCMS
     /** @var boolean  flag for if the user a contributor to the active blog */
     public static $userGroup = false;
 
+    /** @var boolean  flag to determine if the actions menu should not be generated */
+    public static $hideActionsMenu = false;
+
     /**
      * @return array
      */

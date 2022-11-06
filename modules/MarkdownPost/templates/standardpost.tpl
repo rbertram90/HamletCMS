@@ -13,8 +13,12 @@
     {$mode = 'create'}
     {$postdate = date('d/m/Y H:i')}
 {/if}
-
-<div class="ui grid">
+<style>
+.ui.grid.write-post {
+    margin-top: 0;
+}
+</style>
+<div class="ui grid write-post">
     <div class="form_status"></div>
     {include 'edit-form/autosave.tpl'}
 
@@ -22,8 +26,6 @@
         
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
-
-            {include 'edit-form/teaser-summary.tpl'}
 
             <div class="field">
                 <label for="post_content">Content</label>
@@ -33,11 +35,9 @@
                 <button type="button" id="dark_mode_toggle" class="ui icon button" title="Toggle dark mode" data-no-spinner="true">
                     <i class="moon icon"></i>
                 </button>
-                <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{if isset($post)}{$post->content}{/if}</textarea>
+                <textarea name="post_content" id="post_content" style="height:375px; margin-top:1rem; max-height:none;" class="post-data-field" data-key="content">{if isset($post)}{$post->content}{/if}</textarea>
                 <p style="font-size:80%;"><a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
             </div>
-            
-            {include 'edit-form/tags.tpl'}
             
             <input type="hidden" name="post_type" id="post_type" value="standard" class="post-data-field" data-key="type">
 
@@ -49,6 +49,10 @@
             {include 'edit-form/post-date.tpl'}
 
             {include 'edit-form/url.tpl'}
+
+            {include 'edit-form/teaser-summary.tpl'}
+
+            {include 'edit-form/tags.tpl'}
  
             {include 'edit-form/custom-fields.tpl'}
 
