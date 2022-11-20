@@ -2,16 +2,16 @@
 
 namespace HamletCMS\BlogMenus\forms;
 
-use rbwebdesigns\core\Form;
+use rbwebdesigns\core\form\Form;
 use HamletCMS\HamletCMS;
 
 class ConfigureMenuWidget extends Form
 {
-    protected $attributes = [
+    protected array $attributes = [
         "class" => "ui form"
     ];
 
-    protected $fields = [
+    protected array $fields = [
         "widget[menu]" => [
             "type"  => "dropdown",
             "options" => [],
@@ -68,6 +68,5 @@ class ConfigureMenuWidget extends Form
         }
     }
 
-    public function validate() {}
-    public function submit() {}
+    public function saveData() {}
 }

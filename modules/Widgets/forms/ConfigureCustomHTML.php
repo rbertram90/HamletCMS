@@ -2,15 +2,15 @@
 
 namespace HamletCMS\Widgets\forms;
 
-use rbwebdesigns\core\Form;
+use rbwebdesigns\core\form\Form;
 
 class ConfigureCustomHTML extends Form
 {
-    protected $attributes = [
+    protected array $attributes = [
         "class" => "ui form"
     ];
 
-    protected $fields = [
+    protected array $fields = [
         "widget[heading]" => [
             "type"    => "text",
             "label"   => "Heading",
@@ -29,13 +29,5 @@ class ConfigureCustomHTML extends Form
         ]
     ];
 
-    public function validate()
-    {
-
-    }
-
-    public function submit()
-    {
-
-    }
+    public function saveData() {}
 }

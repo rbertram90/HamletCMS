@@ -2,15 +2,15 @@
 
 namespace HamletCMS\Contributors\forms;
 
-use rbwebdesigns\core\Form;
+use rbwebdesigns\core\form\Form;
 
 class ConfigureContributorsList extends Form
 {
-    protected $attributes = [
+    protected array $attributes = [
         "class" => "ui form"
     ];
 
-    protected $fields = [
+    protected array $fields = [
         "widget[heading]" => [
             "type"  => "text",
             "label" => "Heading",
@@ -37,6 +37,5 @@ class ConfigureContributorsList extends Form
         ]
     ];
 
-    public function validate() {}
-    public function submit() {}
+    public function saveData() {}
 }
