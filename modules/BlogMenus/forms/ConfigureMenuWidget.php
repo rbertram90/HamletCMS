@@ -12,6 +12,9 @@ class ConfigureMenuWidget extends Form
     ];
 
     protected array $fields = [
+        "widget[heading]" => [
+            "label" => "Heading",
+        ],
         "widget[menu]" => [
             "type"  => "dropdown",
             "options" => [],

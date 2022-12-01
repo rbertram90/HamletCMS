@@ -37,7 +37,6 @@ class WidgetsAdmin extends GenericController
      */
     protected function setup()
     {
-        $currentUser = HamletCMS::session()->currentUser;
         $this->blog = HamletCMS::getActiveBlog();
 
         $access = true;
@@ -54,7 +53,7 @@ class WidgetsAdmin extends GenericController
             $this->response->redirect('/', '403 Access Denied', 'error');
         }
 
-        HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
+        HamletCMS::$activeMenuLink = HamletCMS::route('settings.menu');
     }
 
     /**
@@ -69,6 +68,15 @@ class WidgetsAdmin extends GenericController
 
         $config = $this->getWidgetConfig($this->blog->id);
         $this->checkWidgetJSON($this->blog, $config);
+
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Widgets';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Widgets' => null,
+        ]);
 
         $this->response->setVar('widgetconfig', $config);
         $this->response->setVar('installedwidgets', $this->getInstalledWidgets());

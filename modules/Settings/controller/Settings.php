@@ -287,6 +287,14 @@ class Settings extends GenericController
             ]);
         }
 
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => "/cms/settings/menu/{$this->blog->id}",
+            'Template' => null
+        ]);
+        $this->response->headerIcon = 'sliders horizontal';
+        $this->response->headerText = $this->blog->name . ': Template settings';
+
         $this->response->setTitle('Template settings - '. $this->blog->name);
         $this->response->write('templateConfig.tpl', 'Settings');
     }

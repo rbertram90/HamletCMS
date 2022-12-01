@@ -1,16 +1,6 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", {$blog->name}, "/cms/settings/menu/{$blog->id}", 'Settings'), 'Comment settings')}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
-            {viewPageHeader('Comment settings', 'comments', {$blog->name})}
-        </div>
-    </div>
-    <div class="one column row">
-        <div class="column">
             <form method="POST" class="ui form" id="comments_settings_form">
                 <div class="field">
                     <label for="ace_edit_view">Comment template</label>

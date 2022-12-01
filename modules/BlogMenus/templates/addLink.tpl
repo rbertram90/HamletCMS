@@ -5,18 +5,6 @@
 {else}
     {$action = 'Add'}
 {/if}
-
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/settings/menu/{$blog->id}", "Settings", "/cms/menus/manage/{$blog->id}", "Menus", "/cms/menus/edit/{$blog->id}/{$menu->id}", "{$menu->name}"), "{$action} menu link")}
-        </div>
-    </div>
-    <div class="two column row">
-        <div class="column">
-            {viewPageHeader("{$action} menu link", 'sitemap', "{$menu->name}")}
-        </div>
-    </div>
-
     <div class="one column row">
         <div class="column">
             <form class="ui form" method="POST">

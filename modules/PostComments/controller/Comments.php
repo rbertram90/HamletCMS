@@ -228,6 +228,15 @@ class Comments extends GenericController
         $templatePath = file_exists($customTemplateFile) ? $customTemplateFile : $defaultTemplateFile;
         $commentTemplate = file_get_contents($templatePath);
 
+        $this->response->headerIcon = 'comments';
+        $this->response->headerText = $this->blog->name . ': Comment settings';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Comments' => null,
+        ]);
+
         $this->response->setVar('commentTemplate', $commentTemplate);
         $this->response->setVar('settings', $config);
         $this->response->addScript('/hamlet/resources/ace/ace.js');

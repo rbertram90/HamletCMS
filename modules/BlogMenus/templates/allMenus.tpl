@@ -1,19 +1,7 @@
 <div class="ui grid">
-    
     <div class="one column row">
         <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/settings/menu/{$blog->id}", "Settings"), 'Menus')}
-        </div>
-    </div>
-    
-    <div class="two column row">
-        <div class="column">
-            {viewPageHeader('Menus', 'sitemap', "{$blog->name}")}
-        </div>
-    </div>
-
-    <div class="one column row">
-        <div class="column">
+            <h2>Menus</h2>
             <div class="ui segments">
                 {foreach $menus as $menu}
                     <div class="ui clearing segment">

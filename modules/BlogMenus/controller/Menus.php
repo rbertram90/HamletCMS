@@ -26,6 +26,16 @@ class Menus extends GenericController
     public function listMenus()
     {
         $menus = $this->model('menus')->getMenusByBlog($this->blog);
+
+        $this->response->headerIcon = 'sitemap';
+        $this->response->headerText = $this->blog->name . ': Menus';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Menus' => null,
+        ]);
+
         $this->response->setTitle('Manage menus - ' . $this->blog->name);
         $this->response->setVar('menus', $menus);
         $this->response->write('allMenus.tpl', 'BlogMenus');
@@ -79,6 +89,16 @@ class Menus extends GenericController
         $menu = $this->requireMenuFromRequest();
 
         if ($this->request->method() == 'POST') return $this->saveMenu($menu);
+
+        $this->response->headerIcon = 'sitemap';
+        $this->response->headerText = $this->blog->name . ': Edit menu';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Menus' => HamletCMS::route('menus.manage'),
+            $menu->name => null,
+        ]);
 
         $this->response->setTitle('Manage menu items - '. $menu->name);
         $this->response->setVar('menu', $menu);
@@ -182,6 +202,17 @@ class Menus extends GenericController
 
         if ($this->request->method() == 'POST') return $this->processCreateLink($menu);
         
+        $this->response->headerIcon = 'sitemap';
+        $this->response->headerText = $this->blog->name . ': Add menu item';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Menus' => HamletCMS::route('menus.manage'),
+            $menu->name => HamletCMS::route('menus.editlinks', ['MENU_ID' => $menu->id]),
+            'Add menu item' => null,
+        ]);
+
         $this->response->setTitle('Add menu item - '. $menu->name);
         $this->response->setVar('menu', $menu);
         $postsModel = HamletCMS::model('posts');
@@ -231,11 +262,23 @@ class Menus extends GenericController
     public function editLink()
     {
         $link = $this->requireMenuLinkFromRequest();
+        $menu = $link->menu();
 
         if ($this->request->method() == 'POST') return $this->processUpdateLink($link);
         
+        $this->response->headerIcon = 'sitemap';
+        $this->response->headerText = $this->blog->name . ': Edit menu item';
+
+        $this->response->setBreadcrumbs([
+            $this->blog->name => $this->blog->url(),
+            'Settings' => HamletCMS::route('settings.menu'),
+            'Menus' => HamletCMS::route('menus.manage'),
+            $menu->name => HamletCMS::route('menus.editlinks', ['MENU_ID' => $menu->id]),
+            'Edit menu item' => null,
+        ]);
+
         $this->response->setTitle('Edit item - '. $link->text);
-        $this->response->setVar('menu', $link->menu());
+        $this->response->setVar('menu', $menu);
         $this->response->setVar('link', $link);
         $postsModel = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
         $this->response->setVar('tags', $postsModel->getAllTagsByBlog($this->blog->id));

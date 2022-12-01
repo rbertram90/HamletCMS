@@ -1,17 +1,4 @@
 <div class="ui grid">
-    
-    <div class="one column row">
-        <div class="column">
-            {viewCrumbtrail(array("/cms/blog/overview/{$blog->id}", "{$blog->name}", "/cms/settings/menu/{$blog->id}", "Settings", "/cms/menus/manage/{$blog->id}", "Menus"), "{$menu->name}")}
-        </div>
-    </div>
-    
-    <div class="two column row">
-        <div class="column">
-            {viewPageHeader('Menus', 'sitemap', "{$blog->name}")}
-        </div>
-    </div>
-
     <div class="one column row">
         <div class="column">
             <h2>Menu options</h2>
