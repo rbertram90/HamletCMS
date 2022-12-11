@@ -20,7 +20,7 @@ class TagList extends AbstractWidget
         /** @var \HamletCMS\BlogPosts\model\Posts */
         $model = HamletCMS::model('posts');
 
-        $refererUrl = parse_url($_SERVER['HTTP_REFERER']);
+        $refererUrl = parse_url($_SERVER['HTTP_REFERER'] ?? $this->referer);
 
         $refererPath = ($refererUrl)['path'];
         parse_str($refererUrl['query'] ?? "", $refererQuery);
