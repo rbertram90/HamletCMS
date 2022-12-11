@@ -22,6 +22,8 @@ abstract class AbstractWidget
     
     public $widget;
 
+    public $referer;
+
     public function __construct()
     {
         $this->request = HamletCMS::request();

@@ -49,12 +49,12 @@ class WidgetsView extends GenericController
                     "blogID" => $this->blog->id,
                     "section" => $section,
                     "widget" => $key,
-                    "postID" => is_null($currentPost) ? null : $currentPost->id
+                    "postID" => is_null($currentPost) ? null : $currentPost->id,
                 ];
                 $params = json_encode($params);
                 $widgets[$sectionlower].= "<script>
                     $('#{$id}').html('<img src=\"/hamlet/images/ajax-loader.gif\">');
-                    $.get('{$cmsDomain}/widgets/render', {$params}, function(response) {
+                    $.get('{$cmsDomain}/widgets/render', {...{$params}, ...{referer: window.location.href}}, function(response) {
                         $('#{$id}').html(response);
                     });
                 </script>";
@@ -73,6 +73,7 @@ class WidgetsView extends GenericController
         $blog = $this->request->getInt('blogID');
         $section = $this->request->getString('section');
         $widget = $this->request->getString('widget');
+        $referer = $this->request->getString('referer');
 
         HamletCMS::$blogID = $blog;
         $this->blog = HamletCMS::getActiveBlog();
@@ -106,6 +107,7 @@ class WidgetsView extends GenericController
 
         $widgetClass->section = $section;
         $widgetClass->widget = $widget;
+        $widgetClass->referer = $referer;
         $widgetClass->render();
 
         $this->request->isAjax = true;
