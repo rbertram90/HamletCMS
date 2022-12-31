@@ -60,7 +60,7 @@ class Module
      */
     public function dashboardCounts($args)
     {
-        $args['counts']['contributors'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
+        $args['counts']['Contributors'] = $this->model->getCount(['blog_id' => $args['blog']->id]);
     }
 
     public function runUnitTests($args) {

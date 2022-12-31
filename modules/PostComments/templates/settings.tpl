@@ -2,6 +2,16 @@
     <div class="one column row">
         <div class="column">
             <form method="POST" class="ui form" id="comments_settings_form">
+                <div class="inline field">
+                    <div class="ui toggle checkbox">
+                        <label for="comments_enabled">Comments enabled</label>
+                        <input type="checkbox" name="comments_enabled" id="comments_enabled"{if $settings.enabled !== 0} checked{/if}>
+                    </div>
+                    <script>
+                        $('.ui.checkbox').checkbox();
+                    </script>
+                </div>
+                <hr class="ui divider">
                 <div class="field">
                     <label for="ace_edit_view">Comment template</label>
                     <textarea id="ace_edit_view" name="ace_edit_view" rows="20" style="font-family: monospace;">{$commentTemplate}</textarea>

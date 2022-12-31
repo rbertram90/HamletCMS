@@ -2,6 +2,8 @@
 
 namespace HamletCMS\PostComments;
 
+use HamletCMS\Blog\Blog;
+use HamletCMS\BlogPosts\Post;
 use HamletCMS\HamletCMS;
 use HamletCMS\MenuLink;
 use HamletCMS\HamletCMSResponse;
@@ -83,7 +85,11 @@ class Module
      */
     public function dashboardCounts($args)
     {
-        $args['counts']['comments'] = HamletCMS::model('comments')->getCount(['blog_id' => $args['blog']->id]);
+        if (!$args['blog']->commentsEnabled()) {
+            return;
+        }
+
+        $args['counts']['Comments'] = HamletCMS::model('comments')->getCount(['blog_id' => $args['blog']->id]);
     }
 
     /**
@@ -91,6 +97,10 @@ class Module
      */
     public function dashboardPanels($args)
     {
+        if (!$args['blog']->commentsEnabled()) {
+            return;
+        }
+
         $tempResponse = new HamletCMSResponse();
         $tempResponse->setVar('blog', $args['blog']);
         $tempResponse->setVar('currentUser', HamletCMS::session()->currentUser);
@@ -103,7 +113,7 @@ class Module
      */
     public function runTemplate($args)
     {
-        if ($args['template'] == 'singlePost' && $args['post']->allowcomments) {
+        if ($args['template'] == 'singlePost' && $args['post']->allowComments()) {
             $args['post']->after[] = 'file:[PostComments]postcomments.tpl';
             $args['post']->after[] = 'file:[PostComments]newcommentform.tpl';
 
@@ -120,7 +130,10 @@ class Module
     }
 
     public function editPostForm($args) {
-        $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
+        $active = is_null($args['post']) ? $args['blog']->commentsEnabled() : $args['post']->commentsEnabled();
+        if ($active) {
+            $args['fields'][] = 'file:[PostComments]allow-comments.tpl';
+        }
     }
 
     /**
@@ -129,7 +142,6 @@ class Module
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
-
             $link = new MenuLink();
             $link->url = HamletCMS::route('comments.manage', [
                 'BLOG_ID' => $args['blog']->id
@@ -177,12 +189,20 @@ class Module
     /**
      * Extend the Post (model) class
      */
-    public function onPostConstruct($args) {
-        $args['functions']['getComments'] = function($post) {
+    public function onPostConstruct($args)
+    {
+        $args['functions']['getComments'] = function(Post $post) {
             return HamletCMS::model('comments')->getCommentsByPost($post->id, false);
         };
-        $args['functions']['commentsEnabled'] = function($post) {
-            return $post->allowComments;
+        $args['functions']['commentsEnabled'] = function(Post $post) {
+            return $post->blog()->commentsEnabled() && $post->allowComments;
+        };
+    }
+
+    public function onBlogConstruct($args)
+    {
+        $args['functions']['commentsEnabled'] = function(Blog $blog) {
+            return $blog->config()['comments']['enabled'] ?? 1;
         };
     }
 

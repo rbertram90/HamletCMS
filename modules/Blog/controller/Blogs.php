@@ -77,7 +77,7 @@ class Blogs extends GenericController
             $this->response->redirect('/cms', 'You do not contribute to this blog', 'error');
         }
 
-        // Dynamically get stats for dashboard
+        // Get top level statistics for dashboard
         $counts = [];
         HamletCMS::runHook('dashboardCounts', ['blog' => $blog, 'counts' => &$counts]);
         $this->response->setVar('counts', $counts);
@@ -85,6 +85,7 @@ class Blogs extends GenericController
         $panels = [];
         HamletCMS::runHook('dashboardPanels', ['blog' => $blog, 'panels' => &$panels]);
         $this->response->setVar('panels', $panels);
+        
         $this->response->setVar('blog', $blog);
         $this->response->setVar('posts', $this->model('posts')->getPostsByBlog($blogID, 1, 5, 1, 1));
         

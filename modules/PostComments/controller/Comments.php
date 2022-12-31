@@ -71,12 +71,14 @@ class Comments extends GenericController
         }
 
         $pageCount = ceil($total / $perPage);
+        $config = $this->blog->config()['comments'] ?? [];
 
         $this->model('comments')->getCommentsByBlog($this->blog->id);
 
         $this->response->setVar('current_page', $start);
         $this->response->setVar('page_count', $pageCount);
         $this->response->setVar('comment_count', $total);
+        $this->response->setVar('settings', $config);
 
         $this->response->setVar('comments', $comments);
         $this->response->setVar('filter', $filter);
@@ -221,7 +223,7 @@ class Comments extends GenericController
         HamletCMS::$activeMenuLink = '/cms/settings/menu/'. $this->blog->id;
 
         $config = $this->blog->config();
-        $config = array_key_exists('comments', $config) ? $config['comments'] : [];
+        $config = $config['comments'] ?? ['enabled' => 1];
         
         $customTemplateFile  = SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl';
         $defaultTemplateFile = SERVER_MODULES_PATH .'/PostComments/templates/defaultcomment.tpl';
@@ -252,9 +254,12 @@ class Comments extends GenericController
      */
     public function saveSettings()
     {
-        // Save settings here
         $template = $this->request->get('comment_template');
         $update = file_put_contents(SERVER_PATH_BLOGS .'/'. $this->blog->id .'/templates/comment.tpl', $template);
+
+        $this->blog->updateConfig(['comments' => [
+            'enabled' => $this->request->get('comments_enabled') === "on" ? 1 : 0
+        ]]);
 
         if ($update) {
             $this->response->routeRedirect('settings.comments', 'Settings saved', 'success');

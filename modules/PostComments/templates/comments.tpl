@@ -1,15 +1,24 @@
 {* Manage Comments *}
 
-    <div class="ui clearing segment">
-        <div class="ui buttons">
-            <a href="?filter=all" class="ui {if $filter == 'all'}teal{/if} button">All</a>
-            <a href="?filter=pending" class="ui {if $filter == 'pending'}teal{/if} button">Pending</a>
-            <a href="?filter=approved" class="ui {if $filter == 'approved'}teal{/if} button">Approved</a>
+{if !$blog->commentsEnabled()}
+    <div class="ui warning icon message">
+        <i class="info circle icon"></i>
+        <div class="content">
+            Comments have been disabled for this blog. <a href="/cms/settings/comments/{$blog->id}">Change settings</a>.
         </div>
+    </div>    
+{/if}
 
-        <a href="/cms/comments/deleteunapproved/{$blog->id}" class="ui red icon labeled right floated button"><i class="x icon"></i> Delete all pending</a>
-        <a href="/cms/comments/approveall/{$blog->id}" class="ui green icon labeled right floated button"><i class="check icon"></i> Approve all pending</a>
+<div class="ui clearing segment">
+    <div class="ui buttons">
+        <a href="?filter=all" class="ui {if $filter == 'all'}teal{/if} button">All</a>
+        <a href="?filter=pending" class="ui {if $filter == 'pending'}teal{/if} button">Pending</a>
+        <a href="?filter=approved" class="ui {if $filter == 'approved'}teal{/if} button">Approved</a>
     </div>
+
+    <a href="/cms/comments/deleteunapproved/{$blog->id}" class="ui red icon labeled right floated button"><i class="x icon"></i> Delete all pending</a>
+    <a href="/cms/comments/approveall/{$blog->id}" class="ui green icon labeled right floated button"><i class="check icon"></i> Approve all pending</a>
+</div>
 
 {if count($comments) > 0}
     <p>Found <strong>{$comment_count}</strong> matching comments</p>

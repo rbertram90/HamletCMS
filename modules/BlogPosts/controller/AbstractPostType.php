@@ -32,7 +32,7 @@ class AbstractPostType extends GenericController
         $extraFields = [];
         HamletCMS::runHook('editPostForm', [
             'blog' => $this->blog,
-            'post' => [],
+            'post' => null,
             'fields' => &$extraFields
         ]);
         $this->response->setVar('customSettingFields', $extraFields);

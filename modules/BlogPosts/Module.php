@@ -122,8 +122,8 @@ class Module
     {
         $modelPostViews = HamletCMS::model('\HamletCMS\BlogPosts\model\PostViews');
 
-        $args['counts']['posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
-        $args['counts']['totalviews'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);
+        $args['counts']['Posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
+        $args['counts']['Total views'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);
     }
 
 }

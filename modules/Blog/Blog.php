@@ -18,6 +18,8 @@ class Blog
     public $logo;
     public $icon;
 
+    protected $customFunctions = [];
+
     protected $contributors = null;
 
     /** @var \HamletCMS\Contributors\model\Contributors */
@@ -33,6 +35,22 @@ class Blog
     {
         $this->contributorsFactory = HamletCMS::model('contributors');
         $this->postsFactory = HamletCMS::model('posts');
+
+        // get callable functions from external modules
+        HamletCMS::runHook('onBlogConstruct', ['blog' => $this, 'functions' => &$this->customFunctions]);
+    }
+
+    /**
+     * Magic function for calling functions that have been added
+     * to the post model by custom modules.
+     */
+    public function __call($closure, $args)
+    {
+        if (array_key_exists($closure, $this->customFunctions)) {
+            array_unshift($args, $this);
+
+            return call_user_func_array($this->customFunctions[$closure], $args);
+        }
     }
 
     /**

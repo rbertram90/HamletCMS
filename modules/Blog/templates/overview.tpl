@@ -27,7 +27,7 @@
         <div class="column">
             <h3 class="ui header">Latest posts</h3>
             
-            {if $counts.posts > 0}
+            {if $counts.Posts > 0}
                 <div class="ui segments">
                 {foreach from=$posts item=post}
                     <div class="ui segment">
