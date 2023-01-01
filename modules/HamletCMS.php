@@ -58,6 +58,8 @@ class HamletCMS
     public static $hideActionsMenu = false;
 
     /**
+     * Application configuration parsed from json file.
+     * 
      * @return array
      */
     public static function config()

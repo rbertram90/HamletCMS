@@ -652,6 +652,7 @@ class BlogContent extends GenericController
         if (!$post) {
             $this->response->redirect($this->blog->url(), 'Cannot find this post', 'error');
         }
+        /** @var \HamletCMS\BlogPosts\Post $post */
 
         // Check access
         $isContributor = HamletCMS::$userGroup !== false;
@@ -666,7 +667,26 @@ class BlogContent extends GenericController
 
         $this->generatePostTemplate($post, null, 'full');
 
+        $summary = strip_tags($post->summary);
+        $summary = trim(preg_replace('/\s+/', ' ', $summary));
+
         $this->response->setTitle($post->title);
+        $this->response->setDescription($summary);
+
+        $this->response->addMeta('twitter:card', 'summary_large_image');
+        $this->response->addMeta('twitter:title', $post->title);
+        # $this->response->addMeta('twitter:site', '@twitter');
+        $this->response->addMeta('twitter:description', $summary);
+
+        $this->response->addMeta('og:type', 'website');
+        $this->response->addMeta('og:title', $post->title);
+        $this->response->addMeta('og:description', $summary);
+
+        if ($post->teaser_image) {
+            $image = $post->blog()->absoluteUrl() . '/images/' . $post->teaser_image;
+            $this->response->addMeta('twitter:image', $image);
+            $this->response->addMeta('og:image', $image);
+        }
 
         // $response->addScript('/hamlet/resources/ace/ace.js');
         // $response->setVar('mdContent', $mdContent);

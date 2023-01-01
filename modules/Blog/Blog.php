@@ -74,6 +74,20 @@ class Blog
     }
 
     /**
+     * Get the abolute URL for the blog, including the domain name.
+     */
+    public function absoluteUrl()
+    {
+        if (strlen($this->domain)) {
+            return $this->domain;
+        }
+        
+        $domain = HamletCMS::config()['environment']['canonical_domain'];
+
+        return "{$domain}/blogs/{$this->id}";
+    }
+
+    /**
      * Get the path to blogdata folder
      */
     public function resourcePath()

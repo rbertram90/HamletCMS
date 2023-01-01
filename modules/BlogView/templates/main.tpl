@@ -2,14 +2,18 @@
 <html>
 <head>
     <title>{$page_title} - powered by HamletCMS</title>
+    <meta name="description" content="{$page_description}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="generator" content="HamletCMS">
     <meta name="HandheldFriendly" content="true">
+    {$meta}
+    
     {if strlen($blog->icon)}
         <link rel="icon" type="image" href="{$blog->resourcePath()}/{$blog->icon}">
     {/if}
-    
+
     {$stylesheets}
     {$scripts}
     

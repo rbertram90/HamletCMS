@@ -82,6 +82,7 @@ class HamletCMSResponse extends Response
 
         $this->setVar('scripts', $this->prepareScripts());
         $this->setVar('stylesheets', $this->prepareStylesheets());
+        $this->setVar('meta', $this->prepareMeta());
         $this->setVar('body_content', $this->body);
         $this->setVar('current_user', $session->currentUser);
         $this->setVar('messages', $session->getAllMessages());
