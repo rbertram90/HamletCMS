@@ -18,14 +18,7 @@ class Module
         $post = $args['post'];
         if ($post->type !== 'video') return;
 
-        switch($post->videosource) {
-            case 'youtube':
-                $videoContent = '<iframe width="100%" style="max-width:560px;" height="315" src="//www.youtube.com/embed/'. $post->videoid .'" frameborder="0" allowfullscreen></iframe>';
-                break;
-            case 'vimeo':
-                $videoContent = '<iframe src="//player.vimeo.com/video/'. $post->videoid .'?title=0&amp;byline=0&amp;portrait=0&amp;color=fafafa" width="560" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                break;
-        }
+        $videoContent = '<div class="ui embed video-embed-' . $post->id . '" data-id="'. $post->videoid .'" data-source="' . $post->videosource . '"></div><script>$(\'.video-embed-' . $post->id . '\').embed();</script>';
 
         $args['post']->video = $videoContent;
 

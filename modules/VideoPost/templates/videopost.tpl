@@ -3,18 +3,22 @@
     {$formAction = "/cms/posts/edit/{$post->id}"}
     {$fieldTags = str_replace("+", " ", $post->tags)}
     {$submitLabel = 'Update'}
-    {$postdate = date('d/m/Y H:i', strtotime($post->timestamp))}
     {$mode = 'edit'}
+    {$postdate = date('d/m/Y H:i', strtotime($post->timestamp))}
 {else}
     {* This must be a new post *}
     {$formAction = "/cms/posts/create/{$blog->id}/video"}
     {$fieldTags = ''}
     {$submitLabel = 'Create'}
-    {$postdate = date('d/m/Y H:i')}
     {$mode = 'create'}
+    {$postdate = date('d/m/Y H:i')}
 {/if}
-
-<div class="ui grid">
+<style>
+.ui.grid.write-post {
+    margin-top: 0;
+}
+</style>
+<div class="ui grid write-post">
     <div class="form_status"></div>
     {include 'edit-form/autosave.tpl'}
 
@@ -23,8 +27,6 @@
         <div class="ten wide column">
             {include 'edit-form/title.tpl'}
 
-            {include 'edit-form/teaser-summary.tpl'}
-
             <div class="field"> 
                 <label for="video_source">Video Source</label>
                 <select name="video_source" id="video_source" class="ui dropdown" class="post-data-field" data-key="videosource">
@@ -32,6 +34,7 @@
                     <option value="vimeo">Vimeo</option>
                 </select>
             </div>
+
             <div class="field"> 
                 <label for="video_id">Video ID <a href="#" onclick="alert('Youtube ID are found in the URL youtube.com/user/?v={ldelim}URL{rdelim}'); return false;">[?]</a></label>
                 <input type="text" name="video_id" placeholder="Enter a YouTube or Vimeo Video ID" id="video_id" size="50" autocomplete="off" value="{if isset($post)}{$post->videoid}{/if}"  class="post-data-field" data-key="videoid">
@@ -48,9 +51,7 @@
                 <textarea name="post_content" id="post_content" style="height:30vh;" class="post-data-field" data-key="content">{if isset($post)}{$post->content}{/if}</textarea>
                 <p style="font-size:80%;"><a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a> is supported!</p>
             </div>
-            
-            {include 'edit-form/tags.tpl'}
-            
+                        
             <input type="hidden" name="post_type" id="post_type" value="video" class="post-data-field" data-key="type">
 
             {* Submit button + hidden fields *}
@@ -61,6 +62,10 @@
             {include 'edit-form/post-date.tpl'}
 
             {include 'edit-form/url.tpl'}
+
+            {include 'edit-form/teaser-summary.tpl'}
+
+            {include 'edit-form/tags.tpl'}
  
             {include 'edit-form/custom-fields.tpl'}
 
@@ -76,7 +81,7 @@ var isDarkMode = false;
 
 $("#video_source").on("keyup", function() { content_changed = true; });
 $("#video_id").on("keyup", function() { content_changed = true; });
-
+/*
 var getFormData = function() {
     return {
         postID: parseInt($("#post_id").val()),
@@ -96,7 +101,7 @@ var getFormData = function() {
         token: CSRFTOKEN
     };
 };
-
+*/
 $(document).ready(function () {
     $('.ui.dropdown').dropdown();
 
@@ -120,7 +125,7 @@ $(document).ready(function () {
     });
 
     $(window).on('beforeunload', function() {
-        if(content_changed && !confirm('Are you sure you want to leave this page - you may lose changes?')) {
+        if (content_changed && !confirm('Are you sure you want to leave this page - you may lose changes?')) {
             return false;
         }
     });
