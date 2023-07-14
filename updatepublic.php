@@ -42,4 +42,12 @@ Files::xcopy(__DIR__ . '/public/images', $public_root . '/hamlet/images');
 Files::xcopy(__DIR__ . '/public/fonts', $public_root . '/hamlet/fonts');
 Files::xcopy(__DIR__ . '/public/resources', $public_root . '/hamlet/resources');
 
+// Copy mapping should be key value pairs of files or folders to copy.
+$mapping = [];
+HamletCMS::runHook('onPublicFilesCopy', ['copy_mapping' => &$mapping]);
+
+foreach ($mapping as $source => $target) {
+    Files::xcopy($source, $target);
+}
+
 print "Done!" . PHP_EOL;
