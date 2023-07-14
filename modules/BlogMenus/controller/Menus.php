@@ -2,6 +2,7 @@
 
 namespace HamletCMS\BlogMenus\controller;
 
+use HamletCMS\Blog\Blog;
 use HamletCMS\HamletCMS;
 use HamletCMS\GenericController;
 
@@ -12,6 +13,7 @@ use HamletCMS\GenericController;
  */
 class Menus extends GenericController
 {
+    protected Blog $blog;
 
     public function __construct()
     {
@@ -60,7 +62,6 @@ class Menus extends GenericController
         else {
             $this->response->routeRedirect('menus.manage', 'Failed to create menu', 'error');
         }
-
     }
 
     /**
@@ -245,7 +246,7 @@ class Menus extends GenericController
             'link_target' => $target,
             'menu_id' => $menu->id,
             'weight' => count($menu->items()) + 1, // always add last
-            'new_window' => $this->request->getString('new_window', 'off') == 'on'
+            'new_window' => intval($this->request->getString('new_window', 'off') == 'on')
         ]);
 
         if ($insert) {
@@ -306,7 +307,7 @@ class Menus extends GenericController
             'type' => $type,
             'text' => $text,
             'link_target' => $target,
-            'new_window' => $this->request->getString('new_window', 'off') == 'on'
+            'new_window' => intval($this->request->getString('new_window', 'off') == 'on')
         ]);
 
         if ($update) {

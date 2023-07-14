@@ -80,7 +80,7 @@ class SiteAdmin extends GenericController
 
             foreach ($modulesList as $name => $status) {
                 // Ones that remain are new
-                $core = $status == 'core';
+                $core = intval($status === 'core');
                 $insert = $this->model('modules')->insert(['name' => $name, 'enabled' => 0, 'locked' => 0, 'core' => $core]);
                 if (!$insert) $this->response->redirect('/cms/admin/modules', 'Unable to update database', 'error');
                 $addCount++;

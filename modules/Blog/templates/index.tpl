@@ -1,102 +1,104 @@
 <div class="ui grid">
     <div class="one column row">
         <div class="column">
+            {* Check if this user contributes/ owns to at least 1 blog *}
+            {if count($blogs) > 0}
+                <table class="ui padded table blogs-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Contributors</th>
+                            <th class="collapsing"></th>
+                            <th class="collapsing"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {* Loop through all the blogs this user can contribute to *}
+                        {foreach from=$blogs item=blog}
+                            <tr>
+                                <td width="50">
+                                    {if $blog->icon}
+                                        <img src="{$blog->resourcePath()}/{$blog->icon}" class="blog-icon">
+                                    {/if}
+                                </td>
+                                <td>
+                                    <a href="/cms/blog/overview/{$blog->id}" title="{$blog->name}"
+                                        style="font-size:120%;">{$blog->name}</a>
+                                    {$lastestPost = $blog->latestpost()}
+                                    {if $lastestPost}
+                                        <br><span class="date">Latest post:
+                                            {$lastestPost->timestamp|date_format}</span>
+                                    {else}
+                                        <br><span class="date">Nothing posted</span>
+                                    {/if}
+                                </td>
+                                <td>
+                                    {foreach from=$blog->contributors() item=contributor name=contributors}
+                                        <a href="/cms/account/user/{$contributor->id}" class="user-link">
+                                            {strip}
+                                                {if $contributor->id == $smarty.session.user.id}
+                                                    <span data-userid="{$contributor->id}">You</span>
+                                                {else}
+                                                    <span data-userid="{$contributor->id}">{$contributor->username}</span>
+                                                {/if}
 
-{* Check if this user contributes/ owns to at least 1 blog *}
-{if count($blogs) > 0}
+                                                {* Output a comma if this isn't the last item *}
+                                                {if !$smarty.foreach.contributors.last},{/if}
+                                            {/strip}
+                                        </a>
+                                    {/foreach}
 
-<table class="ui padded table blogs-table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Contributors</th>
-            <th class="collapsing"></th>
-            <th class="collapsing"></th>
-        </tr>
-    </thead>
-    <tbody>
-        {* Loop through all the blogs this user can contribute to *}
-        {foreach from=$blogs item=blog}
-            <tr>
-                <td width="50">
-                    {if $blog->icon}
-                        <img src="{$blog->resourcePath()}/{$blog->icon}" class="blog-icon">
-                    {/if}
-                </td>
-                <td>
-                    <a href="/cms/blog/overview/{$blog->id}" title="{$blog->name}" style="font-size:120%;">{$blog->name}</a>
-                    {$lastestPost = $blog->latestpost()}
-                    {if $lastestPost}
-                        <br><span class="date">Latest post: {$lastestPost->timestamp|date_format}</span>
-                    {else}
-                        <br><span class="date">Nothing posted</span>
-                    {/if}
-                </td>
-                <td>
-                    {foreach from=$blog->contributors() item=contributor name=contributors}
-                        <a href="/cms/account/user/{$contributor->id}" class="user-link">
-                        {strip}
-                            {if $contributor->id == $smarty.session.user.id}
-                                <span data-userid="{$contributor->id}">You</span>
-                            {else}
-                                <span data-userid="{$contributor->id}">{$contributor->username}</span>
-                            {/if}
+                                    <script>
+                                        $(".user-link").mouseenter(function() {
+                                            showUserProfile($(this));
+                                        });
 
-                            {* Output a comma if this isn't the last item *}
-                            {if !$smarty.foreach.contributors.last},{/if}
-                        {/strip}
-                        </a>
-                    {/foreach}
+                                        $(".user-link").mouseleave(function() {
+                                            hideUserProfile($(this));
+                                        });
+                                    </script>
+                                </td>
+                                <td>
+                                    <div class="ui selection dropdown">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">- Actions -</div>
+                                        <div class="menu">
+                                            {foreach $blog->actions as $action}
+                                                <a href="{$action->url}" class="item">{$action->text}</a>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('.ui.dropdown').dropdown({
+                                            onChange: function() {
+                                                $(this).addClass('loading')
+                                            }
+                                        });
+                                    </script>
+                                </td>
+                                <td>
+                                    <a href="{$blog->url()}" class="ui teal icon button" target="_blank">
+                                        <i class="home icon"></i>
+                                    </a>
+                                </td>
+                </div>
 
-                    <script>
-                        $(".user-link").mouseenter(function() {
-                            showUserProfile($(this));
-                        });
+            {/foreach}
+            </tbody>
+            </table>
 
-                        $(".user-link").mouseleave(function() {
-                            hideUserProfile($(this));
-                        });
-                    </script>
-                </td>
-                <td>
-                    <div class="ui selection dropdown">
-                        <i class="dropdown icon"></i>
-                        <div class="default text">- Actions -</div>
-                        <div class="menu">
-                            {foreach $blog->actions as $action}
-                                <a href="{$action->url}" class="item">{$action->text}</a>
-                            {/foreach}
-                        </div>
-                    </div>
-                    <script>
-                        $('.ui.dropdown').dropdown({
-                            onChange: function () {
-                                $(this).addClass('loading')
-                            }
-                        });
-                    </script>
-                </td>
-                <td>
-                    <a href="{$blog->url()}" class="ui teal icon button" target="_blank">
-                        <i class="home icon"></i>
-                    </a>
-                </td>
-            </div>
+            <a href="/cms/blog/create" class="ui right floated labeled icon teal button"><i class="plus icon"></i>Create
+                blog</a>
 
-        {/foreach}
-    </tbody>
-</table>
+            {* This user doesn't have any blogs *}
+        {else}
+            <p class="ui message info">You do not own or contribute to any blogs, why not <a href="/cms/blog/create">create
+                    your first blog</a>?</p>
 
-<a href="/cms/blog/create" class="ui right floated labeled icon teal button"><i class="plus icon"></i>Create blog</a>
-
-{* This user doesn't have any blogs *}
-{else}
-    <p class="ui message info">You do not own or contribute to any blogs, why not <a href="/cms/blog/create">create your first blog</a>?</p>
-
-{/if}
-        </div>
+        {/if}
     </div>
+</div>
 </div>
 
 {* todo: recent updates from blogs the user has subscribed to - see: /app/views/favorite_blogs_summary.php *}
