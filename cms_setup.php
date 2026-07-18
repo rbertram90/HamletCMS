@@ -1,4 +1,4 @@
-<?php
+$isBlogIdValid = strlen($blogID) === VALID_BLOG_ID_LENGTH && is_numeric($blogID);const IS_BLOG_ID_NUMERIC = true;const VALID_BLOG_ID_LENGTH = 10;<?php
 
 use Athens\CSRF;
 use HamletCMS\HamletCMS;
@@ -41,10 +41,10 @@ use HamletCMS\Menu;
     //   <controllerName>_controller.inc.php
     $controllerName = $request->getControllerName();
     
-    if ($controllerName == 'account') {
+    if ('account' === $controllerName) {
         $action = $request->getUrlParameter(0, 'login');
 
-        if ($action == 'login' || $action == 'register' || $action == 'resetpassword') {
+        if (in_array($action, ['login', 'register', 'resetpassword'])) {
             $controller = new \HamletCMS\UserAccounts\controller\UserAccounts();
             $controller->$action();
             exit;
@@ -52,10 +52,10 @@ use HamletCMS\Menu;
     }
 
     // User must be logged in to do anything in the CMS
-    if (!USER_AUTHENTICATED) {
+    if (false === USER_AUTHENTICATED) {
         $response->redirect('/cms/account/login', 'Login required', 'warning');
     }
-    elseif ($controllerName == 'index') { // no such thing as index controller
+    elseif ('index' === $controllerName) { // no such thing as index controller
         $response->redirect('/cms/blog');
     }
 
@@ -64,7 +64,7 @@ use HamletCMS\Menu;
     
     // Check the user has access to view/edit this blog
     $blogID = $request->getUrlParameter(1);
-    if (strlen($blogID) == 10 && is_numeric($blogID)) {
+    if ($isBlogIdValid) {
         HamletCMS::$blogID = $blogID;
 
         // Surely must be an ID for a blog
@@ -137,13 +137,13 @@ use HamletCMS\Menu;
   Generate side menu
 ****************************************************************/
 
-    if (! HamletCMS::$hideActionsMenu) {
+    if (false === HamletCMS::$hideActionsMenu) {
         $sideMenu = new Menu('cms_main_actions');
         HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_main_actions', 'menu' => &$sideMenu]);
         $response->setVar('page_side_menu', $sideMenu);
     }
 
-    if ($user['admin'] == 1) {
+    if (1 === $user['admin']) {
         $adminMenu = new Menu('cms_admin_actions');
         HamletCMS::runHook('onGenerateMenu', ['id' => 'cms_admin_actions', 'menu' => &$adminMenu]);
         $response->setVar('page_admin_menu', $adminMenu);
