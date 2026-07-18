@@ -20,7 +20,8 @@ class Comments extends RBFactory
      */
     function __construct($modelFactory)
     {
-        $this->db = $modelFactory->getDatabaseConnection();
+        parent::__construct($modelFactory->getDatabaseConnection());
+
         $this->tableName = 'comments';
         $this->subClass = '\\HamletCMS\\PostComments\\Comment';
 

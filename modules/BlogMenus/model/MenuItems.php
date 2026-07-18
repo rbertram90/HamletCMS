@@ -24,7 +24,7 @@ class MenuItems extends RBFactory {
             'new_window' => 'boolean'
         ];
 
-        parent::__construct($modelManager);
+        parent::__construct($modelManager->getDatabaseConnection());
     }
 
     /**

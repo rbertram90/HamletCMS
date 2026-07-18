@@ -17,7 +17,7 @@ class Modules extends RBFactory
      */
     function __construct($modelFactory)
     {
-        $this->db = $modelFactory->getDatabaseConnection();
+        parent::__construct($modelFactory->getDatabaseConnection());
         $this->tableName = 'modules';
         $this->subClass = '\\HamletCMS\\SiteAdmin\\SiteModule';
     }

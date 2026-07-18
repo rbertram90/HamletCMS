@@ -45,7 +45,7 @@ class Blogs extends RBFactory
             'logo'        => 'string',
         ];
 
-        parent::__construct($modelManager);
+        parent::__construct($modelManager->getDatabaseConnection());
     }
     
     /**

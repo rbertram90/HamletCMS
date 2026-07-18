@@ -19,7 +19,7 @@ class Permissions extends RBFactory
 
     public function __construct($modelFactory)
     {
-        parent::__construct($modelFactory);
+        parent::__construct($modelFactory->getDatabaseConnection());
         $this->tableName = 'contributors';
         $this->subClass = '\\HamletCMS\\Contributors\\Contributor';
         $this->modelContributors = HamletCMS::model('contributors');

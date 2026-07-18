@@ -2,7 +2,6 @@
 namespace HamletCMS\UserAccounts\model;
 
 use HamletCMS\HamletCMS;
-use rbwebdesigns\core\Sanitize;
 use rbwebdesigns\core\model\RBFactory;
 
 /**
@@ -19,6 +18,10 @@ class UserAccounts extends RBFactory
     protected $passwordHash = '';
     protected $subClass = '\\HamletCMS\\UserAccounts\\User';
     
+    public function __construct($modelManager) {
+        parent::__construct($modelManager->getDatabaseConnection());
+    }
+
     /**
      * Check username and password are a match in database
      * and set session flags to log the user in

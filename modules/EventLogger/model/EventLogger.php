@@ -5,7 +5,7 @@ use rbwebdesigns\core\model\RBFactory;
 
 class EventLogger extends RBFactory
 {
-    protected $tableName = 'eventlog';
+    protected string $tableName = 'eventlog';
 
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'eventlogger';
@@ -26,6 +26,10 @@ class EventLogger extends RBFactory
         'text'        => 'string',
         'timestamp'   => 'timestamp',
     ];
+
+    public function __construct($modelManager) {
+        parent::__construct($modelManager->getDatabaseConnection());
+    }
 
     /**
      * Get recent activity log entries relating to blog

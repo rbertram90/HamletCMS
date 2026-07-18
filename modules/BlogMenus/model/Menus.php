@@ -19,7 +19,7 @@ class Menus extends RBFactory {
             'blog_id' => 'number',
         ];
 
-        parent::__construct($modelManager);
+        parent::__construct($modelManager->getDatabaseConnection());
     }
 
     /**

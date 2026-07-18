@@ -11,9 +11,6 @@ use rbwebdesigns\core\Sanitize;
  */
 class Posts extends RBFactory
 {
-    /** @var \rbwebdesigns\core\Database */
-    protected $db;
-
     /** @var \rbwebdesigns\core\querybuilder\Database */
     protected $queryBuilder;
 
@@ -31,7 +28,7 @@ class Posts extends RBFactory
     function __construct($modelManager)
     {
         // Access to the database class
-        $this->db = $modelManager->getDatabaseConnection();
+        parent::__construct($modelManager->getDatabaseConnection());
 
         $config = HamletCMS::config()['database'];
 

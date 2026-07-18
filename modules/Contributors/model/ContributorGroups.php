@@ -13,8 +13,6 @@ use rbwebdesigns\core\Sanitize;
 
 class ContributorGroups extends RBFactory
 {
-    protected $db;
-
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'contributorgroups';
     
@@ -31,7 +29,7 @@ class ContributorGroups extends RBFactory
         ];
         $this->subClass = '\\HamletCMS\\Contributors\\ContributorGroup';
 
-        parent::__construct($modelFactory);
+        parent::__construct($modelFactory->getDatabaseConnection());
     }
 
     /**

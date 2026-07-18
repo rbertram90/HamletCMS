@@ -11,9 +11,6 @@ class Autosaves extends RBFactory
     /** @var \HamletCMS\BlogPosts\model\Posts */
     protected $modelPosts;
 
-    /** @var \rbwebdesigns\core\Database */
-    protected $db;
-
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'autosaves';
 
@@ -25,8 +22,7 @@ class Autosaves extends RBFactory
     function __construct($modelManager)
     {
         // Access to the database class
-        
-        $this->db = $modelManager->getDatabaseConnection();
+        parent::__construct($modelManager->getDatabaseConnection());
         $this->tableName = TBL_AUTOSAVES;
         $this->subClass = '\\HamletCMS\\BlogPosts\\Autosave';
         $this->modelPosts = HamletCMS::model('posts');

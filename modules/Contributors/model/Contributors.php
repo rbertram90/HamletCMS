@@ -10,7 +10,6 @@ use HamletCMS\HamletCMS;
  */
 class Contributors extends RBFactory
 {
-    protected $db;
     protected $tblbloguser;
 
     /** @var string Class alias for Hamlet model map */
@@ -18,7 +17,7 @@ class Contributors extends RBFactory
 
     public function __construct($modelFactory)
     {
-        parent::__construct($modelFactory);
+        parent::__construct($modelFactory->getDatabaseConnection());
 
         $this->tableName = TBL_CONTRIBUTORS;
         $this->tableGroups = 'contributorgroups';

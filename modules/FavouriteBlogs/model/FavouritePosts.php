@@ -11,9 +11,6 @@ use rbwebdesigns\core\model\RBFactory;
  */
 class FavouritePosts extends RBFactory
 {
-    /** @var \rbwebdesigns\core\ObjectDatabase */
-    protected $db;
-
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'favouriteposts';
 
@@ -24,7 +21,7 @@ class FavouritePosts extends RBFactory
      */
     function __construct($modelManager)
     {
-        parent::__construct($modelManager);
+        parent::__construct($modelManager->getDatabaseConnection());
 
         $this->tableName = 'favouriteposts';
         $this->fields = [

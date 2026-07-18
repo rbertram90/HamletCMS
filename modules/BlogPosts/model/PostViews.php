@@ -21,7 +21,7 @@ class PostViews extends RBFactory
             'last_viewed'
         ];
 
-        parent::__construct($modelManager);
+        parent::__construct($modelManager->getDatabaseConnection());
     }
 
     /**

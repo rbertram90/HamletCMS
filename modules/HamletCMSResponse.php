@@ -105,9 +105,11 @@ class HamletCMSResponse extends Response
      * @param string $name
      * @param mixed $value
      */
-    public function setVar($name, $value)
+    public function setVar($name, $value): self
     {
         $this->smarty->assign($name, $value);
+
+        return $this;
     }
 
     /**
