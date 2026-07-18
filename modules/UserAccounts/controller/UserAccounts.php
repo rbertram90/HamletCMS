@@ -152,19 +152,16 @@ class UserAccounts extends GenericController
             $this->response->redirect('/cms/account/login', 'New password saved, you can now login.', 'success');
         }
 
-        $emailConfig = HamletCMS::config()['email'] ?? [];
         $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
 
-        $resetUpdate = $user->setResetPasswordToken();
-       
-        if ($resetUpdate) {
-            $resetEmail = new Email();
-            $resetEmail->recipient = $email;
-            $resetEmail->subject = 'Reset your password - HamletCMS';
-            $resetEmail->message = 'A password reset has been requested on your account, click <a href="'.$siteDomain.'/cms/account/resetpassword?email='.$email.'&token='.$user->reset_token.'">this link</a> to reset your password.';
-            $resetEmail->sender = $emailConfig['system_sender'];
+        if ($user->setResetPasswordToken()) {
+            $sendSuccessful = HamletCMS::sendEmail(
+                'Reset your password - HamletCMS',
+                'A password reset has been requested on your account, click <a href="'.$siteDomain.'/cms/account/resetpassword?email='.$email.'&token='.$user->reset_token.'">this link</a> to reset your password.',
+                $email,
+            );
 
-            if ($resetEmail->send()) {
+            if ($sendSuccessful) {
                 $this->response->redirect('/cms/account/login', 'Email has been sent with a link to reset your password.', 'success');
             }
         }

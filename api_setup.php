@@ -12,7 +12,7 @@ use rbwebdesigns\core\Request;
 
     // Create custom request, shifting the query path along one.
     // First part of query variable is the controller name.
-    $queryPath = filter_input(INPUT_GET, 'query');
+    $queryPath = $_GET['query'] ?? '';
     $queryParts = explode('/', $queryPath);
     $controllerName = $queryParts[0] ?? '';
 

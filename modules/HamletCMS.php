@@ -1,6 +1,9 @@
 <?php
 namespace HamletCMS;
 
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use rbwebdesigns\core\Session;
 use rbwebdesigns\core\Request;
 use rbwebdesigns\core\model\ModelManager;
@@ -560,4 +563,45 @@ class HamletCMS
         fclose($file);
     }
 
+    /**
+     * Send an email with PHPMailer.
+     * @return bool Was the send successful
+     */
+    public static function sendEmail(string $subject, string $body, string $recepient): bool {
+        $mail = new PHPMailer(true);
+
+        try {
+            if (self::config()['environment']['development_mode']) {
+                $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
+            }
+
+            $mailConfig = self::config()['email'];
+
+            if ($mailConfig['smtp'] ?? true) {
+                $mail->isSMTP();
+                $mail->SMTPAuth   = true;
+                $mail->Host       = $mailConfig['host'] ?? 'localhost';
+                $mail->Port       = $mailConfig['port'] ?? 465;
+                $mail->Username   = $mailConfig['username'];
+                $mail->Password   = $mailConfig['password'];
+                $mail->SMTPSecure = $mailConfig['encryption'] ?? PHPMailer::ENCRYPTION_STARTTLS;
+            }
+
+            $mail->setFrom($mailConfig['sender'], $mailConfig['sender_name'] ?? '');
+            $mail->addAddress($recepient);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+
+            return $mail->send();
+        }
+        catch (PHPMailerException) {
+            if (self::config()['environment']['development_mode']) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                exit;
+            }
+        }
+
+        return false;
+    }
 }

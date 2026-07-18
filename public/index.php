@@ -5,8 +5,6 @@ use rbwebdesigns\core\Request;
 use HamletCMS\Website\controller\Site;
 use HamletCMS\Widgets\controller\WidgetsView;
 
-// http://www.hamletcms.localhost/api/blogs/byCategory?category=General
-
 /****************************************************************
   Website entrypoint
 ****************************************************************/
@@ -24,7 +22,21 @@ use HamletCMS\Widgets\controller\WidgetsView;
     // Include cms setup script
     require_once $server_root . '/app/setup.inc.php';
 
-    $entrypoint = filter_input(INPUT_GET, 'p');
+    // Emulate the Apache mod_rewrite rule from public/.htaccess for servers
+    // that don't process .htaccess (e.g. nginx / Laravel Herd). This populates
+    // the `p` (controller) and `query` request variables from the URL path so
+    // that pretty-URL routing works regardless of the web server.
+    if (!isset($_GET['p'])) {
+        $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+
+        if ($path !== '' && $path !== 'index.php') {
+            $segments = explode('/', $path, 2);
+            $_GET['p'] = $_REQUEST['p'] = $segments[0];
+            $_GET['query'] = $_REQUEST['query'] = $segments[1] ?? '';
+        }
+    }
+
+    $entrypoint = $_GET['p'] ?? '';
 
     // Handle API requests
     if ($entrypoint === 'api') {

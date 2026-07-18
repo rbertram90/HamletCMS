@@ -5,7 +5,6 @@ namespace HamletCMS\Contributors\controller;
 use HamletCMS\GenericController;
 use rbwebdesigns\core\JSONHelper;
 use HamletCMS\HamletCMS;
-use rbwebdesigns\core\Email;
 
 /**
  * /app/controller/contributors_controller.inc.php
@@ -193,17 +192,18 @@ class Contributors extends GenericController
 
         if ($emailConfig['enable'] ?? false) {
             $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
-            $email = new Email();
-            $email->sender = $emailConfig['system_sender'];
-            $email->recipient = $accountData['email'];
-            $email->subject = 'You have been invited to contribute on ' . $blog->name;
-            $email->message = "An account has been created for you, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?";
 
-            if (!$email->send()) {
-                HamletCMS::session()->addMessage('Failed to send email', 'error');
+            $sendSuccessful = HamletCMS::sendEmail(
+                'You have been invited to contribute on ' . $blog->name,
+                "An account has been created for you, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?",
+                $accountData['email'],
+            );
+
+            if (!$sendSuccessful) {
+                HamletCMS::session()->addMessage('Failed to send invite email', 'error');
             }
         }
-        
+
         $this->response->routeRedirect('contributors.manage', 'Contributor created', 'success');
     }
 
@@ -234,13 +234,14 @@ class Contributors extends GenericController
 
         if ($emailConfig['enable'] ?? false) {
             $siteDomain = HamletCMS::config()['environment']['canonical_domain'];
-            $email = new Email();
-            $email->sender = $emailConfig['system_sender'];
-            $email->recipient = $user->email;
-            $email->subject = 'You have been invited to contribute on ' . $blog->name;
-            $email->message = "You have been added as a contributor on {$blog->name}, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?";
 
-            if (!$email->send()) {
+            $sendSuccessful = HamletCMS::sendEmail(
+                'You have been invited to contribute on ' . $blog->name,
+                "You have been added as a contributor on {$blog->name}, why not <a href='{$siteDomain}/cms'>login and create your first post</a>?",
+                $user->email,
+            );
+
+            if (!$sendSuccessful) {
                 HamletCMS::session()->addMessage('Failed to send email', 'error');
             }
         }

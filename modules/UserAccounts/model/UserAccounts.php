@@ -4,20 +4,20 @@ namespace HamletCMS\UserAccounts\model;
 use HamletCMS\HamletCMS;
 use rbwebdesigns\core\model\RBFactory;
 
-/**
- * /app/model/mdl_account.inc.php
- */
 class UserAccounts extends RBFactory
 {
     /** @var string Database table name for this model */
-    protected $tableName = 'users';
+    protected string $tableName = 'users';
 
     /** @var string Class alias for Hamlet model map */
     public static $alias = 'useraccounts';
 
     protected $passwordHash = '';
     protected $subClass = '\\HamletCMS\\UserAccounts\\User';
-    
+
+    /**
+     * @param \rbwebdesigns\core\model\ModelManager $modelManager 
+     */
     public function __construct($modelManager) {
         parent::__construct($modelManager->getDatabaseConnection());
     }
@@ -37,7 +37,6 @@ class UserAccounts extends RBFactory
         $user = $this->get(['id', 'password', 'admin'], ['username' => $username], '', '', false);
 
         if ($user && password_verify($password, $user->password)) {
-            
             if (password_needs_rehash($user->password, PASSWORD_DEFAULT)) {
                 // If so, create a new hash, and replace the old one
                 $newHash = password_hash($user->password, PASSWORD_DEFAULT);
