@@ -6,7 +6,7 @@ use Michelf\Markdown;
 class Module
 {
     public function onViewEditPost($args) {
-        if ($args['type'] != 'standard') return;
+        if ($args['type'] !== 'standard') return;
 
         $controller = new controller\MarkdownPost();
         $controller->edit();
