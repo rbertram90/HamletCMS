@@ -62,6 +62,7 @@ class Module
           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
         $dbc->query("ALTER TABLE `blogs` ADD PRIMARY KEY (`id`);");
+        $dbc->query("ALTER TABLE `blogs` MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;");
     }
 
     public function runUnitTests($args)
@@ -72,7 +73,10 @@ class Module
 
             $createBlogTest = new \HamletCMS\blog\tests\CreateBlogTest();
             $createBlogTest->run();
-        
+
+            $modelPermissions = HamletCMS::model('HamletCMS\Contributors\model\Permissions');
+            HamletCMS::$userGroup = $modelPermissions->getUserGroup($createBlogTest->blogID);
+
             // Run every other test!
             HamletCMS::runHook('runUnitTests', ['context' => 'blog', 'blogID' => $createBlogTest->blogID]);
         }

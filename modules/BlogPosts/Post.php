@@ -4,6 +4,7 @@ namespace HamletCMS\BlogPosts;
 
 use HamletCMS\HamletCMS;
 
+#[\AllowDynamicProperties]
 class Post
 {
     /** Core post attributes (match database columns) */
@@ -129,8 +130,8 @@ class Post
     public function toArray()
     {
         $fields = $this->factory->getFields();
-        foreach ($fields as $key => $field) {
-            $fields[$field] = $this->$key;
+        foreach ($fields as $columnName => $type) {
+            $fields[$columnName] = $this->$columnName;
         }
         return $fields;
     }

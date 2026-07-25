@@ -180,12 +180,11 @@ class SiteAdmin extends GenericController
     {
         $moduleName = $this->request->getUrlParameter(1);
         $module = new Module($moduleName);
+        $moduleLogicClass = $module->getInstance();
 
         // Run install method (if exists)
-        if (!is_null($module) && !is_null($module->instance)) {
-            if (method_exists($module->instance, 'install')) {
-                $module->instance->install();
-            }
+        if (method_exists($moduleLogicClass, 'install')) {
+            $moduleLogicClass->install();
         }
 
         // Update module database
@@ -204,12 +203,11 @@ class SiteAdmin extends GenericController
     {
         $moduleName = $this->request->getUrlParameter(1);
         $module = HamletCMS::getModule($moduleName);
+        $moduleLogicClass = $module->getInstance();
 
         // Run uninstall method (if exists)
-        if (!is_null($module) && !is_null($module->instance)) {
-            if (method_exists($module->instance, 'uninstall')) {
-                $module->instance->uninstall();
-            }
+        if (method_exists($moduleLogicClass, 'uninstall')) {
+            $moduleLogicClass->uninstall();
         }
 
         // Update module database

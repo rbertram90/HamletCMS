@@ -41,8 +41,6 @@ class CreatePostTest extends TestResult
 
         $this->postID = $outcome['post']['id'];
 
-        print "Created post with ID = " . $this->postID . PHP_EOL;
-
         if ($outcome['success']) {
             print "Info: Test passed". PHP_EOL;
         }

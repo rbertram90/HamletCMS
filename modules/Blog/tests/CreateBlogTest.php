@@ -24,14 +24,14 @@ class CreateBlogTest extends TestResult
         $this->request->setVariable('fld_blogdesc', 'Automatically created by test suite');
         
         // Run the method
-        $controller->runCreateBlog();
-        
+        $this->invoke(fn() => $controller->runCreateBlog());
+
         // Check response
         if ($redirect = $this->response->redirect) {
             // Response was a redirect
             switch (strtolower($redirect['messageType'])) {
                 case 'error':
-                    print "Error: Test errored with message - ". $redirect['message'];
+                    print "Error: Test errored with message - ". $redirect['message'] . PHP_EOL;
                     exit;
                 case 'success':
                     $locationParts = explode('/', $redirect['location']);

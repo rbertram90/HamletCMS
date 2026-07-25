@@ -161,7 +161,7 @@ class Blogs extends GenericController
 
         // Add the user as contributor
         if (!$this->model('contributors')->addBlogContributor($currentUser['id'], $newblogkey, $adminGroup->id)) {
-            $this->response->redirect('/cms', 'Error adding to contributor please try again later', 'error');
+            $this->response->redirect('/cms', 'Error adding contributor please try again later', 'error');
         }
 
         $this->response->redirect('/cms/blog/overview/'. $newblogkey, 'Blog created', 'success');

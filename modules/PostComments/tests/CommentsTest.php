@@ -26,9 +26,17 @@ class CommentsTest extends TestResult
     protected function createCommentTest(CommentsController $commentsController) {
         $this->log("Running CommentsTest::Create");
 
+        /** @var \HamletCMS\BlogPosts\model\Posts */
+        $postsModel = HamletCMS::model('posts');
+
+        /** @var \HamletCMS\BlogPosts\Post */
+        $post = $postsModel->getPostById($this->postID);
+        $post->allowcomments = true;
+        $post->save();
+
         $this->request->setVariable('fld_postid', $this->postID);
         $this->request->setVariable('fld_comment', 'This is my lovely comment!');
-        $commentsController->add();
+        $this->invoke(fn() => $commentsController->add());
 
         $redirect = $this->response->redirect;
 
@@ -46,7 +54,7 @@ class CommentsTest extends TestResult
         $this->request->setVariable('fld_postid', $this->postID);
         $commentText = 'This comment should be approved. ' . uniqid();
         $this->request->setVariable('fld_comment', $commentText);
-        $commentsController->add();
+        $this->invoke(fn() => $commentsController->add());
         // Now approve
         /** @var \HamletCMS\PostComments\model\Comments */
         $commentsModel = HamletCMS::model('comments');
@@ -57,7 +65,7 @@ class CommentsTest extends TestResult
         }
 
         $this->request->setUrlParameter(1, $comment->id);
-        $commentsController->approve();
+        $this->invoke(fn() => $commentsController->approve());
 
         $redirect = $this->response->redirect;
 

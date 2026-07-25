@@ -25,6 +25,25 @@ abstract class TestResult implements TestResultInterface
     }
     
     /**
+     * Run a controller action, stopping cleanly at the first redirect the same
+     * way a real request would (a real redirect ends in exit()). The redirect
+     * details remain available afterwards on $this->response->redirect.
+     *
+     * @param callable $action
+     *   Typically a closure that calls the controller method under test,
+     *   e.g. $this->invoke(fn() => $controller->runCreateBlog());
+     */
+    protected function invoke(callable $action)
+    {
+        try {
+            $action();
+        }
+        catch (RedirectException $e) {
+            // Expected - a redirect halts the request.
+        }
+    }
+
+    /**
      * Output text to the console
      */
     protected function log(string $message)

@@ -99,7 +99,7 @@ class ContributorsTests extends TestResult
         // $this->request->setVariable('fld_email_2', 'john' . $unique_id . '@example.com'); // set correct email
 
         // Successful attempt
-        $this->controller->create();
+        $this->invoke(fn() => $this->controller->create());
 
         if ($this->response->redirect['messageType'] === 'success') {
             $this->log('Passed ContributorsTests::postCreateContributor');
@@ -144,7 +144,7 @@ class ContributorsTests extends TestResult
         $this->request->setVariable('selected_user', $newuser->id);
         $this->request->setVariable('group', $newgroup->id);
 
-        $this->controller->invite();
+        $this->invoke(fn() => $this->controller->invite());
 
         if ($this->response->redirect['messageType'] === 'success') {
             $this->log('Passed ContributorsTests::postInviteContributor');

@@ -187,6 +187,7 @@ class HamletCMS
         // Establish connection
         self::databaseConnection();
 
+        // Convert model alias
         if (substr($modelName, 0, 1) !== '\\') {
             $modelCache = self::getCache('models');
             if (array_key_exists($modelName, $modelCache)) {
@@ -211,10 +212,19 @@ class HamletCMS
         }
 
         if (!self::$modelManager->getDatabaseConnection()->isConnected()) {
-            self::$modelManager->getDatabaseConnection()->connect(self::$config['database']['server'],
-                self::$config['database']['name'],
-                self::$config['database']['user'],
-                self::$config['database']['password']);
+            if ((self::$config['database']['type'] ?? 'mysql') === 'sqlite') {
+                self::$modelManager->getDatabaseConnection()->connectToSqliteDB(
+                    self::$config['database']['path']
+                );
+            }
+            else {
+                self::$modelManager->getDatabaseConnection()->connect(
+                    self::$config['database']['server'],
+                    self::$config['database']['name'],
+                    self::$config['database']['user'],
+                    self::$config['database']['password']
+                );
+            }
         }
 
         return self::$modelManager->getDatabaseConnection();
@@ -256,9 +266,9 @@ class HamletCMS
     public static function runHook($hookName, $parameters)
     {
         foreach (self::$modules as $module) {
-            if (!$module->instance) continue;
-            if (method_exists($module->instance, $hookName)) {
-                $module->instance->$hookName($parameters);
+            $moduleLogicClass = $module->getInstance();
+            if (method_exists($moduleLogicClass, $hookName)) {
+                $moduleLogicClass->$hookName($parameters);
             }
         }
     }

@@ -117,7 +117,7 @@ class Contributors extends RBFactory
             'user_id'  => $userID,
             'group_id' => $groupID,
             'blog_id'  => $blogID,
-        ]);
+        ]) !== false;
     }
     
     /**

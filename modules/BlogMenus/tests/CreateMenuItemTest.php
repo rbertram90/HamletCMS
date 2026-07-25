@@ -34,7 +34,7 @@ class CreateMenuItemTest extends TestResult
         $this->request->setUrlParameter(2, $this->menu->id);
 
         // Create the menu
-        $controller->createLink();
+        $this->invoke(fn() => $controller->createLink());
 
         // Check response
         if ($redirect = $this->response->redirect) {

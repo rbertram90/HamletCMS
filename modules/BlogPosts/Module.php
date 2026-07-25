@@ -7,11 +7,6 @@ use HamletCMS\MenuLink;
 
 class Module
 {
-    public function __construct()
-    {
-        $this->model = HamletCMS::model('\HamletCMS\BlogPosts\model\Posts');
-    }
-
     public function onGenerateMenu($args)
     {
         if ($args['id'] == 'bloglist') {
@@ -122,7 +117,7 @@ class Module
     {
         $modelPostViews = HamletCMS::model('\HamletCMS\BlogPosts\model\PostViews');
 
-        $args['counts']['Posts'] = $this->model->countPostsOnBlog($args['blog']->id, true);
+        $args['counts']['Posts'] = HamletCMS::model('posts')->countPostsOnBlog($args['blog']->id, true);
         $args['counts']['Total views'] = $modelPostViews->getTotalPostViewsByBlog($args['blog']->id);
     }
 

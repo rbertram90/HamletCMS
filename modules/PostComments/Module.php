@@ -159,7 +159,10 @@ class Module
     public function onBeforePostSaved($args)
     {
         $request = HamletCMS::request();
-        $args['post']['allowcomments'] = $request->getInt('comments');
+
+        if ($allowComments = $request->getInt('comments')) {
+            $args['post']['allowcomments'] = $allowComments;
+        }
     }
 
     /**
@@ -167,7 +170,10 @@ class Module
      */
     public function onBeforeAutosave(&$args) {
         $request = HamletCMS::request();
-        $args['post']['allowcomments'] = $request->getInt('comments');
+
+        if ($allowComments = $request->getInt('comments')) {
+            $args['post']['allowcomments'] = $allowComments;
+        }
     }
 
     /**
@@ -194,8 +200,9 @@ class Module
         $args['functions']['getComments'] = function(Post $post) {
             return HamletCMS::model('comments')->getCommentsByPost($post->id, false);
         };
+
         $args['functions']['commentsEnabled'] = function(Post $post) {
-            return $post->blog()->commentsEnabled() && $post->allowComments;
+            return $post->blog()->commentsEnabled() && $post->allowcomments;
         };
     }
 

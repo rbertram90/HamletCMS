@@ -22,7 +22,7 @@ class CreateMenuTest extends TestResult
         $this->request->setVariable('menu_name', 'Main menu');
         
         // Create the menu
-        $controller->createMenu();
+        $this->invoke(fn() => $controller->createMenu());
 
         // Check response
         if ($redirect = $this->response->redirect) {

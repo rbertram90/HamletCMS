@@ -13,8 +13,7 @@ class FakeResponse extends HamletCMSResponse
     public $output;
     
     /**
-     * Overwrite redirects to just return the information provided so we
-     * can check expected behaviour
+     * Record the redirect and halt the action.
      */
     public function redirect($location, $message = '', $messageType = 'info')
     {
@@ -23,10 +22,12 @@ class FakeResponse extends HamletCMSResponse
             'message' => $message,
             'messageType' => $messageType
         ];
+
+        throw new RedirectException($this->redirect);
     }
 
     /**
-     * Overwrite routeRedirect to just return information
+     * Record a route redirect and halt the action (see redirect()).
      */
     public function routeRedirect($route, $message = '', $messageType = '', $data = [])
     {
@@ -36,6 +37,8 @@ class FakeResponse extends HamletCMSResponse
             'message' => $message,
             'messageType' => $messageType
         ];
+
+        throw new RedirectException($this->redirect);
     }
 
     /**

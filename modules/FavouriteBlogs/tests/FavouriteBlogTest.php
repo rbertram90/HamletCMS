@@ -22,7 +22,7 @@ class FavouriteBlogTest extends TestResult
         $this->request->method = 'POST';
 
         // Call the method under test
-        $controller->addBlogToFavourites();
+        $this->invoke(fn() => $controller->addBlogToFavourites());
 
         // Check response
         if ($redirect = $this->response->redirect) {

@@ -59,7 +59,7 @@ class SettingsTests extends TestResult {
         $this->request->setVariable('fld_homepage_type', 'posts');
         $this->request->setVariable('fld_homepage_post_id', '');
         $this->request->setVariable('fld_tag_sections', '');
-        $this->controller->general();
+        $this->invoke(fn() => $this->controller->general());
 
         if ($this->response->redirect['messageType'] === 'success') {
             $this->log('Passed SettingsTests::postGeneralSettings');
@@ -75,7 +75,7 @@ class SettingsTests extends TestResult {
      * GET /cms/settings/header/<blog id>
      */
     public function getHeaderSettings() {
-        $this->controller->header();
+        $this->invoke(fn() => $this->controller->header());
         $output = $this->response->output;
 
         if (strpos($output, '<input type="submit" class="ui right floated teal button" value="Submit" name="Save" />') !== FALSE) {
@@ -99,7 +99,7 @@ class SettingsTests extends TestResult {
         $this->request->setVariable('fld_horizontalalign', 'l');
         $this->request->setVariable('header_template', $header_template);
 
-        $this->controller->header();
+        $this->invoke(fn () => $this->controller->header());
 
         if ($this->response->redirect['messageType'] === 'success') {
             $this->log('Passed SettingsTests::postHeaderSettings');
@@ -115,7 +115,7 @@ class SettingsTests extends TestResult {
      * GET /cms/settings/footer/<blog id>
      */
     public function getFooterSettings() {
-        $this->controller->footer();
+        $this->invoke(fn () => $this->controller->footer());
         $output = $this->response->output;
 
         if (strpos($output, '<input type="submit" class="ui button teal right floated" value="Submit" name="Save" />') !== FALSE) {
@@ -138,7 +138,7 @@ class SettingsTests extends TestResult {
         $this->request->setVariable('fld_veritcalposition', 's');
         $this->request->setVariable('footer_template', $footer_template);
 
-        $this->controller->footer();
+        $this->invoke(fn () => $this->controller->footer());
 
         if ($this->response->redirect['messageType'] === 'success') {
             $this->log('Passed SettingsTests::postFooterSettings');

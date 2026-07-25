@@ -81,6 +81,9 @@ class Permissions extends RBFactory
     public function userHasPermission($requiredPermissions, $blogID = 0, $userID = false)
     {
         $userID = $userID ?: HamletCMS::session()->currentUser['id'];
+        $user = HamletCMS::model('useraccounts')->getById($userID);
+        if ($user->admin) return true;
+
         if (gettype($requiredPermissions) === 'string') $requiredPermissions = [$requiredPermissions];
         if (count($requiredPermissions) === 0) return true; // no permissions required
         

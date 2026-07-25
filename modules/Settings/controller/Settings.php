@@ -319,7 +319,7 @@ class Settings extends GenericController
 
         // Logo Upload
         $logo = $this->request->getFile('fld_logo');
-        if (strlen($logo['tmp_name']) > 0) {
+        if ($logo && strlen($logo['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($logo);
             $imageUpload->maxUploadSize = 100000; // 100 KB
             $fileType = $imageUpload->getFileExtention();
@@ -333,14 +333,14 @@ class Settings extends GenericController
                     HamletCMS::session()::addMessage('Error while saving logo file', 'error');
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 HamletCMS::session()::addMessage($e->getMessage(), 'error');
             }
         }
 
         // Icon Upload
         $icon = $this->request->getFile('fld_favicon');
-        if (strlen($icon['tmp_name']) > 0) {
+        if ($icon && strlen($icon['tmp_name']) > 0) {
             $imageUpload = new ImageUpload($icon);
             $imageUpload->maxUploadSize = 50000; // 50 KB
             $fileType = $imageUpload->getFileExtention();

@@ -12,6 +12,15 @@ use HamletCMS\HamletCMS;
 
     $config = JSONhelper::JSONFileToArray(__DIR__ . '/../config/config.json');
 
+    // Allow the test harness (or other tooling) to point the application at a
+    // different database without editing config.json.
+    if ($overrideDatabase = getenv('HAMLET_DB_NAME')) {
+        $config['database']['name'] = $overrideDatabase;
+    }
+    if ($disableEmail = getenv('DISABLE_EMAIL')) {
+        $config['email']['enable'] = false;
+    }
+
     define('IS_DEVELOPMENT', $config['environment']['development_mode']); // Flag for development
     
     if (!defined('SERVER_ROOT')) {

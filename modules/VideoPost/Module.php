@@ -54,8 +54,8 @@ class Module
     public function install()
     {
         $dbc = HamletCMS::databaseConnection();
-        $dbc->query("ALTER TABLE `posts` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
-        $dbc->query("ALTER TABLE `postautosaves` ADD `videoid` varchar(20) NOT NULL, ADD `videosource` enum('youtube','vimeo') NOT NULL;");
+        $dbc->query("ALTER TABLE `posts` ADD `videoid` varchar(20), ADD `videosource` enum('youtube','vimeo');");
+        $dbc->query("ALTER TABLE `postautosaves` ADD `videoid` varchar(20), ADD `videosource` enum('youtube','vimeo');");
     }
 
     /**
